@@ -1,7 +1,7 @@
 class Munro {
   final int id;
   final String name;
-  final String? parent;
+  final String? extra;
   final String area;
   final int meters;
   final String section;
@@ -14,7 +14,7 @@ class Munro {
   Munro({
     required this.id,
     required this.name,
-    required this.parent,
+    required this.extra,
     required this.area,
     required this.meters,
     required this.section,
@@ -29,7 +29,7 @@ class Munro {
     return {
       MunroFields.id: id,
       MunroFields.name: name,
-      MunroFields.parent: parent,
+      MunroFields.extra: extra,
       MunroFields.area: area,
       MunroFields.maters: meters,
       MunroFields.section: section,
@@ -45,7 +45,7 @@ class Munro {
     return Munro(
       id: json[MunroFields.id] as int,
       name: json[MunroFields.name] as String,
-      parent: json[MunroFields.parent] as String,
+      extra: json[MunroFields.extra] as String,
       area: json[MunroFields.area] as String,
       meters: json[MunroFields.maters] as int,
       section: json[MunroFields.section] as String,
@@ -60,7 +60,7 @@ class Munro {
   Munro copy({
     int? id,
     String? name,
-    String? parent,
+    String? extra,
     String? area,
     int? meters,
     String? section,
@@ -73,7 +73,7 @@ class Munro {
     return Munro(
       id: id ?? this.id,
       name: name ?? this.name,
-      parent: parent ?? this.parent,
+      extra: extra ?? this.extra,
       area: area ?? this.area,
       meters: meters ?? this.meters,
       section: section ?? this.section,
@@ -89,7 +89,7 @@ class Munro {
 class MunroFields {
   static String id = "id";
   static String name = "name";
-  static String parent = "parent";
+  static String extra = "extra";
   static String area = "area";
   static String maters = "meters";
   static String section = "section";
