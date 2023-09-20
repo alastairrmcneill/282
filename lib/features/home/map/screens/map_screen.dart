@@ -24,6 +24,7 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor _icon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
   Munro? _selectedMunro;
+  PersistentBottomSheetController? _bottomSheetController;
 
   @override
   void initState() {
@@ -53,7 +54,15 @@ class _MapScreenState extends State<MapScreen> {
           icon: _icon,
           anchor: const Offset(0.5, 0.7),
           draggable: false,
-          onTap: () => setState(() => _selectedMunro = munro),
+          onTap: () {
+            _bottomSheetController = showBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+              builder: (context) => MunroBottomSheet(munro: munro),
+            );
+          },
         ),
       );
     }
@@ -102,7 +111,11 @@ class _MapScreenState extends State<MapScreen> {
           southwest: const LatLng(55, -5.5),
         ),
       ),
-      onTap: (argument) => setState(() => _selectedMunro = null),
+      onTap: (argument) {
+        if (_bottomSheetController != null) {
+          _bottomSheetController!.close();
+        }
+      },
       minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11),
       buildingsEnabled: false,
       trafficEnabled: false,
@@ -121,17 +134,11 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context, listen: true);
+
     return Scaffold(
       body: loading
           ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                _buildGoogleMap(munroNotifier),
-                _selectedMunro != null
-                    ? MunroBottomSheet(munro: _selectedMunro!)
-                    : const SizedBox(),
-              ],
-            ),
+          : _buildGoogleMap(munroNotifier),
     );
   }
 }
