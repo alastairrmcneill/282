@@ -60,7 +60,7 @@ class MunroBottomSheet extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.4,
                 height: MediaQuery.of(context).size.width * 0.3,
                 child: Image.network(
-                  "https://d3teiib5p3f439.cloudfront.net/munros/carn-liath-creag-meagaidh-1.JPG",
+                  munro.pictureURL,
                   fit: BoxFit.cover,
                 ),
               ),
