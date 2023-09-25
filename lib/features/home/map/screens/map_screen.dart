@@ -3,6 +3,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +22,12 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   bool loading = true;
   late GoogleMapController _googleMapController;
-  BitmapDescriptor _icon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor _completedIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
   Munro? _selectedMunro;
   PersistentBottomSheetController? _bottomSheetController;
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -51,12 +54,14 @@ class _MapScreenState extends State<MapScreen> {
           position: LatLng(munro.lat, munro.lng),
           visible: true,
           consumeTapEvents: true,
-          icon: _icon,
+          icon: munro.completed ? _completedIcon : _incompletedIcon,
           anchor: const Offset(0.5, 0.7),
           draggable: false,
           onTap: () {
+            _searchFocusNode.unfocus();
             _bottomSheetController = showBottomSheet(
               context: context,
+              backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
               ),
@@ -80,13 +85,18 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future addCustomIcon() async {
-    final Uint8List markerIcon = await getBytesFromAsset(
+    final Uint8List incompleteMarkerIcon = await getBytesFromAsset(
       'assets/munro_incomplete.png',
+      (_currentZoom * 7).round(),
+    );
+    final Uint8List completeMarkerIcon = await getBytesFromAsset(
+      'assets/munro_complete.png',
       (_currentZoom * 7).round(),
     );
 
     setState(() {
-      _icon = BitmapDescriptor.fromBytes(markerIcon);
+      _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
+      _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
     });
   }
 
@@ -112,6 +122,7 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
       onTap: (argument) {
+        _searchFocusNode.unfocus();
         if (_bottomSheetController != null) {
           _bottomSheetController!.close();
         }
@@ -138,7 +149,17 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       body: loading
           ? const Center(child: CircularProgressIndicator())
-          : _buildGoogleMap(munroNotifier),
+          : Stack(
+              children: [
+                _buildGoogleMap(munroNotifier),
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: MunroSearchBar(focusNode: _searchFocusNode),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

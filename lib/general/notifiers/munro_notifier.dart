@@ -10,4 +10,10 @@ class MunroNotifier extends ChangeNotifier {
     _munroList = munroList;
     notifyListeners();
   }
+
+  set updateMunro(Munro munro) {
+    _munroList[munro.id - 1] = munro;
+
+    notifyListeners();
+  }
 }

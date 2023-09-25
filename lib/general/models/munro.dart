@@ -12,6 +12,7 @@ class Munro {
   final String link;
   final String description;
   final String pictureURL;
+  bool completed;
 
   Munro({
     required this.id,
@@ -27,6 +28,7 @@ class Munro {
     required this.link,
     required this.description,
     required this.pictureURL,
+    required this.completed,
   });
 
   Map<String, dynamic> toJSON() {
@@ -44,6 +46,7 @@ class Munro {
       MunroFields.link: link,
       MunroFields.description: description,
       MunroFields.pictureURL: pictureURL,
+      MunroFields.completed: completed,
     };
   }
 
@@ -62,6 +65,7 @@ class Munro {
       link: json[MunroFields.link] as String,
       description: json[MunroFields.description] as String,
       pictureURL: json[MunroFields.pictureURL] as String,
+      completed: (json[MunroFields.completed] as bool),
     );
   }
 
@@ -79,6 +83,7 @@ class Munro {
     String? link,
     String? description,
     String? pictureURL,
+    bool? completed,
   }) {
     return Munro(
       id: id ?? this.id,
@@ -94,6 +99,7 @@ class Munro {
       link: link ?? this.link,
       description: description ?? this.description,
       pictureURL: pictureURL ?? this.pictureURL,
+      completed: completed ?? this.completed,
     );
   }
 }
@@ -112,4 +118,5 @@ class MunroFields {
   static String link = "link";
   static String description = "description";
   static String pictureURL = "pictureURL";
+  static String completed = "completed";
 }
