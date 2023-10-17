@@ -3,7 +3,6 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +23,9 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _googleMapController;
   BitmapDescriptor _completedIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
-  Munro? _selectedMunro;
+  int? _selectedMunroID;
   PersistentBottomSheetController? _bottomSheetController;
   final FocusNode _searchFocusNode = FocusNode();
 
@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Set<Marker> getMarkers(MunroNotifier munroNotifier) {
+  Set<Marker> getMarkers({required MunroNotifier munroNotifier}) {
     Set<Marker> markers = {};
 
     for (var munro in munroNotifier.munroList) {
@@ -54,24 +54,44 @@ class _MapScreenState extends State<MapScreen> {
           position: LatLng(munro.lat, munro.lng),
           visible: true,
           consumeTapEvents: true,
-          icon: munro.completed ? _completedIcon : _incompletedIcon,
+          icon: _selectedMunroID == munro.id
+              ? _selectedIcon
+              : munro.completed
+                  ? _completedIcon
+                  : _incompletedIcon,
           anchor: const Offset(0.5, 0.7),
           draggable: false,
           onTap: () {
-            _searchFocusNode.unfocus();
-            _bottomSheetController = showBottomSheet(
-              context: context,
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40),
-              ),
-              builder: (context) => MunroBottomSheet(munro: munro),
-            );
+            markerTapped(munro);
+            setState(() {
+              _selectedMunroID = munro.id;
+            });
           },
         ),
       );
     }
     return markers;
+  }
+
+  markerTapped(Munro munro) {
+    final offsetLatLng = LatLng(
+      munro.lat - 0.1,
+      munro.lng,
+    );
+    _searchFocusNode.unfocus();
+    _googleMapController.animateCamera(CameraUpdate.newLatLng(offsetLatLng));
+    showCustomBottomSheet(munro);
+  }
+
+  showCustomBottomSheet(Munro munro) {
+    _bottomSheetController = showBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(40),
+      ),
+      builder: (context) => MunroBottomSheet(munro: munro),
+    );
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -93,10 +113,15 @@ class _MapScreenState extends State<MapScreen> {
       'assets/munro_complete.png',
       (_currentZoom * 7).round(),
     );
+    final Uint8List selectedMarkerIcon = await getBytesFromAsset(
+      'assets/munro_selected.png',
+      (_currentZoom * 7).round(),
+    );
 
     setState(() {
       _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
       _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
+      _selectedIcon = BitmapDescriptor.fromBytes(selectedMarkerIcon);
     });
   }
 
@@ -123,6 +148,7 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onTap: (argument) {
         _searchFocusNode.unfocus();
+        _selectedMunroID = null;
         if (_bottomSheetController != null) {
           _bottomSheetController!.close();
         }
@@ -138,7 +164,7 @@ class _MapScreenState extends State<MapScreen> {
       zoomControlsEnabled: false,
       mapType: MapType.terrain,
       padding: const EdgeInsets.all(20),
-      markers: getMarkers(munroNotifier),
+      markers: getMarkers(munroNotifier: munroNotifier),
     );
   }
 
@@ -155,7 +181,15 @@ class _MapScreenState extends State<MapScreen> {
                 SafeArea(
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: MunroSearchBar(focusNode: _searchFocusNode),
+                    child: MunroSearchBar(
+                      focusNode: _searchFocusNode,
+                      onSelected: (munro) {
+                        setState(() {
+                          _selectedMunroID = munro.id;
+                        });
+                        showCustomBottomSheet(munro);
+                      },
+                    ),
                   ),
                 ),
               ],

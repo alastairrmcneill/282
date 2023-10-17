@@ -1,7 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:slide_to_act/slide_to_act.dart';
-import 'package:swipeable_button_view/swipeable_button_view.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/services/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -154,42 +152,6 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
   }
 
   Widget _buildButton() {
-    // return SlideAction(
-    //   innerColor: Colors.grey[100],
-    //   outerColor: Colors.green[600],
-    //   text: "Slide to summit",
-    //   height: 40,
-    //   sliderButtonIconPadding: 6,
-    //   sliderButtonIconSize: 20,
-    //   onSubmit: () {
-    //     setState(() {
-    //       widget.munro.completed = true;
-    //     });
-    //   },
-    //   sliderRotate: false,
-    //   elevation: 3,
-    // );
-    // return SwipeableButtonView(
-    //   buttonText: 'Slide to Complete',
-    //   buttonWidget: Container(
-    //     child: Icon(
-    //       Icons.arrow_forward_ios_rounded,
-    //       color: Colors.grey,
-    //     ),
-    //   ),
-    //   activeColor: Color(0xFF009C41),
-    //   isFinished: widget.munro.completed,
-    //   onWaitingProcess: () {
-    //     setState(() {
-    //       widget.munro.completed = true;
-    //     });
-    //   },
-    //   onFinish: () {
-    //     setState(() {
-    //       widget.munro.completed = true;
-    //     });
-    //   },
-    // );
     return Column(
       children: [
         Text(
