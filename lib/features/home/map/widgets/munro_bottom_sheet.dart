@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/services/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -151,7 +152,7 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
     );
   }
 
-  Widget _buildButton() {
+  Widget _buildButton({AppUser? user}) {
     return Column(
       children: [
         Text(
@@ -180,6 +181,12 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
           child: Center(
             child: IconButton(
               onPressed: () {
+                if (user == null) {
+                  // Direct to the login page
+                } else {
+                  // Update munro in databases
+                }
+
                 setState(() {
                   widget.munro.completed = !widget.munro.completed;
 
@@ -196,24 +203,11 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
         ),
       ],
     );
-
-    // return ElevatedButton(
-    //   style: ButtonStyle(
-    //     backgroundColor: MaterialStateProperty.all<Color?>(Colors.red[400]),
-    //   ),
-    //   onPressed: () {},
-    //   child: const Text(
-    //     'Bagged it!',
-    //     style: TextStyle(
-    //       fontFamily: "NotoSans",
-    //       fontWeight: FontWeight.w600,
-    //     ),
-    //   ),
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AppUser?>(context);
     return Stack(
       children: [
         _buildBorder(),
@@ -248,7 +242,7 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
                         const SizedBox(height: 5),
                         _buildDescription(context),
                         const SizedBox(height: 10),
-                        _buildButton(),
+                        _buildButton(user: user),
                         const SizedBox(height: 10),
                       ],
                     ),
