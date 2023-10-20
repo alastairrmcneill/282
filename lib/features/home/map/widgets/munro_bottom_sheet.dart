@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/features/auth/screens/auth_home_screen.dart';
+import 'package:two_eight_two/features/home/map/widgets/widgets.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/services/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -182,16 +184,19 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
             child: IconButton(
               onPressed: () {
                 if (user == null) {
-                  // Direct to the login page
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const AuthHomeScreen(),
+                    ),
+                  );
                 } else {
                   // Update munro in databases
+                  setState(() {
+                    widget.munro.completed = !widget.munro.completed;
+
+                    MunroService.updateMunro(context, munro: widget.munro);
+                  });
                 }
-
-                setState(() {
-                  widget.munro.completed = !widget.munro.completed;
-
-                  MunroService.updateMunro(context, munro: widget.munro);
-                });
               },
               icon: Icon(
                 widget.munro.completed ? Icons.check : Icons.close,
@@ -201,6 +206,7 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
             ),
           ),
         ),
+        ProfileButton(),
       ],
     );
   }

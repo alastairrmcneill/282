@@ -4,6 +4,7 @@ import 'package:two_eight_two/features/home/screens/screens.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/auth_service.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class App extends StatelessWidget {
   final String flavor;
@@ -22,8 +23,9 @@ class App extends StatelessWidget {
           create: (_) => MunroNotifier(),
         ),
       ],
-      child: const MaterialApp(
-        home: HomeScreen(),
+      child: MaterialApp(
+        theme: MyTheme.lightTheme,
+        home: const HomeScreen(),
       ),
     );
   }
