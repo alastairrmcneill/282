@@ -78,13 +78,13 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                     const SizedBox(height: 10),
                     const TextDivider(text: "or"),
                     const SizedBox(height: 10),
-                    CreateFreeAccountButton(),
+                    const CreateFreeAccountButton(),
                     const SizedBox(height: 15),
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         text: "Already have an account? ",
-                        style: TextStyle(fontFamily: "NotoSans"),
+                        style: const TextStyle(fontFamily: "NotoSans"),
                         children: [
                           TextSpan(
                             text: "Log in",

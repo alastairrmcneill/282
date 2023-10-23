@@ -19,6 +19,9 @@ class App extends StatelessWidget {
           value: AuthService.appUserStream,
           initialData: null,
         ),
+        ChangeNotifierProvider<UserState>(
+          create: (_) => UserState(),
+        ),
         ChangeNotifierProvider<MunroNotifier>(
           create: (_) => MunroNotifier(),
         ),

@@ -71,7 +71,7 @@ class RegistrationPasswordScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Text('Next'),
+                    child: const Text('Next'),
                   ),
                 ),
                 const SizedBox(height: 20),

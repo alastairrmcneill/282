@@ -12,7 +12,7 @@ class RegistrationEmailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Step 1 of 3"),
+        title: const Text("Step 1 of 3"),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -54,7 +54,7 @@ class RegistrationEmailScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Text('Next'),
+                    child: const Text('Next'),
                   ),
                 ),
                 const SizedBox(height: 20),

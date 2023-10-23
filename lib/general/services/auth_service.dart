@@ -1,9 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/features/home/screens/screens.dart';
 import 'package:two_eight_two/general/models/models.dart';
+import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/services.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
 class AuthService {
@@ -16,27 +21,46 @@ class AuthService {
         .map((User? user) => user != null ? AppUser.appUserFromFirebaseUser(user) : null);
   }
 
+  // Current user id
+  static String? get currentUserId {
+    return _auth.currentUser?.uid;
+  }
+
   static Future registerWithEmail(
     BuildContext context, {
     required String email,
     required String password,
     required String name,
   }) async {
-    // Setup auth user
-    await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    startCircularProgressOverlay(context);
+    try {
+      // Setup auth user
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
-    // Update details
-    await _auth.currentUser!.updateDisplayName(name).whenComplete(
-      () async {
-        await _auth.currentUser!.reload();
-      },
-    );
+      // Update details
+      await _auth.currentUser!.updateDisplayName(name).whenComplete(
+        () async {
+          await _auth.currentUser!.reload();
+        },
+      );
 
-    // Save to user database
+      if (_auth.currentUser == null) return;
 
-    // Navigate to right place
-    Navigator.pushAndRemoveUntil(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+      // Save to user database
+      AppUser appUser = AppUser(
+        uid: _auth.currentUser!.uid,
+        displayName: _auth.currentUser!.displayName,
+      );
+      await UserDatabase.create(context, appUser: appUser);
+
+      stopCircularProgressOverlay(context);
+      // Navigate to right place
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+    } on FirebaseAuthException catch (error) {
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.code);
+    }
   }
 
   static Future signInWithEmail(
@@ -44,34 +68,62 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    // Sign into auth
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+    startCircularProgressOverlay(context);
 
-    // Fetch database detail
+    try {
+      // Sign into auth
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-    // Save to a provider
+      if (_auth.currentUser == null) return;
 
-    // Navigate to the right place
-    Navigator.pushAndRemoveUntil(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+      // Fetch database detail
+      await UserDatabase.readCurrentUser(context);
+
+      // Save to a provider
+
+      stopCircularProgressOverlay(context);
+      // Navigate to the right place
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+    } on FirebaseAuthException catch (error) {
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.code);
+    }
   }
 
   static Future forgotPassword(
     BuildContext context, {
     required String email,
   }) async {
-    await _auth.sendPasswordResetEmail(email: email);
-    // Show a success message when it works
+    startCircularProgressOverlay(context);
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      stopCircularProgressOverlay(context);
+      showSnackBar(context, 'Sent password reset email.');
+    } on FirebaseAuthException catch (error) {
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.code);
+    }
   }
 
   static Future signOut(BuildContext context) async {
-    await _auth.signOut();
+    startCircularProgressOverlay(context);
 
-    Navigator.pushAndRemoveUntil(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+    try {
+      await _auth.signOut();
+      stopCircularProgressOverlay(context);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (_) => false,
+      );
+    } on FirebaseAuthException catch (error) {
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.code);
+    }
   }
 
-  static signInWithApple(BuildContext context) async {
+  static Future signInWithApple(BuildContext context) async {
     try {
       final appleIdCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -109,22 +161,21 @@ class AuthService {
 
       if (_auth.currentUser == null) return;
 
-      // AppUser appUser = AppUser(
-      //   uid: _auth.currentUser!.uid,
-      //   name: _auth.currentUser!.displayName!,
-      // );
-      // await UserDatabase.create(context, appUser: appUser);
+      AppUser appUser = AppUser(
+        uid: _auth.currentUser!.uid,
+        displayName: _auth.currentUser!.displayName!,
+      );
+      await UserDatabase.create(context, appUser: appUser);
       Navigator.pushAndRemoveUntil(
           context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
     } on FirebaseAuthException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error with Apple sign in.");
+      showErrorDialog(context, message: error.code);
     } on SignInWithAppleAuthorizationException catch (error) {
       showErrorDialog(context, message: error.message);
     }
   }
 
-  static signInWithGoogle(BuildContext context) async {
+  static Future signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
@@ -141,16 +192,30 @@ class AuthService {
 
       if (_auth.currentUser == null) return;
 
-      // AppUser appUser = AppUser(
-      //   uid: _auth.currentUser!.uid,
-      //   name: _auth.currentUser!.displayName!,
-      // );
-      // await UserDatabase.create(context, appUser: appUser);
+      AppUser appUser = AppUser(
+        uid: _auth.currentUser!.uid,
+        displayName: _auth.currentUser!.displayName!,
+      );
+      await UserDatabase.create(context, appUser: appUser);
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+    } on FirebaseAuthException catch (error) {
+      showErrorDialog(context, message: error.code);
+    }
+  }
+
+  static Future deleteUserFromUid(BuildContext context, {required String uid}) async {
+    try {
+      UserState userState = Provider.of<UserState>(context, listen: false);
+
+      userState.setCurrentUser = null;
+      await UserDatabase.deleteUserWithUID(context, uid: _auth.currentUser!.uid);
+      await _auth.currentUser?.delete();
       Navigator.pushAndRemoveUntil(
           context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context,
-          message: error.message ?? 'There was an error with Google sign in.');
+          message: error.message ?? "There was an error deleting your account");
     }
   }
 }
