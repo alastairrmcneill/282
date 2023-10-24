@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/features/auth/screens/auth_home_screen.dart';
 import 'package:two_eight_two/features/home/screens/screens.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
@@ -22,12 +23,23 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<UserState>(
           create: (_) => UserState(),
         ),
+        ChangeNotifierProvider<NavigationState>(
+          create: (_) => NavigationState(),
+        ),
         ChangeNotifierProvider<MunroNotifier>(
           create: (_) => MunroNotifier(),
         ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,
+        routes: {
+          "/home_screen": (context) => const HomeScreen(startingIndex: 0),
+          "/feed_tab": (context) => const HomeScreen(startingIndex: 1),
+          "/record_tab": (context) => const HomeScreen(startingIndex: 2),
+          "/saved_tab": (context) => const HomeScreen(startingIndex: 3),
+          "/profile_tab": (context) => const HomeScreen(startingIndex: 4),
+          "/auth_home_screen": (context) => const AuthHomeScreen(),
+        },
         home: const HomeScreen(),
       ),
     );

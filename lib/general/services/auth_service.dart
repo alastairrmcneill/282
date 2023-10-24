@@ -32,6 +32,8 @@ class AuthService {
     required String password,
     required String name,
   }) async {
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
     startCircularProgressOverlay(context);
     try {
       // Setup auth user
@@ -54,9 +56,8 @@ class AuthService {
       await UserDatabase.create(context, appUser: appUser);
 
       stopCircularProgressOverlay(context);
-      // Navigate to right place
-      Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+      // Navigate to the right place
+      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
     } on FirebaseAuthException catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
@@ -68,6 +69,8 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
     startCircularProgressOverlay(context);
 
     try {
@@ -82,9 +85,9 @@ class AuthService {
       // Save to a provider
 
       stopCircularProgressOverlay(context);
+
       // Navigate to the right place
-      Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
     } on FirebaseAuthException catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
@@ -107,16 +110,16 @@ class AuthService {
   }
 
   static Future signOut(BuildContext context) async {
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
     startCircularProgressOverlay(context);
 
     try {
       await _auth.signOut();
       stopCircularProgressOverlay(context);
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-        (_) => false,
-      );
+
+      // Navigate to the right place
+      Navigator.pushReplacementNamed(context, "/home_screen");
     } on FirebaseAuthException catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
@@ -124,6 +127,8 @@ class AuthService {
   }
 
   static Future signInWithApple(BuildContext context) async {
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
     try {
       final appleIdCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -166,8 +171,9 @@ class AuthService {
         displayName: _auth.currentUser!.displayName!,
       );
       await UserDatabase.create(context, appUser: appUser);
-      Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+
+      // Navigate to the right place
+      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context, message: error.code);
     } on SignInWithAppleAuthorizationException catch (error) {
@@ -176,6 +182,8 @@ class AuthService {
   }
 
   static Future signInWithGoogle(BuildContext context) async {
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
@@ -197,22 +205,26 @@ class AuthService {
         displayName: _auth.currentUser!.displayName!,
       );
       await UserDatabase.create(context, appUser: appUser);
-      Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+
+      // Navigate to the right place
+      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context, message: error.code);
     }
   }
 
   static Future deleteUserFromUid(BuildContext context, {required String uid}) async {
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
     try {
       UserState userState = Provider.of<UserState>(context, listen: false);
 
       userState.setCurrentUser = null;
       await UserDatabase.deleteUserWithUID(context, uid: _auth.currentUser!.uid);
       await _auth.currentUser?.delete();
-      Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+
+      // Navigate to the right place
+      Navigator.pushReplacementNamed(context, "/home_screen");
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context,
           message: error.message ?? "There was an error deleting your account");

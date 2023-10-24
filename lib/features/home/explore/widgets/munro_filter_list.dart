@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/features/home/map/widgets/widgets.dart';
+import 'package:two_eight_two/features/home/explore/widgets/widgets.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 

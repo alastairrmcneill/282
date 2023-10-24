@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/features/home/map/widgets/widgets.dart';
+import 'package:two_eight_two/features/home/explore/widgets/widgets.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/services.dart';
