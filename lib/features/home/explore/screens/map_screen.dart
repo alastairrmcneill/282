@@ -56,7 +56,7 @@ class _MapScreenState extends State<MapScreen> {
           consumeTapEvents: true,
           icon: _selectedMunroID == munro.id
               ? _selectedIcon
-              : munro.completed
+              : munro.summited
                   ? _completedIcon
                   : _incompletedIcon,
           anchor: const Offset(0.5, 0.7),

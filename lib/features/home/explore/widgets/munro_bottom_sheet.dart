@@ -25,7 +25,7 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
-          color: widget.munro.completed ? Colors.green[600] : Colors.red[300],
+          color: widget.munro.summited ? Colors.green[600] : Colors.red[300],
         ),
       ),
     );
@@ -158,7 +158,7 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
     return Column(
       children: [
         Text(
-          widget.munro.completed ? "Bagged it!" : "Bagged it?",
+          widget.munro.summited ? "Bagged it!" : "Bagged it?",
           style: const TextStyle(
             fontFamily: "NotoSans",
             fontWeight: FontWeight.w300,
@@ -168,7 +168,7 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
         Container(
           width: 50,
           height: 50,
-          decoration: widget.munro.completed
+          decoration: widget.munro.summited
               ? BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.green[600],
@@ -192,21 +192,20 @@ class _MunroBottomSheetState extends State<MunroBottomSheet> {
                 } else {
                   // Update munro in databases
                   setState(() {
-                    widget.munro.completed = !widget.munro.completed;
+                    widget.munro.summited = !widget.munro.summited;
 
                     MunroService.updateMunro(context, munro: widget.munro);
                   });
                 }
               },
               icon: Icon(
-                widget.munro.completed ? Icons.check : Icons.close,
+                widget.munro.summited ? Icons.check : Icons.close,
                 size: 30,
-                color: widget.munro.completed ? Colors.grey[100] : Colors.red[400]!,
+                color: widget.munro.summited ? Colors.grey[100] : Colors.red[400]!,
               ),
             ),
           ),
         ),
-        ProfileButton(),
       ],
     );
   }

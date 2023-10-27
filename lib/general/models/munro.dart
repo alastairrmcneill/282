@@ -12,7 +12,9 @@ class Munro {
   final String link;
   final String description;
   final String pictureURL;
-  bool completed;
+  bool summited;
+  DateTime? summitedDate;
+  bool saved;
 
   Munro({
     required this.id,
@@ -28,7 +30,9 @@ class Munro {
     required this.link,
     required this.description,
     required this.pictureURL,
-    required this.completed,
+    required this.summited,
+    this.summitedDate,
+    this.saved = false,
   });
 
   Map<String, dynamic> toJSON() {
@@ -46,7 +50,9 @@ class Munro {
       MunroFields.link: link,
       MunroFields.description: description,
       MunroFields.pictureURL: pictureURL,
-      MunroFields.completed: completed,
+      MunroFields.summited: summited,
+      MunroFields.summitedDate: summitedDate,
+      MunroFields.saved: saved,
     };
   }
 
@@ -65,7 +71,7 @@ class Munro {
       link: json[MunroFields.link] as String,
       description: json[MunroFields.description] as String,
       pictureURL: json[MunroFields.pictureURL] as String,
-      completed: (json[MunroFields.completed] as bool),
+      summited: (json[MunroFields.summited] as bool),
     );
   }
 
@@ -83,7 +89,7 @@ class Munro {
     String? link,
     String? description,
     String? pictureURL,
-    bool? completed,
+    bool? summited,
   }) {
     return Munro(
       id: id ?? this.id,
@@ -99,7 +105,7 @@ class Munro {
       link: link ?? this.link,
       description: description ?? this.description,
       pictureURL: pictureURL ?? this.pictureURL,
-      completed: completed ?? this.completed,
+      summited: summited ?? this.summited,
     );
   }
 }
@@ -118,5 +124,7 @@ class MunroFields {
   static String link = "link";
   static String description = "description";
   static String pictureURL = "pictureURL";
-  static String completed = "completed";
+  static String summited = "summited";
+  static String summitedDate = "summitedDate";
+  static String saved = "saved";
 }

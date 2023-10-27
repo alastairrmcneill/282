@@ -15,8 +15,13 @@ class UserDatabase {
   // Create user
   static Future create(BuildContext context, {required AppUser appUser}) async {
     try {
-      DocumentReference ref = _userRef.doc(appUser.uid);
-      await ref.set(appUser.toJSON());
+      // see if this user already exists
+
+      final DocumentReference userDocRef = _userRef.doc(appUser.uid);
+      final DocumentSnapshot userDocSnapshot = await userDocRef.get();
+      if (!userDocSnapshot.exists) {
+        await userDocRef.set(appUser.toJSON());
+      }
     } on FirebaseException catch (error) {
       showErrorDialog(context,
           message: error.message ?? "There was an error creating your account.");
@@ -37,6 +42,7 @@ class UserDatabase {
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       AppUser appUser = AppUser.fromJSON(data);
+
       userState.setCurrentUser = appUser;
     } on FirebaseException catch (error) {
       showErrorDialog(context,

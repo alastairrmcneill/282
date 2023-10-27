@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/auth/screens/auth_home_screen.dart';
@@ -19,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool loading = true;
   late int _currentIndex;
   final List<Widget> _screens = [
     const ExploreTab(),
@@ -38,60 +41,65 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future _loadData() async {
     await UserDatabase.readCurrentUser(context);
+    await MunroService.loadMunroData(context).then(
+      (value) => setState(() => loading = false),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AppUser?>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
-    return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (value) {
-          if (value == 4 && user == null) {
-            navigationState.setNavigateToRoute = "/profile_tab";
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
-          } else {
-            setState(() => _currentIndex = value);
-          }
-        },
-        currentIndex: _currentIndex,
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black26,
-        selectedItemColor: Colors.black87,
-        type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-        selectedFontSize: 13,
-        unselectedFontSize: 13,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_outline_rounded),
-            activeIcon: Icon(Icons.people_rounded),
-            label: 'Feed',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.navigation_outlined),
-            activeIcon: Icon(Icons.navigation_rounded),
-            label: 'Record',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border_rounded),
-            activeIcon: Icon(Icons.bookmark_rounded),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            activeIcon: Icon(Icons.person_rounded),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
+    return loading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: _screens[_currentIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              onTap: (value) {
+                if (value == 4 && user == null) {
+                  navigationState.setNavigateToRoute = "/profile_tab";
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                } else {
+                  setState(() => _currentIndex = value);
+                }
+              },
+              currentIndex: _currentIndex,
+              backgroundColor: Colors.white,
+              unselectedItemColor: Colors.black26,
+              selectedItemColor: Colors.black87,
+              type: BottomNavigationBarType.fixed,
+              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+              selectedFontSize: 13,
+              unselectedFontSize: 13,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.explore_outlined),
+                  activeIcon: Icon(Icons.explore),
+                  label: 'Explore',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.people_outline_rounded),
+                  activeIcon: Icon(Icons.people_rounded),
+                  label: 'Feed',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.navigation_outlined),
+                  activeIcon: Icon(Icons.navigation_rounded),
+                  label: 'Record',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.bookmark_border_rounded),
+                  activeIcon: Icon(Icons.bookmark_rounded),
+                  label: 'Saved',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline_rounded),
+                  activeIcon: Icon(Icons.person_rounded),
+                  label: 'Profile',
+                ),
+              ],
+            ),
+          );
   }
 }

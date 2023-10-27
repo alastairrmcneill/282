@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/features/auth/screens/auth_home_screen.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
-import 'package:two_eight_two/general/models/models.dart';
+import 'package:two_eight_two/features/home/profile/widgets/widgets.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 
 class ProfileTab extends StatelessWidget {
@@ -11,8 +11,10 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
+    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -71,109 +73,28 @@ class ProfileTab extends StatelessWidget {
               ),
             ],
           ),
-          // SliverAppBar(
-          //   backgroundColor: Colors.white,
-          //   foregroundColor: Colors.black,
-          //   expandedHeight: 250,
-          //   pinned: true,
-          //   flexibleSpace: FlexibleSpaceBar(
-          //     centerTitle: false,
-          //     title: Text(
-          //       'Ali',
-          //       style: TextStyle(color: Colors.black),
-          //     ),
-          //     background: SizedBox(
-          //       height: 250,
-          //       child: Padding(
-          //         padding: EdgeInsets.all(80),
-          //         child: CircleAvatar(
-          //           backgroundColor: Colors.green,
-          //           radius: 15,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          //   actions: [
-          //     Padding(
-          //       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          //       child: Container(
-          //         decoration: BoxDecoration(
-          //             border: Border.all(width: 0.3, color: Colors.black54),
-          //             color: Colors.white,
-          //             shape: BoxShape.circle),
-          //         child: IconButton(
-          //           constraints: const BoxConstraints(),
-          //           padding: const EdgeInsets.all(2),
-          //           onPressed: () {
-          //             Navigator.of(context).push(
-          //               MaterialPageRoute(
-          //                 builder: (_) => const SettingsScreen(),
-          //               ),
-          //             );
-          //           },
-          //           icon: Icon(
-          //             Icons.settings,
-          //             size: 18,
-          //             color: Colors.grey[800],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           SliverToBoxAdapter(
-            child: Column(children: [
-              Container(
-                color: Colors.red,
-                height: 200,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MunroProgressIndicator(),
+                  SizedBox(height: 20),
+                  FollowersFollowingText(),
+                  SizedBox(height: 20),
+                  ProfileMediaHistory(),
+                  Container(
+                    height: 400,
+                    width: double.infinity,
+                    color: Colors.red,
+                  ),
+                ],
               ),
-              Container(
-                color: Colors.blue,
-                height: 200,
-              ),
-              Container(
-                color: Colors.yellow,
-                height: 200,
-              ),
-              Container(
-                color: Colors.purple,
-                height: 200,
-              ),
-            ]),
+            ),
           )
         ],
       ),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.green,
-      //   elevation: 0,
-      //   actions: [
-      //     Padding(
-      //       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      //       child: Container(
-      //         decoration: BoxDecoration(
-      //             border: Border.all(width: 0.3, color: Colors.black54),
-      //             color: Colors.white,
-      //             shape: BoxShape.circle),
-      //         child: IconButton(
-      //           constraints: const BoxConstraints(),
-      //           padding: const EdgeInsets.all(2),
-      //           onPressed: () {
-      //             Navigator.of(context).push(
-      //               MaterialPageRoute(
-      //                 builder: (_) => const SettingsScreen(),
-      //               ),
-      //             );
-      //           },
-      //           icon: Icon(
-      //             Icons.settings,
-      //             size: 18,
-      //             color: Colors.grey[800],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }
