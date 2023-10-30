@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/models/munro.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/services.dart';
@@ -34,15 +35,61 @@ class MunroService {
     munroNotifier.setMunroList = munroList;
   }
 
-  static updateMunro(BuildContext context, {required Munro munro}) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context, listen: false);
-
-    munroNotifier.updateMunro = munro;
-  }
-
   static loadPersonalMunroData(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
     print(userState.currentUser);
     if (userState.currentUser == null) return;
+  }
+
+  static Future<void> markMunroAsDone(
+    BuildContext context, {
+    required Munro munro,
+  }) async {
+    // State management
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+
+    // Update user data with new personal munro data
+    AppUser newAppUser = userState.currentUser!;
+    newAppUser.personalMunroData![munro.id - 1][MunroFields.summited] = true;
+    newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] =
+        DateTime.now();
+
+    UserDatabase.update(context, appUser: newAppUser);
+
+    // Update munro notifier
+    munroNotifier.updateMunro(
+      munroId: munro.id,
+      summited: true,
+      summitedDate: DateTime.now(),
+    );
+
+    // Create post
+  }
+
+  static Future<void> toggleMunroSaved(
+    BuildContext context, {
+    required Munro munro,
+  }) async {
+    // State management
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+
+    // Update user data with new personal munro data
+    AppUser newAppUser = userState.currentUser!;
+    newAppUser.personalMunroData![munro.id - 1][MunroFields.saved] =
+        !newAppUser.personalMunroData![munro.id - 1][MunroFields.saved];
+
+    UserDatabase.update(context, appUser: newAppUser);
+
+    // Update munro notifier
+    munroNotifier.updateMunro(
+      munroId: munro.id,
+      saved: newAppUser.personalMunroData![munro.id - 1][MunroFields.saved],
+    );
   }
 }

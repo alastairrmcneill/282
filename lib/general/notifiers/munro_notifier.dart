@@ -3,19 +3,34 @@ import 'package:two_eight_two/general/models/munro.dart';
 
 class MunroNotifier extends ChangeNotifier {
   List<Munro> _munroList = [];
+  Munro? _selectedMunro;
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
 
   List<Munro> get munroList => _munroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
+  Munro? get selectedMunro => _selectedMunro;
 
   set setMunroList(List<Munro> munroList) {
     _munroList = munroList;
     notifyListeners();
   }
 
-  set updateMunro(Munro munro) {
-    _munroList[munro.id - 1] = munro;
+  set setSelectedMunro(Munro? selectedMunro) {
+    _selectedMunro = selectedMunro;
+    notifyListeners();
+  }
+
+  updateMunro({
+    required int munroId,
+    bool? summited,
+    DateTime? summitedDate,
+    bool? saved,
+  }) {
+    _munroList[munroId - 1].summited = summited ?? _munroList[munroId - 1].summited;
+    _munroList[munroId - 1].summitedDate =
+        summitedDate ?? _munroList[munroId - 1].summitedDate;
+    _munroList[munroId - 1].saved = saved ?? _munroList[munroId - 1].saved;
 
     notifyListeners();
   }

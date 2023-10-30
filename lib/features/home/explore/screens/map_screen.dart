@@ -80,19 +80,19 @@ class _MapScreenState extends State<MapScreen> {
     );
     _searchFocusNode.unfocus();
     _googleMapController.animateCamera(CameraUpdate.newLatLng(offsetLatLng));
-    showCustomBottomSheet(munro);
+    // showCustomBottomSheet(munro);
   }
 
-  showCustomBottomSheet(Munro munro) {
-    _bottomSheetController = showBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(40),
-      ),
-      builder: (context) => MunroBottomSheet(munro: munro),
-    );
-  }
+  // showCustomBottomSheet(Munro munro) {
+  //   _bottomSheetController = showBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(40),
+  //     ),
+  //     builder: (context) => MunroBottomSheet(munro: munro),
+  //   );
+  // }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -165,6 +165,8 @@ class _MapScreenState extends State<MapScreen> {
       mapType: MapType.terrain,
       padding: const EdgeInsets.all(20),
       markers: getMarkers(munroNotifier: munroNotifier),
+      myLocationButtonEnabled: false,
+      myLocationEnabled: false,
     );
   }
 
@@ -187,11 +189,14 @@ class _MapScreenState extends State<MapScreen> {
                         setState(() {
                           _selectedMunroID = munro.id;
                         });
-                        showCustomBottomSheet(munro);
+                        // showCustomBottomSheet(munro);
                       },
                     ),
                   ),
                 ),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: MunroSummaryTile(munroId: _selectedMunroID)),
               ],
             ),
     );

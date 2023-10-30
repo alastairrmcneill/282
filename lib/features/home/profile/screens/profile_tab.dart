@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
 import 'package:two_eight_two/features/home/profile/widgets/widgets.dart';
