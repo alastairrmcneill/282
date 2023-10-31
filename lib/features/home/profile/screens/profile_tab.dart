@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
@@ -23,8 +24,8 @@ class ProfileTab extends StatelessWidget {
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: const Padding(
-                padding: EdgeInsets.only(left: 16),
+              background: Padding(
+                padding: const EdgeInsets.only(left: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,6 +33,22 @@ class ProfileTab extends StatelessWidget {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.grey,
+                      // child: CachedNetworkImage(
+                      //   imageUrl: userState.currentUser!.profilePictureURL!,
+                      //   width: 100,
+                      //   height: 100,
+                      //   fit: BoxFit.cover,
+                      //   progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      //       Padding(
+                      //     padding:
+                      //         const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                      //     child: LinearProgressIndicator(
+                      //       value: downloadProgress.progress,
+                      //     ),
+                      //   ),
+                      //   errorWidget: (context, url, error) {
+                      //     return const Icon(Icons.error);
+                      //   },),
                     ),
                   ],
                 ),

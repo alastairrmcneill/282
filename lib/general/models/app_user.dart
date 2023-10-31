@@ -2,12 +2,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
   final String? uid;
-  final String? displayName;
+  String? displayName;
+  String? firstName;
+  String? lastName;
+  String? profilePictureURL;
   final List<Map<String, dynamic>>? personalMunroData;
 
   AppUser({
     this.uid,
     this.displayName,
+    this.firstName,
+    this.lastName,
+    this.profilePictureURL,
     this.personalMunroData = personalMunroDataExample,
   });
 
@@ -15,6 +21,9 @@ class AppUser {
     return <String, dynamic>{
       AppUserFields.uid: uid,
       AppUserFields.displayName: displayName,
+      AppUserFields.firstName: firstName,
+      AppUserFields.lastName: lastName,
+      AppUserFields.profilePictureURL: profilePictureURL,
       AppUserFields.personalMunroData: personalMunroData,
     };
   }
@@ -25,7 +34,10 @@ class AppUser {
         List<Map<String, dynamic>>.from(personalMunroData);
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
-      displayName: json[AppUserFields.displayName] as String,
+      displayName: json[AppUserFields.displayName] as String?,
+      firstName: json[AppUserFields.firstName] as String?,
+      lastName: json[AppUserFields.lastName] as String?,
+      profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
       personalMunroData: listPersonalMunroData,
     );
   }
@@ -33,11 +45,17 @@ class AppUser {
   AppUser copyWith({
     String? uid,
     String? displayName,
+    String? firstName,
+    String? lastName,
+    String? profilePictureURL,
     List<Map<String, dynamic>>? personalMunroData,
   }) {
     return AppUser(
         uid: uid ?? this.uid,
         displayName: displayName ?? this.displayName,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        profilePictureURL: profilePictureURL ?? this.profilePictureURL,
         personalMunroData: personalMunroData ?? this.personalMunroData);
   }
 
@@ -50,12 +68,15 @@ class AppUser {
 
   @override
   String toString() =>
-      'AppUser(uid: $uid, displayName: $displayName, personalMunroData: $personalMunroData)';
+      'AppUser(uid: $uid, displayName: $displayName, firstName: $firstName, lastName: $lastName, profilePictureURL: $profilePictureURL, personalMunroData: $personalMunroData)';
 }
 
 class AppUserFields {
   static String uid = 'uid';
   static String displayName = 'displayName';
+  static String firstName = 'firstName';
+  static String lastName = 'lastName';
+  static String profilePictureURL = 'profilePictureURL';
   static String personalMunroData = 'personalMunroData';
 }
 

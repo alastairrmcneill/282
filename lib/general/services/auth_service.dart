@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -211,6 +213,36 @@ class AuthService {
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context, message: error.code);
     }
+  }
+
+  static Future updateAuthUser(BuildContext context,
+      {required AppUser appUser, File? profilePicture}) async {
+    // Upload image
+    String? photoURL;
+    if (profilePicture != null) {
+      photoURL = await StorageService.uploadProfilePicture(profilePicture);
+      appUser.profilePictureURL = photoURL;
+      await _auth.currentUser!.updatePhotoURL(appUser.profilePictureURL).whenComplete(
+        () async {
+          await _auth.currentUser!.reload();
+        },
+      );
+    }
+
+    // Update auth user details
+    if (_auth.currentUser == null) return;
+
+    await _auth.currentUser!.updateDisplayName(appUser.displayName).whenComplete(
+      () async {
+        await _auth.currentUser!.reload();
+      },
+    );
+
+    // Update user database
+    await UserDatabase.update(context, appUser: appUser);
+
+    // Update notifiers
+    await UserDatabase.readCurrentUser(context);
   }
 
   static Future deleteUserFromUid(BuildContext context, {required String uid}) async {

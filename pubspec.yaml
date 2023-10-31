@@ -28,6 +28,11 @@ dependencies:
   percent_indicator: ^4.2.3
   intl: ^0.18.1
   cached_network_image: ^3.3.0
+  image_picker: ^1.0.4
+  firebase_storage: ^11.4.1
+  flutter_image_compress: ^2.1.0
+  path_provider: ^2.1.1
+  uuid: ^4.1.0
 
 
 

@@ -46,23 +46,6 @@ class MunroSummaryTile extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12),
                   ),
-                  // child: Container(
-                  //   width: 100,
-                  //   height: 100,
-                  //   color: Colors.grey,
-                  // ),
-                  // child: Image.network(
-                  //   munro.pictureURL,
-                  //   width: 100,
-                  //   height: 100,
-                  //   fit: BoxFit.cover,
-                  //   errorBuilder:
-                  //       (BuildContext context, Object exception, StackTrace? stackTrace) {
-                  //     // Appropriate error handling code here
-                  //     print("Error: ${exception.toString()}");
-                  //     return Text('Error');
-                  //   },
-                  // ),
                   child: CachedNetworkImage(
                     imageUrl: munro.pictureURL,
                     width: 100,
@@ -75,9 +58,6 @@ class MunroSummaryTile extends StatelessWidget {
                       ),
                     ),
                     errorWidget: (context, url, error) {
-                      print('-------------------------------');
-                      print(error.toString());
-                      print('-------------------------------');
                       return const Icon(Icons.error);
                     },
                   ),
@@ -92,7 +72,7 @@ class MunroSummaryTile extends StatelessWidget {
                         Text(
                           munro.name,
                           maxLines: 2,
-                          style: TextStyle(fontWeight: FontWeight.w800),
+                          style: const TextStyle(fontWeight: FontWeight.w800),
                         ),
                         munro.extra == null || munro.extra == ""
                             ? const SizedBox()
