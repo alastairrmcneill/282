@@ -18,9 +18,7 @@ class AuthService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   static Stream<AppUser?> get appUserStream {
-    return _auth
-        .authStateChanges()
-        .map((User? user) => user != null ? AppUser.appUserFromFirebaseUser(user) : null);
+    return _auth.authStateChanges().map((User? user) => user != null ? AppUser.appUserFromFirebaseUser(user) : null);
   }
 
   // Current user id
@@ -28,21 +26,15 @@ class AuthService {
     return _auth.currentUser?.uid;
   }
 
-  static Future registerWithEmail(
-    BuildContext context, {
-    required String email,
-    required String password,
-    required String name,
-  }) async {
-    NavigationState navigationState =
-        Provider.of<NavigationState>(context, listen: false);
+  static Future registerWithEmail(BuildContext context, {required RegistrationData registrationData}) async {
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     startCircularProgressOverlay(context);
     try {
       // Setup auth user
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await _auth.createUserWithEmailAndPassword(email: registrationData.email!, password: registrationData.password!);
 
       // Update details
-      await _auth.currentUser!.updateDisplayName(name).whenComplete(
+      await _auth.currentUser!.updateDisplayName(registrationData.displayName).whenComplete(
         () async {
           await _auth.currentUser!.reload();
         },
@@ -54,6 +46,9 @@ class AuthService {
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
         displayName: _auth.currentUser!.displayName,
+        searchName: _auth.currentUser!.displayName?.toLowerCase(),
+        firstName: registrationData.firstName,
+        lastName: registrationData.lastName,
       );
       await UserDatabase.create(context, appUser: appUser);
 
@@ -71,8 +66,7 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    NavigationState navigationState =
-        Provider.of<NavigationState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     startCircularProgressOverlay(context);
 
     try {
@@ -112,8 +106,7 @@ class AuthService {
   }
 
   static Future signOut(BuildContext context) async {
-    NavigationState navigationState =
-        Provider.of<NavigationState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     startCircularProgressOverlay(context);
 
     try {
@@ -129,8 +122,7 @@ class AuthService {
   }
 
   static Future signInWithApple(BuildContext context) async {
-    NavigationState navigationState =
-        Provider.of<NavigationState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     try {
       final appleIdCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -170,7 +162,8 @@ class AuthService {
 
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
-        displayName: _auth.currentUser!.displayName!,
+        displayName: _auth.currentUser!.displayName,
+        searchName: _auth.currentUser!.displayName?.toLowerCase(),
       );
       await UserDatabase.create(context, appUser: appUser);
 
@@ -184,8 +177,7 @@ class AuthService {
   }
 
   static Future signInWithGoogle(BuildContext context) async {
-    NavigationState navigationState =
-        Provider.of<NavigationState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
@@ -204,7 +196,8 @@ class AuthService {
 
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
-        displayName: _auth.currentUser!.displayName!,
+        displayName: _auth.currentUser!.displayName,
+        searchName: _auth.currentUser!.displayName?.toLowerCase(),
       );
       await UserDatabase.create(context, appUser: appUser);
 
@@ -215,8 +208,7 @@ class AuthService {
     }
   }
 
-  static Future updateAuthUser(BuildContext context,
-      {required AppUser appUser, File? profilePicture}) async {
+  static Future updateAuthUser(BuildContext context, {required AppUser appUser, File? profilePicture}) async {
     // Upload image
     String? photoURL;
     if (profilePicture != null) {
@@ -228,6 +220,10 @@ class AuthService {
         },
       );
     }
+
+    // TODO update search name
+
+    // TODO update relationships
 
     // Update auth user details
     if (_auth.currentUser == null) return;
@@ -246,8 +242,7 @@ class AuthService {
   }
 
   static Future deleteUserFromUid(BuildContext context, {required String uid}) async {
-    NavigationState navigationState =
-        Provider.of<NavigationState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     try {
       UserState userState = Provider.of<UserState>(context, listen: false);
 
@@ -258,8 +253,7 @@ class AuthService {
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, "/home_screen");
     } on FirebaseAuthException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error deleting your account");
+      showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
     }
   }
 }

@@ -29,6 +29,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<MunroNotifier>(
           create: (_) => MunroNotifier(),
         ),
+        ChangeNotifierProvider<FollowingState>(
+          create: (_) => FollowingState(),
+        ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
+import 'package:two_eight_two/general/notifiers/notifiers.dart';
 
 class FollowersFollowingText extends StatelessWidget {
   const FollowersFollowingText({super.key});
 
   @override
   Widget build(BuildContext context) {
+    FollowingState followingState = Provider.of<FollowingState>(context);
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -14,7 +17,7 @@ class FollowersFollowingText extends StatelessWidget {
       ),
       child: Container(
         color: Colors.transparent,
-        child: const IntrinsicHeight(
+        child: IntrinsicHeight(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -22,17 +25,17 @@ class FollowersFollowingText extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Following",
                     style: TextStyle(fontSize: 10, color: Colors.green),
                   ),
                   Text(
-                    "0",
-                    style: TextStyle(fontSize: 18),
+                    (followingState.myFollowing?.length ?? 0).toString(),
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ],
               ),
-              VerticalDivider(
+              const VerticalDivider(
                 color: Colors.black45,
                 endIndent: 10,
                 indent: 10,
@@ -42,15 +45,15 @@ class FollowersFollowingText extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Following",
+                  const Text(
+                    "Followers",
                     style: TextStyle(
                       fontSize: 10,
                       color: Colors.green,
                     ),
                   ),
                   Text(
-                    "0",
+                    (followingState.myFollowers?.length ?? 0).toString(),
                     style: TextStyle(fontSize: 18),
                   ),
                 ],

@@ -100,11 +100,11 @@ class RegistrationNamesScreen extends StatelessWidget {
 
                       registrationData.displayName =
                           "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}";
+                      registrationData.firstName = _firstNameController.text.trim();
+                      registrationData.lastName = _lastNameController.text.trim();
                       await AuthService.registerWithEmail(
                         context,
-                        email: registrationData.email!,
-                        password: registrationData.password!,
-                        name: registrationData.displayName!,
+                        registrationData: registrationData,
                       );
                     },
                     child: Text('Next'),
