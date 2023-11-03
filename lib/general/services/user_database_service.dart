@@ -23,8 +23,7 @@ class UserDatabase {
         await userDocRef.set(appUser.toJSON());
       }
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error creating your account.");
+      showErrorDialog(context, message: error.message ?? "There was an error creating your account.");
     }
   }
 
@@ -45,8 +44,7 @@ class UserDatabase {
 
       userState.setCurrentUser = appUser;
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error fetching your account.");
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
     }
   }
 
@@ -57,8 +55,7 @@ class UserDatabase {
 
       await ref.update(appUser.toJSON());
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error updating your account.");
+      showErrorDialog(context, message: error.message ?? "There was an error updating your account.");
     }
   }
 
@@ -69,8 +66,22 @@ class UserDatabase {
 
       await ref.delete();
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error deleting your account");
+      showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
+    }
+  }
+
+  static Future<AppUser?> readUserFromUid(BuildContext context, {required String uid}) async {
+    try {
+      DocumentReference ref = _userRef.doc(uid);
+      DocumentSnapshot documentSnapshot = await ref.get();
+
+      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
+
+      AppUser appUser = AppUser.fromJSON(data);
+
+      return appUser;
+    } on FirebaseException catch (error) {
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
     }
   }
 }

@@ -17,17 +17,14 @@ class MunroService {
 
     if (userState.currentUser != null) {
       // Add personal munro data
-      var dictMap = {
-        for (var dict in userState.currentUser!.personalMunroData!) dict['id']: dict
-      };
+      var dictMap = {for (var dict in userState.currentUser!.personalMunroData!) dict['id']: dict};
 
       // Iterate over the list of Munro objects and update them
       for (var munro in munroList) {
         var correspondingDict = dictMap[munro.id];
         if (correspondingDict != null) {
           munro.summited = correspondingDict[MunroFields.summited];
-          munro.summitedDate =
-              (correspondingDict[MunroFields.summitedDate] as Timestamp?)?.toDate();
+          munro.summitedDate = (correspondingDict[MunroFields.summitedDate] as Timestamp?)?.toDate();
           munro.saved = correspondingDict[MunroFields.saved];
         }
       }
@@ -37,7 +34,6 @@ class MunroService {
 
   static loadPersonalMunroData(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
-    print(userState.currentUser);
     if (userState.currentUser == null) return;
   }
 
@@ -54,8 +50,7 @@ class MunroService {
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
     newAppUser.personalMunroData![munro.id - 1][MunroFields.summited] = true;
-    newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] =
-        DateTime.now();
+    newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] = DateTime.now();
 
     UserDatabase.update(context, appUser: newAppUser);
 

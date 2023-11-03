@@ -27,7 +27,6 @@ class _ProfileTabState extends State<ProfileTab> {
   Future loadData() async {
     await FollowingService.getMyFollowers(context);
     await FollowingService.getMyFollowing(context);
-    print("Done");
     setState(() {
       loading = false;
     });
@@ -66,7 +65,7 @@ class _ProfileTabState extends State<ProfileTab> {
                               image: userState.currentUser?.profilePictureURL == null
                                   ? null
                                   : DecorationImage(
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.cover,
                                       image: CachedNetworkImageProvider(
                                         userState.currentUser!.profilePictureURL!,
                                       ),

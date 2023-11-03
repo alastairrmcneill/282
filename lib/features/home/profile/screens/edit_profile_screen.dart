@@ -67,8 +67,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               AppUser appUser = userState.currentUser!;
 
               AppUser newAppUser = appUser.copyWith(
-                displayName:
-                    "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}",
+                displayName: "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}",
                 firstName: _firstNameController.text.trim(),
                 lastName: _lastNameController.text.trim(),
               );
@@ -124,7 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                 image: CachedNetworkImageProvider(
                                   _photoURL!,
                                 ),

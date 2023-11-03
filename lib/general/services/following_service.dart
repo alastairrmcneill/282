@@ -50,8 +50,9 @@ class FollowingService {
       targetId: profileUserId,
       targetDisplayName: profileUserDisplayName,
       targetProfilePictureURL: profileUserPictureURL,
+      sourceDisplayName: userState.currentUser!.displayName!,
+      sourceProfilePictureURL: userState.currentUser!.profilePictureURL,
     );
-
     // Create relationship
     await FollowingRelationshipsDatabase.create(context, followingRelationship: followingRelationship);
 
