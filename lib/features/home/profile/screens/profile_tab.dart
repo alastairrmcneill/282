@@ -25,8 +25,6 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   Future loadData() async {
-    await FollowingService.getMyFollowers(context);
-    await FollowingService.getMyFollowing(context);
     setState(() {
       loading = false;
     });
@@ -35,7 +33,6 @@ class _ProfileTabState extends State<ProfileTab> {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -128,7 +125,10 @@ class _ProfileTabState extends State<ProfileTab> {
                       children: [
                         MunroProgressIndicator(),
                         SizedBox(height: 20),
-                        FollowersFollowingText(),
+                        FollowersFollowingText(
+                          followersCount: userState.currentUser?.followersCount ?? 0,
+                          followingCount: userState.currentUser?.followingCount ?? 0,
+                        ),
                         SizedBox(height: 20),
                         ProfileMediaHistory(),
                         Container(

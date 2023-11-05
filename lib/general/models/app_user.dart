@@ -7,6 +7,9 @@ class AppUser {
   String? firstName;
   String? lastName;
   String? profilePictureURL;
+  int? followersCount;
+  int? followingCount;
+
   final List<Map<String, dynamic>>? personalMunroData;
 
   AppUser({
@@ -16,6 +19,8 @@ class AppUser {
     this.firstName,
     this.lastName,
     this.profilePictureURL,
+    this.followersCount,
+    this.followingCount,
     this.personalMunroData = personalMunroDataExample,
   });
 
@@ -27,14 +32,15 @@ class AppUser {
       AppUserFields.firstName: firstName,
       AppUserFields.lastName: lastName,
       AppUserFields.profilePictureURL: profilePictureURL,
+      AppUserFields.followersCount: followersCount,
+      AppUserFields.followingCount: followingCount,
       AppUserFields.personalMunroData: personalMunroData,
     };
   }
 
   static AppUser fromJSON(Map<String, dynamic> json) {
     List<dynamic> personalMunroData = json[AppUserFields.personalMunroData];
-    List<Map<String, dynamic>> listPersonalMunroData =
-        List<Map<String, dynamic>>.from(personalMunroData);
+    List<Map<String, dynamic>> listPersonalMunroData = List<Map<String, dynamic>>.from(personalMunroData);
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
       displayName: json[AppUserFields.displayName] as String?,
@@ -42,6 +48,8 @@ class AppUser {
       firstName: json[AppUserFields.firstName] as String?,
       lastName: json[AppUserFields.lastName] as String?,
       profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
+      followersCount: json[AppUserFields.followersCount] as int? ?? 0,
+      followingCount: json[AppUserFields.followingCount] as int? ?? 0,
       personalMunroData: listPersonalMunroData,
     );
   }
@@ -53,6 +61,8 @@ class AppUser {
     String? firstName,
     String? lastName,
     String? profilePictureURL,
+    int? followersCount,
+    int? followingCount,
     List<Map<String, dynamic>>? personalMunroData,
   }) {
     return AppUser(
@@ -62,6 +72,8 @@ class AppUser {
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         profilePictureURL: profilePictureURL ?? this.profilePictureURL,
+        followersCount: followersCount ?? this.followersCount,
+        followingCount: followingCount ?? this.followingCount,
         personalMunroData: personalMunroData ?? this.personalMunroData);
   }
 
@@ -73,8 +85,17 @@ class AppUser {
   }
 
   @override
-  String toString() =>
-      'AppUser(uid: $uid, displayName: $displayName, searchName $searchName, firstName: $firstName, lastName: $lastName, profilePictureURL: $profilePictureURL, personalMunroData: $personalMunroData)';
+  String toString() => '''AppUser(
+      ${AppUserFields.uid}: $uid,
+      ${AppUserFields.displayName}: $displayName,
+      ${AppUserFields.searchName}: $searchName,
+      ${AppUserFields.firstName}: $firstName,
+      ${AppUserFields.lastName}: $lastName,
+      ${AppUserFields.profilePictureURL}: $profilePictureURL,
+      ${AppUserFields.followingCount}: $followersCount,
+      ${AppUserFields.followersCount}: $followersCount,
+      ${AppUserFields.personalMunroData}: $personalMunroData, 
+      )''';
 }
 
 class AppUserFields {
@@ -85,6 +106,8 @@ class AppUserFields {
   static String lastName = 'lastName';
   static String profilePictureURL = 'profilePictureURL';
   static String personalMunroData = 'personalMunroData';
+  static String followingCount = 'followingCount';
+  static String followersCount = 'followersCount';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [

@@ -4,7 +4,13 @@ import 'package:two_eight_two/features/home/profile/screens/screens.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 
 class FollowersFollowingText extends StatelessWidget {
-  const FollowersFollowingText({super.key});
+  final int followersCount;
+  final int followingCount;
+  const FollowersFollowingText({
+    super.key,
+    required this.followersCount,
+    required this.followingCount,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +36,7 @@ class FollowersFollowingText extends StatelessWidget {
                     style: TextStyle(fontSize: 10, color: Colors.green),
                   ),
                   Text(
-                    (followingState.myFollowing?.length ?? 0).toString(),
+                    followingCount.toString(),
                     style: const TextStyle(fontSize: 18),
                   ),
                 ],
@@ -53,7 +59,7 @@ class FollowersFollowingText extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    (followingState.myFollowers?.length ?? 0).toString(),
+                    followersCount.toString(),
                     style: TextStyle(fontSize: 18),
                   ),
                 ],

@@ -44,9 +44,11 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
               filled: true,
             ),
             onChanged: (value) {
-              setState(() {
-                query = value.trim().toLowerCase();
-              });
+              if (value.trim().length >= 3) {
+                setState(() {
+                  query = value.trim().toLowerCase();
+                });
+              }
             },
           ),
           Expanded(
@@ -68,8 +70,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                       return ListView.builder(
                         itemCount: results.length,
                         itemBuilder: (context, index) {
-                          final AppUser user = AppUser.fromJSON(
-                              results[index].data() as Map<String, dynamic>);
+                          final AppUser user = AppUser.fromJSON(results[index].data() as Map<String, dynamic>);
 
                           if (user.uid != currentUserId) {
                             return ListTile(
