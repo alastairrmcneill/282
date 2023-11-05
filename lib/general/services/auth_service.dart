@@ -208,23 +208,7 @@ class AuthService {
     }
   }
 
-  static Future updateAuthUser(BuildContext context, {required AppUser appUser, File? profilePicture}) async {
-    // Upload image
-    String? photoURL;
-    if (profilePicture != null) {
-      photoURL = await StorageService.uploadProfilePicture(profilePicture);
-      appUser.profilePictureURL = photoURL;
-      await _auth.currentUser!.updatePhotoURL(appUser.profilePictureURL).whenComplete(
-        () async {
-          await _auth.currentUser!.reload();
-        },
-      );
-    }
-
-    // TODO update search name
-
-    // TODO update relationships
-
+  static Future updateAuthUser(BuildContext context, {required AppUser appUser}) async {
     // Update auth user details
     if (_auth.currentUser == null) return;
 
@@ -234,11 +218,11 @@ class AuthService {
       },
     );
 
-    // Update user database
-    await UserDatabase.update(context, appUser: appUser);
-
-    // Update notifiers
-    await UserDatabase.readCurrentUser(context);
+    await _auth.currentUser!.updatePhotoURL(appUser.profilePictureURL).whenComplete(
+      () async {
+        await _auth.currentUser!.reload();
+      },
+    );
   }
 
   static Future deleteUserFromUid(BuildContext context, {required String uid}) async {

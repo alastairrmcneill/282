@@ -1,3 +1,2 @@
-export 'munros_progress_indicator.dart';
-export 'followers_following_text.dart';
 export 'profile_media_history.dart';
+export 'profile_sliver_header.dart';

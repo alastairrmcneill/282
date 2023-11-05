@@ -9,6 +9,7 @@ class AppUser {
   String? profilePictureURL;
   int? followersCount;
   int? followingCount;
+  String? bio;
 
   final List<Map<String, dynamic>>? personalMunroData;
 
@@ -21,6 +22,7 @@ class AppUser {
     this.profilePictureURL,
     this.followersCount,
     this.followingCount,
+    this.bio,
     this.personalMunroData = personalMunroDataExample,
   });
 
@@ -34,6 +36,7 @@ class AppUser {
       AppUserFields.profilePictureURL: profilePictureURL,
       AppUserFields.followersCount: followersCount,
       AppUserFields.followingCount: followingCount,
+      AppUserFields.bio: bio,
       AppUserFields.personalMunroData: personalMunroData,
     };
   }
@@ -50,6 +53,7 @@ class AppUser {
       profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
       followersCount: json[AppUserFields.followersCount] as int? ?? 0,
       followingCount: json[AppUserFields.followingCount] as int? ?? 0,
+      bio: json[AppUserFields.bio] as String?,
       personalMunroData: listPersonalMunroData,
     );
   }
@@ -63,6 +67,7 @@ class AppUser {
     String? profilePictureURL,
     int? followersCount,
     int? followingCount,
+    String? bio,
     List<Map<String, dynamic>>? personalMunroData,
   }) {
     return AppUser(
@@ -74,6 +79,7 @@ class AppUser {
         profilePictureURL: profilePictureURL ?? this.profilePictureURL,
         followersCount: followersCount ?? this.followersCount,
         followingCount: followingCount ?? this.followingCount,
+        bio: bio ?? this.bio,
         personalMunroData: personalMunroData ?? this.personalMunroData);
   }
 
@@ -95,6 +101,7 @@ class AppUser {
       ${AppUserFields.followingCount}: $followersCount,
       ${AppUserFields.followersCount}: $followersCount,
       ${AppUserFields.personalMunroData}: $personalMunroData, 
+      ${AppUserFields.bio}: $bio,
       )''';
 }
 
@@ -108,6 +115,7 @@ class AppUserFields {
   static String personalMunroData = 'personalMunroData';
   static String followingCount = 'followingCount';
   static String followersCount = 'followersCount';
+  static String bio = 'bio';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [

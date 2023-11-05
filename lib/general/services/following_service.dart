@@ -9,28 +9,6 @@ import 'package:two_eight_two/general/services/services.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
 class FollowingService {
-  static Future isFollowingUser(
-    BuildContext context, {
-    required String profileUserId,
-  }) async {
-    try {
-      FollowingState followingState = Provider.of<FollowingState>(context, listen: false);
-      UserState userState = Provider.of<UserState>(context, listen: false);
-
-      if (userState.currentUser == null) return;
-
-      final querySnapshot = await FollowingRelationshipsDatabase.getRelationshipFromSourceAndTarget(
-        context,
-        sourceId: userState.currentUser?.uid ?? "",
-        targetId: profileUserId,
-      );
-
-      followingState.setFollowingUser = querySnapshot.docs.isNotEmpty;
-    } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error vailidating the relationship.");
-    }
-  }
-
   static Future followUser(
     BuildContext context, {
     required String profileUserId,
@@ -39,6 +17,7 @@ class FollowingService {
   }) async {
     startCircularProgressOverlay(context);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     if (userState.currentUser == null) {
       stopCircularProgressOverlay(context);
@@ -57,8 +36,9 @@ class FollowingService {
     await FollowingRelationshipsDatabase.create(context, followingRelationship: followingRelationship);
 
     // Update app state
-    FollowingState followingState = Provider.of<FollowingState>(context, listen: false);
-    followingState.setFollowingUser = true;
+    AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! + 1);
+    profileState.setUser = tempUser;
+    profileState.setIsFollowing = true;
     stopCircularProgressOverlay(context);
   }
 
@@ -68,6 +48,7 @@ class FollowingService {
   }) async {
     startCircularProgressOverlay(context);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     if (userState.currentUser == null) {
       stopCircularProgressOverlay(context);
@@ -82,30 +63,28 @@ class FollowingService {
     );
 
     // Update app state
-    FollowingState followingState = Provider.of<FollowingState>(context, listen: false);
-    followingState.setFollowingUser = false;
+    AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! - 1);
+    profileState.setUser = tempUser;
+    profileState.setIsFollowing = false;
+
     stopCircularProgressOverlay(context);
   }
 
-  static Future getMyFollowers(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
+  static Future getFollowersAndFollowing(BuildContext context, {required String userId}) async {
+    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
 
-    if (userState.currentUser == null) return;
+    followersState.setStatus = FollowersStatus.loading;
 
-    await FollowingRelationshipsDatabase.getFollowersFromUid(
+    followersState.setFollowers = await FollowingRelationshipsDatabase.getFollowersFromUid(
       context,
-      targetId: userState.currentUser!.uid!,
+      targetId: userId,
     );
-  }
 
-  static Future getMyFollowing(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-
-    if (userState.currentUser == null) return;
-
-    await FollowingRelationshipsDatabase.getFollowingFromUid(
+    followersState.setFollowing = await FollowingRelationshipsDatabase.getFollowingFromUid(
       context,
-      sourceId: userState.currentUser!.uid!,
+      sourceId: userId,
     );
+
+    followersState.setStatus = FollowersStatus.loaded;
   }
 }

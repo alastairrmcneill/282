@@ -82,6 +82,7 @@ class UserDatabase {
       return appUser;
     } on FirebaseException catch (error) {
       showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
+      return null;
     }
   }
 }

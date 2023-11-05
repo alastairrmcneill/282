@@ -10,6 +10,7 @@ import 'package:two_eight_two/features/home/record/screens/screens.dart';
 import 'package:two_eight_two/features/home/saved/screens/screens.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/profile_service.dart';
 import 'package:two_eight_two/general/services/services.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,9 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: (value) {
                 if (value == 4 && user == null) {
                   navigationState.setNavigateToRoute = "/profile_tab";
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                 } else {
+                  ProfileService.loadUserFromUid(context, userId: user!.uid!);
                   setState(() => _currentIndex = value);
                 }
               },

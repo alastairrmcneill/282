@@ -9,6 +9,7 @@ import 'package:two_eight_two/features/auth/widgets/widgets.dart';
 import 'package:two_eight_two/general/models/app_user.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/auth_service.dart';
+import 'package:two_eight_two/general/services/profile_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -20,6 +21,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _bioController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _photoURL;
   File? _image;
@@ -27,14 +29,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
-    if (userState.currentUser == null) return;
+    if (profileState.user == null) return;
 
-    _firstNameController.text = userState.currentUser!.firstName ?? "";
-    _lastNameController.text = userState.currentUser!.lastName ?? "";
+    _firstNameController.text = profileState.user!.firstName ?? "";
+    _lastNameController.text = profileState.user!.lastName ?? "";
+    _bioController.text = profileState.user!.bio ?? "";
 
-    _photoURL = userState.currentUser!.profilePictureURL;
+    _photoURL = profileState.user?.profilePictureURL;
   }
 
   Future pickImage() async {
@@ -52,7 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
+    ProfileState profileState = Provider.of<ProfileState>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,15 +67,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 return;
               }
               _formKey.currentState!.save();
-              AppUser appUser = userState.currentUser!;
+
+              if (profileState.user == null) return;
+
+              AppUser appUser = profileState.user!;
 
               AppUser newAppUser = appUser.copyWith(
                 displayName: "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}",
+                searchName: "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}".toLowerCase(),
                 firstName: _firstNameController.text.trim(),
                 lastName: _lastNameController.text.trim(),
+                bio: _bioController.text.trim(),
               );
 
-              await AuthService.updateAuthUser(
+              await ProfileService.updateProfile(
                 context,
                 appUser: newAppUser,
                 profilePicture: _image,
@@ -158,6 +166,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     NameFormField(
                       textEditingController: _lastNameController,
                       hintText: "Last Name",
+                    ),
+                    const SizedBox(height: 15),
+                    BioFormField(
+                      textEditingController: _bioController,
+                      hintText: 'Bio',
                     ),
                   ],
                 ),

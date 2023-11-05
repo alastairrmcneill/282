@@ -3,8 +3,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/feed/screens/screens.dart';
+import 'package:two_eight_two/features/home/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/general/models/app_user.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/profile_service.dart';
 
 class UserSearchScreen extends StatefulWidget {
   const UserSearchScreen({super.key});
@@ -76,10 +78,11 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                             return ListTile(
                               title: Text(user.displayName ?? ""),
                               onTap: () {
+                                ProfileService.loadUserFromUid(context, userId: user.uid!);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => UserScreen(user: user),
+                                    builder: (_) => const ProfileScreen(),
                                   ),
                                 );
                               },

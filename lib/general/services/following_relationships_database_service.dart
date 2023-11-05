@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/general/models/models.dart';
-import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
 class FollowingRelationshipsDatabase {
@@ -54,9 +53,10 @@ class FollowingRelationshipsDatabase {
     }
   }
 
-  static Future getFollowersFromUid(BuildContext context, {required String targetId}) async {
-    FollowingState followingState = Provider.of<FollowingState>(context, listen: false);
-
+  static Future<List<FollowingRelationship>> getFollowersFromUid(
+    BuildContext context, {
+    required String targetId,
+  }) async {
     QuerySnapshot<Object?> querySnapshot = await _followingRelationshipRef
         .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
         .limit(10) // We only need to check if at least one document exists
@@ -68,12 +68,13 @@ class FollowingRelationshipsDatabase {
 
       followers.add(followingRelationship);
     }
-    followingState.setMyFollowers = followers;
+    return followers;
   }
 
-  static Future getFollowingFromUid(BuildContext context, {required String sourceId}) async {
-    FollowingState followingState = Provider.of<FollowingState>(context, listen: false);
-
+  static Future<List<FollowingRelationship>> getFollowingFromUid(
+    BuildContext context, {
+    required String sourceId,
+  }) async {
     QuerySnapshot<Object?> querySnapshot = await _followingRelationshipRef
         .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
         .limit(10) // We only need to check if at least one document exists
@@ -86,7 +87,7 @@ class FollowingRelationshipsDatabase {
       following.add(followingRelationship);
     }
 
-    followingState.setMyFollowing = following;
+    return following;
   }
 
   // Read
