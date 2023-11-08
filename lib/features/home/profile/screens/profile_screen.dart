@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/feed/widgets/widgets.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
 import 'package:two_eight_two/features/home/profile/widgets/widgets.dart';
-import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
-import 'package:two_eight_two/general/services/profile_service.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -24,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
           case ProfileStatus.error:
             return Scaffold(
               appBar: AppBar(),
-              body: const Center(child: Text('Uh oh, something went wrong. Please try again')),
+              body: CenterText(text: profileState.error.message),
             );
           case ProfileStatus.loaded:
             return _buildScreen(context, profileState);
@@ -36,83 +34,89 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildScreen(BuildContext context, ProfileState profileState) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        physics: const ClampingScrollPhysics(),
-        slivers: [
-          const ProfileSliverHeader(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  profileState.user?.bio != null ? Text(profileState.user!.bio!) : const SizedBox(),
-                  profileState.isCurrentUser
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => const EditProfileScreen()),
-                                  );
-                                },
-                                child: Text('Edit profile'),
+    return WillPopScope(
+      onWillPop: () async {
+        profileState.navigateBack();
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: [
+            const ProfileSliverHeader(),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    profileState.user?.bio != null ? Text(profileState.user!.bio!) : const SizedBox(),
+                    profileState.isCurrentUser
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+                                    );
+                                  },
+                                  child: Text('Edit profile'),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  print('Share');
-                                },
-                                child: Text('Share profile'),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    print('Share');
+                                  },
+                                  child: Text('Share profile'),
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: FollowingButton(
-                                isFollowing: profileState.isFollowing,
-                                user: profileState.user!,
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: FollowingButton(
+                                  isFollowing: profileState.isFollowing,
+                                  user: profileState.user,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  print('Share');
-                                },
-                                child: Text('Share profile'),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    print('Share');
+                                  },
+                                  child: Text('Share profile'),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                  const SizedBox(height: 20),
-                  !(profileState.isCurrentUser || profileState.isFollowing)
-                      ? const SizedBox()
-                      : Column(
-                          children: [
-                            const ProfileMediaHistory(),
-                            Container(
-                              height: 4000,
-                              width: double.infinity,
-                              color: Colors.red,
-                            ),
-                          ],
-                        ),
-                ],
+                            ],
+                          ),
+                    const SizedBox(height: 20),
+                    !(profileState.isCurrentUser || profileState.isFollowing)
+                        ? const SizedBox()
+                        : Column(
+                            children: [
+                              const ProfileMediaHistory(),
+                              Container(
+                                height: 4000,
+                                width: double.infinity,
+                                color: Colors.red,
+                              ),
+                            ],
+                          ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -84,7 +84,7 @@ class _ProfileSliverHeaderState extends State<ProfileSliverHeader> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CirculeProfilePicture(
+                        CircularProfilePicture(
                           radius: 50,
                           profilePictureURL: profileState.user?.profilePictureURL,
                         ),
@@ -104,7 +104,10 @@ class _ProfileSliverHeaderState extends State<ProfileSliverHeader> {
                                 text: "Following",
                                 stat: profileState.user?.followingCount ?? 0,
                                 onTap: () {
-                                  FollowingService.getFollowersAndFollowing(context, userId: profileState.user!.uid!);
+                                  FollowingService.loadInitialFollowersAndFollowing(
+                                    context,
+                                    userId: profileState.user!.uid!,
+                                  );
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -117,7 +120,10 @@ class _ProfileSliverHeaderState extends State<ProfileSliverHeader> {
                                 text: "Followers",
                                 stat: profileState.user?.followersCount ?? 0,
                                 onTap: () {
-                                  FollowingService.getFollowersAndFollowing(context, userId: profileState.user!.uid!);
+                                  FollowingService.loadInitialFollowersAndFollowing(
+                                    context,
+                                    userId: profileState.user!.uid!,
+                                  );
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

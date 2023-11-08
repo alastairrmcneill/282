@@ -35,6 +35,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<FollowersState>(
           create: (_) => FollowersState(),
         ),
+        ChangeNotifierProvider<SearchState>(
+          create: (_) => SearchState(),
+        ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,

@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/auth/widgets/widgets.dart';
 import 'package:two_eight_two/general/models/app_user.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
-import 'package:two_eight_two/general/services/auth_service.dart';
 import 'package:two_eight_two/general/services/profile_service.dart';
 
 class EditProfileScreen extends StatefulWidget {

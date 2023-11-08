@@ -51,17 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<AppUser?>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
+    ProfileState profileState = Provider.of<ProfileState>(context);
+    FollowersState followersState = Provider.of<FollowersState>(context);
     return loading
         ? const Center(child: CircularProgressIndicator())
         : Scaffold(
             body: _screens[_currentIndex],
             bottomNavigationBar: BottomNavigationBar(
               onTap: (value) {
+                // Reset notifiers
+                profileState.clear();
+                followersState.clear();
+
+                // Check which screen
                 if (value == 4 && user == null) {
                   navigationState.setNavigateToRoute = "/profile_tab";
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                 } else {
-                  ProfileService.loadUserFromUid(context, userId: user!.uid!);
+                  if (value == 4) {
+                    ProfileService.loadUserFromUid(context, userId: user!.uid!);
+                  }
                   setState(() => _currentIndex = value);
                 }
               },

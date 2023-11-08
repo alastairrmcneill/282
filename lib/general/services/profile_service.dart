@@ -14,22 +14,26 @@ class ProfileService {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
-    profileState.setStatus = ProfileStatus.loading;
-    // Load user from database
-    profileState.setUser = await UserDatabase.readUserFromUid(context, uid: userId);
+    try {
+      profileState.setStatus = ProfileStatus.loading;
+      // Load user from database
+      profileState.setUser = await UserDatabase.readUserFromUid(context, uid: userId);
 
-    // Check if this is current user
-    profileState.setIsCurrentUser = userState.currentUser?.uid == userId;
+      // Check if this is current user
+      profileState.setIsCurrentUser = userState.currentUser?.uid == userId;
 
-    // Check if current user is following this user
-    profileState.setIsFollowing = await _isFollowingUser(
-      context,
-      currentUserId: userState.currentUser?.uid ?? "",
-      profileUserId: userId,
-    );
+      // Check if current user is following this user
+      profileState.setIsFollowing = await _isFollowingUser(
+        context,
+        currentUserId: userState.currentUser?.uid ?? "",
+        profileUserId: userId,
+      );
 
-    // Set loading status?
-    profileState.setStatus = ProfileStatus.loaded;
+      // Set loading status?
+      profileState.setStatus = ProfileStatus.loaded;
+    } catch (error) {
+      profileState.setError = Error(message: "There was an issue. Please try again.");
+    }
   }
 
   static Future<bool> _isFollowingUser(
@@ -37,13 +41,17 @@ class ProfileService {
     required String currentUserId,
     required String profileUserId,
   }) async {
-    final querySnapshot = await FollowingRelationshipsDatabase.getRelationshipFromSourceAndTarget(
-      context,
-      sourceId: currentUserId,
-      targetId: profileUserId,
-    );
+    try {
+      final querySnapshot = await FollowingRelationshipsDatabase.getRelationshipFromSourceAndTarget(
+        context,
+        sourceId: currentUserId,
+        targetId: profileUserId,
+      );
 
-    return querySnapshot.docs.isNotEmpty;
+      return querySnapshot.docs.isNotEmpty;
+    } catch (error) {
+      return false;
+    }
   }
 
   static Future updateProfile(BuildContext context, {required AppUser appUser, File? profilePicture}) async {

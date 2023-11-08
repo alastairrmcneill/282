@@ -2,7 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/features/auth/screens/screens.dart';
 import 'package:two_eight_two/features/home/explore/screens/screens.dart';
+import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/models/munro.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,6 +15,8 @@ class MunroDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    NavigationState navigationState = Provider.of<NavigationState>(context);
+    final user = Provider.of<AppUser?>(context);
 
     Munro munro = munroNotifier.selectedMunro!;
 
@@ -28,8 +32,7 @@ class MunroDetailScreen extends StatelessWidget {
             flexibleSpace: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 // Calculate the percentage of the AppBar's size as it collapses
-                double percentage = (constraints.biggest.height - kToolbarHeight) /
-                    (255.0 - kToolbarHeight);
+                double percentage = (constraints.biggest.height - kToolbarHeight) / (255.0 - kToolbarHeight);
                 // Ensure the percentage is between 0 and 1
                 percentage = 1 - percentage.clamp(0.0, 1.0);
 
@@ -145,18 +148,22 @@ class MunroDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   munro.summited
-                      ? Text(
-                          "Summited: ${DateFormat('dd/MM/yyyy').format(munro.summitedDate ?? DateTime.now())}")
+                      ? Text("Summited: ${DateFormat('dd/MM/yyyy').format(munro.summitedDate ?? DateTime.now())}")
                       : SizedBox(
                           height: 44,
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => MunroSummitedPostScreen(munro: munro),
-                                ),
-                              );
+                              if (user == null) {
+                                navigationState.setNavigateToRoute = "/home_screen";
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => MunroSummitedPostScreen(munro: munro),
+                                  ),
+                                );
+                              }
                             },
                             child: const Text("Mark as summited"),
                           ),

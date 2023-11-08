@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class CirculeProfilePicture extends StatelessWidget {
+class CircularProfilePicture extends StatelessWidget {
   final String? profilePictureURL;
   final int radius;
 
-  const CirculeProfilePicture({
+  const CircularProfilePicture({
     super.key,
     this.profilePictureURL,
     required this.radius,

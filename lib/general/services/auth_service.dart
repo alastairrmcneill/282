@@ -84,6 +84,7 @@ class AuthService {
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+      // Navigator.pushNamedAndRemoveUntil(context, newRouteName, (route) => false)
     } on FirebaseAuthException catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);

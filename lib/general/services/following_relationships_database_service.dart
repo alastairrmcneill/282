@@ -56,13 +56,33 @@ class FollowingRelationshipsDatabase {
   static Future<List<FollowingRelationship>> getFollowersFromUid(
     BuildContext context, {
     required String targetId,
+    required String? lastFollowingRelationshipID,
   }) async {
-    QuerySnapshot<Object?> querySnapshot = await _followingRelationshipRef
-        .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
-        .limit(10) // We only need to check if at least one document exists
-        .get();
-
     List<FollowingRelationship> followers = [];
+
+    QuerySnapshot<Object?> querySnapshot;
+
+    if (lastFollowingRelationshipID == null) {
+      // First loading
+      querySnapshot = await _followingRelationshipRef
+          .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
+          .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
+          .limit(20) // We only need to check if at least one document exists
+          .get();
+    } else {
+      // Paginating
+      final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
+
+      if (!lastFollowingRelationshipDoc.exists) return [];
+
+      querySnapshot = await _followingRelationshipRef
+          .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
+          .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
+          .startAfterDocument(lastFollowingRelationshipDoc)
+          .limit(20)
+          .get();
+    }
+
     for (var doc in querySnapshot.docs) {
       FollowingRelationship followingRelationship = FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
 
@@ -74,19 +94,38 @@ class FollowingRelationshipsDatabase {
   static Future<List<FollowingRelationship>> getFollowingFromUid(
     BuildContext context, {
     required String sourceId,
+    required String? lastFollowingRelationshipID,
   }) async {
-    QuerySnapshot<Object?> querySnapshot = await _followingRelationshipRef
-        .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
-        .limit(10) // We only need to check if at least one document exists
-        .get();
-
     List<FollowingRelationship> following = [];
+
+    QuerySnapshot<Object?> querySnapshot;
+
+    if (lastFollowingRelationshipID == null) {
+      // First loading
+      querySnapshot = await _followingRelationshipRef
+          .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
+          .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
+          .limit(20) // We only need to check if at least one document exists
+          .get();
+    } else {
+      // Paginating
+      final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
+
+      if (!lastFollowingRelationshipDoc.exists) return [];
+
+      querySnapshot = await _followingRelationshipRef
+          .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
+          .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
+          .startAfterDocument(lastFollowingRelationshipDoc)
+          .limit(20)
+          .get();
+    }
+
     for (var doc in querySnapshot.docs) {
       FollowingRelationship followingRelationship = FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
 
       following.add(followingRelationship);
     }
-
     return following;
   }
 

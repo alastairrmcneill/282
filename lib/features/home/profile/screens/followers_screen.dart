@@ -3,11 +3,53 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/features/home/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/profile_service.dart';
+import 'package:two_eight_two/general/services/services.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
-class FollowersFollowingScreen extends StatelessWidget {
+class FollowersFollowingScreen extends StatefulWidget {
   const FollowersFollowingScreen({super.key});
+
+  @override
+  State<FollowersFollowingScreen> createState() => _FollowersFollowingScreenState();
+}
+
+class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
+  late ScrollController _followersScrollController;
+  late ScrollController _followingScrollController;
+  @override
+  void initState() {
+    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+
+    _followersScrollController = ScrollController();
+    _followersScrollController.addListener(() {
+      if (_followersScrollController.offset >= _followersScrollController.position.maxScrollExtent &&
+          !_followersScrollController.position.outOfRange &&
+          followersState.status != FollowersStatus.paginating) {
+        FollowingService.paginateFollowers(context, userId: profileState.user!.uid!);
+      }
+    });
+
+    _followingScrollController = ScrollController();
+    _followingScrollController.addListener(() {
+      if (_followingScrollController.offset >= _followingScrollController.position.maxScrollExtent &&
+          !_followingScrollController.position.outOfRange &&
+          followersState.status != FollowersStatus.paginating) {
+        FollowingService.paginateFollowing(context, userId: profileState.user!.uid!);
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _followersScrollController.dispose();
+    _followingScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,125 +64,143 @@ class FollowersFollowingScreen extends StatelessWidget {
           case FollowersStatus.error:
             return Scaffold(
               appBar: AppBar(),
-              body: const Center(child: Text('Uh oh, something went wrong. Please try again')),
+              body: CenterText(text: followersState.error.message),
             );
-          case FollowersStatus.loaded:
-            return _buildScreen(context, followersState);
           default:
-            return Scaffold(appBar: AppBar());
+            return _buildScreen(
+              context,
+              followersState: followersState,
+              followersScrollController: _followersScrollController,
+              followingScrollController: _followingScrollController,
+            );
         }
       },
     );
   }
 
-  Widget _buildScreen(BuildContext context, FollowersState followersState) {
+  Widget _buildScreen(
+    BuildContext context, {
+    required FollowersState followersState,
+    required ScrollController followersScrollController,
+    required ScrollController followingScrollController,
+  }) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(""),
-          centerTitle: false,
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            tabs: [
-              Tab(text: "Following"),
-              Tab(text: "Followers"),
+      child: WillPopScope(
+        onWillPop: () async {
+          followersState.navigateBack();
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(""),
+            centerTitle: false,
+            bottom: const TabBar(
+              indicatorColor: Colors.white,
+              tabs: [
+                Tab(text: "Following"),
+                Tab(text: "Followers"),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              followersState.following.isEmpty
+                  ? const Center(child: Text('You are not following anyone yet.'))
+                  : ListView(
+                      controller: followingScrollController,
+                      children: followersState.following
+                          .map(
+                            (followingRelationship) => ListTile(
+                              leading: Container(
+                                width: 40.0,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey[350],
+                                  image: followingRelationship.targetProfilePictureURL == null
+                                      ? null
+                                      : DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(
+                                            followingRelationship.targetProfilePictureURL!,
+                                          ),
+                                        ),
+                                ),
+                                child: followingRelationship.targetProfilePictureURL == null
+                                    ? ClipOval(
+                                        child: Icon(
+                                          Icons.person_rounded,
+                                          color: Colors.grey[600],
+                                          size: 28,
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                              title: Text(
+                                followingRelationship.targetDisplayName,
+                              ),
+                              onTap: () {
+                                ProfileService.loadUserFromUid(context, userId: followingRelationship.targetId);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const ProfileScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                          .toList(),
+                    ),
+              followersState.followers.isEmpty
+                  ? const Center(child: Text('You are not followed by anyone yet.'))
+                  : ListView(
+                      controller: followersScrollController,
+                      children: followersState.followers
+                          .map(
+                            (followingRelationship) => ListTile(
+                              leading: Container(
+                                width: 40.0,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey[350],
+                                  image: followingRelationship.sourceProfilePictureURL == null
+                                      ? null
+                                      : DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(
+                                            followingRelationship.sourceProfilePictureURL!,
+                                          ),
+                                        ),
+                                ),
+                                child: followingRelationship.sourceProfilePictureURL == null
+                                    ? ClipOval(
+                                        child: Icon(
+                                          Icons.person_rounded,
+                                          color: Colors.grey[600],
+                                          size: 28,
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                              title: Text(followingRelationship.sourceDisplayName),
+                              onTap: () {
+                                ProfileService.loadUserFromUid(context, userId: followingRelationship.sourceId);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const ProfileScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                          .toList(),
+                    ),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            followersState.following.isEmpty
-                ? const Center(child: Text('You are not following anyone yet.'))
-                : ListView(
-                    children: followersState.following
-                        .map(
-                          (followingRelationship) => ListTile(
-                            leading: Container(
-                              width: 40.0,
-                              height: 40.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey[350],
-                                image: followingRelationship.targetProfilePictureURL == null
-                                    ? null
-                                    : DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(
-                                          followingRelationship.targetProfilePictureURL!,
-                                        ),
-                                      ),
-                              ),
-                              child: followingRelationship.targetProfilePictureURL == null
-                                  ? ClipOval(
-                                      child: Icon(
-                                        Icons.person_rounded,
-                                        color: Colors.grey[600],
-                                        size: 28,
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                            title: Text(
-                              followingRelationship.targetDisplayName,
-                            ),
-                            onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (_) => UserScreen(userId: followingRelationship.targetId),
-                              //   ),
-                              // );
-                            },
-                          ),
-                        )
-                        .toList(),
-                  ),
-            followersState.followers.isEmpty
-                ? const Center(child: Text('You are not followed by anyone yet.'))
-                : ListView(
-                    children: followersState.followers
-                        .map(
-                          (followingRelationship) => ListTile(
-                            leading: Container(
-                              width: 40.0,
-                              height: 40.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey[350],
-                                image: followingRelationship.sourceProfilePictureURL == null
-                                    ? null
-                                    : DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(
-                                          followingRelationship.sourceProfilePictureURL!,
-                                        ),
-                                      ),
-                              ),
-                              child: followingRelationship.sourceProfilePictureURL == null
-                                  ? ClipOval(
-                                      child: Icon(
-                                        Icons.person_rounded,
-                                        color: Colors.grey[600],
-                                        size: 28,
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                            title: Text(followingRelationship.sourceDisplayName),
-                            onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (_) => UserScreen(userId: followingRelationship.sourceId),
-                              //   ),
-                              // );
-                            },
-                          ),
-                        )
-                        .toList(),
-                  ),
-          ],
         ),
       ),
     );
