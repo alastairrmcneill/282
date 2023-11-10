@@ -20,8 +20,8 @@ admin.initializeApp();
 //  });
 
 
-exports.onFollowUser = functions.firestore.
-    document("followingRelationships/{relationshipId}")
+exports.onFollowUser = functions.firestore
+    .document("followingRelationships/{relationshipId}")
     .onCreate(async (snapshot, context) => {
         const relationshipId = context.params.uid;
 
@@ -54,8 +54,8 @@ exports.onFollowUser = functions.firestore.
         // Add followered user posts to user posts feed
     });
 
-exports.onUnfollowUser = functions.firestore.
-    document("followingRelationships/{relationshipId}")
+exports.onUnfollowUser = functions.firestore
+    .document("followingRelationships/{relationshipId}")
     .onDelete(async (snapshot, context) => {
         const relationshipId = context.params.uid;
 
@@ -87,4 +87,31 @@ exports.onUnfollowUser = functions.firestore.
         }
 
         // Remove unfollowered user posts from user posts feed
+    });
+
+
+exports.onPostCreated = functions.firestore
+    .document("posts/{postId}")
+    .onCreate(async (snapshot, context) => {
+        const postId = context.params.postId;
+        const authorId = snapshot.get("authorId");
+
+
+        // Add new post to feeds of all followers.
+        const userFollowerRelationshipsRef = admin
+            .firestore()
+            .collection('followingRelationships')
+            .where('targetId', '==', authorId);
+
+
+        const userFollowerRelationshipsSnapshot = await userFollowerRelationshipsRef.get();
+        userFollowerRelationshipsSnapshot.forEach((doc) => {
+            admin
+                .firestore()
+                .collection('feeds')
+                .doc(doc.get("sourceId"))
+                .collection('userFeed')
+                .doc(postId)
+                .set(snapshot.data());
+        });
     });

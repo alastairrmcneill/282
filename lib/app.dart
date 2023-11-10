@@ -38,6 +38,12 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<SearchState>(
           create: (_) => SearchState(),
         ),
+        ChangeNotifierProvider<PostState>(
+          create: (_) => PostState(),
+        ),
+        ChangeNotifierProvider<FeedState>(
+          create: (_) => FeedState(),
+        ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,

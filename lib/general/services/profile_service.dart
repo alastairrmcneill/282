@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/post_service.dart';
 import 'package:two_eight_two/general/services/services.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
@@ -29,10 +30,14 @@ class ProfileService {
         profileUserId: userId,
       );
 
+      profileState.setPosts = await PostService.getProfilePosts(context);
       // Set loading status?
       profileState.setStatus = ProfileStatus.loaded;
     } catch (error) {
-      profileState.setError = Error(message: "There was an issue. Please try again.");
+      profileState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue. Please try again.",
+      );
     }
   }
 

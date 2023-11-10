@@ -7,12 +7,14 @@ class ProfileState extends ChangeNotifier {
   List<AppUser> _navigationHistory = [];
   bool _isFollowing = false;
   bool _isCurrentUser = false;
+  List<Post> _posts = [];
   Error _error = Error();
 
   AppUser? get user => _user;
   ProfileStatus get status => _status;
   bool get isFollowing => _isFollowing;
   bool get isCurrentUser => _isCurrentUser;
+  List<Post> get posts => _posts;
   Error get error => _error;
 
   set setStatus(ProfileStatus profileStatus) {
@@ -56,6 +58,16 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setPosts(List<Post> posts) {
+    _posts = posts;
+    notifyListeners();
+  }
+
+  set addPosts(List<Post> posts) {
+    _posts.addAll(posts);
+    notifyListeners();
+  }
+
   set setError(Error error) {
     _status = ProfileStatus.error;
     _error = error;
@@ -63,4 +75,4 @@ class ProfileState extends ChangeNotifier {
   }
 }
 
-enum ProfileStatus { initial, loading, loaded, error }
+enum ProfileStatus { initial, loading, loaded, paginating, error }

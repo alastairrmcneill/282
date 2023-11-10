@@ -4,3 +4,5 @@ export 'navigation_state.dart';
 export 'profile_state.dart';
 export 'followers_state.dart';
 export 'search_state.dart';
+export 'post_state.dart';
+export 'feed_state.dart';

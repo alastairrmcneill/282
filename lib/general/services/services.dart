@@ -5,3 +5,4 @@ export 'user_database_service.dart';
 export 'storage_service.dart';
 export 'following_service.dart';
 export 'following_relationships_database_service.dart';
+export 'posts_database_service.dart';

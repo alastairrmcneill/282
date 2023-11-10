@@ -10,6 +10,7 @@ import 'package:two_eight_two/features/home/record/screens/screens.dart';
 import 'package:two_eight_two/features/home/saved/screens/screens.dart';
 import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/post_service.dart';
 import 'package:two_eight_two/general/services/profile_service.dart';
 import 'package:two_eight_two/general/services/services.dart';
 
@@ -64,6 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 followersState.clear();
 
                 // Check which screen
+                if (value == 1) {
+                  // Navigate to feed
+                  PostService.getFeed(context);
+                  setState(() => _currentIndex = value);
+                }
                 if (value == 4 && user == null) {
                   navigationState.setNavigateToRoute = "/profile_tab";
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));

@@ -4,10 +4,37 @@ import 'package:two_eight_two/features/home/feed/widgets/widgets.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
 import 'package:two_eight_two/features/home/profile/widgets/widgets.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
+import 'package:two_eight_two/general/services/post_service.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late ScrollController _scrollController;
+  @override
+  void initState() {
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange &&
+          profileState.status != ProfileStatus.paginating) {
+        PostService.paginateProfilePosts(context);
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +47,13 @@ class ProfileScreen extends StatelessWidget {
               body: const LoadingWidget(),
             );
           case ProfileStatus.error:
+            print(profileState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: profileState.error.message),
             );
-          case ProfileStatus.loaded:
-            return _buildScreen(context, profileState);
           default:
-            return Scaffold(appBar: AppBar());
+            return _buildScreen(context, profileState);
         }
       },
     );
@@ -42,6 +68,7 @@ class ProfileScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: CustomScrollView(
+          controller: _scrollController,
           physics: const ClampingScrollPhysics(),
           slivers: [
             const ProfileSliverHeader(),
@@ -104,10 +131,18 @@ class ProfileScreen extends StatelessWidget {
                         : Column(
                             children: [
                               const ProfileMediaHistory(),
-                              Container(
-                                height: 4000,
-                                width: double.infinity,
-                                color: Colors.red,
+                              Column(
+                                children: profileState.posts
+                                    .map(
+                                      (e) => SizedBox(
+                                        height: 100,
+                                        child: ListTile(
+                                          title: Text(e.uid ?? ""),
+                                          tileColor: Colors.red,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                               ),
                             ],
                           ),

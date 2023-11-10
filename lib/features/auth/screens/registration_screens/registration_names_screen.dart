@@ -51,10 +51,7 @@ class RegistrationNamesScreen extends StatelessWidget {
                   text: TextSpan(
                     text: "By continuing to use 282, you agree to our ",
                     style: TextStyle(
-                        fontFamily: "NotoSans",
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey[500],
-                        fontSize: 12),
+                        fontFamily: "NotoSans", fontWeight: FontWeight.w400, color: Colors.grey[500], fontSize: 12),
                     children: [
                       TextSpan(
                         text: "Terms & Conditions",
@@ -65,8 +62,7 @@ class RegistrationNamesScreen extends StatelessWidget {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            showDocumentDialog(context,
-                                mdFileName: 'assets/documents/terms_and_conditions.md');
+                            showDocumentDialog(context, mdFileName: 'assets/documents/terms_and_conditions.md');
                           },
                       ),
                       const TextSpan(text: " and "),
@@ -79,8 +75,7 @@ class RegistrationNamesScreen extends StatelessWidget {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            showDocumentDialog(context,
-                                mdFileName: 'assets/documents/privacy_policy.md');
+                            showDocumentDialog(context, mdFileName: 'assets/documents/privacy_policy.md');
                           },
                       ),
                       const TextSpan(text: "."),
