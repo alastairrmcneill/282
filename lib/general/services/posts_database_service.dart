@@ -116,7 +116,7 @@ class PostsDatabaseService {
     }
   }
 
-  static getFeedFromUserId(
+  static Future getFeedFromUserId(
     BuildContext context, {
     required String userId,
     required lastPostId,
@@ -130,7 +130,7 @@ class PostsDatabaseService {
           .doc(userId)
           .collection('userFeed')
           .orderBy(PostFields.dateTime, descending: true)
-          .limit(3)
+          .limit(10)
           .get();
     } else {
       final lastPostDoc = await _postsRef.doc(lastPostId).get();
@@ -142,7 +142,7 @@ class PostsDatabaseService {
           .collection('userFeed')
           .orderBy(PostFields.dateTime, descending: true)
           .startAfterDocument(lastPostDoc)
-          .limit(3)
+          .limit(10)
           .get();
     }
 

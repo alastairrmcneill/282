@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/features/home/feed/screens/screens.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/post_service.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
@@ -57,9 +58,17 @@ class _FeedTabState extends State<FeedTab> {
   }
 
   Widget _buildScreen(BuildContext context, FeedState feedState) {
-    print(feedState.posts);
+    print(feedState.posts.length);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => UserSearchScreen()));
+              },
+              icon: Icon(Icons.search))
+        ],
+      ),
       backgroundColor: Colors.white,
       body: CustomScrollView(
         controller: _scrollController,
@@ -73,12 +82,9 @@ class _FeedTabState extends State<FeedTab> {
                     : Column(
                         children: feedState.posts
                             .map(
-                              (e) => SizedBox(
-                                height: 400,
-                                child: ListTile(
-                                  title: Text(e.uid ?? ""),
-                                  tileColor: Colors.blue,
-                                ),
+                              (e) => ListTile(
+                                title: Text(e.authorDisplayName),
+                                subtitle: Text(e.caption ?? ""),
                               ),
                             )
                             .toList(),

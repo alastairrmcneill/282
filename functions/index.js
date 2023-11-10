@@ -8,16 +8,31 @@
  */
 
 // const { onDocumentCreated, onDocumentDeleted } = require("firebase-functions/v2/firestore");
+
+// const {
+//     log,
+//     info,
+//     debug,
+//     warn,
+//     error,
+//     write,
+//   } = require("firebase-functions/logger");
+
+// const functions = require('firebase-functions/v1');
+
+// const logger = require("firebase-functions/logger");
+// const admin = require("firebase-admin");
+
+
+
+
+
 const functions = require('firebase-functions/v1');
 
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 
 admin.initializeApp();
-
-// exports.onFollowUser = onDocumentCreated("followingRelationships/{relationshipId}", (event) => {
-
-//  });
 
 
 exports.onFollowUser = functions.firestore
@@ -52,6 +67,25 @@ exports.onFollowUser = functions.firestore
         }
 
         // Add followered user posts to user posts feed
+        const followedUserPostsRef = admin
+            .firestore()
+            .collection('posts')
+            .where("authorId", "==", targetId);
+
+        const userFeedRef = admin
+            .firestore()
+            .collection('feeds')
+            .doc(sourceId)
+            .collection('userFeed')
+
+        const followedUserPostsSnapshot = await followedUserPostsRef.get();
+
+        followedUserPostsSnapshot.forEach((doc) => {
+            if (doc.exists) {
+                userFeedRef.doc(doc.id).set(doc.data());
+            }
+        });
+
     });
 
 exports.onUnfollowUser = functions.firestore
@@ -87,8 +121,22 @@ exports.onUnfollowUser = functions.firestore
         }
 
         // Remove unfollowered user posts from user posts feed
-    });
+        const unfollowedUserFeedRef = admin
+            .firestore()
+            .collection('feeds')
+            .doc(sourceId)
+            .collection('userFeed')
+            .where("authorId", "==", targetId);
 
+        const unfollowedUserPostsSnapshot = await unfollowedUserFeedRef.get();
+
+        unfollowedUserPostsSnapshot.forEach((doc) => {
+            if (doc.exists) {
+                doc.ref.delete();
+            }
+        });
+
+    });
 
 exports.onPostCreated = functions.firestore
     .document("posts/{postId}")
@@ -114,4 +162,71 @@ exports.onPostCreated = functions.firestore
                 .doc(postId)
                 .set(snapshot.data());
         });
+    });
+
+exports.onPostUpdated = functions.firestore
+    .document('/posts/{postId}')
+    .onUpdate(async (snapshot, context) => {
+        const postId = context.params.postId;
+
+        // Get author id.
+        const authorId = snapshot.after.get('authorId');
+
+
+        // Update post data in each follower's feed.
+        const updatedPostData = snapshot.after.data();
+
+        // Add new post to feeds of all followers.
+        const userFollowerRelationshipsRef = admin
+            .firestore()
+            .collection('followingRelationships')
+            .where('targetId', '==', authorId);
+
+        const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
+
+        for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+            let doc = userFollowersSnapshot.docs[i];
+            const feedsRef = admin
+                .firestore()
+                .collection('feeds')
+                .doc(doc.get('sourceId'))
+                .collection('userFeed');
+            const postDoc = await feedsRef.doc(postId).get();
+            if (postDoc.exists) {
+                postDoc.ref.update(updatedPostData);
+            }
+        }
+    });
+
+exports.onPostDeleted = functions.firestore
+    .document('/posts/{postId}')
+    .onDelete(async (snapshot, context) => {
+        const postId = context.params.postId;
+
+        // Get author id.
+        const authorId = snapshot.get('authorId');
+
+        // Add new post to feeds of all followers.
+        const userFollowerRelationshipsRef = admin
+            .firestore()
+            .collection('followingRelationships')
+            .where('targetId', '==', authorId);
+
+        const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
+
+        logger.log(userFollowersSnapshot.docs.length);
+
+        for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+            let doc = userFollowersSnapshot.docs[i];
+            const feedsRef = admin
+                .firestore()
+                .collection('feeds')
+                .doc(doc.get('sourceId'))
+                .collection('userFeed');
+            const postDoc = await feedsRef.doc(postId).get();
+            if (postDoc.exists) {
+                postDoc.ref.delete();
+            }
+        }
+
     });

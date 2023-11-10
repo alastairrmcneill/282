@@ -39,7 +39,7 @@ class MunroSummitedPostScreen extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
-            PostService.createPost(context, caption: null, picture: null);
+            PostService.createPost(context, caption: "This is my new post!", picture: null);
           },
           child: Text("Submitt"),
         ),
