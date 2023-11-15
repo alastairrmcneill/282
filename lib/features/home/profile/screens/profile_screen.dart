@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/feed/widgets/widgets.dart';
 import 'package:two_eight_two/features/home/profile/screens/screens.dart';
 import 'package:two_eight_two/features/home/profile/widgets/widgets.dart';
+import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/post_service.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
@@ -132,17 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               const ProfileMediaHistory(),
                               Column(
-                                children: profileState.posts
-                                    .map(
-                                      (e) => SizedBox(
-                                        height: 100,
-                                        child: ListTile(
-                                          title: Text(e.uid ?? ""),
-                                          tileColor: Colors.red,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
+                                children: profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
                               ),
                             ],
                           ),

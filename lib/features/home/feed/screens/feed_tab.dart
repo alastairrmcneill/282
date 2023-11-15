@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/features/home/feed/screens/screens.dart';
+import 'package:two_eight_two/features/home/feed/widgets/widgets.dart';
+import 'package:two_eight_two/general/models/models.dart';
 import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/post_service.dart';
 import 'package:two_eight_two/general/widgets/widgets.dart';
@@ -82,10 +84,7 @@ class _FeedTabState extends State<FeedTab> {
                     : Column(
                         children: feedState.posts
                             .map(
-                              (e) => ListTile(
-                                title: Text(e.authorDisplayName),
-                                subtitle: Text(e.caption ?? ""),
-                              ),
+                              (Post post) => PostWidget(post: post),
                             )
                             .toList(),
                       ),

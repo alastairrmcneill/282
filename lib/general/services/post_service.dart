@@ -7,20 +7,37 @@ import 'package:two_eight_two/general/notifiers/notifiers.dart';
 import 'package:two_eight_two/general/services/services.dart';
 
 class PostService {
-  static Future createPost(BuildContext context, {required String? caption, required File? picture}) async {
-    PostState postState = Provider.of<PostState>(context, listen: false);
-    ProfileState feedState = Provider.of<ProfileState>(context, listen: false);
+  static Future createPost(BuildContext context) async {
+    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
-    final user = Provider.of<AppUser?>(context, listen: false);
 
     try {
-      postState.setStatus = PostStatus.submitting;
+      createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      String? pictureURL;
-      if (picture != null) {
-        pictureURL = await StorageService.uploadPostImage(picture);
+      List<String> imageURLs = createPostState.imagesURLs;
+      for (File image in createPostState.images) {
+        String imageURL = await StorageService.uploadPostImage(image);
+        imageURLs.add(imageURL);
       }
+
+      // Get title
+      String title = "";
+      if (createPostState.title == null) {
+        DateTime now = DateTime.now();
+        if (now.month == 1 || now.month == 2 || now.month == 12) {
+          title = "Winter Hike";
+        } else if (now.month >= 3 && now.month <= 5) {
+          title = "Spring Hike";
+        } else if (now.month >= 6 && now.month <= 8) {
+          title = "Summer Hike";
+        } else if (now.month >= 9 && now.month <= 11) {
+          title = "Autumn Hike";
+        }
+      } else {
+        title = createPostState.title!;
+      }
+
       // Create post object
       Post post = Post(
         authorId: userState.currentUser?.uid ?? "",
@@ -28,8 +45,10 @@ class PostService {
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
         dateTime: DateTime.now(),
         likes: 0,
-        caption: caption,
-        pictureURL: pictureURL,
+        title: title,
+        description: createPostState.description,
+        includedMunros: createPostState.selectedMunros,
+        imageURLs: imageURLs,
       );
 
       // Send to database
@@ -38,9 +57,42 @@ class PostService {
 
       // Update state
       print("Post completed");
-      postState.setStatus = PostStatus.success;
+      createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {
-      postState.setError = Error(message: "There was an issue uploading your post. Please try again");
+      print(error);
+      createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
+    }
+  }
+
+  static Future editPost(BuildContext context) async {
+    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    try {
+      createPostState.setStatus = CreatePostStatus.loading;
+
+      // Upload picture and get url
+      List<String> imageURLs = createPostState.imagesURLs;
+      for (File image in createPostState.images) {
+        String imageURL = await StorageService.uploadPostImage(image);
+        imageURLs.add(imageURL);
+      }
+
+      // Create post object
+      Post post = createPostState.editingPost!;
+
+      Post newPost = post.copyWith(
+        title: createPostState.title,
+        description: createPostState.description,
+        imageURLs: imageURLs,
+      );
+
+      // Send to database
+
+      await PostsDatabaseService.update(context, post: newPost);
+
+      // Update state
+      createPostState.setStatus = CreatePostStatus.loaded;
+    } catch (error) {
+      createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
     }
   }
 
@@ -131,5 +183,15 @@ class PostService {
     } catch (error) {
       feedState.setError = Error(message: "There was an issue loading your feed. Please try again.");
     }
+  }
+
+  static Future deletePost(BuildContext context, {required Post post}) async {
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+
+    if (profileState.posts.contains(post)) {
+      profileState.removePost(post);
+    }
+
+    PostsDatabaseService.deletePostWithUID(context, uid: post.uid ?? "");
   }
 }

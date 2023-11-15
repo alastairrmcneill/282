@@ -68,6 +68,13 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
+  removePost(Post post) {
+    if (_posts.contains(post)) {
+      _posts.remove(post);
+    }
+    notifyListeners();
+  }
+
   set setError(Error error) {
     _status = ProfileStatus.error;
     _error = error;

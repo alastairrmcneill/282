@@ -16,6 +16,7 @@ class MunroDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
+    CreatePostState createPostState = Provider.of<CreatePostState>(context);
     final user = Provider.of<AppUser?>(context);
 
     Munro munro = munroNotifier.selectedMunro!;
@@ -158,9 +159,11 @@ class MunroDetailScreen extends StatelessWidget {
                                 navigationState.setNavigateToRoute = "/home_screen";
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                               } else {
+                                createPostState.reset();
+                                createPostState.addMunro(munro);
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) => MunroSummitedPostScreen(munro: munro),
+                                    builder: (_) => MunroSummitedPostScreen(),
                                   ),
                                 );
                               }

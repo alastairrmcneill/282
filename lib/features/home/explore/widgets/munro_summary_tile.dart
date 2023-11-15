@@ -19,6 +19,7 @@ class MunroSummaryTile extends StatelessWidget {
     NavigationState navigationState = Provider.of(context);
     MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
     Munro munro = munroNotifier.munroList.where((m) => m.id == munroId!).first;
+    CreatePostState createPostState = Provider.of<CreatePostState>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -78,8 +79,7 @@ class MunroSummaryTile extends StatelessWidget {
                             ? const SizedBox()
                             : Text(
                                 "(${munro.extra})",
-                                style:
-                                    TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
+                                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
                               ),
                         const SizedBox(height: 3),
                         Text(
@@ -104,9 +104,7 @@ class MunroSummaryTile extends StatelessWidget {
                             await MunroService.toggleMunroSaved(context, munro: munro);
                           }
                         },
-                        child: Icon(munro.saved
-                            ? Icons.bookmark_rounded
-                            : Icons.bookmark_outline_rounded),
+                        child: Icon(munro.saved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
                       ),
                     ),
                     Padding(
@@ -119,17 +117,17 @@ class MunroSummaryTile extends StatelessWidget {
                           } else {
                             if (munro.summited) return;
                             munroNotifier.setSelectedMunro = munro;
+                            createPostState.reset();
+                            createPostState.addMunro(munro);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => MunroSummitedPostScreen(munro: munro),
+                                builder: (_) => MunroSummitedPostScreen(),
                               ),
                             );
                           }
                         },
-                        child: Icon(munro.summited
-                            ? Icons.check_circle_rounded
-                            : Icons.check_circle_outline_rounded),
+                        child: Icon(munro.summited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
                       ),
                     ),
                   ],

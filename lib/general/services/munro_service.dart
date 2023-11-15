@@ -37,29 +37,30 @@ class MunroService {
     if (userState.currentUser == null) return;
   }
 
-  static Future<void> markMunroAsDone(
+  static Future<void> markMunrosAsDone(
     BuildContext context, {
-    required Munro munro,
+    required List<Munro> munros,
   }) async {
     // State management
     UserState userState = Provider.of<UserState>(context, listen: false);
     MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context, listen: false);
 
     if (userState.currentUser == null) return;
-
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
-    newAppUser.personalMunroData![munro.id - 1][MunroFields.summited] = true;
-    newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] = DateTime.now();
+
+    for (Munro munro in munros) {
+      newAppUser.personalMunroData![munro.id - 1][MunroFields.summited] = true;
+      newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] = DateTime.now();
+      // Update munro notifier
+      munroNotifier.updateMunro(
+        munroId: munro.id,
+        summited: true,
+        summitedDate: DateTime.now(),
+      );
+    }
 
     UserDatabase.update(context, appUser: newAppUser);
-
-    // Update munro notifier
-    munroNotifier.updateMunro(
-      munroId: munro.id,
-      summited: true,
-      summitedDate: DateTime.now(),
-    );
 
     // Create post
   }

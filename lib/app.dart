@@ -41,6 +41,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<PostState>(
           create: (_) => PostState(),
         ),
+        ChangeNotifierProvider<CreatePostState>(
+          create: (_) => CreatePostState(),
+        ),
         ChangeNotifierProvider<FeedState>(
           create: (_) => FeedState(),
         ),
