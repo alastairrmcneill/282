@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/features/auth/screens/auth_home_screen.dart';
-import 'package:two_eight_two/features/home/screens/screens.dart';
-import 'package:two_eight_two/general/models/models.dart';
-import 'package:two_eight_two/general/notifiers/notifiers.dart';
-import 'package:two_eight_two/general/services/auth_service.dart';
+import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class App extends StatelessWidget {
