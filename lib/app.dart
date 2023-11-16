@@ -34,11 +34,8 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<FollowersState>(
           create: (_) => FollowersState(),
         ),
-        ChangeNotifierProvider<SearchState>(
-          create: (_) => SearchState(),
-        ),
-        ChangeNotifierProvider<PostState>(
-          create: (_) => PostState(),
+        ChangeNotifierProvider<UserSearchState>(
+          create: (_) => UserSearchState(),
         ),
         ChangeNotifierProvider<CreatePostState>(
           create: (_) => CreatePostState(),

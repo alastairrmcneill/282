@@ -95,6 +95,8 @@ class CreatePostState extends ChangeNotifier {
     _imageURLs = [];
     _images = [];
     _selectedMunros = [];
+    _error = Error();
+    _status = CreatePostStatus.initial;
   }
 }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class StatText extends StatelessWidget {
   final String text;
-  final int stat;
+  final String stat;
   final Function()? onTap;
   const StatText({
     super.key,
@@ -21,7 +21,7 @@ class StatText extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              stat.toString(),
+              stat,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             Text(

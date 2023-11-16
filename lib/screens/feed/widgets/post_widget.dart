@@ -1,7 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
-import 'package:two_eight_two/screens/create_post/munro_summited_post_screen.dart';
+import 'package:two_eight_two/screens/create_post/create_post_screen.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -37,7 +38,7 @@ class PostWidget extends StatelessWidget {
           if (value == MenuItems.item1) {
             createPostState.reset();
             createPostState.loadPost = post;
-            Navigator.push(context, MaterialPageRoute(builder: (_) => MunroSummitedPostScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePostScreen()));
           } else if (value == MenuItems.item2) {
             PostService.deletePost(context, post: post);
           }
@@ -118,9 +119,18 @@ class PostWidget extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.85,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        child: Image.network(
-                          url,
+                        child: CachedNetworkImage(
+                          imageUrl: url,
                           fit: BoxFit.cover,
+                          progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                            child: LinearProgressIndicator(
+                              value: downloadProgress.progress,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) {
+                            return const Icon(Icons.photo_rounded);
+                          },
                         ),
                       ),
                     ),

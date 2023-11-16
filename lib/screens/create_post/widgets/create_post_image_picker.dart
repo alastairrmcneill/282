@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -69,7 +70,18 @@ class CreatePostImagePicker extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(imageURL),
+                  child: CachedNetworkImage(
+                    imageUrl: imageURL,
+                    progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                      child: LinearProgressIndicator(
+                        value: downloadProgress.progress,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
+                      return const Icon(Icons.photo_rounded);
+                    },
+                  ),
                 ),
               );
             }).toList(),

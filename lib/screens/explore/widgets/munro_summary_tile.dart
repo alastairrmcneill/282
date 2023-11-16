@@ -31,7 +31,7 @@ class MunroSummaryTile extends StatelessWidget {
             munroNotifier.setSelectedMunro = munro;
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => const MunroDetailScreen(),
+                builder: (_) => const MunroScreen(),
               ),
             );
           },
@@ -122,7 +122,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => MunroSummitedPostScreen(),
+                                builder: (_) => CreatePostScreen(),
                               ),
                             );
                           }

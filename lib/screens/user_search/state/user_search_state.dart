@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 
-class SearchState extends ChangeNotifier {
+class UserSearchState extends ChangeNotifier {
   SearchStatus _status = SearchStatus.initial;
   List<AppUser> _users = [];
   Error _error = Error();

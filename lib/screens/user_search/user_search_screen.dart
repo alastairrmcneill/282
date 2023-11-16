@@ -18,12 +18,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    SearchState searchState = Provider.of<SearchState>(context, listen: false);
+    UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
-          searchState.status != SearchStatus.paginating) {
+          userSearchState.status != SearchStatus.paginating) {
         SearchService.paginateSearch(context, query: _searchController.text.trim());
       }
     });
@@ -76,19 +76,19 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             ),
             Expanded(
               flex: 1,
-              child: Consumer<SearchState>(
-                builder: (context, searchState, child) {
-                  switch (searchState.status) {
+              child: Consumer<UserSearchState>(
+                builder: (context, userSearchState, child) {
+                  switch (userSearchState.status) {
                     case SearchStatus.initial:
                       return const CenterText(text: "Search for fellow 282 users");
                     case SearchStatus.loading:
                       return const LoadingWidget();
                     case SearchStatus.error:
-                      return CenterText(text: searchState.error.message);
+                      return CenterText(text: userSearchState.error.message);
                     default:
                       return _buildScreen(
                         context,
-                        searchState: searchState,
+                        userSearchState: userSearchState,
                         scrollController: _scrollController,
                         currentUserId: currentUserId,
                       );
@@ -104,19 +104,19 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
 
   Widget _buildScreen(
     BuildContext context, {
-    required SearchState searchState,
+    required UserSearchState userSearchState,
     required ScrollController scrollController,
     required String currentUserId,
   }) {
-    if (searchState.users.isEmpty) {
+    if (userSearchState.users.isEmpty) {
       return const CenterText(text: "No users found");
     }
 
     return ListView.builder(
       controller: scrollController,
-      itemCount: searchState.users.length,
+      itemCount: userSearchState.users.length,
       itemBuilder: (context, index) {
-        final AppUser user = searchState.users[index];
+        final AppUser user = userSearchState.users[index];
 
         if (user.uid != currentUserId) {
           return ListTile(

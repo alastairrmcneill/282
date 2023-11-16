@@ -4,10 +4,11 @@ import 'package:two_eight_two/models/models.dart';
 class ProfileState extends ChangeNotifier {
   ProfileStatus _status = ProfileStatus.initial;
   AppUser? _user;
-  List<AppUser> _navigationHistory = [];
+  List<AppUser> _profileHistory = [];
   bool _isFollowing = false;
   bool _isCurrentUser = false;
   List<Post> _posts = [];
+  List<List<Post>> _postsHisotry = [];
   Error _error = Error();
 
   AppUser? get user => _user;
@@ -24,19 +25,22 @@ class ProfileState extends ChangeNotifier {
 
   set setUser(AppUser? user) {
     if (user != null) {
-      _navigationHistory.insert(0, user);
+      _profileHistory.insert(0, user);
     }
     _user = user;
     notifyListeners();
   }
 
   void navigateBack() {
-    if (_navigationHistory.isNotEmpty) {
-      _navigationHistory.removeAt(0);
-      if (_navigationHistory.isNotEmpty) {
-        _user = _navigationHistory[0];
+    if (_profileHistory.isNotEmpty) {
+      _profileHistory.removeAt(0);
+      _postsHisotry.removeAt(0);
+      if (_profileHistory.isNotEmpty) {
+        _user = _profileHistory[0];
+        _posts = _postsHisotry[0];
       } else {
         _user = null;
+        _posts = [];
       }
 
       notifyListeners();
@@ -44,7 +48,7 @@ class ProfileState extends ChangeNotifier {
   }
 
   void clear() {
-    _navigationHistory = [];
+    _profileHistory = [];
     _user = null;
   }
 
@@ -59,11 +63,13 @@ class ProfileState extends ChangeNotifier {
   }
 
   set setPosts(List<Post> posts) {
+    _postsHisotry.insert(0, posts);
     _posts = posts;
     notifyListeners();
   }
 
   set addPosts(List<Post> posts) {
+    _postsHisotry[0].addAll(posts);
     _posts.addAll(posts);
     notifyListeners();
   }

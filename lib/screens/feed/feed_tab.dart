@@ -47,7 +47,6 @@ class _FeedTabState extends State<FeedTab> {
               body: const LoadingWidget(),
             );
           case FeedStatus.error:
-            print(feedState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: feedState.error.message),
@@ -60,15 +59,20 @@ class _FeedTabState extends State<FeedTab> {
   }
 
   Widget _buildScreen(BuildContext context, FeedState feedState) {
-    print(feedState.posts.length);
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => UserSearchScreen()));
-              },
-              icon: Icon(Icons.search))
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const UserSearchScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.search),
+          )
         ],
       ),
       backgroundColor: Colors.white,
@@ -78,9 +82,12 @@ class _FeedTabState extends State<FeedTab> {
         slivers: [
           SliverToBoxAdapter(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 feedState.posts.isEmpty
-                    ? SafeArea(child: CenterText(text: "There were no posts to view."))
+                    ? const SafeArea(
+                        child: CenterText(text: "There are no posts in your feed."),
+                      )
                     : Column(
                         children: feedState.posts
                             .map(
@@ -89,7 +96,7 @@ class _FeedTabState extends State<FeedTab> {
                             .toList(),
                       ),
                 SizedBox(
-                  child: feedState.status == FeedStatus.paginating ? CircularProgressIndicator() : null,
+                  child: feedState.status == FeedStatus.paginating ? const CircularProgressIndicator() : null,
                 ),
               ],
             ),

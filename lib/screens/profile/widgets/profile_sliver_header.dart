@@ -100,12 +100,13 @@ class _ProfileSliverHeaderState extends State<ProfileSliverHeader> {
                                 text: "Munros",
                                 stat: profileState.user?.personalMunroData
                                         ?.where((munro) => munro[MunroFields.summited])
-                                        .length ??
-                                    0,
+                                        .length
+                                        .toString() ??
+                                    "0",
                               ),
                               StatText(
                                 text: "Following",
-                                stat: profileState.user?.followingCount ?? 0,
+                                stat: profileState.user?.followingCount.toString() ?? "0",
                                 onTap: () {
                                   FollowingService.loadInitialFollowersAndFollowing(
                                     context,
@@ -121,7 +122,7 @@ class _ProfileSliverHeaderState extends State<ProfileSliverHeader> {
                               ),
                               StatText(
                                 text: "Followers",
-                                stat: profileState.user?.followersCount ?? 0,
+                                stat: profileState.user?.followersCount.toString() ?? "0",
                                 onTap: () {
                                   FollowingService.loadInitialFollowersAndFollowing(
                                     context,

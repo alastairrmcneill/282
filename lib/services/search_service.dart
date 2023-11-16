@@ -6,43 +6,43 @@ import 'package:two_eight_two/screens/notifiers.dart';
 
 class SearchService {
   static Future search(BuildContext context, {required String query}) async {
-    SearchState searchState = Provider.of<SearchState>(context, listen: false);
+    UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
     try {
       // Set loading
-      searchState.setStatus = SearchStatus.loading;
+      userSearchState.setStatus = SearchStatus.loading;
 
       // Search
-      searchState.setUsers = await UserDatabase.searchUsers(context, query: query.toLowerCase(), lastUserId: null);
+      userSearchState.setUsers = await UserDatabase.searchUsers(context, query: query.toLowerCase(), lastUserId: null);
 
-      searchState.setStatus = SearchStatus.loaded;
+      userSearchState.setStatus = SearchStatus.loaded;
     } catch (error) {
-      searchState.setError = Error(message: "There was an issue with the search. Please try again.");
+      userSearchState.setError = Error(message: "There was an issue with the search. Please try again.");
     }
   }
 
   static Future paginateSearch(BuildContext context, {required String query}) async {
-    SearchState searchState = Provider.of<SearchState>(context, listen: false);
+    UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
 
     try {
-      searchState.setStatus = SearchStatus.paginating;
+      userSearchState.setStatus = SearchStatus.paginating;
 
       // Find last user ID
       String lastUserId = "";
-      if (searchState.users.isNotEmpty) {
-        lastUserId = searchState.users.last.uid!;
+      if (userSearchState.users.isNotEmpty) {
+        lastUserId = userSearchState.users.last.uid!;
       }
 
       // Add posts from database
-      searchState.addUsers = await UserDatabase.searchUsers(context, query: query, lastUserId: lastUserId);
-      searchState.setStatus = SearchStatus.loaded;
+      userSearchState.addUsers = await UserDatabase.searchUsers(context, query: query, lastUserId: lastUserId);
+      userSearchState.setStatus = SearchStatus.loaded;
     } catch (error) {
-      searchState.setError = Error(message: "There was an issue loading more. Please try again.");
+      userSearchState.setError = Error(message: "There was an issue loading more. Please try again.");
     }
   }
 
   static clearSearch(BuildContext context) {
-    SearchState searchState = Provider.of<SearchState>(context, listen: false);
-    searchState.setStatus = SearchStatus.initial;
-    searchState.setUsers = [];
+    UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
+    userSearchState.setStatus = SearchStatus.initial;
+    userSearchState.setUsers = [];
   }
 }
