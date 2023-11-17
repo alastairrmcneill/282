@@ -11,7 +11,7 @@ class MunroSelector extends StatefulWidget {
 }
 
 class _MunroSelectorState extends State<MunroSelector> {
-  void _showModalSheet(MunroNotifier munroNotifier, CreatePostState createPostState, FormFieldState formState) {
+  void _showModalSheet(MunroState munroState, CreatePostState createPostState, FormFieldState formState) {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -19,7 +19,7 @@ class _MunroSelectorState extends State<MunroSelector> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return ListView(
-              children: munroNotifier.munroList.map((Munro munro) {
+              children: munroState.munroList.map((Munro munro) {
                 return Column(
                   children: [
                     ListTile(
@@ -56,7 +56,7 @@ class _MunroSelectorState extends State<MunroSelector> {
   @override
   Widget build(BuildContext context) {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     return FormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       initialValue: createPostState.selectedMunros,
@@ -74,7 +74,7 @@ class _MunroSelectorState extends State<MunroSelector> {
               children: [
                 Text("Munros on this hike"),
                 GestureDetector(
-                  onTap: () => _showModalSheet(munroNotifier, createPostState, formState),
+                  onTap: () => _showModalSheet(munroState, createPostState, formState),
                   child: Icon(Icons.add_rounded),
                 ),
               ],

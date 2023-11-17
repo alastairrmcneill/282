@@ -7,10 +7,10 @@ class SavedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     return Scaffold(
       body: ListView(
-        children: munroNotifier.munroList
+        children: munroState.munroList
             .where((element) => element.saved)
             .map(
               (e) => ListTile(

@@ -17,7 +17,7 @@ class MunroSearchBar extends StatefulWidget {
 class _MunroSearchBarState extends State<MunroSearchBar> {
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -29,11 +29,11 @@ class _MunroSearchBarState extends State<MunroSearchBar> {
             backgroundColor: Colors.grey[100],
             borderRadius: BorderRadius.circular(100),
             onChanged: (value) {
-              munroNotifier.setFilterString = value;
+              munroState.setFilterString = value;
             },
           ),
           const SizedBox(height: 2),
-          munroNotifier.filteredMunroList.isNotEmpty
+          munroState.filteredMunroList.isNotEmpty
               ? SizedBox(
                   height: 200,
                   child: MunroFilterList(

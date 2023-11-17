@@ -25,8 +25,8 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<NavigationState>(
           create: (_) => NavigationState(),
         ),
-        ChangeNotifierProvider<MunroNotifier>(
-          create: (_) => MunroNotifier(),
+        ChangeNotifierProvider<MunroState>(
+          create: (_) => MunroState(),
         ),
         ChangeNotifierProvider<ProfileState>(
           create: (_) => ProfileState(),

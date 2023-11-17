@@ -14,7 +14,7 @@ class MunroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -27,15 +27,15 @@ class MunroScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 children: [
-                  munroNotifier.selectedMunro?.extra == null || munroNotifier.selectedMunro?.extra == ""
+                  munroState.selectedMunro?.extra == null || munroState.selectedMunro?.extra == ""
                       ? const SizedBox()
-                      : SizedBox(width: double.infinity, child: Text("(${munroNotifier.selectedMunro?.extra})")),
+                      : SizedBox(width: double.infinity, child: Text("(${munroState.selectedMunro?.extra})")),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      StatText(text: "Height", stat: "${munroNotifier.selectedMunro?.meters}m"),
-                      StatText(text: "Area", stat: munroNotifier.selectedMunro?.area ?? ""),
+                      StatText(text: "Height", stat: "${munroState.selectedMunro?.meters}m"),
+                      StatText(text: "Area", stat: munroState.selectedMunro?.area ?? ""),
                     ],
                   ),
                   const SizedBox(height: 20),

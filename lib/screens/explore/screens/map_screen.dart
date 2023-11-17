@@ -42,10 +42,10 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Set<Marker> getMarkers({required MunroNotifier munroNotifier}) {
+  Set<Marker> getMarkers({required MunroState munroState}) {
     Set<Marker> markers = {};
 
-    for (var munro in munroNotifier.munroList) {
+    for (var munro in munroState.munroList) {
       markers.add(
         Marker(
           markerId: MarkerId(
@@ -80,19 +80,7 @@ class _MapScreenState extends State<MapScreen> {
     );
     _searchFocusNode.unfocus();
     _googleMapController.animateCamera(CameraUpdate.newLatLng(offsetLatLng));
-    // showCustomBottomSheet(munro);
   }
-
-  // showCustomBottomSheet(Munro munro) {
-  //   _bottomSheetController = showBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(40),
-  //     ),
-  //     builder: (context) => MunroBottomSheet(munro: munro),
-  //   );
-  // }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -122,7 +110,7 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Widget _buildGoogleMap(MunroNotifier munroNotifier) {
+  Widget _buildGoogleMap(MunroState munroState) {
     return GoogleMap(
       onMapCreated: (controller) => _googleMapController = controller,
       initialCameraPosition: const CameraPosition(
@@ -161,7 +149,7 @@ class _MapScreenState extends State<MapScreen> {
       zoomControlsEnabled: false,
       mapType: MapType.terrain,
       padding: const EdgeInsets.all(20),
-      markers: getMarkers(munroNotifier: munroNotifier),
+      markers: getMarkers(munroState: munroState),
       myLocationButtonEnabled: false,
       myLocationEnabled: false,
     );
@@ -169,14 +157,14 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context, listen: true);
+    MunroState munroState = Provider.of<MunroState>(context, listen: true);
 
     return Scaffold(
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
-                _buildGoogleMap(munroNotifier),
+                _buildGoogleMap(munroState),
                 SafeArea(
                   child: Align(
                     alignment: Alignment.topCenter,
@@ -186,7 +174,6 @@ class _MapScreenState extends State<MapScreen> {
                         setState(() {
                           _selectedMunroID = munro.id;
                         });
-                        // showCustomBottomSheet(munro);
                       },
                     ),
                   ),

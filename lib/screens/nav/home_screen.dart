@@ -7,6 +7,7 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   final int? startingIndex;
@@ -36,10 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future _loadData() async {
-    await UserDatabase.readCurrentUser(context);
-    await MunroService.loadMunroData(context).then(
-      (value) => setState(() => loading = false),
-    );
+    await UserDatabase.readCurrentUser(context).whenComplete(() => setState(() => loading = false));
+    MunroService.loadMunroData(context);
   }
 
   @override
@@ -48,8 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
     NavigationState navigationState = Provider.of<NavigationState>(context);
     ProfileState profileState = Provider.of<ProfileState>(context);
     FollowersState followersState = Provider.of<FollowersState>(context);
+
     return loading
-        ? const Center(child: CircularProgressIndicator())
+        ? const SplashScreen()
         : Scaffold(
             body: _screens[_currentIndex],
             bottomNavigationBar: BottomNavigationBar(

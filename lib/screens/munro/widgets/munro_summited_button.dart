@@ -11,14 +11,14 @@ class MunroSummitedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     UserState userState = Provider.of<UserState>(context);
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
 
-    return munroNotifier.selectedMunro?.summited ?? false
+    return munroState.selectedMunro?.summited ?? false
         ? Text("Summited: ${DateFormat('dd/MM/yyyy').format(
-            munroNotifier.selectedMunro?.summitedDate ?? DateTime.now(),
+            munroState.selectedMunro?.summitedDate ?? DateTime.now(),
           )}")
         : SizedBox(
             height: 44,
@@ -30,8 +30,8 @@ class MunroSummitedButton extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                 } else {
                   createPostState.reset();
-                  if (munroNotifier.selectedMunro != null) {
-                    createPostState.addMunro(munroNotifier.selectedMunro!);
+                  if (munroState.selectedMunro != null) {
+                    createPostState.addMunro(munroState.selectedMunro!);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => CreatePostScreen(),

@@ -9,10 +9,10 @@ class MunroDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     return RichText(
       text: TextSpan(
-        text: "${munroNotifier.selectedMunro?.description ?? ""} ",
+        text: "${munroState.selectedMunro?.description ?? ""} ",
         style: const TextStyle(color: Colors.black, fontFamily: "NotoSans"),
         children: <TextSpan>[
           TextSpan(
@@ -24,7 +24,7 @@ class MunroDescription extends StatelessWidget {
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
                 await launchUrl(
-                  Uri.parse(munroNotifier.selectedMunro?.link ?? ""),
+                  Uri.parse(munroState.selectedMunro?.link ?? ""),
                 );
               },
           ),

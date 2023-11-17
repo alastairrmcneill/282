@@ -10,10 +10,10 @@ class MunroFilterListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     return GestureDetector(
       onTap: () {
-        munroNotifier.setFilterString = "";
+        munroState.setFilterString = "";
         onSelected(munro);
       },
       child: Container(

@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/models/munro.dart';
+import 'package:two_eight_two/models/models.dart';
 
-class MunroNotifier extends ChangeNotifier {
+class MunroState extends ChangeNotifier {
+  MunroStatus _status = MunroStatus.initial;
+  Error _error = Error();
   List<Munro> _munroList = [];
   Munro? _selectedMunro;
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
 
+  MunroStatus get status => _status;
+  Error get error => _error;
   List<Munro> get munroList => _munroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
   Munro? get selectedMunro => _selectedMunro;
+
+  set setStatus(MunroStatus searchStatus) {
+    _status = searchStatus;
+    notifyListeners();
+  }
+
+  set setError(Error error) {
+    _status = MunroStatus.error;
+    _error = error;
+    notifyListeners();
+  }
 
   set setMunroList(List<Munro> munroList) {
     _munroList = munroList;
@@ -52,3 +67,5 @@ class MunroNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+enum MunroStatus { initial, loading, loaded, error }

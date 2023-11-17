@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -12,7 +13,7 @@ class MunroSliverAppBar extends StatefulWidget {
 class _MunroScreenSliverAppBarState extends State<MunroSliverAppBar> {
   @override
   Widget build(BuildContext context) {
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     return SliverAppBar(
       expandedHeight: 255.0,
       floating: false,
@@ -28,7 +29,7 @@ class _MunroScreenSliverAppBarState extends State<MunroSliverAppBar> {
             collapseMode: CollapseMode.pin,
             title: Opacity(
               opacity: percentage,
-              child: Text(munroNotifier.selectedMunro?.name ?? "Munro"),
+              child: Text(munroState.selectedMunro?.name ?? "Munro"),
             ),
             centerTitle: false,
             background: Container(
@@ -39,9 +40,18 @@ class _MunroScreenSliverAppBarState extends State<MunroSliverAppBar> {
                   SizedBox(
                     height: 250,
                     width: double.infinity,
-                    child: Image.network(
-                      munroNotifier.selectedMunro?.pictureURL ?? "",
+                    child: CachedNetworkImage(
+                      imageUrl: munroState.selectedMunro?.pictureURL ?? "",
                       fit: BoxFit.fitWidth,
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                        child: LinearProgressIndicator(
+                          value: downloadProgress.progress,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) {
+                        return const Icon(Icons.photo_rounded);
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -51,7 +61,7 @@ class _MunroScreenSliverAppBarState extends State<MunroSliverAppBar> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Text(
-                        munroNotifier.selectedMunro?.name ?? "Munro",
+                        munroState.selectedMunro?.name ?? "Munro",
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,

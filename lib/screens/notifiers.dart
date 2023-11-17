@@ -1,4 +1,4 @@
-export 'explore/state/munro_notifier.dart';
+export 'explore/state/munro_state.dart';
 export 'auth/state/user_state.dart';
 export 'nav/state/navigation_state.dart';
 export 'profile/state/profile_state.dart';

@@ -11,4 +11,4 @@ export 'record/record_tab.dart';
 export 'saved/saved_tab.dart';
 export 'user_search/user_search_screen.dart';
 export 'settings/settings_screen.dart';
-export 'splash/screen.dart';
+export 'splash/splash_screen.dart';

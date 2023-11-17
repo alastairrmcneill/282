@@ -17,8 +17,8 @@ class MunroSummaryTile extends StatelessWidget {
     }
     final user = Provider.of<AppUser?>(context);
     NavigationState navigationState = Provider.of(context);
-    MunroNotifier munroNotifier = Provider.of<MunroNotifier>(context);
-    Munro munro = munroNotifier.munroList.where((m) => m.id == munroId!).first;
+    MunroState munroState = Provider.of<MunroState>(context);
+    Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
 
     return Padding(
@@ -28,7 +28,7 @@ class MunroSummaryTile extends StatelessWidget {
         height: 100,
         child: InkWell(
           onTap: () {
-            munroNotifier.setSelectedMunro = munro;
+            munroState.setSelectedMunro = munro;
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const MunroScreen(),
@@ -116,7 +116,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.pushNamed(context, "/auth_home_screen");
                           } else {
                             if (munro.summited) return;
-                            munroNotifier.setSelectedMunro = munro;
+                            munroState.setSelectedMunro = munro;
                             createPostState.reset();
                             createPostState.addMunro(munro);
                             Navigator.push(

@@ -30,21 +30,31 @@ class UserDatabase {
   // Read current user
   static Future readCurrentUser(BuildContext context) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
+    // userState.setStatus = UserStatus.loading;
     try {
       String? uid = AuthService.currentUserId;
-      if (uid == null) return;
+      if (uid == null) {
+        // userState.setStatus = UserStatus.loaded;
+        return;
+      }
+
       DocumentReference ref = _userRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
-      if (!documentSnapshot.exists) return;
+      if (!documentSnapshot.exists) {
+        // userState.setStatus = UserStatus.loaded;
+        return;
+      }
 
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       AppUser appUser = AppUser.fromJSON(data);
 
       userState.setCurrentUser = appUser;
+      // userState.setStatus = UserStatus.loaded;
     } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
+      // userState.setError = Error(code: error.toString(), message: "There was an error fetching your account.");
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your account");
     }
   }
 
