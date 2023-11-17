@@ -1,13 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/stat_text.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MunroScreen extends StatelessWidget {
   const MunroScreen({super.key});
