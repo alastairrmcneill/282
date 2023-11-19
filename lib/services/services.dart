@@ -5,3 +5,4 @@ export 'post_service.dart';
 export 'search_service.dart';
 export 'storage_service.dart';
 export 'profile_service.dart';
+export '../screens/comments/services/comments_service.dart';

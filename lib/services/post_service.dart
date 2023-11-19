@@ -112,26 +112,28 @@ class PostService {
   }
 
   static Future paginateProfilePosts(BuildContext context) async {
-    ProfileState feedState = Provider.of<ProfileState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     try {
-      feedState.setStatus = ProfileStatus.paginating;
+      profileState.setStatus = ProfileStatus.paginating;
 
       // Find last user ID
-      String lastPostId = "";
-      if (feedState.posts.isNotEmpty) {
-        lastPostId = feedState.posts.last.uid!;
+      String? lastPostId;
+      if (profileState.posts.isNotEmpty) {
+        lastPostId = profileState.posts.last.uid!;
       }
 
       // Add posts from database
-      feedState.addPosts = await PostsDatabase.readPostsFromUserId(
+      List<Post> newPosts = await PostsDatabase.readPostsFromUserId(
         context,
-        userId: feedState.user?.uid ?? "",
+        userId: profileState.user?.uid ?? "",
         lastPostId: lastPostId,
       );
-      feedState.setStatus = ProfileStatus.loaded;
+      profileState.addPosts = newPosts;
+
+      profileState.setStatus = ProfileStatus.loaded;
     } catch (error) {
-      feedState.setError = Error(message: "There was an issue loading your posts. Please try again.");
+      profileState.setError = Error(message: "There was an issue loading your posts. Please try again.");
     }
   }
 
@@ -168,7 +170,7 @@ class PostService {
       feedState.setStatus = FeedStatus.paginating;
 
       // Find last user ID
-      String lastPostId = "";
+      String? lastPostId;
       if (feedState.posts.isNotEmpty) {
         lastPostId = feedState.posts.last.uid!;
       }

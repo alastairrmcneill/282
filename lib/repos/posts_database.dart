@@ -81,7 +81,7 @@ class PostsDatabase {
       querySnapshot = await _postsRef
           .orderBy(PostFields.dateTime, descending: true)
           .where(PostFields.authorId, isEqualTo: userId)
-          .limit(4)
+          .limit(2)
           .get();
     } else {
       final lastPostDoc = await _postsRef.doc(lastPostId).get();
@@ -92,7 +92,7 @@ class PostsDatabase {
           .orderBy(PostFields.dateTime, descending: true)
           .startAfterDocument(lastPostDoc)
           .where(PostFields.authorId, isEqualTo: userId)
-          .limit(4)
+          .limit(2)
           .get();
     }
 

@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
-import 'package:two_eight_two/screens/create_post/create_post_screen.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -63,7 +63,7 @@ class PostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     UserState userState = Provider.of<UserState>(context);
-
+    CommentsState commentsState = Provider.of<CommentsState>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
@@ -164,7 +164,9 @@ class PostWidget extends StatelessWidget {
                     flex: 1,
                     child: InkWell(
                       onTap: () {
-                        print('Tapped');
+                        commentsState.setPost = post;
+                        CommentsService.getPostComments(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),

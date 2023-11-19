@@ -6,3 +6,4 @@ export 'profile/state/followers_state.dart';
 export 'user_search/state/user_search_state.dart';
 export 'feed/state/feed_state.dart';
 export 'create_post/state/create_post_state.dart';
+export 'comments/state/comments_state.dart';

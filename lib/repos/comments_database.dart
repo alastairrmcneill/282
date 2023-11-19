@@ -71,6 +71,45 @@ class CommentsDatabase {
     }
   }
 
+  static Future<List<Comment>> readPostComments(
+    BuildContext context, {
+    required String postId,
+    required String? lastCommentId,
+  }) async {
+    List<Comment> comments = [];
+    QuerySnapshot querySnapshot;
+
+    if (lastCommentId == null) {
+      // Load first bathc
+      querySnapshot = await _commentsRef
+          .doc(postId)
+          .collection('postComments')
+          .orderBy(PostFields.dateTime, descending: true)
+          .limit(10)
+          .get();
+    } else {
+      final lastCommentDoc = await _commentsRef.doc(lastCommentId).get();
+
+      if (!lastCommentDoc.exists) return [];
+
+      querySnapshot = await _commentsRef
+          .doc(postId)
+          .collection('postComments')
+          .orderBy(PostFields.dateTime, descending: true)
+          .startAfterDocument(lastCommentDoc)
+          .limit(10)
+          .get();
+    }
+
+    for (var doc in querySnapshot.docs) {
+      Comment comment = Comment.fromJSON(doc.data() as Map<String, dynamic>);
+
+      comments.add(comment);
+    }
+
+    return comments;
+  }
+
   // Delete comment
   static Future deleteComment(BuildContext context, {required Comment comment}) async {
     try {

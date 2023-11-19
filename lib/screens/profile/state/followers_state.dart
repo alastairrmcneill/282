@@ -27,7 +27,7 @@ class FollowersState extends ChangeNotifier {
 
   set addFollowers(List<FollowingRelationship> followers) {
     _followersHistory[0].addAll(followers);
-    _followers.addAll(followers);
+    // _followers.addAll(followers);
     notifyListeners();
   }
 
@@ -39,7 +39,7 @@ class FollowersState extends ChangeNotifier {
 
   set addFollowing(List<FollowingRelationship> following) {
     _followingHistory[0].addAll(following);
-    _following.addAll(following);
+    // _following.addAll(following);
     notifyListeners();
   }
 

@@ -99,7 +99,7 @@ class CreatePostScreen extends StatelessWidget {
                       decoration: const InputDecoration(
                         hintText: "How was it? Tell us about your hike.",
                         alignLabelWithHint: true,
-                        contentPadding: const EdgeInsets.all(15),
+                        contentPadding: EdgeInsets.all(15),
                       ),
                       maxLines: 4,
                       textCapitalization: TextCapitalization.sentences,

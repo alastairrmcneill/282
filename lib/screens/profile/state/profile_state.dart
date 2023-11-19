@@ -70,7 +70,6 @@ class ProfileState extends ChangeNotifier {
 
   set addPosts(List<Post> posts) {
     _postsHisotry[0].addAll(posts);
-    _posts.addAll(posts);
     notifyListeners();
   }
 
