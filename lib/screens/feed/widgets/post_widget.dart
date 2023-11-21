@@ -64,6 +64,8 @@ class PostWidget extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     UserState userState = Provider.of<UserState>(context);
     CommentsState commentsState = Provider.of<CommentsState>(context);
+    LikeState likeState = Provider.of<LikeState>(context);
+    print(likeState.likedPosts);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
@@ -108,6 +110,8 @@ class PostWidget extends StatelessWidget {
                 ),
               ),
             ),
+            Text(
+                "${likeState.recentlyLikedPosts.contains(post.uid) ? post.likes + 1 : likeState.recentlyUnlikedPosts.contains(post.uid) ? post.likes - 1 : post.likes} likes"),
             SizedBox(
               height: 250,
               child: ListView(
@@ -144,14 +148,17 @@ class PostWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: InkWell(
-                      onTap: () {
-                        print('Tapped');
+                    child: IconButton(
+                      onPressed: () {
+                        if (likeState.likedPosts.contains(post.uid!)) {
+                          LikeService.unLikePost(context, post: post);
+                        } else {
+                          LikeService.likePost(context, post: post);
+                        }
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.favorite_outline_rounded),
-                      ),
+                      icon: likeState.likedPosts.contains(post.uid!)
+                          ? Icon(Icons.favorite_rounded)
+                          : Icon(Icons.favorite_outline_rounded),
                     ),
                   ),
                   VerticalDivider(
@@ -164,6 +171,7 @@ class PostWidget extends StatelessWidget {
                     flex: 1,
                     child: InkWell(
                       onTap: () {
+                        commentsState.reset();
                         commentsState.setPost = post;
                         CommentsService.getPostComments(context);
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));

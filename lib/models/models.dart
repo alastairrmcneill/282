@@ -5,3 +5,4 @@ export 'following_relationship.dart';
 export 'error_model.dart';
 export 'post_model.dart';
 export 'comment_model.dart';
+export 'like_model.dart';

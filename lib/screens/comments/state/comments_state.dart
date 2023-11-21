@@ -5,11 +5,13 @@ class CommentsState extends ChangeNotifier {
   CommentsStatus _status = CommentsStatus.initial;
   Error _error = Error();
   Post? _post;
+  String? _commentText;
   List<Comment> _comments = [];
 
   CommentsStatus get status => _status;
   Error get error => _error;
   Post get post => _post!;
+  String? get commentText => _commentText;
   List<Comment> get comments => _comments;
 
   set setStatus(CommentsStatus searchStatus) {
@@ -28,6 +30,11 @@ class CommentsState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setCommentText(String? commentText) {
+    _commentText = commentText;
+    notifyListeners();
+  }
+
   set setComments(List<Comment> comments) {
     _comments = comments;
     notifyListeners();
@@ -42,6 +49,13 @@ class CommentsState extends ChangeNotifier {
     if (_comments.contains(comment)) {
       _comments.remove(comment);
     }
+    notifyListeners();
+  }
+
+  reset() {
+    _post = null;
+    _commentText = null;
+    _comments = [];
     notifyListeners();
   }
 }

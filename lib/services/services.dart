@@ -6,3 +6,4 @@ export 'search_service.dart';
 export 'storage_service.dart';
 export 'profile_service.dart';
 export '../screens/comments/services/comments_service.dart';
+export 'like_service.dart';

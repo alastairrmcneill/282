@@ -31,6 +31,7 @@ const functions = require('firebase-functions/v1');
 
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
+const { FieldValue } = require('firebase-admin/firestore');
 
 admin.initializeApp();
 
@@ -228,5 +229,30 @@ exports.onPostDeleted = functions.firestore
                 postDoc.ref.delete();
             }
         }
+
+    });
+
+
+exports.onLikeCreated = functions.firestore
+    .document("/likes/{likeId}")
+    .onCreate(async (snapshot, context) => {
+        // Find postId
+        const postId = snapshot.get("postId");
+
+        // Increment likes
+        const postRef = admin.firestore().collection("posts").doc(postId);
+        postRef.update({ likes: FieldValue.increment(1) });
+
+    });
+
+exports.onLikeDeleted = functions.firestore
+    .document("/likes/{likeId}")
+    .onDelete(async (snapshot, context) => {
+        // Find postId
+        const postId = snapshot.get("postId");
+
+        // Decrement likes
+        const postRef = admin.firestore().collection("posts").doc(postId);
+        postRef.update({ likes: FieldValue.increment(-1) });
 
     });

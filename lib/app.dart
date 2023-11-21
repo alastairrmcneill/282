@@ -47,6 +47,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<CommentsState>(
           create: (_) => CommentsState(),
         ),
+        ChangeNotifierProvider<LikeState>(
+          create: (_) => LikeState(),
+        ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,

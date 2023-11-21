@@ -7,13 +7,14 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class CommentsService {
-  static Future createComment(BuildContext context, {required String content}) async {
+  static Future createComment(BuildContext context) async {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       // Set status
       commentsState.setStatus = CommentsStatus.submitting;
+      await Future.delayed(Duration(seconds: 3));
 
       Comment comment = Comment(
         postId: commentsState.post.uid!,
@@ -21,7 +22,7 @@ class CommentsService {
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
         dateTime: DateTime.now(),
-        commentText: content,
+        commentText: commentsState.commentText!,
       );
 
       // Upload comment
@@ -31,6 +32,7 @@ class CommentsService {
       commentsState.addComments = [comment];
 
       // Set status
+      commentsState.setCommentText = null;
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error) {
       commentsState.setError = Error(message: "There was an issue posting your comment. Please try again");

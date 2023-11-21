@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -101,11 +103,18 @@ class PostService {
     ProfileState feedState = Provider.of<ProfileState>(context, listen: false);
 
     try {
-      return await PostsDatabase.readPostsFromUserId(
+      // Get posts
+      List<Post> posts = await PostsDatabase.readPostsFromUserId(
         context,
         userId: feedState.user?.uid ?? "",
         lastPostId: null,
       );
+
+      // Check likes
+      LikeService.clearLikedPosts(context);
+      LikeService.getLikedPostIds(context, posts: posts);
+
+      return posts;
     } catch (error) {
       feedState.setError = Error(message: "There was an retreiving your posts. Please try again.");
     }
@@ -129,6 +138,11 @@ class PostService {
         userId: profileState.user?.uid ?? "",
         lastPostId: lastPostId,
       );
+
+      // Check likes
+      LikeService.getLikedPostIds(context, posts: newPosts);
+
+      // Set state
       profileState.addPosts = newPosts;
 
       profileState.setStatus = ProfileStatus.loaded;
@@ -148,11 +162,17 @@ class PostService {
     try {
       feedState.setStatus = FeedStatus.loading;
 
-      feedState.setPosts = await PostsDatabase.getFeedFromUserId(
+      List<Post> posts = await PostsDatabase.getFeedFromUserId(
         context,
         userId: userState.currentUser?.uid ?? "",
         lastPostId: null,
       );
+
+      // Check likes
+      LikeService.clearLikedPosts(context);
+      LikeService.getLikedPostIds(context, posts: posts);
+
+      feedState.setPosts = posts;
       feedState.setStatus = FeedStatus.loaded;
     } catch (error) {
       feedState.setError = Error(
@@ -176,12 +196,16 @@ class PostService {
       }
 
       // Add posts from database
-      feedState.addPosts = await PostsDatabase.getFeedFromUserId(
+      List<Post> newPosts = await PostsDatabase.getFeedFromUserId(
         context,
         userId: userState.currentUser?.uid ?? "",
         lastPostId: lastPostId,
       );
 
+      // Check likes
+      LikeService.getLikedPostIds(context, posts: newPosts);
+
+      feedState.addPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
     } catch (error) {
       feedState.setError = Error(message: "There was an issue loading your feed. Please try again.");

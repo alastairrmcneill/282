@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/comments/services/comments_service.dart';
+import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -32,16 +33,20 @@ class CommentsScreen extends StatelessWidget {
   Widget _buildScreen(BuildContext context, CommentsState commentsState) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
+      body: SafeArea(
         child: Column(
           children: [
-            ...commentsState.comments.map((e) => Text(e.commentText)).toList(),
-            ElevatedButton(
-              onPressed: () {
-                CommentsService.createComment(context, content: "This is my second comment");
-              },
-              child: Text("comment"),
+            Expanded(
+              flex: 1,
+              child: ListView(
+                children: commentsState.comments
+                    .map((Comment comment) => CommentTile(
+                          comment: comment,
+                        ))
+                    .toList(),
+              ),
             ),
+            const CommentInputField(),
           ],
         ),
       ),
