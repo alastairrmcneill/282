@@ -39,7 +39,7 @@ class Comment {
       postId: json[CommentFields.postId] as String,
       authorId: json[CommentFields.authorId] as String,
       authorDisplayName: json[CommentFields.authorDisplayName] as String,
-      authorProfilePictureURL: json[CommentFields.authorProfilePictureURL] as String,
+      authorProfilePictureURL: json[CommentFields.authorProfilePictureURL] as String?,
       dateTime: (json[CommentFields.dateTime] as Timestamp).toDate(),
       commentText: json[CommentFields.commentText] as String,
     );

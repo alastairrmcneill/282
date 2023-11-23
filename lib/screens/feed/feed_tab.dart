@@ -64,6 +64,19 @@ class _FeedTabState extends State<FeedTab> {
         actions: [
           IconButton(
             onPressed: () {
+              NotificationsService.getUserNotifications(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const NotificationsScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -14,7 +14,6 @@ class CommentsService {
     try {
       // Set status
       commentsState.setStatus = CommentsStatus.submitting;
-      await Future.delayed(Duration(seconds: 3));
 
       Comment comment = Comment(
         postId: commentsState.post.uid!,
@@ -56,7 +55,8 @@ class CommentsService {
       // Update status
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error) {
-      commentsState.setError = Error(message: "There was an issue retreiving the comments. Please try again.");
+      commentsState.setError =
+          Error(code: error.toString(), message: "There was an issue retreiving the comments. Please try again.");
     }
   }
 

@@ -6,3 +6,4 @@ export 'error_model.dart';
 export 'post_model.dart';
 export 'comment_model.dart';
 export 'like_model.dart';
+export 'notifications_model.dart';

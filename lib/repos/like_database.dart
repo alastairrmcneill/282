@@ -57,7 +57,7 @@ class LikeDatabase {
         }
       }
     }
-    print(postIds.length);
+
     return postIds;
   }
 }

@@ -65,7 +65,7 @@ class PostWidget extends StatelessWidget {
     UserState userState = Provider.of<UserState>(context);
     CommentsState commentsState = Provider.of<CommentsState>(context);
     LikeState likeState = Provider.of<LikeState>(context);
-    print(likeState.likedPosts);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(

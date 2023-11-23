@@ -87,6 +87,24 @@ exports.onFollowUser = functions.firestore
             }
         });
 
+        // Create notification document
+        // Get displayName and Profilepictureurl from source
+        const sourceProfilePictureURL = snapshot.get("sourceProfilePictureURL");
+        const sourceDisplayName = snapshot.get("sourceDisplayName");
+
+        const notificationRef = admin.firestore().collection("notifications").doc();
+        notificationRef.set(
+            {
+                "id": notificationRef.id,
+                "targetId": targetId,
+                "sourceId": sourceId,
+                "sourceDisplayName": sourceDisplayName,
+                "sourceProfilePictureURL": sourceProfilePictureURL,
+                "postId": null,
+                "type": "follow"
+            }
+        );
+
     });
 
 exports.onUnfollowUser = functions.firestore
@@ -243,6 +261,32 @@ exports.onLikeCreated = functions.firestore
         const postRef = admin.firestore().collection("posts").doc(postId);
         postRef.update({ likes: FieldValue.increment(1) });
 
+        // Create notification document
+        // Get author id from post and set as target 
+        const postDoc = await postRef.get();
+        const targetId = postDoc.get("authorId");
+
+        // Get displayName and Profilepictureurl from user
+        const sourceId = snapshot.get("userId");
+        const sourceProfilePictureURL = snapshot.get("userProfilePictureURL");
+        const sourceDisplayName = snapshot.get("userDisplayName");
+
+        // if target and source are the same then don't do anything
+
+        const notificationRef = admin.firestore().collection("notifications").doc();
+        notificationRef.set(
+            {
+                "id": notificationRef.id,
+                "targetId": targetId,
+                "sourceId": sourceId,
+                "sourceDisplayName": sourceDisplayName,
+                "sourceProfilePictureURL": sourceProfilePictureURL,
+                "postId": postId,
+                "type": "like"
+            }
+        );
+
+
     });
 
 exports.onLikeDeleted = functions.firestore
@@ -254,5 +298,38 @@ exports.onLikeDeleted = functions.firestore
         // Decrement likes
         const postRef = admin.firestore().collection("posts").doc(postId);
         postRef.update({ likes: FieldValue.increment(-1) });
+
+    });
+
+exports.onCommentCreated = functions.firestore
+    .document("/comments/{postId}/postComments/{commentId}")
+    .onCreate(async (snapshot, context) => {
+        // Create notification document
+        // Find postId
+        const postId = context.params.postId;
+
+        // Get author id from post and set as target 
+        const postRef = admin.firestore().collection("posts").doc(postId);
+        const postDoc = await postRef.get();
+        const targetId = postDoc.get("authorId");
+
+        // Get displayName and Profilepictureurl from comment
+        const sourceId = snapshot.get("authorId");
+        const sourceProfilePictureURL = snapshot.get("authorProfilePictureURL");
+        const sourceDisplayName = snapshot.get("authorDisplayName");
+
+        const notificationRef = admin.firestore().collection("notifications").doc();
+        notificationRef.set(
+            {
+                "id": notificationRef.id,
+                "targetId": targetId,
+                "sourceId": sourceId,
+                "sourceDisplayName": sourceDisplayName,
+                "sourceProfilePictureURL": sourceProfilePictureURL,
+                "postId": postId,
+                "type": "comment"
+            }
+        );
+
 
     });

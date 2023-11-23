@@ -50,6 +50,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<LikeState>(
           create: (_) => LikeState(),
         ),
+        ChangeNotifierProvider<NotificationsState>(
+          create: (_) => NotificationsState(),
+        ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,

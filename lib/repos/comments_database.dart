@@ -85,10 +85,10 @@ class CommentsDatabase {
           .doc(postId)
           .collection('postComments')
           .orderBy(PostFields.dateTime, descending: true)
-          .limit(10)
+          .limit(15)
           .get();
     } else {
-      final lastCommentDoc = await _commentsRef.doc(lastCommentId).get();
+      final lastCommentDoc = await _commentsRef.doc(postId).collection('postComments').doc(lastCommentId).get();
 
       if (!lastCommentDoc.exists) return [];
 
@@ -97,7 +97,7 @@ class CommentsDatabase {
           .collection('postComments')
           .orderBy(PostFields.dateTime, descending: true)
           .startAfterDocument(lastCommentDoc)
-          .limit(10)
+          .limit(15)
           .get();
     }
 
