@@ -4,13 +4,13 @@ import 'package:two_eight_two/models/models.dart';
 class CommentsState extends ChangeNotifier {
   CommentsStatus _status = CommentsStatus.initial;
   Error _error = Error();
-  Post? _post;
+  String? _postId;
   String? _commentText;
   List<Comment> _comments = [];
 
   CommentsStatus get status => _status;
   Error get error => _error;
-  Post get post => _post!;
+  String get postId => _postId!;
   String? get commentText => _commentText;
   List<Comment> get comments => _comments;
 
@@ -25,8 +25,8 @@ class CommentsState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setPost(Post post) {
-    _post = post;
+  set setPostId(String postId) {
+    _postId = postId;
     notifyListeners();
   }
 
@@ -53,7 +53,7 @@ class CommentsState extends ChangeNotifier {
   }
 
   reset() {
-    _post = null;
+    _postId = null;
     _commentText = null;
     _comments = [];
     notifyListeners();

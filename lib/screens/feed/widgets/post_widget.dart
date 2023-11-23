@@ -172,7 +172,7 @@ class PostWidget extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         commentsState.reset();
-                        commentsState.setPost = post;
+                        commentsState.setPostId = post.uid!;
                         CommentsService.getPostComments(context);
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
                       },

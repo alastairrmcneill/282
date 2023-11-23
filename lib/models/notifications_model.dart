@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Notif {
   final String uid;
   final String? postId;
@@ -6,6 +8,8 @@ class Notif {
   final String sourceDisplayName;
   final String? sourceProfilePictureURL;
   final String type;
+  final DateTime dateTime;
+  bool read;
 
   Notif({
     required this.uid,
@@ -15,6 +19,8 @@ class Notif {
     required this.sourceDisplayName,
     required this.sourceProfilePictureURL,
     required this.type,
+    required this.dateTime,
+    required this.read,
   });
 
   // To JSON
@@ -27,6 +33,8 @@ class Notif {
       NotifFields.sourceDisplayName: sourceDisplayName,
       NotifFields.sourceProfilePictureURL: sourceProfilePictureURL,
       NotifFields.type: type,
+      NotifFields.dateTime: dateTime,
+      NotifFields.read: read,
     };
   }
 
@@ -40,6 +48,8 @@ class Notif {
       sourceDisplayName: json[NotifFields.sourceDisplayName] as String,
       sourceProfilePictureURL: json[NotifFields.sourceProfilePictureURL] as String?,
       type: json[NotifFields.type] as String,
+      dateTime: (json[NotifFields.dateTime] as Timestamp).toDate(),
+      read: json[NotifFields.read] as bool? ?? false,
     );
   }
 
@@ -52,16 +62,19 @@ class Notif {
     String? sourceDisplayName,
     String? sourceProfilePictureURL,
     String? type,
+    DateTime? dateTime,
+    bool? read,
   }) {
     return Notif(
-      uid: uid ?? this.uid,
-      postId: postId ?? this.postId,
-      targetId: targetId ?? this.targetId,
-      sourceId: sourceId ?? this.sourceId,
-      sourceDisplayName: sourceDisplayName ?? this.sourceDisplayName,
-      sourceProfilePictureURL: sourceProfilePictureURL ?? this.sourceProfilePictureURL,
-      type: type ?? this.type,
-    );
+        uid: uid ?? this.uid,
+        postId: postId ?? this.postId,
+        targetId: targetId ?? this.targetId,
+        sourceId: sourceId ?? this.sourceId,
+        sourceDisplayName: sourceDisplayName ?? this.sourceDisplayName,
+        sourceProfilePictureURL: sourceProfilePictureURL ?? this.sourceProfilePictureURL,
+        type: type ?? this.type,
+        dateTime: dateTime ?? this.dateTime,
+        read: read ?? this.read);
   }
 }
 
@@ -73,4 +86,6 @@ class NotifFields {
   static String sourceProfilePictureURL = "sourceProfilePictureURL";
   static String postId = "postId";
   static String type = "type";
+  static String dateTime = "dateTime";
+  static String read = "read";
 }

@@ -31,6 +31,12 @@ class NotificationsState extends ChangeNotifier {
     notifyListeners();
   }
 
+  markNotificationAsRead(Notif notification) {
+    int index = _notifications.indexWhere((element) => notification.uid == element.uid);
+    _notifications[index] = notification;
+    notifyListeners();
+  }
+
   reset() {
     _status = NotificationsStatus.initial;
     _error = Error();

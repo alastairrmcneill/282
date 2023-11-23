@@ -60,4 +60,12 @@ class NotificationsService {
       );
     }
   }
+
+  static Future markNotificationAsRead(BuildContext context, {required Notif notification}) async {
+    NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
+
+    Notif newNotification = notification.copyWith(read: true);
+
+    NotificationsDatabase.updateNotif(context, notification: newNotification);
+  }
 }

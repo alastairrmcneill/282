@@ -35,6 +35,7 @@ dependencies:
   uuid: ^4.1.0
   dotted_border: ^2.1.0
   timeago: ^3.6.0
+  firebase_messaging: ^14.7.5
 
 
 

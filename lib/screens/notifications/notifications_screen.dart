@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifications/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -64,10 +65,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         controller: _scrollController,
         child: Column(
           children: notificationsState.notifications
-              .map((Notif notification) => ListTile(
-                    title: Text(notification.sourceDisplayName),
-                    subtitle: Text(notification.type),
-                  ))
+              .map((Notif notification) => NotificationTile(notification: notification))
               .toList(),
         ),
       ),

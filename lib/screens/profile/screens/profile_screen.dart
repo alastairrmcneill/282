@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,8 +100,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               const SizedBox(width: 15),
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     print('Share');
+                                    print("new");
+                                    try {
+                                      print('testing');
+                                      await FirebaseMessaging.instance.requestPermission();
+
+                                      final token = await FirebaseMessaging.instance.getToken();
+                                      print(token);
+                                    } catch (error) {
+                                      print(error);
+                                    }
                                   },
                                   child: Text('Share profile'),
                                 ),
@@ -119,8 +130,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               const SizedBox(width: 15),
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     print('Share');
+                                    print("new");
+                                    try {
+                                      print('testing');
+                                      await FirebaseMessaging.instance.requestPermission();
+
+                                      final token = await FirebaseMessaging.instance.getToken();
+                                      print(token);
+                                    } catch (error) {
+                                      print(error);
+                                    }
                                   },
                                   child: Text('Share profile'),
                                 ),

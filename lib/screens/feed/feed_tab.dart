@@ -59,6 +59,7 @@ class _FeedTabState extends State<FeedTab> {
   }
 
   Widget _buildScreen(BuildContext context, FeedState feedState) {
+    NotificationsState notificationsState = Provider.of<NotificationsState>(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -73,7 +74,34 @@ class _FeedTabState extends State<FeedTab> {
                 ),
               );
             },
-            icon: const Icon(Icons.notifications),
+            icon: Stack(
+              children: [
+                const Icon(Icons.notifications),
+                notificationsState.notifications.where((element) => !element.read).isEmpty
+                    ? const SizedBox()
+                    : Positioned(
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 12,
+                            minHeight: 12,
+                          ),
+                          child: Text(
+                            notificationsState.notifications.where((element) => !element.read).length.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+              ],
+            ),
           ),
           IconButton(
             onPressed: () {

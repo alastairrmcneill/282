@@ -101,7 +101,9 @@ exports.onFollowUser = functions.firestore
                 "sourceDisplayName": sourceDisplayName,
                 "sourceProfilePictureURL": sourceProfilePictureURL,
                 "postId": null,
-                "type": "follow"
+                "type": "follow",
+                "dateTime": new Date(),
+                "read": false,
             }
         );
 
@@ -282,7 +284,9 @@ exports.onLikeCreated = functions.firestore
                 "sourceDisplayName": sourceDisplayName,
                 "sourceProfilePictureURL": sourceProfilePictureURL,
                 "postId": postId,
-                "type": "like"
+                "type": "like",
+                "dateTime": new Date(),
+                "read": false,
             }
         );
 
@@ -327,7 +331,9 @@ exports.onCommentCreated = functions.firestore
                 "sourceDisplayName": sourceDisplayName,
                 "sourceProfilePictureURL": sourceProfilePictureURL,
                 "postId": postId,
-                "type": "comment"
+                "type": "comment",
+                "dateTime": new Date(),
+                "read": false,
             }
         );
 

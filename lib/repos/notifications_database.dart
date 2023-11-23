@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationsDatabase {
   static final _db = FirebaseFirestore.instance;
@@ -18,7 +19,7 @@ class NotificationsDatabase {
       // Load first batch
       querySnapshot = await _notificationsRef
           .where(NotifFields.targetId, isEqualTo: userId)
-          .orderBy(NotifFields.postId, descending: true)
+          .orderBy(NotifFields.dateTime, descending: true)
           .limit(10)
           .get();
     } else {
@@ -28,7 +29,7 @@ class NotificationsDatabase {
 
       querySnapshot = await _notificationsRef
           .where(NotifFields.targetId, isEqualTo: userId)
-          .orderBy(NotifFields.postId, descending: true)
+          .orderBy(NotifFields.dateTime, descending: true)
           .startAfterDocument(lastNotificationDoc)
           .limit(10)
           .get();
@@ -41,5 +42,15 @@ class NotificationsDatabase {
     }
 
     return notifications;
+  }
+
+  static Future updateNotif(BuildContext context, {required Notif notification}) async {
+    try {
+      DocumentReference ref = _notificationsRef.doc(notification.uid);
+
+      await ref.update(notification.toJSON());
+    } on FirebaseException catch (error) {
+      showErrorDialog(context, message: error.message ?? "There was an error marking your notificaiton as done.");
+    }
   }
 }

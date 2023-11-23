@@ -16,7 +16,7 @@ class CommentsService {
       commentsState.setStatus = CommentsStatus.submitting;
 
       Comment comment = Comment(
-        postId: commentsState.post.uid!,
+        postId: commentsState.postId,
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
@@ -48,7 +48,7 @@ class CommentsService {
       // Read comments for post
       commentsState.setComments = await CommentsDatabase.readPostComments(
         context,
-        postId: commentsState.post.uid!,
+        postId: commentsState.postId,
         lastCommentId: null,
       );
 
@@ -75,7 +75,7 @@ class CommentsService {
       // Add posts from database
       commentsState.addComments = await CommentsDatabase.readPostComments(
         context,
-        postId: commentsState.post.uid!,
+        postId: commentsState.postId,
         lastCommentId: lastCommentId,
       );
 

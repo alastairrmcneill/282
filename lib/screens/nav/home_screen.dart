@@ -61,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (value == 1) {
                   // Navigate to feed
                   PostService.getFeed(context);
+                  NotificationsService.getUserNotifications(context);
                   setState(() => _currentIndex = value);
                 }
                 if (value == 4 && user == null) {
