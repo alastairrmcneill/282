@@ -7,6 +7,8 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class App extends StatelessWidget {
   final String flavor;
 
@@ -56,6 +58,7 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,
+        navigatorKey: navigatorKey,
         routes: {
           "/home_screen": (context) => const HomeScreen(startingIndex: 0),
           "/feed_tab": (context) => const HomeScreen(startingIndex: 1),

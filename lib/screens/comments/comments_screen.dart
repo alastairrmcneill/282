@@ -46,6 +46,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               body: const LoadingWidget(),
             );
           case CommentsStatus.error:
+            print(commentsState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: commentsState.error.message),

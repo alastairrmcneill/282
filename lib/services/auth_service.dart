@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:two_eight_two/repos/repos.dart';
 
@@ -52,6 +53,9 @@ class AuthService {
       stopCircularProgressOverlay(context);
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+
+      // Check for push notifications
+      await PushNotificationService.initNotifications(context);
     } on FirebaseAuthException catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
@@ -82,6 +86,9 @@ class AuthService {
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
       // Navigator.pushNamedAndRemoveUntil(context, newRouteName, (route) => false)
+
+      // Check for push notifications
+      await PushNotificationService.initNotifications(context);
     } on FirebaseAuthException catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
@@ -105,11 +112,19 @@ class AuthService {
 
   static Future signOut(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
     startCircularProgressOverlay(context);
 
     try {
       await _auth.signOut();
       stopCircularProgressOverlay(context);
+
+      // Remove FCM Token
+      AppUser? appUser = userState.currentUser;
+      if (appUser != null) {
+        AppUser newAppUser = appUser.copyWith(fcmToken: null);
+        UserDatabase.update(context, appUser: newAppUser);
+      }
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, "/home_screen");
@@ -167,6 +182,9 @@ class AuthService {
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+
+      // Check for push notifications
+      await PushNotificationService.initNotifications(context);
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context, message: error.code);
     } on SignInWithAppleAuthorizationException catch (error) {
@@ -201,6 +219,9 @@ class AuthService {
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+
+      // Check for push notifications
+      await PushNotificationService.initNotifications(context);
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context, message: error.code);
     }

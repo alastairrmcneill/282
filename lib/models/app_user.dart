@@ -10,6 +10,7 @@ class AppUser {
   int? followersCount;
   int? followingCount;
   String? bio;
+  String? fcmToken;
 
   final List<Map<String, dynamic>>? personalMunroData;
 
@@ -23,6 +24,7 @@ class AppUser {
     this.followersCount,
     this.followingCount,
     this.bio,
+    this.fcmToken,
     this.personalMunroData = personalMunroDataExample,
   });
 
@@ -37,6 +39,7 @@ class AppUser {
       AppUserFields.followersCount: followersCount,
       AppUserFields.followingCount: followingCount,
       AppUserFields.bio: bio,
+      AppUserFields.fcmToken: fcmToken,
       AppUserFields.personalMunroData: personalMunroData,
     };
   }
@@ -68,6 +71,7 @@ class AppUser {
     int? followersCount,
     int? followingCount,
     String? bio,
+    String? fcmToken,
     List<Map<String, dynamic>>? personalMunroData,
   }) {
     return AppUser(
@@ -80,6 +84,7 @@ class AppUser {
         followersCount: followersCount ?? this.followersCount,
         followingCount: followingCount ?? this.followingCount,
         bio: bio ?? this.bio,
+        fcmToken: fcmToken ?? this.fcmToken,
         personalMunroData: personalMunroData ?? this.personalMunroData);
   }
 
@@ -102,6 +107,7 @@ class AppUser {
       ${AppUserFields.followersCount}: $followersCount,
       ${AppUserFields.personalMunroData}: $personalMunroData, 
       ${AppUserFields.bio}: $bio,
+      ${AppUserFields.fcmToken}:$fcmToken
       )''';
 }
 
@@ -116,6 +122,7 @@ class AppUserFields {
   static String followingCount = 'followingCount';
   static String followersCount = 'followersCount';
   static String bio = 'bio';
+  static String fcmToken = 'fcmToken';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [

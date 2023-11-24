@@ -8,3 +8,4 @@ export 'profile_service.dart';
 export '../screens/comments/services/comments_service.dart';
 export '../screens/notifications/services/notifications_service.dart';
 export 'like_service.dart';
+export 'push_notification_service.dart';

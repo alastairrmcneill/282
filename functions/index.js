@@ -92,6 +92,8 @@ exports.onFollowUser = functions.firestore
         const sourceProfilePictureURL = snapshot.get("sourceProfilePictureURL");
         const sourceDisplayName = snapshot.get("sourceDisplayName");
 
+        if (sourceId === targetId) return;
+
         const notificationRef = admin.firestore().collection("notifications").doc();
         notificationRef.set(
             {
@@ -274,6 +276,7 @@ exports.onLikeCreated = functions.firestore
         const sourceDisplayName = snapshot.get("userDisplayName");
 
         // if target and source are the same then don't do anything
+        if (sourceId === targetId) return;
 
         const notificationRef = admin.firestore().collection("notifications").doc();
         notificationRef.set(
@@ -321,6 +324,7 @@ exports.onCommentCreated = functions.firestore
         const sourceId = snapshot.get("authorId");
         const sourceProfilePictureURL = snapshot.get("authorProfilePictureURL");
         const sourceDisplayName = snapshot.get("authorDisplayName");
+        if (sourceId === targetId) return;
 
         const notificationRef = admin.firestore().collection("notifications").doc();
         notificationRef.set(
@@ -337,5 +341,46 @@ exports.onCommentCreated = functions.firestore
             }
         );
 
+
+    });
+
+exports.onNotificationCreated = functions.firestore
+    .document("/notifications/{notificationId}")
+    .onCreate(async (snapshot, context) => {
+        const targetId = snapshot.get("targetId");
+
+        const userRef = admin.firestore().collection("users").doc(targetId);
+        const userDoc = await userRef.get();
+
+        const fcmToken = userDoc.get("fcmToken");
+        console.log(`fcmToken: ${fcmToken}`);
+
+        if (fcmToken == null || fcmToken == undefined) return;
+
+        const sourceDisplayName = snapshot.get("sourceDisplayName");
+        const type = snapshot.get("type");
+        let notificationText = '';
+        if (type == "like") {
+            notificationText = " liked your post.";
+        } else if (type == "comment") {
+            notificationText = " commented on your post.";
+        } else if (type == "follow") {
+            notificationText = " followed you.";
+        }
+
+        const payload = {
+            notification: {
+                title: `${sourceDisplayName}${notificationText}`,
+            },
+            data: {
+                "type": type,
+            }
+        };
+        const options = {
+            priority: "high",
+            timeToLive: 60 * 60 * 24,
+        };
+
+        admin.messaging().sendToDevice(fcmToken, payload, options);
 
     });
