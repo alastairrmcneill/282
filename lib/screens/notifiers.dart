@@ -9,3 +9,4 @@ export 'create_post/state/create_post_state.dart';
 export 'comments/state/comments_state.dart';
 export 'feed/state/like_state.dart';
 export 'notifications/state/notifications_state.dart';
+export 'settings/state/settings_state.dart';

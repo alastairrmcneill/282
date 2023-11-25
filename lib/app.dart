@@ -55,6 +55,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<NotificationsState>(
           create: (_) => NotificationsState(),
         ),
+        ChangeNotifierProvider<SettingsState>(
+          create: (_) => SettingsState(),
+        ),
       ],
       child: MaterialApp(
         theme: MyTheme.lightTheme,

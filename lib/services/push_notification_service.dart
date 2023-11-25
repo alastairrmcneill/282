@@ -9,6 +9,8 @@ import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/user_database.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class PushNotificationService {
   static final _messaging = FirebaseMessaging.instance;
@@ -40,11 +42,38 @@ class PushNotificationService {
   }
 
   static Future<void> handleBackgroundNotificaiton(RemoteMessage? message) async {
-    print("Message: ${message.toString()}");
     if (message == null) return;
 
-    print(navigatorKey.currentState);
+    navigatorKey.currentState?.pushReplacementNamed("/feed_tab");
+    PostService.getFeed(navigatorKey.currentContext!);
+    NotificationsService.getUserNotifications(navigatorKey.currentContext!);
+    navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+  }
 
-    navigatorKey.currentState?.pushNamed("/feed_tab");
+  static Future applyFCMToken(BuildContext context) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    NotificationSettings result = await _messaging.requestPermission();
+
+    if (result.authorizationStatus == AuthorizationStatus.authorized) {
+      final String? token = await _messaging.getToken();
+      if (userState.currentUser != null) {
+        AppUser appUser = userState.currentUser!;
+        AppUser newAppUser = appUser.copyWith(fcmToken: token);
+        UserDatabase.update(context, appUser: newAppUser);
+      }
+    }
+  }
+
+  static Future removeFCMToken(BuildContext context) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser != null) {
+      AppUser appUser = userState.currentUser!;
+      if (appUser.fcmToken != null) {
+        AppUser newAppUser = appUser.copyWith(fcmToken: "");
+        UserDatabase.update(context, appUser: newAppUser);
+      }
+    }
   }
 }

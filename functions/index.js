@@ -355,7 +355,7 @@ exports.onNotificationCreated = functions.firestore
         const fcmToken = userDoc.get("fcmToken");
         console.log(`fcmToken: ${fcmToken}`);
 
-        if (fcmToken == null || fcmToken == undefined) return;
+        if (fcmToken == null || fcmToken == undefined || fcmToken == "") return;
 
         const sourceDisplayName = snapshot.get("sourceDisplayName");
         const type = snapshot.get("type");

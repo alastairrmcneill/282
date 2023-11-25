@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+import 'package:two_eight_two/models/models.dart';
+
+class SettingsState extends ChangeNotifier {
+  SettingsStatus _status = SettingsStatus.initial;
+  Error _error = Error();
+  bool _enablePushNotifications = true;
+
+  SettingsStatus get status => _status;
+  Error get error => _error;
+  bool get enablePushNotifications => _enablePushNotifications;
+
+  set setStatus(SettingsStatus searchStatus) {
+    _status = searchStatus;
+    notifyListeners();
+  }
+
+  set setError(Error error) {
+    _status = SettingsStatus.error;
+    _error = error;
+    notifyListeners();
+  }
+
+  set setEnablePushNotifications(bool enablePushNotifications) {
+    _enablePushNotifications = enablePushNotifications;
+    notifyListeners();
+  }
+}
+
+enum SettingsStatus { initial, loading, loaded, error }

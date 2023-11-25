@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _currentIndex = widget.startingIndex!;
+    SettingsSerivce.loadSettings(context);
     _loadData();
 
     super.initState();

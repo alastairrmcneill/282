@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -27,6 +28,15 @@ class SettingsScreen extends StatelessWidget {
               );
             },
             title: const Text("Edit Profile"),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
+              );
+            },
+            title: const Text("Push Notifications"),
           ),
           ListTile(
             onTap: () async {

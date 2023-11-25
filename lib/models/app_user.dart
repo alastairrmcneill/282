@@ -57,6 +57,7 @@ class AppUser {
       followersCount: json[AppUserFields.followersCount] as int? ?? 0,
       followingCount: json[AppUserFields.followingCount] as int? ?? 0,
       bio: json[AppUserFields.bio] as String?,
+      fcmToken: json[AppUserFields.fcmToken] as String?,
       personalMunroData: listPersonalMunroData,
     );
   }
