@@ -61,13 +61,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget _buildScreen(BuildContext context, NotificationsState notificationsState) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: notificationsState.notifications
-              .map((Notif notification) => NotificationTile(notification: notification))
-              .toList(),
-        ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          NotificationsService.getUserNotifications(context);
+        },
+        child: ListView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: notificationsState.notifications
+                .map(
+                  (Notif notification) => NotificationTile(notification: notification),
+                )
+                .toList()),
       ),
     );
   }

@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -23,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const ExploreTab(),
     const FeedTab(),
-    const RecordTab(),
+    // const RecordTab(),
     const SavedTab(),
     const ProfileTab(),
   ];
@@ -66,11 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   NotificationsService.getUserNotifications(context);
                   setState(() => _currentIndex = value);
                 }
-                if (value == 4 && user == null) {
+                if (value == _screens.length - 1 && user == null) {
                   navigationState.setNavigateToRoute = "/profile_tab";
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                 } else {
-                  if (value == 4) {
+                  if (value == _screens.length - 1) {
                     ProfileService.loadUserFromUid(context, userId: user!.uid!);
                   }
                   setState(() => _currentIndex = value);
@@ -95,11 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   activeIcon: Icon(Icons.people_rounded),
                   label: 'Feed',
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.navigation_outlined),
-                  activeIcon: Icon(Icons.navigation_rounded),
-                  label: 'Record',
-                ),
+                // BottomNavigationBarItem(
+                //   icon: Icon(Icons.navigation_outlined),
+                //   activeIcon: Icon(Icons.navigation_rounded),
+                //   label: 'Record',
+                // ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.bookmark_border_rounded),
                   activeIcon: Icon(Icons.bookmark_rounded),

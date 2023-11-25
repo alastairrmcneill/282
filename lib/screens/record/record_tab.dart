@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class RecordTab extends StatelessWidget {
@@ -6,14 +8,9 @@ class RecordTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FlavorState flavorState = Provider.of<FlavorState>(context);
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              PushNotificationService.initNotifications(context);
-            },
-            child: Text("Init Notifications")),
-      ),
+      body: Center(child: Text(flavorState.flavor)),
     );
   }
 }

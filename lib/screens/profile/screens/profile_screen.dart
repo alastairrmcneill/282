@@ -63,6 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildScreen(BuildContext context, ProfileState profileState) {
+    FlavorState flavorState = Provider.of<FlavorState>(context);
     return WillPopScope(
       onWillPop: () async {
         profileState.navigateBack();
@@ -70,100 +71,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: CustomScrollView(
-          controller: _scrollController,
-          physics: const ClampingScrollPhysics(),
-          slivers: [
-            const ProfileSliverHeader(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    profileState.user?.bio != null ? Text(profileState.user!.bio!) : const SizedBox(),
-                    profileState.isCurrentUser
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (_) => const EditProfileScreen()),
-                                    );
-                                  },
-                                  child: Text('Edit profile'),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            ProfileService.loadUserFromUid(context, userId: profileState.user?.uid ?? "");
+          },
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              const ProfileSliverHeader(),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      profileState.user?.bio != null ? Text(profileState.user!.bio!) : const SizedBox(),
+                      profileState.isCurrentUser
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+                                      );
+                                    },
+                                    child: Text('Edit profile'),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 15),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    print('Share');
-                                    print("new");
-                                    try {
-                                      print('testing');
-                                      await FirebaseMessaging.instance.requestPermission();
+                                flavorState.flavor == "Production" ? const SizedBox() : const SizedBox(width: 15),
+                                flavorState.flavor == "Production"
+                                    ? const SizedBox()
+                                    : Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            print('Share');
+                                            print("new");
+                                            try {
+                                              print('testing');
+                                              await FirebaseMessaging.instance.requestPermission();
 
-                                      final token = await FirebaseMessaging.instance.getToken();
-                                      print(token);
-                                    } catch (error) {
-                                      print(error);
-                                    }
-                                  },
-                                  child: Text('Share profile'),
+                                              final token = await FirebaseMessaging.instance.getToken();
+                                              print(token);
+                                            } catch (error) {
+                                              print(error);
+                                            }
+                                          },
+                                          child: Text('Share profile'),
+                                        ),
+                                      ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: FollowingButton(
+                                    isFollowing: profileState.isFollowing,
+                                    user: profileState.user,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: FollowingButton(
-                                  isFollowing: profileState.isFollowing,
-                                  user: profileState.user,
-                                ),
-                              ),
-                              const SizedBox(width: 15),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    print('Share');
-                                    print("new");
-                                    try {
-                                      print('testing');
-                                      await FirebaseMessaging.instance.requestPermission();
+                                flavorState.flavor == "Production" ? const SizedBox() : const SizedBox(width: 15),
+                                flavorState.flavor == "Production"
+                                    ? const SizedBox()
+                                    : Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            print('Share');
+                                            print("new");
+                                            try {
+                                              print('testing');
+                                              await FirebaseMessaging.instance.requestPermission();
 
-                                      final token = await FirebaseMessaging.instance.getToken();
-                                      print(token);
-                                    } catch (error) {
-                                      print(error);
-                                    }
-                                  },
-                                  child: Text('Share profile'),
+                                              final token = await FirebaseMessaging.instance.getToken();
+                                              print(token);
+                                            } catch (error) {
+                                              print(error);
+                                            }
+                                          },
+                                          child: Text('Share profile'),
+                                        ),
+                                      ),
+                              ],
+                            ),
+                      const SizedBox(height: 20),
+                      !(profileState.isCurrentUser || profileState.isFollowing)
+                          ? const SizedBox()
+                          : Column(
+                              children: [
+                                flavorState.flavor == "Production" ? const SizedBox() : const ProfileMediaHistory(),
+                                Column(
+                                  children: profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
                                 ),
-                              ),
-                            ],
-                          ),
-                    const SizedBox(height: 20),
-                    !(profileState.isCurrentUser || profileState.isFollowing)
-                        ? const SizedBox()
-                        : Column(
-                            children: [
-                              const ProfileMediaHistory(),
-                              Column(
-                                children: profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
-                              ),
-                            ],
-                          ),
-                  ],
+                              ],
+                            ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

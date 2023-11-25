@@ -10,3 +10,4 @@ export 'comments/state/comments_state.dart';
 export 'feed/state/like_state.dart';
 export 'notifications/state/notifications_state.dart';
 export 'settings/state/settings_state.dart';
+export 'nav/state/flavor_state.dart';

@@ -66,13 +66,19 @@ class _CommentsScreenState extends State<CommentsScreen> {
           children: [
             Expanded(
               flex: 1,
-              child: ListView(
-                controller: _scrollController,
-                children: commentsState.comments
-                    .map((Comment comment) => CommentTile(
-                          comment: comment,
-                        ))
-                    .toList(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  CommentsService.getPostComments(context);
+                },
+                child: ListView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: commentsState.comments
+                      .map((Comment comment) => CommentTile(
+                            comment: comment,
+                          ))
+                      .toList(),
+                ),
               ),
             ),
             const CommentInputField(),

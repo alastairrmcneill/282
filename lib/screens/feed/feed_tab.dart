@@ -117,12 +117,15 @@ class _FeedTabState extends State<FeedTab> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: CustomScrollView(
-        controller: _scrollController,
-        physics: const ClampingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          PostService.getFeed(context);
+        },
+        child: ListView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 feedState.posts.isEmpty
@@ -141,8 +144,8 @@ class _FeedTabState extends State<FeedTab> {
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
