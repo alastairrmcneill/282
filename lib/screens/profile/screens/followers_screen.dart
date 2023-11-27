@@ -105,7 +105,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
           body: TabBarView(
             children: [
               followersState.following.isEmpty
-                  ? const Center(child: Text('You are not following anyone yet.'))
+                  ? const Padding(
+                      padding: EdgeInsets.all(15),
+                      child: CenterText(text: "Not following anyone."),
+                    )
                   : ListView(
                       controller: followingScrollController,
                       children: followersState.following
@@ -153,7 +156,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                           .toList(),
                     ),
               followersState.followers.isEmpty
-                  ? const Center(child: Text('You are not followed by anyone yet.'))
+                  ? const Padding(
+                      padding: EdgeInsets.all(15),
+                      child: CenterText(text: "No followers."),
+                    )
                   : ListView(
                       controller: followersScrollController,
                       children: followersState.followers

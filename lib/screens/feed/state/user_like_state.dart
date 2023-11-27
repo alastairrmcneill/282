@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 
-class LikeState extends ChangeNotifier {
-  LikeStatus _status = LikeStatus.initial;
+class UserLikeState extends ChangeNotifier {
+  UserLikeStatus _status = UserLikeStatus.initial;
   Error _error = Error();
   Set<String> _likedPosts = {};
   Set<String> _recentlyLikedPosts = {};
   Set<String> _recentlyUnlikedPosts = {};
 
-  LikeStatus get status => _status;
+  UserLikeStatus get status => _status;
   Error get error => _error;
   Set<String> get likedPosts => _likedPosts;
   Set<String> get recentlyLikedPosts => _recentlyLikedPosts;
   Set<String> get recentlyUnlikedPosts => _recentlyUnlikedPosts;
 
-  set setStatus(LikeStatus searchStatus) {
+  set setStatus(UserLikeStatus searchStatus) {
     _status = searchStatus;
     notifyListeners();
   }
 
   set setError(Error error) {
-    _status = LikeStatus.error;
+    _status = UserLikeStatus.error;
     _error = error;
     notifyListeners();
   }
@@ -53,7 +53,7 @@ class LikeState extends ChangeNotifier {
     _recentlyLikedPosts = {};
     _likedPosts = {};
     _recentlyUnlikedPosts = {};
-    _status = LikeStatus.initial;
+    _status = UserLikeStatus.initial;
     _error = Error();
     notifyListeners();
   }
@@ -64,4 +64,4 @@ class LikeState extends ChangeNotifier {
   // }
 }
 
-enum LikeStatus { initial, loading, loaded, error }
+enum UserLikeStatus { initial, loading, loaded, error }

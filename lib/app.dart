@@ -49,8 +49,8 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<CommentsState>(
           create: (_) => CommentsState(),
         ),
-        ChangeNotifierProvider<LikeState>(
-          create: (_) => LikeState(),
+        ChangeNotifierProvider<UserLikeState>(
+          create: (_) => UserLikeState(),
         ),
         ChangeNotifierProvider<NotificationsState>(
           create: (_) => NotificationsState(),
@@ -60,6 +60,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<FlavorState>(
           create: (_) => FlavorState(flavor),
+        ),
+        ChangeNotifierProvider<LikesState>(
+          create: (_) => LikesState(),
         ),
       ],
       child: MaterialApp(

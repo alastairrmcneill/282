@@ -64,7 +64,7 @@ class PostWidget extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     UserState userState = Provider.of<UserState>(context);
     CommentsState commentsState = Provider.of<CommentsState>(context);
-    LikeState likeState = Provider.of<LikeState>(context);
+    UserLikeState userLikeState = Provider.of<UserLikeState>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -111,7 +111,7 @@ class PostWidget extends StatelessWidget {
               ),
             ),
             Text(
-                "${likeState.recentlyLikedPosts.contains(post.uid) ? post.likes + 1 : likeState.recentlyUnlikedPosts.contains(post.uid) ? post.likes - 1 : post.likes} likes"),
+                "${userLikeState.recentlyLikedPosts.contains(post.uid) ? post.likes + 1 : userLikeState.recentlyUnlikedPosts.contains(post.uid) ? post.likes - 1 : post.likes} likes"),
             SizedBox(
               height: 250,
               child: ListView(
@@ -150,13 +150,13 @@ class PostWidget extends StatelessWidget {
                     flex: 1,
                     child: IconButton(
                       onPressed: () {
-                        if (likeState.likedPosts.contains(post.uid!)) {
+                        if (userLikeState.likedPosts.contains(post.uid!)) {
                           LikeService.unLikePost(context, post: post);
                         } else {
                           LikeService.likePost(context, post: post);
                         }
                       },
-                      icon: likeState.likedPosts.contains(post.uid!)
+                      icon: userLikeState.likedPosts.contains(post.uid!)
                           ? Icon(Icons.favorite_rounded)
                           : Icon(Icons.favorite_outline_rounded),
                     ),

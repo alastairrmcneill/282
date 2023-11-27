@@ -130,7 +130,13 @@ class _FeedTabState extends State<FeedTab> {
               children: [
                 feedState.posts.isEmpty
                     ? const SafeArea(
-                        child: CenterText(text: "There are no posts in your feed."),
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: CenterText(
+                            text:
+                                "There are no posts to show. Get out into the hills with your friends and start making some memories!",
+                          ),
+                        ),
                       )
                     : Column(
                         children: feedState.posts

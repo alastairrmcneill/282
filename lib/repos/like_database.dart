@@ -16,7 +16,9 @@ class LikeDatabase {
     try {
       DocumentReference ref = _likesRef.doc();
 
-      await ref.set(like.toJSON());
+      Like newLike = like.copyWith(uid: ref.id);
+
+      await ref.set(newLike.toJSON());
     } on FirebaseException catch (error) {
       showErrorDialog(context, message: error.message ?? "There was an error creating the like.");
     }
@@ -59,5 +61,38 @@ class LikeDatabase {
     }
 
     return postIds;
+  }
+
+  static Future<List<Like>> readPostLikes({required String postId, required String? lastLikeId}) async {
+    List<Like> likes = [];
+    QuerySnapshot querySnapshot;
+
+    if (lastLikeId == null) {
+      // Load first batch
+      querySnapshot = await _likesRef
+          .where(LikeFields.postId, isEqualTo: postId)
+          .orderBy(LikeFields.userDisplayName, descending: true)
+          .limit(30)
+          .get();
+    } else {
+      final lastLikeDoc = await _likesRef.doc(lastLikeId).get();
+
+      if (!lastLikeDoc.exists) return [];
+
+      querySnapshot = await _likesRef
+          .where(LikeFields.postId, isEqualTo: postId)
+          .orderBy(LikeFields.userDisplayName, descending: true)
+          .startAfterDocument(lastLikeDoc)
+          .limit(30)
+          .get();
+    }
+
+    for (var doc in querySnapshot.docs) {
+      Like like = Like.fromJSON(doc.data() as Map<String, dynamic>);
+
+      likes.add(like);
+    }
+
+    return likes;
   }
 }

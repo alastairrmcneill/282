@@ -5,12 +5,14 @@ class CommentsState extends ChangeNotifier {
   CommentsStatus _status = CommentsStatus.initial;
   Error _error = Error();
   String? _postId;
+  Post? _post;
   String? _commentText;
   List<Comment> _comments = [];
 
   CommentsStatus get status => _status;
   Error get error => _error;
   String get postId => _postId!;
+  Post get post => _post!;
   String? get commentText => _commentText;
   List<Comment> get comments => _comments;
 
@@ -27,6 +29,11 @@ class CommentsState extends ChangeNotifier {
 
   set setPostId(String postId) {
     _postId = postId;
+    notifyListeners();
+  }
+
+  set setPost(Post? post) {
+    _post = post;
     notifyListeners();
   }
 

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/munro.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class SavedTab extends StatelessWidget {
   const SavedTab({super.key});
@@ -11,26 +12,31 @@ class SavedTab extends StatelessWidget {
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
     return Scaffold(
-      body: ListView(
-        children: munroState.munroList
-            .where((element) => element.saved)
-            .map(
-              (Munro munro) => ListTile(
-                title: Text(munro.name),
-                subtitle:
-                    Text("${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
-                onTap: () {
-                  munroState.setSelectedMunro = munro;
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const MunroScreen(),
-                    ),
-                  );
-                },
-              ),
+      body: munroState.munroList.where((element) => element.saved).isEmpty
+          ? const Padding(
+              padding: EdgeInsets.all(15),
+              child: CenterText(text: "You are not followed by anyone yet"),
             )
-            .toList(),
-      ),
+          : ListView(
+              children: munroState.munroList
+                  .where((element) => element.saved)
+                  .map(
+                    (Munro munro) => ListTile(
+                      title: Text(munro.name),
+                      subtitle: Text(
+                          "${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
+                      onTap: () {
+                        munroState.setSelectedMunro = munro;
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const MunroScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
     );
   }
 }

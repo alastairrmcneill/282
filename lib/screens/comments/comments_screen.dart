@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/comments/screens/likes_screen.dart';
 import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -59,6 +60,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, CommentsState commentsState) {
+    LikesState likesState = Provider.of<LikesState>(context);
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -73,11 +75,34 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 child: ListView(
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  children: commentsState.comments
-                      .map((Comment comment) => CommentTile(
-                            comment: comment,
-                          ))
-                      .toList(),
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        likesState.reset();
+                        likesState.setPostId = commentsState.postId;
+                        LikeService.getPostLikes(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LikesScreen(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.favorite_rounded),
+                          Text(commentsState.post.likes == 1
+                              ? "${commentsState.post.likes} like"
+                              : "${commentsState.post.likes} likes"),
+                        ],
+                      ),
+                    ),
+                    ...commentsState.comments
+                        .map((Comment comment) => CommentTile(
+                              comment: comment,
+                            ))
+                        .toList(),
+                  ],
                 ),
               ),
             ),

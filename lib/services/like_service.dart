@@ -7,7 +7,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class LikeService {
   // Like Post
   static Future likePost(BuildContext context, {required Post post}) async {
-    LikeState likeState = Provider.of<LikeState>(context, listen: false);
+    UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     Like like = Like(
@@ -17,25 +17,25 @@ class LikeService {
       userProfilePictureURL: userState.currentUser?.profilePictureURL,
     );
     LikeDatabase.create(context, like: like);
-    likeState.addRecentlyLikedPost = post.uid!;
-    likeState.addLikedPosts = {post.uid!};
+    userLikeState.addRecentlyLikedPost = post.uid!;
+    userLikeState.addLikedPosts = {post.uid!};
   }
 
   // Unlike Post
   static Future unLikePost(BuildContext context, {required Post post}) async {
-    LikeState likeState = Provider.of<LikeState>(context, listen: false);
+    UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     LikeDatabase.delete(context, postId: post.uid ?? "", userId: userState.currentUser?.uid ?? "");
-    likeState.removePost(post.uid!);
+    userLikeState.removePost(post.uid!);
   }
 
   // Get liked posts
   static Future getLikedPostIds(BuildContext context, {required List<Post> posts}) async {
-    LikeState likeState = Provider.of<LikeState>(context, listen: false);
+    UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
-    likeState.addLikedPosts = await LikeDatabase.getLikedPostIds(
+    userLikeState.addLikedPosts = await LikeDatabase.getLikedPostIds(
       userId: userState.currentUser?.uid ?? "",
       posts: posts,
     );
@@ -43,7 +43,39 @@ class LikeService {
 
   // Clear liked posts
   static clearLikedPosts(BuildContext context) {
-    LikeState likeState = Provider.of<LikeState>(context, listen: false);
-    likeState.reset();
+    UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
+    userLikeState.reset();
+  }
+
+  // Get likes for a given post
+  static Future getPostLikes(BuildContext context) async {
+    LikesState likesState = Provider.of<LikesState>(context, listen: false);
+
+    likesState.setStatus = LikesStatus.loading;
+    likesState.setLikes = await LikeDatabase.readPostLikes(
+      postId: likesState.postId,
+      lastLikeId: null,
+    );
+
+    likesState.setStatus = LikesStatus.loaded;
+  }
+
+  // Get likes for a given post
+  static Future paginatePostLikes(BuildContext context) async {
+    LikesState likesState = Provider.of<LikesState>(context, listen: false);
+
+    likesState.setStatus = LikesStatus.paginating;
+
+    // Find last document
+    String? lastLikeId;
+    if (likesState.likes.isNotEmpty) {
+      lastLikeId = likesState.likes.last.uid!;
+    }
+    likesState.addLikes = await LikeDatabase.readPostLikes(
+      postId: likesState.postId,
+      lastLikeId: lastLikeId,
+    );
+
+    likesState.setStatus = LikesStatus.loaded;
   }
 }

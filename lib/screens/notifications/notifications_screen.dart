@@ -65,14 +65,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         onRefresh: () async {
           NotificationsService.getUserNotifications(context);
         },
-        child: ListView(
-            controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            children: notificationsState.notifications
-                .map(
-                  (Notif notification) => NotificationTile(notification: notification),
-                )
-                .toList()),
+        child: notificationsState.notifications.isEmpty
+            ? const Padding(
+                padding: EdgeInsets.all(15),
+                child: CenterText(text: "You have no notifications at the moment"),
+              )
+            : ListView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: notificationsState.notifications
+                    .map(
+                      (Notif notification) => NotificationTile(notification: notification),
+                    )
+                    .toList()),
       ),
     );
   }

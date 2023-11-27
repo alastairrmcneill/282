@@ -52,6 +52,9 @@ class CommentsService {
         lastCommentId: null,
       );
 
+      // Read post details
+      commentsState.setPost = await PostsDatabase.readPostFromUid(context, uid: commentsState.postId);
+
       // Update status
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error) {
