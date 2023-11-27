@@ -83,7 +83,6 @@ class FollowingService {
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
     try {
       followersState.setStatus = FollowersStatus.loading;
-
       followersState.setFollowers = await FollowingRelationshipsDatabase.getFollowersFromUid(
         context,
         targetId: userId,

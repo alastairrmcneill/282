@@ -56,10 +56,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
       builder: (context, followersState, child) {
         switch (followersState.status) {
           case FollowersStatus.loading:
-            return Scaffold(
-              appBar: AppBar(),
-              body: const LoadingWidget(),
-            );
+            return _buildLoadingScreen(followersState);
           case FollowersStatus.error:
             return Scaffold(
               appBar: AppBar(),
@@ -74,6 +71,45 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
             );
         }
       },
+    );
+  }
+
+  Widget _buildLoadingScreen(FollowersState followersState) {
+    return DefaultTabController(
+      length: 2,
+      child: WillPopScope(
+        onWillPop: () async {
+          followersState.navigateBack();
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(""),
+            centerTitle: false,
+            bottom: const TabBar(
+              indicatorColor: Colors.white,
+              tabs: [
+                Tab(text: "Following"),
+                Tab(text: "Followers"),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 30,
+                itemBuilder: (context, index) => const ShimmerListTile(),
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 30,
+                itemBuilder: (context, index) => const ShimmerListTile(),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

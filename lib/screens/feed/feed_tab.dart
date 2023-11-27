@@ -42,10 +42,8 @@ class _FeedTabState extends State<FeedTab> {
       builder: (context, feedState, child) {
         switch (feedState.status) {
           case FeedStatus.loading:
-            return Scaffold(
-              appBar: AppBar(),
-              body: const LoadingWidget(),
-            );
+            return _buildLoadingScreen(context, feedState);
+
           case FeedStatus.error:
             return Scaffold(
               appBar: AppBar(),
@@ -55,6 +53,73 @@ class _FeedTabState extends State<FeedTab> {
             return _buildScreen(context, feedState);
         }
       },
+    );
+  }
+
+  Widget _buildLoadingScreen(BuildContext context, FeedState feedState) {
+    NotificationsState notificationsState = Provider.of<NotificationsState>(context);
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              NotificationsService.getUserNotifications(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const NotificationsScreen(),
+                ),
+              );
+            },
+            icon: Stack(
+              children: [
+                const Icon(Icons.notifications),
+                notificationsState.notifications.where((element) => !element.read).isEmpty
+                    ? const SizedBox()
+                    : Positioned(
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 12,
+                            minHeight: 12,
+                          ),
+                          child: Text(
+                            notificationsState.notifications.where((element) => !element.read).length.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const UserSearchScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
+      ),
+      backgroundColor: Colors.white,
+      body: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 3,
+        itemBuilder: (context, index) => const ShimmerPostTile(),
+      ),
     );
   }
 

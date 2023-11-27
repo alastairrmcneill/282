@@ -41,10 +41,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       builder: (context, notificationsState, child) {
         switch (notificationsState.status) {
           case NotificationsStatus.loading:
-            return Scaffold(
-              appBar: AppBar(),
-              body: const LoadingWidget(),
-            );
+            return _buildLoadingScreen();
           case NotificationsStatus.error:
             print(notificationsState.error.code);
             return Scaffold(
@@ -55,6 +52,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             return _buildScreen(context, notificationsState);
         }
       },
+    );
+  }
+
+  Widget _buildLoadingScreen() {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 30,
+        itemBuilder: (context, index) => const ShimmerListTile(),
+      ),
     );
   }
 

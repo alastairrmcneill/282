@@ -45,10 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, profileState, child) {
         switch (profileState.status) {
           case ProfileStatus.loading:
-            return Scaffold(
-              appBar: AppBar(),
-              body: const LoadingWidget(),
-            );
+            return _buildLoadingScreen(profileState);
           case ProfileStatus.error:
             print(profileState.error.code);
             return Scaffold(
@@ -59,6 +56,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return _buildScreen(context, profileState);
         }
       },
+    );
+  }
+
+  Widget _buildLoadingScreen(ProfileState profileState) {
+    return WillPopScope(
+      onWillPop: () async {
+        profileState.navigateBack();
+        return true;
+      },
+      child: const Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          slivers: [
+            LoadingSliverHeader(),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ShimmerBox(width: 300, height: 24, borderRadius: 5),
+                    SizedBox(height: 20),
+                    ShimmerBox(
+                      width: double.infinity,
+                      height: 40,
+                      borderRadius: 5,
+                    ),
+                    SizedBox(height: 20),
+                    ShimmerPostTile(),
+                    ShimmerPostTile(),
+                    ShimmerPostTile(),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 

@@ -52,6 +52,7 @@ class LikeService {
     LikesState likesState = Provider.of<LikesState>(context, listen: false);
 
     likesState.setStatus = LikesStatus.loading;
+
     likesState.setLikes = await LikeDatabase.readPostLikes(
       postId: likesState.postId,
       lastLikeId: null,

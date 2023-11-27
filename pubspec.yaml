@@ -37,6 +37,7 @@ dependencies:
   timeago: ^3.6.0
   firebase_messaging: ^14.7.5
   shared_preferences: ^2.2.2
+  shimmer: ^3.0.0
 
 
 

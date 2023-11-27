@@ -42,10 +42,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       builder: (context, commentsState, child) {
         switch (commentsState.status) {
           case CommentsStatus.loading:
-            return Scaffold(
-              appBar: AppBar(),
-              body: const LoadingWidget(),
-            );
+            return _buildLoadingScreen();
           case CommentsStatus.error:
             print(commentsState.error.code);
             return Scaffold(
@@ -56,6 +53,27 @@ class _CommentsScreenState extends State<CommentsScreen> {
             return _buildScreen(context, commentsState);
         }
       },
+    );
+  }
+
+  Widget _buildLoadingScreen() {
+    return Scaffold(
+      appBar: AppBar(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: ListView.builder(
+                itemCount: 30,
+                controller: _scrollController,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) => ShimmerListTile(),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

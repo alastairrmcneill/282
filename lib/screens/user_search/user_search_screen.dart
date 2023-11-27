@@ -82,7 +82,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                     case SearchStatus.initial:
                       return const CenterText(text: "Search for fellow 282 users");
                     case SearchStatus.loading:
-                      return const LoadingWidget();
+                      return _buildLoadingScreen();
                     case SearchStatus.error:
                       return CenterText(text: userSearchState.error.message);
                     default:
@@ -99,6 +99,15 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLoadingScreen() {
+    return ListView.builder(
+      itemCount: 30,
+      controller: _scrollController,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => ShimmerListTile(),
     );
   }
 

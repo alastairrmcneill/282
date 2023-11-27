@@ -41,10 +41,7 @@ class _LikesScreenState extends State<LikesScreen> {
       builder: (context, likesstate, child) {
         switch (likesstate.status) {
           case LikesStatus.loading:
-            return Scaffold(
-              appBar: AppBar(),
-              body: const LoadingWidget(),
-            );
+            return _buildLoadingScreen();
           case LikesStatus.error:
             print(likesstate.error.code);
             return Scaffold(
@@ -55,6 +52,17 @@ class _LikesScreenState extends State<LikesScreen> {
             return _buildScreen(context, likesstate);
         }
       },
+    );
+  }
+
+  Widget _buildLoadingScreen() {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 30,
+        itemBuilder: (context, index) => const ShimmerListTile(),
+      ),
     );
   }
 
