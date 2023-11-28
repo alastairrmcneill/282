@@ -84,7 +84,7 @@ class CreatePostImagePicker extends StatelessWidget {
                   ),
                 ),
               );
-            }).toList(),
+            }),
             ...createPostState.images.map((image) {
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
@@ -93,38 +93,40 @@ class CreatePostImagePicker extends StatelessWidget {
                   child: Image.file(image),
                 ),
               );
-            }).toList(),
-            InkWell(
-              onTap: () async {
-                await pickImage(createPostState);
-              },
-              child: DottedBorder(
-                borderType: BorderType.RRect,
-                radius: const Radius.circular(10),
-                dashPattern: const [5, 5],
-                color: Colors.green,
-                strokeWidth: 1,
-                child: SizedBox(
-                  width: height,
-                  height: height,
-                  child: const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add_a_photo_rounded,
-                          color: Colors.green,
+            }),
+            createPostState.images.length + createPostState.imagesURLs.length > 10
+                ? const SizedBox()
+                : InkWell(
+                    onTap: () async {
+                      await pickImage(createPostState);
+                    },
+                    child: DottedBorder(
+                      borderType: BorderType.RRect,
+                      radius: const Radius.circular(10),
+                      dashPattern: const [5, 5],
+                      color: Colors.green,
+                      strokeWidth: 1,
+                      child: SizedBox(
+                        width: height,
+                        height: height,
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_a_photo_rounded,
+                                color: Colors.green,
+                              ),
+                              Text(
+                                'Add a photo',
+                                style: TextStyle(color: Colors.green, fontSize: 12),
+                              )
+                            ],
+                          ),
                         ),
-                        Text(
-                          'Add a photo',
-                          style: TextStyle(color: Colors.green, fontSize: 12),
-                        )
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
           ],
         ),
       );
