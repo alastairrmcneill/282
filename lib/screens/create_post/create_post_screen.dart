@@ -84,6 +84,7 @@ class CreatePostScreen extends StatelessWidget {
                     TextFormField(
                       initialValue: createPostState.title,
                       decoration: const InputDecoration(hintText: "Title your hike"),
+                      textCapitalization: TextCapitalization.sentences,
                       onSaved: (newValue) {
                         if ((newValue == null || newValue.trim() == "")) {
                           createPostState.setTitle = null;

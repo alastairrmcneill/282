@@ -47,7 +47,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           case ProfileStatus.loading:
             return _buildLoadingScreen(profileState);
           case ProfileStatus.error:
-            print(profileState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: profileState.error.message),

@@ -43,7 +43,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           case NotificationsStatus.loading:
             return _buildLoadingScreen();
           case NotificationsStatus.error:
-            print(notificationsState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: notificationsState.error.message),

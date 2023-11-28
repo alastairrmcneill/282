@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -16,13 +19,48 @@ class PostWidget extends StatelessWidget {
     if (post.includedMunros.isEmpty) {
       return const SizedBox();
     } else if (post.includedMunros.length == 1) {
-      return Text(post.includedMunros[0].name);
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          post.includedMunros[0].name,
+          style: const TextStyle(
+            fontSize: 12,
+            height: 0.95,
+            fontWeight: FontWeight.w200,
+          ),
+        ),
+      );
     } else {
       String text = "";
       int len = post.includedMunros.length - 1;
       text = "${post.includedMunros[0].name} + $len more.";
-      return Text(text);
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 12,
+            height: 0.95,
+            fontWeight: FontWeight.w200,
+          ),
+        ),
+      );
     }
+  }
+
+  Widget _buildDescription() {
+    if (post.description == null || post.description == "") return const SizedBox();
+    return Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          post.description!,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    );
   }
 
   Widget _buildPopUpMenu(
@@ -67,137 +105,110 @@ class PostWidget extends StatelessWidget {
     UserLikeState userLikeState = Provider.of<UserLikeState>(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Container(
-        width: double.infinity,
-        color: Colors.grey[100],
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProfilePicture(
-                      radius: 15,
-                      profilePictureURL: post.authorProfilePictureURL,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(post.authorDisplayName),
-                        _buildIncludedMunroText(),
-                      ],
-                    ),
-                  ],
-                ),
-                _buildPopUpMenu(
-                  context,
-                  userState: userState,
-                  createPostState: createPostState,
-                  post: post,
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                post.title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Text(
-                "${userLikeState.recentlyLikedPosts.contains(post.uid) ? post.likes + 1 : userLikeState.recentlyUnlikedPosts.contains(post.uid) ? post.likes - 1 : post.likes} likes"),
-            SizedBox(
-              height: 250,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: post.imageURLs.map((url) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: CachedNetworkImage(
-                          imageUrl: url,
-                          fit: BoxFit.cover,
-                          progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
-                            child: LinearProgressIndicator(
-                              value: downloadProgress.progress,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.error),
-                                  Text(
-                                    error.toString(),
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+      padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 5),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProfilePicture(
+                    radius: 25,
+                    profilePictureURL: post.authorProfilePictureURL,
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(post.authorDisplayName),
+                      Text(
+                        post.dateTime.timeAgoLong(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w200,
+                          fontSize: 12,
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: IconButton(
-                      onPressed: () {
-                        if (userLikeState.likedPosts.contains(post.uid!)) {
-                          LikeService.unLikePost(context, post: post);
-                        } else {
-                          LikeService.likePost(context, post: post);
-                        }
-                      },
-                      icon: userLikeState.likedPosts.contains(post.uid!)
-                          ? Icon(Icons.favorite_rounded)
-                          : Icon(Icons.favorite_outline_rounded),
-                    ),
-                  ),
-                  VerticalDivider(
-                    indent: 5,
-                    endIndent: 5,
-                    width: 0.5,
-                    color: Colors.grey[500],
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: InkWell(
-                      onTap: () {
-                        commentsState.reset();
-                        commentsState.setPostId = post.uid!;
-                        CommentsService.getPostComments(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.comment_outlined),
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),
+              _buildPopUpMenu(
+                context,
+                userState: userState,
+                createPostState: createPostState,
+                post: post,
+              ),
+            ],
+          ),
+          post.imageURLs.isEmpty ? const SizedBox() : PostImagesCarousel(post: post),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              post.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
             ),
-          ],
-        ),
+          ),
+          _buildIncludedMunroText(),
+          _buildDescription(),
+          Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    if (userLikeState.likedPosts.contains(post.uid!)) {
+                      LikeService.unLikePost(context, post: post);
+                    } else {
+                      LikeService.likePost(context, post: post);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      userLikeState.likedPosts.contains(post.uid!)
+                          ? const Icon(Icons.favorite_rounded)
+                          : const Icon(Icons.favorite_outline_rounded),
+                      const SizedBox(width: 10),
+                      Text(post.likes == 0
+                          ? "Like"
+                          : post.likes == 1
+                              ? "1 like"
+                              : "${post.likes} likes"),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                GestureDetector(
+                  onTap: () {
+                    commentsState.reset();
+                    commentsState.setPostId = post.uid!;
+                    CommentsService.getPostComments(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
+                  },
+                  child: const Row(
+                    children: [
+                      Icon(Icons.comment_outlined),
+                      SizedBox(width: 10),
+                      Text("Comment"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 0.2,
+            color: Colors.black,
+          ),
+        ],
       ),
     );
   }

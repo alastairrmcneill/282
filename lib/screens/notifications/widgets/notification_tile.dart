@@ -53,7 +53,6 @@ class NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context);
     if (!notification.read) {
-      print("marking as done");
       NotificationsService.markNotificationAsRead(context, notification: notification);
     }
     return ListTile(

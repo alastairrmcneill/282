@@ -43,7 +43,6 @@ class _LikesScreenState extends State<LikesScreen> {
           case LikesStatus.loading:
             return _buildLoadingScreen();
           case LikesStatus.error:
-            print(likesstate.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: likesstate.error.message),

@@ -33,37 +33,43 @@ class CommentTile extends StatelessWidget {
         ],
       );
     } else {
-      return const SizedBox();
+      return const SizedBox(width: 48);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircularProfilePicture(
-          radius: 20,
-          profilePictureURL: comment.authorProfilePictureURL,
-        ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(comment.authorDisplayName),
-                  Text(comment.dateTime.timeAgoShort()),
-                ],
-              ),
-              Text(comment.commentText),
-            ],
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircularProfilePicture(
+            radius: 20,
+            profilePictureURL: comment.authorProfilePictureURL,
           ),
-        ),
-        _buildPopUpMenu(context, comment: comment, userState: userState)
-      ],
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${comment.authorDisplayName} - ${comment.dateTime.timeAgoShort()}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w200,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(comment.commentText),
+              ],
+            ),
+          ),
+          _buildPopUpMenu(context, comment: comment, userState: userState)
+        ],
+      ),
     );
   }
 }

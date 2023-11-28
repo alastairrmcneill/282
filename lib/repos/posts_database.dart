@@ -98,7 +98,6 @@ class PostsDatabase {
 
     for (var doc in querySnapshot.docs) {
       Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
-
       posts.add(post);
     }
 

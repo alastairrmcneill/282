@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -44,7 +45,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
           case CommentsStatus.loading:
             return _buildLoadingScreen();
           case CommentsStatus.error:
-            print(commentsState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: commentsState.error.message),
@@ -94,6 +94,51 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
+                    commentsState.post.imageURLs.isEmpty
+                        ? const SizedBox()
+                        : SizedBox(
+                            height: 150,
+                            width: double.infinity,
+                            child: CachedNetworkImage(
+                              imageUrl: commentsState.post.imageURLs[0],
+                              fit: BoxFit.cover,
+                              progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                                child: LinearProgressIndicator(
+                                  value: downloadProgress.progress,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) {
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.error),
+                                      Text(
+                                        error.toString(),
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          commentsState.post.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
                     InkWell(
                       onTap: () {
                         likesState.reset();
@@ -106,13 +151,17 @@ class _CommentsScreenState extends State<CommentsScreen> {
                           ),
                         );
                       },
-                      child: Row(
-                        children: [
-                          Icon(Icons.favorite_rounded),
-                          Text(commentsState.post.likes == 1
-                              ? "${commentsState.post.likes} like"
-                              : "${commentsState.post.likes} likes"),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.favorite_rounded),
+                            const SizedBox(width: 10),
+                            Text(commentsState.post.likes == 1
+                                ? "${commentsState.post.likes} like"
+                                : "${commentsState.post.likes} likes"),
+                          ],
+                        ),
                       ),
                     ),
                     ...commentsState.comments
