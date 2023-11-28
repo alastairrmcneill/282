@@ -83,8 +83,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 context,
                 appUser: newAppUser,
                 profilePicture: _image,
-              ).whenComplete(
-                () => Navigator.pop(context),
               );
             },
             child: const Text(

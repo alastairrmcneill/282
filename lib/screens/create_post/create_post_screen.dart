@@ -58,7 +58,6 @@ class CreatePostScreen extends StatelessWidget {
                     } else {
                       PostService.editPost(context);
                     }
-                    MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
                   }
                 },
                 child: const Text(

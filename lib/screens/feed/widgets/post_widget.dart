@@ -133,7 +133,18 @@ class PostWidget extends StatelessWidget {
                             ),
                           ),
                           errorWidget: (context, url, error) {
-                            return const Icon(Icons.photo_rounded);
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.error),
+                                  Text(
+                                    error.toString(),
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            );
                           },
                         ),
                       ),

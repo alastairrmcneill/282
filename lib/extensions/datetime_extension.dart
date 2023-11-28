@@ -1,6 +1,6 @@
 extension DateTimeExtension on DateTime {
   String timeAgoShort() {
-    DateTime current = DateTime.now();
+    DateTime current = DateTime.now().toUtc();
 
     if (current.difference(this).inSeconds < 60) {
       // Less than 1 minute ago
@@ -24,7 +24,7 @@ extension DateTimeExtension on DateTime {
   }
 
   String timeAgoLong() {
-    DateTime current = DateTime.now();
+    DateTime current = DateTime.now().toUtc();
 
     if (current.difference(this).inSeconds < 60) {
       // Less than 1 minute ago

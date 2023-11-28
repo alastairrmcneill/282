@@ -70,9 +70,7 @@ class ProfileService {
       // Upload new profile picture
       String? photoURL;
       if (profilePicture != null) {
-        print("Uploading");
         photoURL = await StorageService.uploadProfilePicture(profilePicture);
-        print("Done");
         appUser.profilePictureURL = photoURL;
       }
 
@@ -87,6 +85,7 @@ class ProfileService {
       // Update profile
       profileState.setUser = await UserDatabase.readUserFromUid(context, uid: appUser.uid!);
       stopCircularProgressOverlay(context);
+      Navigator.pop(context);
     } catch (error) {
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: "There was an issue updating your account");

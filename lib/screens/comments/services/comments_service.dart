@@ -20,7 +20,7 @@ class CommentsService {
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: DateTime.now(),
+        dateTime: DateTime.now().toUtc(),
         commentText: commentsState.commentText!,
       );
 

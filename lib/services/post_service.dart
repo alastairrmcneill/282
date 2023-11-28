@@ -19,6 +19,7 @@ class PostService {
 
       // Upload picture and get url
       List<String> imageURLs = createPostState.imagesURLs;
+
       for (File image in createPostState.images) {
         String imageURL = await StorageService.uploadPostImage(image);
         imageURLs.add(imageURL);
@@ -46,7 +47,7 @@ class PostService {
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: DateTime.now(),
+        dateTime: DateTime.now().toUtc(),
         likes: 0,
         title: title,
         description: createPostState.description,
@@ -55,14 +56,14 @@ class PostService {
       );
 
       // Send to database
-
       await PostsDatabase.create(context, post: post);
 
+      // Complete munros
+      MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
+
       // Update state
-      print("Post completed");
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {
-      print(error);
       createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
     }
   }
@@ -89,8 +90,10 @@ class PostService {
       );
 
       // Send to database
-
       await PostsDatabase.update(context, post: newPost);
+
+      // Complete munros
+      MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
 
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;

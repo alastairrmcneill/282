@@ -44,6 +44,15 @@ class StorageService {
       'images/users/user_$imageId.jpg',
       imageId,
       compressedImagePath,
+    ).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () async {
+        throw FirebaseException(
+          plugin: "Storage",
+          code: "Uploading your image timed out. Please try again later",
+          message: "There was an issue with editing your profile picture, please try again later.",
+        );
+      },
     );
     return downloadUrl;
   }
@@ -57,6 +66,15 @@ class StorageService {
       'images/posts/post_$imageId.jpg',
       imageId,
       compressedImagePath,
+    ).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () async {
+        throw FirebaseException(
+          plugin: "Storage",
+          code: "Uploading your image timed out. Please try again later",
+          message: "There was an issue with your upload, please try again later.",
+        );
+      },
     );
     return downloadUrl;
   }

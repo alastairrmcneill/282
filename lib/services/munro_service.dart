@@ -62,12 +62,12 @@ class MunroService {
 
     for (Munro munro in munros) {
       newAppUser.personalMunroData![munro.id - 1][MunroFields.summited] = true;
-      newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] = DateTime.now();
+      newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] = DateTime.now().toUtc();
       // Update munro notifier
       munroState.updateMunro(
         munroId: munro.id,
         summited: true,
-        summitedDate: DateTime.now(),
+        summitedDate: DateTime.now().toUtc(),
       );
     }
 
