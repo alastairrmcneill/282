@@ -19,6 +19,7 @@ class ProfileService {
       profileState.setStatus = ProfileStatus.loading;
       // Load user from database
       profileState.setUser = await UserDatabase.readUserFromUid(context, uid: userId);
+      print("Loaded profile");
 
       // Check if this is current user
       profileState.setIsCurrentUser = userState.currentUser?.uid == userId;
@@ -29,8 +30,10 @@ class ProfileService {
         currentUserId: userState.currentUser?.uid ?? "",
         profileUserId: userId,
       );
+      print("checked following");
 
       profileState.setPosts = await PostService.getProfilePosts(context);
+      print("loaded posts");
       // Set loading status?
       profileState.setStatus = ProfileStatus.loaded;
     } catch (error) {

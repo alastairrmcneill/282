@@ -128,7 +128,7 @@ class _MapScreenState extends State<MapScreen> {
       cameraTargetBounds: CameraTargetBounds(
         LatLngBounds(
           northeast: const LatLng(57.5, -3),
-          southwest: const LatLng(55, -5.5),
+          southwest: const LatLng(55, -6.4),
         ),
       ),
       onTap: (argument) {

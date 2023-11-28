@@ -60,8 +60,11 @@ class CommentsState extends ChangeNotifier {
   }
 
   reset() {
+    _status = CommentsStatus.initial;
+    _error = Error();
     _postId = null;
-    _commentText = null;
+    _post = null;
+    _commentText;
     _comments = [];
     notifyListeners();
   }

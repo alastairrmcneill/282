@@ -85,6 +85,17 @@ class ProfileState extends ChangeNotifier {
     _error = error;
     notifyListeners();
   }
+
+  reset() {
+    _status = ProfileStatus.initial;
+    _user = null;
+    _profileHistory = [];
+    _isFollowing = false;
+    _isCurrentUser = false;
+    _posts = [];
+    _postsHisotry = [];
+    _error = Error();
+  }
 }
 
 enum ProfileStatus { initial, loading, loaded, paginating, error }

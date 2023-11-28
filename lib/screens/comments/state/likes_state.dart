@@ -39,6 +39,8 @@ class LikesState extends ChangeNotifier {
   }
 
   reset() {
+    _status = LikesStatus.initial;
+    _error = Error();
     _postId = null;
     _likes = [];
     notifyListeners();

@@ -83,9 +83,32 @@ class AuthService {
 
       stopCircularProgressOverlay(context);
 
+      switch (navigationState.navigateToRoute) {
+        case "/home_screen":
+          MunroService.loadPersonalMunroData(context);
+          break;
+        case "/feed_tab":
+          PostService.getFeed(context);
+          NotificationsService.getUserNotifications(context);
+          break;
+        case "/saved_tab":
+          MunroService.loadPersonalMunroData(context);
+          break;
+        case "/profile_tab":
+          ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
+          break;
+        case "/munro_screen":
+          break;
+        default:
+      }
+
       // Navigate to the right place
-      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
-      // Navigator.pushNamedAndRemoveUntil(context, newRouteName, (route) => false)
+      // Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        navigationState.navigateToRoute, // The name of the route you want to navigate to
+        (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+      );
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
@@ -126,6 +149,7 @@ class AuthService {
         UserDatabase.update(context, appUser: newAppUser);
       }
 
+      await resetAppData(context);
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, "/home_screen");
     } on FirebaseAuthException catch (error) {
@@ -257,5 +281,26 @@ class AuthService {
     } on FirebaseAuthException catch (error) {
       showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
     }
+  }
+
+  static Future resetAppData(BuildContext context) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    userState.reset();
+
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    profileState.reset();
+
+    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
+    followersState.reset();
+
+    LikesState likesState = Provider.of<LikesState>(context, listen: false);
+    likesState.reset();
+
+    CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
+    commentsState.reset();
+
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    munroState.reset();
+    await MunroService.loadMunroData(context);
   }
 }

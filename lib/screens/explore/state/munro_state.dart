@@ -66,6 +66,15 @@ class MunroState extends ChangeNotifier {
     _filteredMunroList = runningList;
     notifyListeners();
   }
+
+  reset() {
+    _status = MunroStatus.initial;
+    _error = Error();
+    _munroList = [];
+    _selectedMunro;
+    _filteredMunroList = [];
+    _filterString = '';
+  }
 }
 
 enum MunroStatus { initial, loading, loaded, error }

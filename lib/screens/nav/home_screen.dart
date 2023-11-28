@@ -58,20 +58,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 followersState.clear();
 
                 // Check which screen
-                if (value == 1) {
-                  // Navigate to feed
-                  PostService.getFeed(context);
-                  NotificationsService.getUserNotifications(context);
+                if (value == 0) {
                   setState(() => _currentIndex = value);
                 }
-                if (value == _screens.length - 1 && user == null) {
-                  navigationState.setNavigateToRoute = "/profile_tab";
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
-                } else {
-                  if (value == _screens.length - 1) {
-                    ProfileService.loadUserFromUid(context, userId: user!.uid!);
+                if (value == 1) {
+                  if (user == null) {
+                    navigationState.setNavigateToRoute = "/feed_tab";
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                  } else {
+                    // Navigate to feed
+                    PostService.getFeed(context);
+                    NotificationsService.getUserNotifications(context);
+                    setState(() => _currentIndex = value);
                   }
-                  setState(() => _currentIndex = value);
+                }
+                if (value == 2) {
+                  if (user == null) {
+                    navigationState.setNavigateToRoute = "/saved_tab";
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                  } else {
+                    // Navigate to saved
+                    MunroService.loadMunroData(context);
+                    setState(() => _currentIndex = value);
+                  }
+                }
+                if (value == 3) {
+                  if (user == null) {
+                    navigationState.setNavigateToRoute = "/profile_tab";
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                  } else {
+                    // Navigate to saved
+                    ProfileService.loadUserFromUid(context, userId: user.uid!);
+                    setState(() => _currentIndex = value);
+                  }
                 }
               },
               currentIndex: _currentIndex,

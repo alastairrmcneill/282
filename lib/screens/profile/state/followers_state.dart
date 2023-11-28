@@ -75,6 +75,12 @@ class FollowersState extends ChangeNotifier {
     _error = error;
     notifyListeners();
   }
+
+  reset() {
+    _status = FollowersStatus.initial;
+    _error = Error();
+    clear();
+  }
 }
 
 enum FollowersStatus { initial, loading, loaded, paginating, error }
