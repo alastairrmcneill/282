@@ -47,10 +47,11 @@ app.*.map.json
 /android/app/src/development/google-services.json
 /android/app/src/production/google-services.json
 /ios/config/
+firestore.indexes.json
 
 # # API keys
 /ios/Runner/Info.plist
 /android/app/src/main/AndroidManifest.xml
 /ios/Runner/AppDelegate.swift
 /ios/Runner/AppDelegate.swift
-
+/keys

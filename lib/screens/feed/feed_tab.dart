@@ -186,37 +186,37 @@ class _FeedTabState extends State<FeedTab> {
         onRefresh: () async {
           PostService.getFeed(context);
         },
-        child: ListView(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                feedState.posts.isEmpty
-                    ? const SafeArea(
-                        child: Padding(
-                          padding: EdgeInsets.all(15),
-                          child: CenterText(
-                            text:
-                                "There are no posts to show. Get out into the hills with your friends and start making some memories!",
-                          ),
-                        ),
-                      )
-                    : Column(
+        child: feedState.posts.isEmpty
+            ? const SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: CenterText(
+                    text:
+                        "There are no posts to show. Get out into the hills with your friends and start making some memories!",
+                  ),
+                ),
+              )
+            : ListView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
                         children: feedState.posts
                             .map(
                               (Post post) => PostWidget(post: post),
                             )
                             .toList(),
                       ),
-                SizedBox(
-                  child: feedState.status == FeedStatus.paginating ? const CircularProgressIndicator() : null,
-                ),
-              ],
-            ),
-          ],
-        ),
+                      SizedBox(
+                        child: feedState.status == FeedStatus.paginating ? const CircularProgressIndicator() : null,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }

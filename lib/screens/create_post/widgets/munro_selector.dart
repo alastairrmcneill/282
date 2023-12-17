@@ -71,15 +71,31 @@ class _MunroSelectorState extends State<MunroSelector> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("Munros on this hike"),
+                const Text(
+                  "Munros on this hike",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () => _showModalSheet(munroState, createPostState, formState),
-                  child: Icon(Icons.add_rounded),
+                  child: const Icon(
+                    Icons.add_rounded,
+                  ),
                 ),
               ],
             ),
-            ...createPostState.selectedMunros.map((Munro munro) => Text(munro.name)).toList(),
+            ...createPostState.selectedMunros.map(
+              (Munro munro) => ListTile(
+                contentPadding: const EdgeInsets.only(left: 0),
+                title: Text(munro.name),
+                subtitle:
+                    Text("${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
+              ),
+            ),
             if (formState.hasError)
               Text(
                 'Select at least one munro',

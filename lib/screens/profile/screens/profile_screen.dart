@@ -47,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           case ProfileStatus.loading:
             return _buildLoadingScreen(profileState);
           case ProfileStatus.error:
+            print(profileState.error.code);
             return Scaffold(
               appBar: AppBar(),
               body: CenterText(text: profileState.error.message),
@@ -198,9 +199,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           : Column(
                               children: [
                                 flavorState.flavor == "Production" ? const SizedBox() : const ProfileMediaHistory(),
-                                Column(
-                                  children: profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
-                                ),
+                                profileState.posts.isEmpty
+                                    ? const Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 20),
+                                        child: CenterText(text: "No posts"),
+                                      )
+                                    : Column(
+                                        children:
+                                            profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
+                                      ),
                               ],
                             ),
                     ],

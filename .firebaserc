@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "dev-a7ef5"
-  }
+    "default": "dev-a7ef5",
+    "prod": "prod-81998",
+    "dev": "dev-a7ef5"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -15,7 +15,7 @@ class SavedTab extends StatelessWidget {
       body: munroState.munroList.where((element) => element.saved).isEmpty
           ? const Padding(
               padding: EdgeInsets.all(15),
-              child: CenterText(text: "You are not followed by anyone yet"),
+              child: CenterText(text: "You haven't saved any munros yet."),
             )
           : ListView(
               children: munroState.munroList

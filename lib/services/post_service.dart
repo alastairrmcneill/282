@@ -156,8 +156,8 @@ class PostService {
 
   static Future getFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    if (userState.currentUser == null) {
+    final user = Provider.of<AppUser?>(context, listen: false);
+    if (user == null) {
       // Not logged in
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
@@ -167,7 +167,7 @@ class PostService {
 
       List<Post> posts = await PostsDatabase.getFeedFromUserId(
         context,
-        userId: userState.currentUser?.uid ?? "",
+        userId: user.uid ?? "",
         lastPostId: null,
       );
 

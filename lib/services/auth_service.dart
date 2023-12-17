@@ -51,8 +51,9 @@ class AuthService {
       await UserDatabase.create(context, appUser: appUser);
 
       stopCircularProgressOverlay(context);
+
       // Navigate to the right place
-      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+      await _afterSignInNavigation(context);
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
@@ -83,32 +84,8 @@ class AuthService {
 
       stopCircularProgressOverlay(context);
 
-      switch (navigationState.navigateToRoute) {
-        case "/home_screen":
-          MunroService.loadPersonalMunroData(context);
-          break;
-        case "/feed_tab":
-          PostService.getFeed(context);
-          NotificationsService.getUserNotifications(context);
-          break;
-        case "/saved_tab":
-          MunroService.loadPersonalMunroData(context);
-          break;
-        case "/profile_tab":
-          ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
-          break;
-        case "/munro_screen":
-          break;
-        default:
-      }
-
-      // Navigate to the right place
-      // Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        navigationState.navigateToRoute, // The name of the route you want to navigate to
-        (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-      );
+      // Navigate to the right screen
+      await _afterSignInNavigation(context);
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
@@ -205,7 +182,7 @@ class AuthService {
       await UserDatabase.create(context, appUser: appUser);
 
       // Navigate to the right place
-      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+      await _afterSignInNavigation(context);
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
@@ -242,7 +219,7 @@ class AuthService {
       await UserDatabase.create(context, appUser: appUser);
 
       // Navigate to the right place
-      Navigator.pushReplacementNamed(context, navigationState.navigateToRoute);
+      await _afterSignInNavigation(context);
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
@@ -302,5 +279,35 @@ class AuthService {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     munroState.reset();
     await MunroService.loadMunroData(context);
+  }
+
+  static Future _afterSignInNavigation(BuildContext context) async {
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    switch (navigationState.navigateToRoute) {
+      case "/home_screen":
+        MunroService.loadPersonalMunroData(context);
+        break;
+      case "/feed_tab":
+        PostService.getFeed(context);
+        NotificationsService.getUserNotifications(context);
+        break;
+      case "/saved_tab":
+        MunroService.loadPersonalMunroData(context);
+        break;
+      case "/profile_tab":
+        await UserDatabase.readCurrentUser(context);
+        ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
+        break;
+      case "/munro_screen":
+        break;
+      default:
+    }
+
+    // Navigate to the right place
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      navigationState.navigateToRoute, // The name of the route you want to navigate to
+      (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+    );
   }
 }

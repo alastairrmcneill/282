@@ -76,32 +76,35 @@ class PostsDatabase {
     List<Post> posts = [];
     QuerySnapshot querySnapshot;
 
-    if (lastPostId == null) {
-      // Load first bathc
-      querySnapshot = await _postsRef
-          .orderBy(PostFields.dateTime, descending: true)
-          .where(PostFields.authorId, isEqualTo: userId)
-          .limit(2)
-          .get();
-    } else {
-      final lastPostDoc = await _postsRef.doc(lastPostId).get();
+    try {
+      if (lastPostId == null) {
+        // Load first bathc
+        querySnapshot = await _postsRef
+            .orderBy(PostFields.dateTime, descending: true)
+            .where(PostFields.authorId, isEqualTo: userId)
+            .limit(2)
+            .get();
+      } else {
+        final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
-      if (!lastPostDoc.exists) return [];
+        if (!lastPostDoc.exists) return [];
 
-      querySnapshot = await _postsRef
-          .orderBy(PostFields.dateTime, descending: true)
-          .startAfterDocument(lastPostDoc)
-          .where(PostFields.authorId, isEqualTo: userId)
-          .limit(2)
-          .get();
+        querySnapshot = await _postsRef
+            .orderBy(PostFields.dateTime, descending: true)
+            .startAfterDocument(lastPostDoc)
+            .where(PostFields.authorId, isEqualTo: userId)
+            .limit(2)
+            .get();
+      }
+      for (var doc in querySnapshot.docs) {
+        Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
+        posts.add(post);
+      }
+
+      return posts;
+    } catch (error) {
+      return [];
     }
-
-    for (var doc in querySnapshot.docs) {
-      Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
-      posts.add(post);
-    }
-
-    return posts;
   }
 
   // Delete post

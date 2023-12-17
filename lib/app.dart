@@ -66,6 +66,7 @@ class App extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: flavor == "Development",
         theme: MyTheme.lightTheme,
         navigatorKey: navigatorKey,
         routes: {
