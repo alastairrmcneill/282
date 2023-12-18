@@ -528,6 +528,8 @@
 				DEVELOPMENT_TEAM = 4R5HGU4283;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GIDClientID = "291650281534-gij2g2t3ddtcm4jphjaapvmua7mrfmgc.apps.googleusercontent.com";
+				GOOGLE_SIGN_IN_ID = "com.googleusercontent.apps.291650281534-gij2g2t3ddtcm4jphjaapvmua7mrfmgc";
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -711,6 +713,8 @@
 				DEVELOPMENT_TEAM = 4R5HGU4283;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GIDClientID = "291650281534-gij2g2t3ddtcm4jphjaapvmua7mrfmgc.apps.googleusercontent.com";
+				GOOGLE_SIGN_IN_ID = "com.googleusercontent.apps.291650281534-gij2g2t3ddtcm4jphjaapvmua7mrfmgc";
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -738,6 +742,8 @@
 				DEVELOPMENT_TEAM = 4R5HGU4283;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GIDClientID = "291650281534-gij2g2t3ddtcm4jphjaapvmua7mrfmgc.apps.googleusercontent.com";
+				GOOGLE_SIGN_IN_ID = "com.googleusercontent.apps.291650281534-gij2g2t3ddtcm4jphjaapvmua7mrfmgc";
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -819,6 +825,8 @@
 				DEVELOPMENT_TEAM = 4R5HGU4283;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GIDClientID = "229593395750-6qrs4bgd5ifuef1tbniqhsisrsm1k09m.apps.googleusercontent.com";
+				GOOGLE_SIGN_IN_ID = "com.googleusercontent.apps.229593395750-6qrs4bgd5ifuef1tbniqhsisrsm1k09m";
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -916,6 +924,8 @@
 				DEVELOPMENT_TEAM = 4R5HGU4283;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GIDClientID = "229593395750-6qrs4bgd5ifuef1tbniqhsisrsm1k09m.apps.googleusercontent.com";
+				GOOGLE_SIGN_IN_ID = "com.googleusercontent.apps.229593395750-6qrs4bgd5ifuef1tbniqhsisrsm1k09m";
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1008,6 +1018,8 @@
 				DEVELOPMENT_TEAM = 4R5HGU4283;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GIDClientID = "229593395750-6qrs4bgd5ifuef1tbniqhsisrsm1k09m.apps.googleusercontent.com";
+				GOOGLE_SIGN_IN_ID = "com.googleusercontent.apps.229593395750-6qrs4bgd5ifuef1tbniqhsisrsm1k09m";
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (

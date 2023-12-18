@@ -215,6 +215,7 @@ class AuthService {
         uid: _auth.currentUser!.uid,
         displayName: _auth.currentUser!.displayName,
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
+        profilePictureURL: _auth.currentUser!.photoURL,
       );
       await UserDatabase.create(context, appUser: appUser);
 
