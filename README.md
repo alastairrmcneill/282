@@ -1,6 +1,10 @@
-# two_eight_two
+# 282
 
-A new Flutter project.
+A munro bagging essential!
+
+Are you bagging all 282 munros in Scotland? Are you wanting to see what mountains your friends have been climbing? Well look no further than 282! 
+
+282 is an all-in-one app for munro discover, tracking and sharing. Find your next munro from the explore page, mark it as complete and share some photos with your followers.
 
 ## Getting Started
 
