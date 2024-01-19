@@ -19,7 +19,7 @@ extension DateTimeExtension on DateTime {
       return "${current.difference(this).inDays}d ago";
     } else {
       // Any time gets converted to weeks
-      return "${current.difference(this).inDays % 7}w ago";
+      return "${current.difference(this).inDays ~/ 7}w ago";
     }
   }
 
@@ -55,7 +55,7 @@ extension DateTimeExtension on DateTime {
       if (current.difference(this).inDays < 14) {
         return "1 week ago";
       }
-      return "${current.difference(this).inDays % 7} weeks ago";
+      return "${current.difference(this).inDays ~/ 7} weeks ago";
     }
   }
 }
