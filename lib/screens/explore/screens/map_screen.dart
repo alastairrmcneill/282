@@ -127,7 +127,7 @@ class _MapScreenState extends State<MapScreen> {
       },
       cameraTargetBounds: CameraTargetBounds(
         LatLngBounds(
-          northeast: const LatLng(57.5, -3),
+          northeast: const LatLng(58.5, -3),
           southwest: const LatLng(55, -6.4),
         ),
       ),
@@ -138,7 +138,7 @@ class _MapScreenState extends State<MapScreen> {
           _bottomSheetController!.close();
         }
       },
-      minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11),
+      minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
       buildingsEnabled: false,
       trafficEnabled: false,
       liteModeEnabled: false,
