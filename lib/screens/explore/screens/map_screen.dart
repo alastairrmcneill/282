@@ -170,9 +170,10 @@ class _MapScreenState extends State<MapScreen> {
                     alignment: Alignment.topCenter,
                     child: MunroSearchBar(
                       focusNode: _searchFocusNode,
-                      onSelected: (munro) {
+                      onSelected: (Munro munro) {
                         setState(() {
                           _selectedMunroID = munro.id;
+                          markerTapped(munro);
                         });
                       },
                     ),
