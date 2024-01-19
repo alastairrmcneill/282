@@ -119,6 +119,7 @@ class MunroSummaryTile extends StatelessWidget {
                             munroState.setSelectedMunro = munro;
                             createPostState.reset();
                             createPostState.addMunro(munro);
+                            navigationState.setNavigateToRoute = "/home_screen";
                             Navigator.push(
                               context,
                               MaterialPageRoute(

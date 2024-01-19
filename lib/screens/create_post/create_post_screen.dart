@@ -14,26 +14,34 @@ class CreatePostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CreatePostState>(
-      builder: (context, createPostState, child) {
-        switch (createPostState.status) {
-          case CreatePostStatus.error:
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Create Post'),
-                centerTitle: false,
-              ),
-              body: CenterText(text: createPostState.error.message),
-            );
-          case CreatePostStatus.loaded:
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pop();
-            });
-            return const SizedBox();
-          default:
-            return _buildScreen(context, createPostState);
-        }
+    return WillPopScope(
+      onWillPop: () async {
+        CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+        return createPostState.status != CreatePostStatus.loading;
       },
+      child: Consumer<CreatePostState>(
+        builder: (context, createPostState, child) {
+          switch (createPostState.status) {
+            case CreatePostStatus.error:
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Create Post'),
+                  centerTitle: false,
+                ),
+                body: CenterText(text: createPostState.error.message),
+              );
+            case CreatePostStatus.loaded:
+              print("Loaded");
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                print("Pop screen");
+                Navigator.of(context).pop();
+              });
+              return const SizedBox();
+            default:
+              return _buildScreen(context, createPostState);
+          }
+        },
+      ),
     );
   }
 

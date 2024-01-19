@@ -13,6 +13,7 @@ class PostService {
   static Future createPost(BuildContext context) async {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
 
     try {
       createPostState.setStatus = CreatePostStatus.loading;
@@ -61,8 +62,15 @@ class PostService {
       // Complete munros
       MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
 
-      // Update state
-      createPostState.setStatus = CreatePostStatus.loaded;
+      // Navigate to the right place
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        navigationState.navigateToRoute, // The name of the route you want to navigate to
+        (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+      );
+
+      // // Update state
+      // createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {
       createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
     }

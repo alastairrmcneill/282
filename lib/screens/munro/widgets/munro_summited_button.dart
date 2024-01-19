@@ -31,6 +31,7 @@ class MunroSummitedButton extends StatelessWidget {
                   createPostState.reset();
                   if (munroState.selectedMunro != null) {
                     createPostState.addMunro(munroState.selectedMunro!);
+                    navigationState.setNavigateToRoute = "/home_screen";
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => CreatePostScreen(),
