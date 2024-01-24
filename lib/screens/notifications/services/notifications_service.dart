@@ -67,5 +67,6 @@ class NotificationsService {
     Notif newNotification = notification.copyWith(read: true);
 
     NotificationsDatabase.updateNotif(context, notification: newNotification);
+    notificationsState.markNotificationAsRead(notification);
   }
 }

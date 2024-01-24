@@ -1,5 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -51,7 +49,7 @@ class PostWidget extends StatelessWidget {
   Widget _buildDescription() {
     if (post.description == null || post.description == "") return const SizedBox();
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 10),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
@@ -71,7 +69,7 @@ class PostWidget extends StatelessWidget {
   }) {
     if (post.authorId == userState.currentUser?.uid) {
       return PopupMenuButton(
-        icon: Icon(Icons.more_vert_rounded),
+        icon: const Icon(Icons.more_vert_rounded),
         onSelected: (value) async {
           if (value == MenuItems.item1) {
             createPostState.reset();
