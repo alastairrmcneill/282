@@ -46,12 +46,10 @@ app.*.map.json
 # Firebase files
 /android/app/src/development/google-services.json
 /android/app/src/production/google-services.json
-/ios/config/
-firestore.indexes.json
+/ios/config/development/GoogleService-Info.plist
+/ios/config/production/GoogleService-Info.plist
 
 # # API keys
-/ios/Runner/Info.plist
 /android/app/src/main/AndroidManifest.xml
-/ios/Runner/AppDelegate.swift
 /ios/Runner/AppDelegate.swift
 /keys
