@@ -17,7 +17,8 @@ class PostsDatabase {
 
       await ref.set(newPost.toJSON());
     } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error creating your post.");
+      showErrorDialog(context,
+          message: error.message ?? "There was an error creating your post.");
     }
   }
 
@@ -28,23 +29,27 @@ class PostsDatabase {
 
       await ref.update(post.toJSON());
     } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error updating your post.");
+      showErrorDialog(context,
+          message: error.message ?? "There was an error updating your post.");
     }
   }
 
   // Read post
-  static Future<Post?> readPostFromUid(BuildContext context, {required String uid}) async {
+  static Future<Post?> readPostFromUid(BuildContext context,
+      {required String uid}) async {
     try {
       DocumentReference ref = _postsRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
-      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
+      Map<String, Object?> data =
+          documentSnapshot.data() as Map<String, Object?>;
 
       Post post = Post.fromJSON(data);
 
       return post;
     } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your post.");
+      showErrorDialog(context,
+          message: error.message ?? "There was an error fetching your post.");
       return null;
     }
   }
@@ -63,7 +68,8 @@ class PostsDatabase {
 
       return posts;
     } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your post.");
+      showErrorDialog(context,
+          message: error.message ?? "There was an error fetching your post.");
       return posts;
     }
   }
@@ -108,13 +114,15 @@ class PostsDatabase {
   }
 
   // Delete post
-  static Future deletePostWithUID(BuildContext context, {required String uid}) async {
+  static Future deletePostWithUID(BuildContext context,
+      {required String uid}) async {
     try {
       DocumentReference ref = _postsRef.doc(uid);
 
       await ref.delete();
     } on FirebaseException catch (error) {
-      showErrorDialog(context, message: error.message ?? "There was an error deleting your post");
+      showErrorDialog(context,
+          message: error.message ?? "There was an error deleting your post");
     }
   }
 
@@ -151,6 +159,49 @@ class PostsDatabase {
     for (var doc in querySnapshot.docs) {
       Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
 
+      posts.add(post);
+    }
+
+    return posts;
+  }
+
+  static Future getPostsFromMunro(
+    BuildContext context, {
+    required int munroId,
+    required lastPostId,
+  }) async {
+    List<Post> posts = [];
+    QuerySnapshot querySnapshot;
+
+    if (lastPostId == null) {
+      // Load first batch
+      querySnapshot = await _postsRef
+          .where(PostFields.imageURLs, isNotEqualTo: [])
+          .orderBy(PostFields.imageURLs)
+          .orderBy(PostFields.dateTime, descending: true)
+          .where(PostFields.includedMunroIds, arrayContains: munroId)
+          .where(PostFields.public, isEqualTo: true)
+          .limit(20)
+          .get();
+    } else {
+      final lastPostDoc = await _postsRef.doc(lastPostId).get();
+
+      if (!lastPostDoc.exists) return [];
+
+      querySnapshot = await _postsRef
+          .where(PostFields.imageURLs, isNotEqualTo: [])
+          .orderBy(PostFields.imageURLs)
+          .orderBy(PostFields.dateTime, descending: true)
+          .startAfterDocument(lastPostDoc)
+          .where(PostFields.includedMunroIds, arrayContains: munroId)
+          .where(PostFields.public, isEqualTo: true)
+          .limit(20)
+          .get();
+    }
+
+    print(querySnapshot.docs.length);
+    for (var doc in querySnapshot.docs) {
+      Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
       posts.add(post);
     }
 
