@@ -46,6 +46,7 @@ class MunroScreen extends StatelessWidget {
                   const MunroSummitedButton(),
                   const SizedBox(height: 20),
                   const MunroPictureGallery(),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

@@ -5,31 +5,28 @@ import 'package:two_eight_two/screens/munro/state/munro_detail_state.dart';
 
 class MunroPictureGallery extends StatelessWidget {
   const MunroPictureGallery({super.key});
-
   @override
   Widget build(BuildContext context) {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
-    print(munroDetailState.galleryStatus);
-    print(munroDetailState.galleryPosts.length);
-    return Container(
+    List<String> imageURLs = munroDetailState.galleryPosts
+        .expand((Post post) => post.imageURLs)
+        .toList();
+    return SizedBox(
       width: double.infinity,
-      height: 400,
-      color: Colors.red,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 5,
-          mainAxisSpacing: 5,
-        ),
-        itemCount: munroDetailState.galleryPosts
-            .expand((Post post) => post.imageURLs)
-            .toList()
-            .length,
-        itemBuilder: (context, index) {
+      child: Wrap(
+        spacing: 5, // gap between adjacent chips
+        runSpacing: 5, // gap between lines
+        children: imageURLs.map((url) {
           return Container(
+            width: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
+            height: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
             color: Colors.blue,
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+            ),
           );
-        },
+        }).toList(),
       ),
     );
   }
