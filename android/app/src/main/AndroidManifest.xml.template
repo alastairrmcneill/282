@@ -29,5 +29,8 @@
         <meta-data 
             android:name="flutterEmbedding"     
             android:value="2" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR API KEY HERE WHICH YOU CAN GET FROM HERE:https://console.cloud.google.com/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-ios-backend&_gl=1*1280p01*_ga*Mjc0ODQ0ODQxOS4xNzA2MTIxODMz*_ga_NRWSTWS78N*MTcwNjEyNDMyNi4xLjEuMTcwNjEyNDMzMS4wLjAuMA..&authuser=1&project=two-eight-two "/>
     </application>
 </manifest>
