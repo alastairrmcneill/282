@@ -60,10 +60,10 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
               ),
-              itemCount: imageURLs.length * 10,
+              itemCount: imageURLs.length,
               itemBuilder: (BuildContext context, int index) {
                 return ClickableImage(
-                  imageURL: imageURLs[index % imageURLs.length],
+                  imageURL: imageURLs[index],
                 );
               },
             ),
