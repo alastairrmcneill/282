@@ -13,6 +13,13 @@ class MunroPictureGallery extends StatelessWidget {
     List<String> imageURLs = munroDetailState.galleryPosts
         .expand((Post post) => post.imageURLs)
         .toList();
+
+    if (imageURLs.isEmpty) {
+      return const Center(
+        child: Text("No picutres available"),
+      );
+    }
+
     return SizedBox(
       width: double.infinity,
       child: Column(
