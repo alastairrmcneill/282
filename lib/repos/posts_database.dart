@@ -168,7 +168,8 @@ class PostsDatabase {
   static Future getPostsFromMunro(
     BuildContext context, {
     required int munroId,
-    required lastPostId,
+    required String? lastPostId,
+    int count = 20,
   }) async {
     List<Post> posts = [];
     QuerySnapshot querySnapshot;
@@ -181,7 +182,7 @@ class PostsDatabase {
           .orderBy(PostFields.dateTime, descending: true)
           .where(PostFields.includedMunroIds, arrayContains: munroId)
           .where(PostFields.public, isEqualTo: true)
-          .limit(20)
+          .limit(count)
           .get();
     } else {
       final lastPostDoc = await _postsRef.doc(lastPostId).get();
@@ -195,11 +196,10 @@ class PostsDatabase {
           .startAfterDocument(lastPostDoc)
           .where(PostFields.includedMunroIds, arrayContains: munroId)
           .where(PostFields.public, isEqualTo: true)
-          .limit(20)
+          .limit(count)
           .get();
     }
 
-    print(querySnapshot.docs.length);
     for (var doc in querySnapshot.docs) {
       Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
       posts.add(post);

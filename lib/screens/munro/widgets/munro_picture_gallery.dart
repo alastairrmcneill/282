@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
 import 'package:two_eight_two/screens/munro/state/munro_detail_state.dart';
+import 'package:two_eight_two/widgets/clickable_image.dart';
 
 class MunroPictureGallery extends StatelessWidget {
   const MunroPictureGallery({super.key});
@@ -13,20 +15,33 @@ class MunroPictureGallery extends StatelessWidget {
         .toList();
     return SizedBox(
       width: double.infinity,
-      child: Wrap(
-        spacing: 5, // gap between adjacent chips
-        runSpacing: 5, // gap between lines
-        children: imageURLs.map((url) {
-          return Container(
-            width: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
-            height: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
-            color: Colors.blue,
-            child: Image.network(
-              url,
-              fit: BoxFit.cover,
+      child: Column(
+        children: [
+          Wrap(
+            spacing: 5, // gap between adjacent chips
+            runSpacing: 5, // gap between lines
+            children: imageURLs.take(9).map((url) {
+              return Container(
+                width: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
+                height: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
+                color: Colors.blue,
+                child: ClickableImage(imageURL: url),
+              );
+            }).toList(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MunroPhotoGallery()),
+                );
+              },
+              child: const Text("View All Photos"),
             ),
-          );
-        }).toList(),
+          )
+        ],
       ),
     );
   }

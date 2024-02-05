@@ -255,24 +255,22 @@ class PostService {
   }
 
   static Future getMunroPosts(BuildContext context,
-      {required Munro munro}) async {
+      {required Munro munro, int count = 50}) async {
     MunroDetailState munroDetailState =
         Provider.of<MunroDetailState>(context, listen: false);
 
     try {
       munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
-      print("Loading posts for ${munro.name}");
       List<Post> posts = await PostsDatabase.getPostsFromMunro(
         context,
         munroId: munro.id,
         lastPostId: null,
+        count: count,
       );
 
       munroDetailState.setGalleryPosts = posts;
-      print("Loaded posts for ${munro.name}");
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
     } catch (error) {
-      print(error);
       munroDetailState.setError = Error(
           message:
               "There was an issue loading pictures for this munro. Please try again.");

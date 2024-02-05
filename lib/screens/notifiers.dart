@@ -12,3 +12,4 @@ export 'notifications/state/notifications_state.dart';
 export 'settings/state/settings_state.dart';
 export 'nav/state/flavor_state.dart';
 export 'comments/state/likes_state.dart';
+export 'munro/state/munro_detail_state.dart';

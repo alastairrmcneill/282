@@ -9,3 +9,4 @@ export 'stat_text.dart';
 export 'shimmer_box.dart';
 export 'shimmer_list_tile.dart';
 export 'shimmer_post_tile.dart';
+export 'clickable_image.dart';
