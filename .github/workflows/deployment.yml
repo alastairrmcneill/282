@@ -65,4 +65,4 @@ jobs:
       #     run: ./gradlew --stop
 
       - name: Build appbundle
-        run: flutter build appbundle --flavor development --target lib/main_development.dart --stacktrace
+        run: flutter build appbundle --flavor development --target lib/main_development.dart
