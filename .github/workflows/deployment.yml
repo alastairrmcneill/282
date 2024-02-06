@@ -61,8 +61,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Stop Gradle Daemon
-        run: ./gradlew --stop
+      #   - name: Stop Gradle Daemon
+      #     run: ./gradlew --stop
 
       - name: Build appbundle
         run: flutter build appbundle --flavor development --target lib/main_development.dart --stacktrace
