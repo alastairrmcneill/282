@@ -20,7 +20,7 @@ jobs:
       - run: flutter test
 
   build_android:
-    name: Build Android
+    name: Build Android (DEVELOPMENT)
     # needs: [flutter_test]
     runs-on: ubuntu-latest
     steps:
@@ -31,6 +31,18 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: "stable"
-      - run: flutter clean
-      - run: flutter pub get
-      - run: flutter build appbundle --flavor development --target lib/main_development.dart
+
+      - name: Decode Google Services JSON (Development)
+        run: echo "${{ secrets.DEVELOPMENT_GOOGLE_SERVICES_JSON }}" | base64 --decode > ./android/app/src/development/google-services.json
+
+      - name: Decode AndoidManifest.xml
+        run: echo "${{ secrets.ANDROID_MANIFEST }}" | base64 --decode > ./android/app/src/main/AndroidManifest.xml
+
+      - name: Clean Flutter
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build appbundle
+        run: flutter build appbundle --flavor development --target lib/main_development.dart
