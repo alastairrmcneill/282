@@ -63,7 +63,7 @@ android {
         release {
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
-            storeFile file(System.getenv("STORE_FILE") ?: '.upload-keystore.jks')
+            storeFile file('upload-keystore.jks')
             storePassword System.getenv("KEYSTORE_PASSWORD")
         }
     }

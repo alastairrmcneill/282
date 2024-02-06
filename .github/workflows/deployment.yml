@@ -66,3 +66,4 @@ jobs:
 
       - name: Build appbundle
         run: flutter build appbundle --flavor development --target lib/main_development.dart
+        working-directory: .
