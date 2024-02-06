@@ -60,13 +60,13 @@ android {
     }
 
    signingConfigs {
-       release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
-       }
-   }
+        release {
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+            storeFile file(System.getenv("STORE_FILE") ?: '.upload-keystore.jks')
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+        }
+    }
 
     buildTypes {
         release {

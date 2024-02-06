@@ -16,6 +16,10 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: "stable"
+
+      - name: Decode AndoidManifest.xml
+        run: echo "${{ secrets.ANDROID_MANIFEST }}" | base64 --decode > ./android/app/src/main/AndroidManifest.xml
+
       - run: flutter pub get
       - run: flutter test
 
@@ -38,11 +42,27 @@ jobs:
       - name: Decode AndoidManifest.xml
         run: echo "${{ secrets.ANDROID_MANIFEST }}" | base64 --decode > ./android/app/src/main/AndroidManifest.xml
 
+      - name: Decode Keystore File
+        run: echo "${{ secrets.YOUR_KEYSTORE_BASE64_SECRET }}" | base64 --decode > ./android/app/upload-keystore.jks
+
+      - name: Set up Keystore Environment Variables
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${KEY_ALIAS}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${KEY_PASSWORD}" >> $GITHUB_ENV
+
       - name: Clean Flutter
         run: flutter clean
 
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Stop Gradle Daemon
+        run: ./gradlew --stop
+
       - name: Build appbundle
-        run: flutter build appbundle --flavor development --target lib/main_development.dart
+        run: flutter build appbundle --flavor development --target lib/main_development.dart --stacktrace
