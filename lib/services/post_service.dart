@@ -6,14 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/munro/state/munro_detail_state.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class PostService {
   static Future createPost(BuildContext context) async {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    CreatePostState createPostState =
+        Provider.of<CreatePostState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    NavigationState navigationState =
+        Provider.of<NavigationState>(context, listen: false);
 
     try {
       createPostState.setStatus = CreatePostStatus.loading;
@@ -53,31 +56,40 @@ class PostService {
         title: title,
         description: createPostState.description,
         includedMunros: createPostState.selectedMunros,
+        includedMunroIds: createPostState.selectedMunros
+            .map((Munro munro) => munro.id)
+            .toList(),
         imageURLs: imageURLs,
+        public: true,
       );
 
       // Send to database
       await PostsDatabase.create(context, post: post);
 
       // Complete munros
-      MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
+      MunroService.markMunrosAsDone(context,
+          munros: createPostState.selectedMunros);
 
       // Navigate to the right place
       Navigator.pushNamedAndRemoveUntil(
         context,
-        navigationState.navigateToRoute, // The name of the route you want to navigate to
-        (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+        navigationState
+            .navigateToRoute, // The name of the route you want to navigate to
+        (Route<dynamic> route) =>
+            false, // This predicate ensures all routes are removed
       );
 
       // // Update state
       // createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {
-      createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
+      createPostState.setError = Error(
+          message: "There was an issue uploading your post. Please try again");
     }
   }
 
   static Future editPost(BuildContext context) async {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    CreatePostState createPostState =
+        Provider.of<CreatePostState>(context, listen: false);
     try {
       createPostState.setStatus = CreatePostStatus.loading;
 
@@ -101,12 +113,14 @@ class PostService {
       await PostsDatabase.update(context, post: newPost);
 
       // Complete munros
-      MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
+      MunroService.markMunrosAsDone(context,
+          munros: createPostState.selectedMunros);
 
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {
-      createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
+      createPostState.setError = Error(
+          message: "There was an issue uploading your post. Please try again");
     }
   }
 
@@ -127,12 +141,14 @@ class PostService {
 
       return posts;
     } catch (error) {
-      feedState.setError = Error(message: "There was an retreiving your posts. Please try again.");
+      feedState.setError = Error(
+          message: "There was an retreiving your posts. Please try again.");
     }
   }
 
   static Future paginateProfilePosts(BuildContext context) async {
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    ProfileState profileState =
+        Provider.of<ProfileState>(context, listen: false);
 
     try {
       profileState.setStatus = ProfileStatus.paginating;
@@ -158,7 +174,8 @@ class PostService {
 
       profileState.setStatus = ProfileStatus.loaded;
     } catch (error) {
-      profileState.setError = Error(message: "There was an issue loading your posts. Please try again.");
+      profileState.setError = Error(
+          message: "There was an issue loading your posts. Please try again.");
     }
   }
 
@@ -167,7 +184,9 @@ class PostService {
     final user = Provider.of<AppUser?>(context, listen: false);
     if (user == null) {
       // Not logged in
-      feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      feedState.setError = Error(
+          message:
+              "Log in and follow fellow munro baggers to see their posts.");
       return;
     }
     try {
@@ -219,17 +238,72 @@ class PostService {
       feedState.addPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
     } catch (error) {
-      feedState.setError = Error(message: "There was an issue loading your feed. Please try again.");
+      feedState.setError = Error(
+          message: "There was an issue loading your feed. Please try again.");
     }
   }
 
   static Future deletePost(BuildContext context, {required Post post}) async {
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    ProfileState profileState =
+        Provider.of<ProfileState>(context, listen: false);
 
     if (profileState.posts.contains(post)) {
       profileState.removePost(post);
     }
 
     PostsDatabase.deletePostWithUID(context, uid: post.uid ?? "");
+  }
+
+  static Future getMunroPosts(BuildContext context,
+      {required Munro munro, int count = 50}) async {
+    MunroDetailState munroDetailState =
+        Provider.of<MunroDetailState>(context, listen: false);
+
+    try {
+      munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
+      List<Post> posts = await PostsDatabase.getPostsFromMunro(
+        context,
+        munroId: munro.id,
+        lastPostId: null,
+        count: count,
+      );
+
+      munroDetailState.setGalleryPosts = posts;
+      munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
+    } catch (error) {
+      munroDetailState.setError = Error(
+          message:
+              "There was an issue loading pictures for this munro. Please try again.");
+    }
+  }
+
+  static Future paginateMunroPosts(BuildContext context,
+      {required Munro munro}) async {
+    MunroDetailState munroDetailState =
+        Provider.of<MunroDetailState>(context, listen: false);
+
+    try {
+      munroDetailState.setGalleryStatus = MunroDetailStatus.paginating;
+
+      // Find last user ID
+      String? lastPostId;
+      if (munroDetailState.galleryPosts.isNotEmpty) {
+        lastPostId = munroDetailState.galleryPosts.last.uid!;
+      }
+
+      // Add posts from database
+      List<Post> newPosts = await PostsDatabase.getPostsFromMunro(
+        context,
+        munroId: munro.id,
+        lastPostId: lastPostId,
+      );
+
+      munroDetailState.addGalleryPosts = newPosts;
+      munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
+    } catch (error) {
+      munroDetailState.setError = Error(
+          message:
+              "There was an issue loading pictures for this munro. Please try again.");
+    }
   }
 }
