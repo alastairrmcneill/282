@@ -7,6 +7,8 @@ import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+import '../screens.dart';
+
 class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({super.key});
 
@@ -62,9 +64,13 @@ class CreatePostScreen extends StatelessWidget {
 
                   if (createPostState.status == CreatePostStatus.initial) {
                     if (createPostState.editingPost == null) {
-                      PostService.createPost(context);
+                      // PostService.createPost(context);
+                      CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+                      createReviewState.reset();
+                      createReviewState.setMunrosToReview = createPostState.selectedMunros;
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateReviewScreen()));
                     } else {
-                      PostService.editPost(context);
+                      // PostService.editPost(context);
                     }
                   }
                 },
@@ -73,7 +79,7 @@ class CreatePostScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: Colors.green,
                     decoration: TextDecoration.none,
                   ),
                 ),
