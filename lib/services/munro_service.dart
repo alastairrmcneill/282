@@ -35,6 +35,9 @@ class MunroService {
 
       // Set status
       munroState.setStatus = MunroStatus.loaded;
+
+      // Load munro review data
+      loadMunroReviewData(context);
     } catch (error) {
       munroState.setError = Error(
         code: error.toString(),
@@ -46,6 +49,14 @@ class MunroService {
   static loadPersonalMunroData(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
     if (userState.currentUser == null) return;
+  }
+
+  static Future<void> loadMunroReviewData(BuildContext context) async {
+    // Read all munro review data
+
+    // Loop through all munros and add review data that exists
+
+    // Set munro notifier
   }
 
   static Future<void> markMunrosAsDone(

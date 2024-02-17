@@ -4,6 +4,7 @@ class Review {
   final String authorId;
   final String authorDisplayName;
   final String? authorProfilePictureURL;
+  final DateTime dateTime;
   final int rating;
   final String? text;
 
@@ -13,6 +14,7 @@ class Review {
     required this.authorId,
     required this.authorDisplayName,
     required this.authorProfilePictureURL,
+    required this.dateTime,
     required this.rating,
     this.text,
   });
@@ -25,6 +27,7 @@ class Review {
       ReviewFields.authorId: authorId,
       ReviewFields.authorDisplayName: authorDisplayName,
       ReviewFields.authorProfilePictureURL: authorProfilePictureURL,
+      ReviewFields.dateTime: dateTime,
       ReviewFields.rating: rating,
       ReviewFields.text: text,
     };
@@ -38,6 +41,7 @@ class Review {
       authorId: json[ReviewFields.authorId] as String,
       authorDisplayName: json[ReviewFields.authorDisplayName] as String,
       authorProfilePictureURL: json[ReviewFields.authorProfilePictureURL] as String?,
+      dateTime: DateTime.parse(json[ReviewFields.dateTime] as String),
       rating: json[ReviewFields.rating] as int,
       text: json[ReviewFields.text] as String?,
     );
@@ -50,6 +54,7 @@ class Review {
     String? authorId,
     String? authorDisplayName,
     String? authorProfilePictureURL,
+    DateTime? dateTime,
     int? rating,
     String? text,
   }) {
@@ -59,6 +64,7 @@ class Review {
       authorId: authorId ?? this.authorId,
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
       authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
+      dateTime: dateTime ?? this.dateTime,
       rating: rating ?? this.rating,
       text: text ?? this.text,
     );
@@ -71,6 +77,7 @@ class ReviewFields {
   static const String authorId = 'authorId';
   static const String authorDisplayName = 'authorDisplayName';
   static const String authorProfilePictureURL = 'authorProfilePictureURL';
+  static const String dateTime = 'dateTime';
   static const String rating = 'rating';
   static const String text = 'text';
 }
