@@ -6,7 +6,7 @@ class Review {
   final String? authorProfilePictureURL;
   final DateTime dateTime;
   final int rating;
-  final String? text;
+  final String text;
 
   Review({
     this.uid,
@@ -16,7 +16,7 @@ class Review {
     required this.authorProfilePictureURL,
     required this.dateTime,
     required this.rating,
-    this.text,
+    required this.text,
   });
 
   // To JSON
@@ -43,7 +43,7 @@ class Review {
       authorProfilePictureURL: json[ReviewFields.authorProfilePictureURL] as String?,
       dateTime: DateTime.parse(json[ReviewFields.dateTime] as String),
       rating: json[ReviewFields.rating] as int,
-      text: json[ReviewFields.text] as String?,
+      text: json[ReviewFields.text] as String,
     );
   }
 
