@@ -12,8 +12,6 @@ class CreateReviewScreen extends StatefulWidget {
 
 class _CreateReviewScreenState extends State<CreateReviewScreen> {
   late PageController _pageController;
-  int _currentPage = 1;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -23,7 +21,6 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
     _pageController = PageController()
       ..addListener(() {
         setState(() {
-          _currentPage = _pageController.page!.round() + 1;
           createReviewState.setCurrentIndex = _pageController.page!.round();
         });
       });
