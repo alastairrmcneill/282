@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/stat_text.dart';
 
 class MunroScreen extends StatelessWidget {
@@ -22,22 +23,15 @@ class MunroScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 children: [
-                  munroState.selectedMunro?.extra == null ||
-                          munroState.selectedMunro?.extra == ""
+                  munroState.selectedMunro?.extra == null || munroState.selectedMunro?.extra == ""
                       ? const SizedBox()
-                      : SizedBox(
-                          width: double.infinity,
-                          child: Text("(${munroState.selectedMunro?.extra})")),
+                      : SizedBox(width: double.infinity, child: Text("(${munroState.selectedMunro?.extra})")),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      StatText(
-                          text: "Height",
-                          stat: "${munroState.selectedMunro?.meters}m"),
-                      StatText(
-                          text: "Area",
-                          stat: munroState.selectedMunro?.area ?? ""),
+                      StatText(text: "Height", stat: "${munroState.selectedMunro?.meters}m"),
+                      StatText(text: "Area", stat: munroState.selectedMunro?.area ?? ""),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -47,6 +41,8 @@ class MunroScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   const MunroPictureGallery(),
                   const SizedBox(height: 20),
+                  const Text('Reviews'),
+                  const ReviewsListWidget(),
                 ],
               ),
             ),

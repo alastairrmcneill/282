@@ -15,3 +15,4 @@ export 'splash/splash_screen.dart';
 export 'comments/comments_screen.dart';
 export 'notifications/notifications_screen.dart';
 export 'create_review/create_review_screen.dart';
+export 'reviews/reviews_screen.dart';

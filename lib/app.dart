@@ -71,6 +71,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<CreateReviewState>(
           create: (_) => CreateReviewState(),
         ),
+        ChangeNotifierProvider<ReviewsState>(
+          create: (_) => ReviewsState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",

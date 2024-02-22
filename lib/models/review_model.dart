@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Review {
   final String? uid;
   final int munroId;
@@ -41,7 +43,7 @@ class Review {
       authorId: json[ReviewFields.authorId] as String,
       authorDisplayName: json[ReviewFields.authorDisplayName] as String,
       authorProfilePictureURL: json[ReviewFields.authorProfilePictureURL] as String?,
-      dateTime: DateTime.parse(json[ReviewFields.dateTime] as String),
+      dateTime: (json[ReviewFields.dateTime] as Timestamp).toDate(),
       rating: json[ReviewFields.rating] as int,
       text: json[ReviewFields.text] as String,
     );
