@@ -41,6 +41,7 @@ class ReviewService {
 
   static Future editReview(BuildContext context) async {
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+    ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
 
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
@@ -56,6 +57,7 @@ class ReviewService {
       // Send to database
       await ReviewDatabase.update(context, review: newReview);
 
+      reviewsState.replaceReview = newReview;
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error) {
       createReviewState.setError = Error(
@@ -162,6 +164,7 @@ class ReviewService {
 
   static Future deleteReview(BuildContext context, {required Review review}) async {
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+    ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
 
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
@@ -169,6 +172,7 @@ class ReviewService {
       // Send to database
       await ReviewDatabase.delete(context, uid: review.uid!);
 
+      reviewsState.removeReview(review);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error) {
       createReviewState.setError = Error(

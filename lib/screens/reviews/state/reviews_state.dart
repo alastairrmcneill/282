@@ -37,6 +37,20 @@ class ReviewsState extends ChangeNotifier {
     _source = source;
     notifyListeners();
   }
+
+  set replaceReview(Review replaceReview) {
+    int index = _reviews.indexWhere((review) => review.uid == replaceReview.uid);
+
+    if (index != -1) {
+      _reviews[index] = replaceReview;
+      notifyListeners();
+    }
+  }
+
+  removeReview(Review review) {
+    _reviews = _reviews.where((element) => element.uid != review.uid).toList();
+    notifyListeners();
+  }
 }
 
 enum ReviewsStatus { initial, loading, loaded, paginating, error }

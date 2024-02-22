@@ -5,6 +5,7 @@ import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/extensions/datetime_extension.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -16,12 +17,18 @@ class ReviewListTile extends StatelessWidget {
     BuildContext context, {
     required Review review,
     required UserState userState,
+    required CreateReviewState createReviewState,
   }) {
     if (review.authorId == userState.currentUser?.uid) {
       return PopupMenuButton(
         icon: Icon(Icons.more_vert_rounded),
         onSelected: (value) async {
           if (value == MenuItems.item1) {
+            // Edit
+            createReviewState.reset();
+            createReviewState.loadReview = review;
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const EditReviewScreen()));
+          } else if (value == MenuItems.item2) {
             // Delete
             ReviewService.deleteReview(context, review: review);
           }
@@ -29,6 +36,10 @@ class ReviewListTile extends StatelessWidget {
         itemBuilder: (context) => const [
           PopupMenuItem(
             value: MenuItems.item1,
+            child: Text('Edit'),
+          ),
+          PopupMenuItem(
+            value: MenuItems.item2,
             child: Text('Delete'),
           ),
         ],
@@ -41,6 +52,7 @@ class ReviewListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
+    CreateReviewState createReviewState = Provider.of<CreateReviewState>(context);
 
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
@@ -80,7 +92,12 @@ class ReviewListTile extends StatelessWidget {
               ],
             ),
           ),
-          _buildPopUpMenu(context, review: review, userState: userState)
+          _buildPopUpMenu(
+            context,
+            review: review,
+            userState: userState,
+            createReviewState: createReviewState,
+          ),
         ],
       ),
     );

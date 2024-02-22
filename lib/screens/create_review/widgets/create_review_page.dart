@@ -105,11 +105,7 @@ class CreateReviewPage extends StatelessWidget {
               _formKey.currentState!.save();
 
               if (createReviewState.status == CreateReviewStatus.initial) {
-                if (createReviewState.editingReview == null) {
-                  ReviewService.createReview(context);
-                } else {
-                  ReviewService.editReview(context);
-                }
+                ReviewService.createReview(context);
               }
             },
             child: const Text("Submit"),
