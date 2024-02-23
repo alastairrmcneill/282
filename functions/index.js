@@ -338,6 +338,7 @@ exports.onNotificationCreated = functions.firestore
 exports.onReviewCreated = functions.firestore.document("/reviews/{reviewId}").onCreate(async (snapshot, context) => {
   const reviewId = context.params.reviewId;
   const munroId = snapshot.get("munroId");
+  const newReview = snapshot.data();
   // Get munro doc
   const munroRef = admin.firestore().collection("munros").doc(`${munroId}`);
   const munroDoc = await munroRef.get();
@@ -366,6 +367,70 @@ exports.onReviewCreated = functions.firestore.document("/reviews/{reviewId}").on
   }
 
   console.log(`Munro ${munroId} Updated`);
+});
+
+exports.onReviewUpdated = functions.firestore.document("/reviews/{reviewId}").onUpdate(async (snapshot, context) => {
+  // Get old and new review
+  const oldReview = snapshot.before.data();
+  const newReview = snapshot.after.data();
+
+  // Get munro doc
+  const munroRef = admin.firestore().collection("munros").doc(oldReview.munroId);
+  const munroDoc = await munroRef.get();
+
+  console.log(`Munro doc: ${munroDoc.data()}`);
+  if (munroDoc.exists) {
+    console.log("Munro exists");
+    // If it exists, update the average rating after this change
+    const oldRating = munroDoc.data().averageRating;
+    const oldCount = munroDoc.data().reviewCount;
+    const newRating = (oldRating * oldCount - oldReview.rating + newReview.rating) / oldCount;
+
+    munroRef.update({
+      averageRating: newRating,
+    });
+  } else {
+    console.log("Munro doesn't exist");
+    // If it doesn't exist, create a new munro doc and set the average rating
+    munroRef.set({
+      id: oldReview.munroId,
+      reviewCount: 1,
+      averageRating: newReview.rating,
+    });
+  }
+
+  // Update the munro doc
+  console.log(`Munro ${oldReview.munroId} Updated`);
+});
+
+exports.onReviewDeleted = functions.firestore.document("/reviews/{reviewId}").onDelete(async (snapshot, context) => {
+  // Get old review
+  const oldReview = snapshot.data();
+
+  // Get munro Doc
+  const munroRef = admin.firestore().collection("munros").doc(oldReview.munroId);
+  const munroDoc = await munroRef.get();
+
+  console.log(`Munro doc: ${munroDoc.data()}`);
+
+  // If it exists, update the average rating after this change
+  if (munroDoc.exists) {
+    console.log("Munro exists");
+    const oldRating = munroDoc.data().averageRating;
+    const oldCount = munroDoc.data().reviewCount;
+
+    if (oldCount - 1 > 0) {
+      const newRating = (oldRating * oldCount - oldReview.rating) / (oldCount - 1);
+
+      munroRef.update({
+        reviewCount: FieldValue.increment(-1),
+        averageRating: newRating,
+      });
+    } else {
+      munroRef.delete();
+    }
+  }
+  console.log(`Munro ${oldReview.munroId} Updated`);
 });
 
 exports.migrateMunroIds = functions.https.onRequest(async (req, res) => {
