@@ -17,8 +17,7 @@ class PostsDatabase {
 
       await ref.set(newPost.toJSON());
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error creating your post.");
+      showErrorDialog(context, message: error.message ?? "There was an error creating your post.");
     }
   }
 
@@ -29,27 +28,23 @@ class PostsDatabase {
 
       await ref.update(post.toJSON());
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error updating your post.");
+      showErrorDialog(context, message: error.message ?? "There was an error updating your post.");
     }
   }
 
   // Read post
-  static Future<Post?> readPostFromUid(BuildContext context,
-      {required String uid}) async {
+  static Future<Post?> readPostFromUid(BuildContext context, {required String uid}) async {
     try {
       DocumentReference ref = _postsRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
-      Map<String, Object?> data =
-          documentSnapshot.data() as Map<String, Object?>;
+      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       Post post = Post.fromJSON(data);
 
       return post;
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error fetching your post.");
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your post.");
       return null;
     }
   }
@@ -68,8 +63,7 @@ class PostsDatabase {
 
       return posts;
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error fetching your post.");
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your post.");
       return posts;
     }
   }
@@ -114,15 +108,13 @@ class PostsDatabase {
   }
 
   // Delete post
-  static Future deletePostWithUID(BuildContext context,
-      {required String uid}) async {
+  static Future deletePostWithUID(BuildContext context, {required String uid}) async {
     try {
       DocumentReference ref = _postsRef.doc(uid);
 
       await ref.delete();
     } on FirebaseException catch (error) {
-      showErrorDialog(context,
-          message: error.message ?? "There was an error deleting your post");
+      showErrorDialog(context, message: error.message ?? "There was an error deleting your post");
     }
   }
 
@@ -167,7 +159,7 @@ class PostsDatabase {
 
   static Future getPostsFromMunro(
     BuildContext context, {
-    required int munroId,
+    required String munroId,
     required String? lastPostId,
     int count = 20,
   }) async {

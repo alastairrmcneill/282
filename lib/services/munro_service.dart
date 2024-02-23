@@ -72,8 +72,8 @@ class MunroService {
     AppUser newAppUser = userState.currentUser!;
 
     for (Munro munro in munros) {
-      newAppUser.personalMunroData![munro.id - 1][MunroFields.summited] = true;
-      newAppUser.personalMunroData![munro.id - 1][MunroFields.summitedDate] = DateTime.now().toUtc();
+      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = true;
+      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDate] = DateTime.now().toUtc();
       // Update munro notifier
       munroState.updateMunro(
         munroId: munro.id,
@@ -99,15 +99,15 @@ class MunroService {
 
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
-    newAppUser.personalMunroData![munro.id - 1][MunroFields.saved] =
-        !newAppUser.personalMunroData![munro.id - 1][MunroFields.saved];
+    newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved] =
+        !newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved];
 
     UserDatabase.update(context, appUser: newAppUser);
 
     // Update munro notifier
     munroState.updateMunro(
       munroId: munro.id,
-      saved: newAppUser.personalMunroData![munro.id - 1][MunroFields.saved],
+      saved: newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved],
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class MunroSummaryTile extends StatelessWidget {
-  final int? munroId;
+  final String? munroId;
   const MunroSummaryTile({super.key, required this.munroId});
 
   @override

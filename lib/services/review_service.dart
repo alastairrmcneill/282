@@ -124,7 +124,7 @@ class ReviewService {
       // Get reviews
       List<Review> reviews = await ReviewDatabase.readReviewsFromMunro(
         context,
-        munroId: munroState.selectedMunro?.id ?? 0,
+        munroId: munroState.selectedMunro?.id ?? "",
         lastReviewId: null,
       );
 
@@ -148,7 +148,7 @@ class ReviewService {
       // Get reviews
       List<Review> reviews = await ReviewDatabase.readReviewsFromMunro(
         context,
-        munroId: munroState.selectedMunro?.id ?? 0,
+        munroId: munroState.selectedMunro?.id ?? "",
         lastReviewId: reviewsState.reviews.last.uid,
       );
 

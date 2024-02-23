@@ -51,7 +51,7 @@ class ReviewDatabase {
   // Read reviews from munro
   static Future<List<Review>> readReviewsFromMunro(
     BuildContext context, {
-    required int munroId,
+    required String munroId,
     required String? lastReviewId,
   }) async {
     List<Review> reviews = [];

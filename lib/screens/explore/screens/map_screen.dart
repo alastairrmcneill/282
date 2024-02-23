@@ -25,7 +25,7 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
-  int? _selectedMunroID;
+  String? _selectedMunroID;
   PersistentBottomSheetController? _bottomSheetController;
   final FocusNode _searchFocusNode = FocusNode();
 

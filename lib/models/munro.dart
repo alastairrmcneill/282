@@ -1,5 +1,5 @@
 class Munro {
-  final int id;
+  final String id;
   final String name;
   final String? extra;
   final String area;
@@ -64,7 +64,7 @@ class Munro {
 
   static Munro fromJSON(Map<String, dynamic> json) {
     return Munro(
-      id: json[MunroFields.id] as int,
+      id: json[MunroFields.id] as String,
       name: json[MunroFields.name] as String,
       extra: json[MunroFields.extra] as String,
       area: json[MunroFields.area] as String,
@@ -87,7 +87,7 @@ class Munro {
   }
 
   Munro copy({
-    int? id,
+    String? id,
     String? name,
     String? extra,
     String? area,

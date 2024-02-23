@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Review {
   final String? uid;
-  final int munroId;
+  final String munroId;
   final String authorId;
   final String authorDisplayName;
   final String? authorProfilePictureURL;
@@ -39,7 +39,7 @@ class Review {
   static Review fromJSON(Map<String, dynamic> json) {
     return Review(
       uid: json[ReviewFields.uid] as String?,
-      munroId: json[ReviewFields.munroId] as int,
+      munroId: json[ReviewFields.munroId] as String,
       authorId: json[ReviewFields.authorId] as String,
       authorDisplayName: json[ReviewFields.authorDisplayName] as String,
       authorProfilePictureURL: json[ReviewFields.authorProfilePictureURL] as String?,
@@ -52,7 +52,7 @@ class Review {
   // Copy
   Review copyWith({
     String? uid,
-    int? munroId,
+    String? munroId,
     String? authorId,
     String? authorDisplayName,
     String? authorProfilePictureURL,

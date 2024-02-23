@@ -16,6 +16,7 @@ class ExploreTab extends StatelessWidget {
             case MunroStatus.loading:
               return const LoadingWidget();
             case MunroStatus.error:
+              print('munroState.error.message: ${munroState.error.code}  ');
               return CenterText(text: munroState.error.message);
             case MunroStatus.loaded:
               return const MapScreen();
