@@ -16,7 +16,7 @@ class Munro {
   DateTime? summitedDate;
   bool saved;
   double? averageRating;
-  int? totalRatings;
+  int? reviewCount;
 
   Munro({
     required this.id,
@@ -36,7 +36,7 @@ class Munro {
     this.summitedDate,
     this.saved = false,
     this.averageRating,
-    this.totalRatings,
+    this.reviewCount,
   });
 
   Map<String, dynamic> toJSON() {
@@ -58,7 +58,7 @@ class Munro {
       MunroFields.summitedDate: summitedDate,
       MunroFields.saved: saved,
       MunroFields.averageRating: averageRating,
-      MunroFields.totalRatings: totalRatings,
+      MunroFields.reviewCount: reviewCount,
     };
   }
 
@@ -82,7 +82,7 @@ class Munro {
           json[MunroFields.summitedDate] != null ? DateTime.parse(json[MunroFields.summitedDate] as String) : null,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating: json[MunroFields.averageRating] as double?,
-      totalRatings: json[MunroFields.totalRatings] as int?,
+      reviewCount: json[MunroFields.reviewCount] as int?,
     );
   }
 
@@ -104,7 +104,7 @@ class Munro {
     DateTime? summitedDate,
     bool? saved,
     double? averageRating,
-    int? totalRatings,
+    int? reviewCount,
   }) {
     return Munro(
       id: id ?? this.id,
@@ -124,7 +124,7 @@ class Munro {
       summitedDate: summitedDate ?? this.summitedDate,
       saved: saved ?? this.saved,
       averageRating: averageRating ?? this.averageRating,
-      totalRatings: totalRatings ?? this.totalRatings,
+      reviewCount: reviewCount ?? this.reviewCount,
     );
   }
 }
@@ -147,5 +147,5 @@ class MunroFields {
   static String summitedDate = "summitedDate";
   static String saved = "saved";
   static String averageRating = "averageRating";
-  static String totalRatings = "totalRatings";
+  static String reviewCount = "reviewCount";
 }

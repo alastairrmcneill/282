@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +38,8 @@ class MunroService {
       // Set status
       munroState.setStatus = MunroStatus.loaded;
 
-      // Load munro review data
-      loadMunroReviewData(context);
+      // Load munro additional munro data
+      loadAdditionalMunroData(context);
     } catch (error) {
       munroState.setError = Error(
         code: error.toString(),
@@ -51,12 +53,25 @@ class MunroService {
     if (userState.currentUser == null) return;
   }
 
-  static Future<void> loadMunroReviewData(BuildContext context) async {
+  static Future<void> loadAdditionalMunroData(BuildContext context) async {
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+
     // Read all munro review data
+    List<Map<String, dynamic>> munroData = await MunroDatabase.getAdditionalMunroData(context);
+    List<Munro> tempMunroList = munroState.munroList;
 
     // Loop through all munros and add review data that exists
+    for (var munro in munroData) {
+      String munroId = munro[MunroFields.id];
+      double averageRating = (munro[MunroFields.averageRating] as num).toDouble();
+      int reviewCount = munro[MunroFields.reviewCount] as int;
 
-    // Set munro notifier
+      tempMunroList[int.parse(munroId) - 1].averageRating = averageRating;
+      tempMunroList[int.parse(munroId) - 1].reviewCount = reviewCount;
+      print(tempMunroList[int.parse(munroId) - 1].toJSON());
+    }
+
+    munroState.setMunroList = tempMunroList;
   }
 
   static Future<void> markMunrosAsDone(

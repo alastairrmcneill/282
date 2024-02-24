@@ -42,6 +42,7 @@ class MunroScreen extends StatelessWidget {
                   const MunroPictureGallery(),
                   const SizedBox(height: 20),
                   const Text('Reviews'),
+                  const AverageMunroRating(),
                   const ReviewsListWidget(),
                 ],
               ),
