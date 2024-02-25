@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -87,7 +88,30 @@ class MunroSummaryTile extends StatelessWidget {
                         Text(
                           "${munro.meters}m - ${munro.area}",
                           style: TextStyle(fontSize: 12),
-                        )
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            RatingBar(
+                              itemSize: 15,
+                              ratingWidget: RatingWidget(
+                                full: const Icon(Icons.star, color: Colors.amber),
+                                half: const Icon(Icons.star_half, color: Colors.amber),
+                                empty: const Icon(Icons.star_border, color: Colors.amber),
+                              ),
+                              onRatingUpdate: (rating) {},
+                              initialRating: munro.averageRating ?? 0.0,
+                              allowHalfRating: true,
+                              ignoreGestures: true,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              "(${munro.reviewCount ?? 0})",
+                              style: const TextStyle(fontSize: 8),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),

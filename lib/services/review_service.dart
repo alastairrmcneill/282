@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/services/munro_service.dart';
 
 class ReviewService {
   static Future createReview(BuildContext context) async {
@@ -30,6 +31,7 @@ class ReviewService {
       createReviewState.setCurrentMunroRating = 0;
       createReviewState.setCurrentMunroReview = "";
 
+      MunroService.loadAdditionalMunroData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error) {
       createReviewState.setError = Error(
@@ -58,6 +60,7 @@ class ReviewService {
       await ReviewDatabase.update(context, review: newReview);
 
       reviewsState.replaceReview = newReview;
+      MunroService.loadAdditionalMunroData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error) {
       createReviewState.setError = Error(

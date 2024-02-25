@@ -30,7 +30,6 @@ class MunroDatabase {
       munroData.add(doc.data() as Map<String, dynamic>);
     }
 
-    print("Munro Data ${munroData}");
     // Return the data as a list of maps
     return munroData;
   }

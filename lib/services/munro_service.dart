@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +66,6 @@ class MunroService {
 
       tempMunroList[int.parse(munroId) - 1].averageRating = averageRating;
       tempMunroList[int.parse(munroId) - 1].reviewCount = reviewCount;
-      print(tempMunroList[int.parse(munroId) - 1].toJSON());
     }
 
     munroState.setMunroList = tempMunroList;
