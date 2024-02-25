@@ -434,31 +434,31 @@ exports.onReviewDeleted = functions.firestore.document("/reviews/{reviewId}").on
 });
 
 exports.migrateMunroIds = functions.https.onRequest(async (req, res) => {
-  //   // Update posts
-  //   const postsRef = admin.firestore().collection("posts");
-  //   const snapshot = await postsRef.get();
+  // Update posts
+  const postsRef = admin.firestore().collection("posts");
+  const snapshot = await postsRef.get();
 
-  //   const batch = admin.firestore().batch();
+  const batch = admin.firestore().batch();
 
-  //   console.log("Starting Post Migration");
-  //   snapshot.docs.forEach((doc) => {
-  //     const post = doc.data();
-  //     console.log(`Post: ${post.uid}`);
-  //     if (post.includedMunroIds && Array.isArray(post.includedMunroIds)) {
-  //       const newMunroIds = post.includedMunroIds.map((id) => id.toString());
-  //       batch.update(doc.ref, { includedMunroIds: newMunroIds });
-  //     }
+  console.log("Starting Post Migration");
+  snapshot.docs.forEach((doc) => {
+    const post = doc.data();
+    console.log(`Post: ${post.uid}`);
+    if (post.includedMunroIds && Array.isArray(post.includedMunroIds)) {
+      const newMunroIds = post.includedMunroIds.map((id) => id.toString());
+      batch.update(doc.ref, { includedMunroIds: newMunroIds });
+    }
 
-  //     if (post.includedMunros && Array.isArray(post.includedMunros)) {
-  //       const newIncludedMunros = post.includedMunros.map((munro) => {
-  //         return { ...munro, id: munro.id.toString() };
-  //       });
-  //       batch.update(doc.ref, { includedMunros: newIncludedMunros });
-  //     }
-  //   });
+    if (post.includedMunros && Array.isArray(post.includedMunros)) {
+      const newIncludedMunros = post.includedMunros.map((munro) => {
+        return { ...munro, id: munro.id.toString() };
+      });
+      batch.update(doc.ref, { includedMunros: newIncludedMunros });
+    }
+  });
 
-  //   console.log("Finsihsed Post Migration");
-  //   await batch.commit();
+  console.log("Finsihsed Post Migration");
+  await batch.commit();
 
   // Update users
   const usersRef = admin.firestore().collection("users");
