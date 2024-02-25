@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -7,7 +8,7 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class MunroSummaryTile extends StatelessWidget {
-  final int? munroId;
+  final String? munroId;
   const MunroSummaryTile({super.key, required this.munroId});
 
   @override
@@ -30,6 +31,7 @@ class MunroSummaryTile extends StatelessWidget {
           onTap: () {
             munroState.setSelectedMunro = munro;
             PostService.getMunroPosts(context, munro: munro, count: 9);
+            ReviewService.getMunroReviews(context);
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const MunroScreen(),
@@ -53,10 +55,8 @@ class MunroSummaryTile extends StatelessWidget {
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 45),
+                    progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
                       child: LinearProgressIndicator(
                         value: downloadProgress.progress,
                       ),
@@ -82,14 +82,36 @@ class MunroSummaryTile extends StatelessWidget {
                             ? const SizedBox()
                             : Text(
                                 "(${munro.extra})",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w200, fontSize: 14),
+                                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
                               ),
                         const SizedBox(height: 3),
                         Text(
                           "${munro.meters}m - ${munro.area}",
                           style: TextStyle(fontSize: 12),
-                        )
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            RatingBar(
+                              itemSize: 15,
+                              ratingWidget: RatingWidget(
+                                full: const Icon(Icons.star, color: Colors.amber),
+                                half: const Icon(Icons.star_half, color: Colors.amber),
+                                empty: const Icon(Icons.star_border, color: Colors.amber),
+                              ),
+                              onRatingUpdate: (rating) {},
+                              initialRating: munro.averageRating ?? 0.0,
+                              allowHalfRating: true,
+                              ignoreGestures: true,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              "(${munro.reviewCount ?? 0})",
+                              style: const TextStyle(fontSize: 8),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -105,13 +127,10 @@ class MunroSummaryTile extends StatelessWidget {
                             navigationState.setNavigateToRoute = "/home_screen";
                             Navigator.pushNamed(context, "/auth_home_screen");
                           } else {
-                            await MunroService.toggleMunroSaved(context,
-                                munro: munro);
+                            await MunroService.toggleMunroSaved(context, munro: munro);
                           }
                         },
-                        child: Icon(munro.saved
-                            ? Icons.bookmark_rounded
-                            : Icons.bookmark_outline_rounded),
+                        child: Icon(munro.saved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
                       ),
                     ),
                     Padding(
@@ -135,9 +154,7 @@ class MunroSummaryTile extends StatelessWidget {
                             );
                           }
                         },
-                        child: Icon(munro.summited
-                            ? Icons.check_circle_rounded
-                            : Icons.check_circle_outline_rounded),
+                        child: Icon(munro.summited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
                       ),
                     ),
                   ],

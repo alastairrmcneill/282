@@ -11,7 +11,7 @@ class Post {
   final String? description;
   final List<String> imageURLs;
   final List<Munro> includedMunros;
-  final List<int> includedMunroIds;
+  final List<String> includedMunroIds;
   final int likes;
   final bool public;
 
@@ -33,7 +33,7 @@ class Post {
   // To JSON
   Map<String, dynamic> toJSON() {
     List<Map<String, dynamic>> includedMunrosMaps = [];
-    List<int> includedMunroIds = [];
+    List<String> includedMunroIds = [];
     for (var munro in includedMunros) {
       includedMunrosMaps.add(munro.toJSON());
       includedMunroIds.add(munro.id);
@@ -67,22 +67,20 @@ class Post {
       inlcudedMunrosList.add(Munro.fromJSON(munro));
     }
 
-    List<int> newIncludedMunroIds = List<int>.empty();
+    List<String> newIncludedMunroIds = List<String>.empty();
 
     if (json.containsKey(PostFields.includedMunroIds)) {
       List<dynamic> includedMunroIds = json[PostFields.includedMunroIds];
-      newIncludedMunroIds = List<int>.from(includedMunroIds);
+      newIncludedMunroIds = List<String>.from(includedMunroIds);
     } else {
-      newIncludedMunroIds =
-          inlcudedMunrosList.map((Munro munro) => munro.id).toList();
+      newIncludedMunroIds = inlcudedMunrosList.map((Munro munro) => munro.id).toList();
     }
 
     return Post(
       uid: json[PostFields.uid] as String?,
       authorId: json[PostFields.authorId] as String,
       authorDisplayName: json[PostFields.authorDisplayName] as String,
-      authorProfilePictureURL:
-          json[PostFields.authorProfilePictureURL] as String?,
+      authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
       dateTime: (json[PostFields.dateTime] as Timestamp).toDate(),
       imageURLs: newImageURLs,
       title: json[PostFields.title] as String,
@@ -105,7 +103,7 @@ class Post {
     String? title,
     String? description,
     List<Munro>? includedMunros,
-    List<int>? includedMunroIds,
+    List<String>? includedMunroIds,
     int? likes,
     bool? public,
   }) {
@@ -113,8 +111,7 @@ class Post {
       uid: uid ?? this.uid,
       authorId: authorId ?? this.authorId,
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
-      authorProfilePictureURL:
-          authorProfilePictureURL ?? this.authorProfilePictureURL,
+      authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
       dateTime: dateTime ?? this.dateTime,
       imageURLs: imageURLs ?? this.imageURLs,
       title: title ?? this.title,

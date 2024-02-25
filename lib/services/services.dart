@@ -10,3 +10,4 @@ export '../screens/notifications/services/notifications_service.dart';
 export 'like_service.dart';
 export 'push_notification_service.dart';
 export '../screens/settings/service/settings_service.dart';
+export 'review_service.dart';

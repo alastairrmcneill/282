@@ -68,6 +68,12 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<MunroDetailState>(
           create: (_) => MunroDetailState(),
         ),
+        ChangeNotifierProvider<CreateReviewState>(
+          create: (_) => CreateReviewState(),
+        ),
+        ChangeNotifierProvider<ReviewsState>(
+          create: (_) => ReviewsState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",

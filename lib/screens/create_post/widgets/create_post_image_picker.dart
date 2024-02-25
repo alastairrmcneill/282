@@ -13,9 +13,10 @@ class CreatePostImagePicker extends StatelessWidget {
 
   Future pickImage(CreatePostState createPostState) async {
     try {
+      print("Starting image picker");
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
-
+      print("Finished image picker");
       createPostState.addImage(File(image.path));
     } catch (e) {
       createPostState.setError = Error(code: e.toString(), message: "There was an issue selecting your image.");
@@ -33,6 +34,7 @@ class CreatePostImagePicker extends StatelessWidget {
         width: double.infinity,
         child: InkWell(
           onTap: () async {
+            print("Tapped");
             await pickImage(createPostState);
           },
           child: DottedBorder(

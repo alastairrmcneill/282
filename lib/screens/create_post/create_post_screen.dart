@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:two_eight_two/screens/notifiers.dart';
-
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
+
+import '../screens.dart';
 
 class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({super.key});
@@ -31,10 +31,18 @@ class CreatePostScreen extends StatelessWidget {
                 body: CenterText(text: createPostState.error.message),
               );
             case CreatePostStatus.loaded:
-              print("Loaded");
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                print("Pop screen");
-                Navigator.of(context).pop();
+                if (createPostState.editingPost == null) {
+                  // Send to review page
+                  CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+                  createReviewState.reset();
+                  createReviewState.setMunrosToReview = createPostState.selectedMunros;
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateReviewScreen()));
+                } else {
+                  // Navigate back to where we were
+                  print("navigating back");
+                  Navigator.of(context).pop();
+                }
               });
               return const SizedBox();
             default:
@@ -73,7 +81,7 @@ class CreatePostScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: Colors.green,
                     decoration: TextDecoration.none,
                   ),
                 ),

@@ -37,14 +37,15 @@ class MunroState extends ChangeNotifier {
   }
 
   updateMunro({
-    required int munroId,
+    required String munroId,
     bool? summited,
     DateTime? summitedDate,
     bool? saved,
   }) {
-    _munroList[munroId - 1].summited = summited ?? _munroList[munroId - 1].summited;
-    _munroList[munroId - 1].summitedDate = summitedDate ?? _munroList[munroId - 1].summitedDate;
-    _munroList[munroId - 1].saved = saved ?? _munroList[munroId - 1].saved;
+    int munroIdInt = int.parse(munroId);
+    _munroList[munroIdInt - 1].summited = summited ?? _munroList[munroIdInt - 1].summited;
+    _munroList[munroIdInt - 1].summitedDate = summitedDate ?? _munroList[munroIdInt - 1].summitedDate;
+    _munroList[munroIdInt - 1].saved = saved ?? _munroList[munroIdInt - 1].saved;
 
     notifyListeners();
   }

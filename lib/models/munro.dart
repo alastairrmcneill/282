@@ -1,5 +1,5 @@
 class Munro {
-  final int id;
+  final String id;
   final String name;
   final String? extra;
   final String area;
@@ -15,6 +15,8 @@ class Munro {
   bool summited;
   DateTime? summitedDate;
   bool saved;
+  double? averageRating;
+  int? reviewCount;
 
   Munro({
     required this.id,
@@ -33,6 +35,8 @@ class Munro {
     required this.summited,
     this.summitedDate,
     this.saved = false,
+    this.averageRating,
+    this.reviewCount,
   });
 
   Map<String, dynamic> toJSON() {
@@ -53,12 +57,14 @@ class Munro {
       MunroFields.summited: summited,
       MunroFields.summitedDate: summitedDate,
       MunroFields.saved: saved,
+      MunroFields.averageRating: averageRating,
+      MunroFields.reviewCount: reviewCount,
     };
   }
 
   static Munro fromJSON(Map<String, dynamic> json) {
     return Munro(
-      id: json[MunroFields.id] as int,
+      id: json[MunroFields.id] as String,
       name: json[MunroFields.name] as String,
       extra: json[MunroFields.extra] as String,
       area: json[MunroFields.area] as String,
@@ -72,11 +78,16 @@ class Munro {
       description: json[MunroFields.description] as String,
       pictureURL: json[MunroFields.pictureURL] as String,
       summited: (json[MunroFields.summited] as bool),
+      summitedDate:
+          json[MunroFields.summitedDate] != null ? DateTime.parse(json[MunroFields.summitedDate] as String) : null,
+      saved: json[MunroFields.saved] as bool? ?? false,
+      averageRating: json[MunroFields.averageRating] as double?,
+      reviewCount: json[MunroFields.reviewCount] as int?,
     );
   }
 
   Munro copy({
-    int? id,
+    String? id,
     String? name,
     String? extra,
     String? area,
@@ -90,6 +101,10 @@ class Munro {
     String? description,
     String? pictureURL,
     bool? summited,
+    DateTime? summitedDate,
+    bool? saved,
+    double? averageRating,
+    int? reviewCount,
   }) {
     return Munro(
       id: id ?? this.id,
@@ -106,6 +121,10 @@ class Munro {
       description: description ?? this.description,
       pictureURL: pictureURL ?? this.pictureURL,
       summited: summited ?? this.summited,
+      summitedDate: summitedDate ?? this.summitedDate,
+      saved: saved ?? this.saved,
+      averageRating: averageRating ?? this.averageRating,
+      reviewCount: reviewCount ?? this.reviewCount,
     );
   }
 }
@@ -127,4 +146,6 @@ class MunroFields {
   static String summited = "summited";
   static String summitedDate = "summitedDate";
   static String saved = "saved";
+  static String averageRating = "averageRating";
+  static String reviewCount = "reviewCount";
 }

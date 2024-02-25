@@ -23,364 +23,464 @@
 // const logger = require("firebase-functions/logger");
 // const admin = require("firebase-admin");
 
-
-
-
-
-const functions = require('firebase-functions/v1');
+const functions = require("firebase-functions/v1");
 
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
-const { FieldValue } = require('firebase-admin/firestore');
+const { FieldValue } = require("firebase-admin/firestore");
 
 admin.initializeApp();
 
-
 exports.onFollowUser = functions.firestore
-    .document("followingRelationships/{relationshipId}")
-    .onCreate(async (snapshot, context) => {
-        const relationshipId = context.params.uid;
+  .document("followingRelationships/{relationshipId}")
+  .onCreate(async (snapshot, context) => {
+    const relationshipId = context.params.uid;
 
-        // Get IDs
-        const sourceId = snapshot.get("sourceId");
-        const targetId = snapshot.get("targetId");
+    // Get IDs
+    const sourceId = snapshot.get("sourceId");
+    const targetId = snapshot.get("targetId");
 
-        // increment followed user"s followers count.
-        const followedUserRef = admin.firestore().collection("users").doc(targetId);
-        const followedUserDoc = await followedUserRef.get();
+    // increment followed user"s followers count.
+    const followedUserRef = admin.firestore().collection("users").doc(targetId);
+    const followedUserDoc = await followedUserRef.get();
 
-        if (followedUserDoc.get("followersCount") !== undefined) {
-            followedUserRef.update({
-                followersCount: followedUserDoc.get("followersCount") + 1,
-            });
-        } else {
-            followedUserRef.update({ followersCount: 1 });
-        }
+    if (followedUserDoc.get("followersCount") !== undefined) {
+      followedUserRef.update({
+        followersCount: followedUserDoc.get("followersCount") + 1,
+      });
+    } else {
+      followedUserRef.update({ followersCount: 1 });
+    }
 
-        // incremenet user"s following count.
-        const userRef = admin.firestore().collection("users").doc(sourceId);
-        const userDoc = await userRef.get();
+    // incremenet user"s following count.
+    const userRef = admin.firestore().collection("users").doc(sourceId);
+    const userDoc = await userRef.get();
 
-        if (userDoc.get("followingCount") !== undefined) {
-            userRef.update({ followingCount: userDoc.get("followingCount") + 1 });
-        } else {
-            userRef.update({ followingCount: 1 });
-        }
+    if (userDoc.get("followingCount") !== undefined) {
+      userRef.update({ followingCount: userDoc.get("followingCount") + 1 });
+    } else {
+      userRef.update({ followingCount: 1 });
+    }
 
-        // Add followered user posts to user posts feed
-        const followedUserPostsRef = admin
-            .firestore()
-            .collection('posts')
-            .where("authorId", "==", targetId);
+    // Add followered user posts to user posts feed
+    const followedUserPostsRef = admin.firestore().collection("posts").where("authorId", "==", targetId);
 
-        const userFeedRef = admin
-            .firestore()
-            .collection('feeds')
-            .doc(sourceId)
-            .collection('userFeed')
+    const userFeedRef = admin.firestore().collection("feeds").doc(sourceId).collection("userFeed");
 
-        const followedUserPostsSnapshot = await followedUserPostsRef.get();
+    const followedUserPostsSnapshot = await followedUserPostsRef.get();
 
-        followedUserPostsSnapshot.forEach((doc) => {
-            if (doc.exists) {
-                userFeedRef.doc(doc.id).set(doc.data());
-            }
-        });
-
-        // Create notification document
-        // Get displayName and Profilepictureurl from source
-        const sourceProfilePictureURL = snapshot.get("sourceProfilePictureURL");
-        const sourceDisplayName = snapshot.get("sourceDisplayName");
-
-        if (sourceId === targetId) return;
-
-        const notificationRef = admin.firestore().collection("notifications").doc();
-        notificationRef.set(
-            {
-                "id": notificationRef.id,
-                "targetId": targetId,
-                "sourceId": sourceId,
-                "sourceDisplayName": sourceDisplayName,
-                "sourceProfilePictureURL": sourceProfilePictureURL,
-                "postId": null,
-                "type": "follow",
-                "dateTime": new Date(),
-                "read": false,
-            }
-        );
-
+    followedUserPostsSnapshot.forEach((doc) => {
+      if (doc.exists) {
+        userFeedRef.doc(doc.id).set(doc.data());
+      }
     });
+
+    // Create notification document
+    // Get displayName and Profilepictureurl from source
+    const sourceProfilePictureURL = snapshot.get("sourceProfilePictureURL");
+    const sourceDisplayName = snapshot.get("sourceDisplayName");
+
+    if (sourceId === targetId) return;
+
+    const notificationRef = admin.firestore().collection("notifications").doc();
+    notificationRef.set({
+      id: notificationRef.id,
+      targetId: targetId,
+      sourceId: sourceId,
+      sourceDisplayName: sourceDisplayName,
+      sourceProfilePictureURL: sourceProfilePictureURL,
+      postId: null,
+      type: "follow",
+      dateTime: new Date(),
+      read: false,
+    });
+  });
 
 exports.onUnfollowUser = functions.firestore
-    .document("followingRelationships/{relationshipId}")
-    .onDelete(async (snapshot, context) => {
-        const relationshipId = context.params.uid;
+  .document("followingRelationships/{relationshipId}")
+  .onDelete(async (snapshot, context) => {
+    const relationshipId = context.params.uid;
 
-        // Get IDs
-        const sourceId = snapshot.get("sourceId");
-        const targetId = snapshot.get("targetId");
+    // Get IDs
+    const sourceId = snapshot.get("sourceId");
+    const targetId = snapshot.get("targetId");
 
+    // Decrement followed user"s followers count.
+    const followedUserRef = admin.firestore().collection("users").doc(targetId);
+    const followedUserDoc = await followedUserRef.get();
 
-        // Decrement followed user"s followers count.
-        const followedUserRef = admin.firestore().collection("users").doc(targetId);
-        const followedUserDoc = await followedUserRef.get();
+    if (followedUserDoc.get("followersCount") !== undefined) {
+      followedUserRef.update({
+        followersCount: followedUserDoc.get("followersCount") - 1,
+      });
+    } else {
+      followedUserRef.update({ followersCount: 0 });
+    }
 
-        if (followedUserDoc.get("followersCount") !== undefined) {
-            followedUserRef.update({
-                followersCount: followedUserDoc.get("followersCount") - 1,
-            });
-        } else {
-            followedUserRef.update({ followersCount: 0 });
-        }
+    // Decrement user"s following count.
+    const userRef = admin.firestore().collection("users").doc(sourceId);
+    const userDoc = await userRef.get();
 
-        // Decrement user"s following count.
-        const userRef = admin.firestore().collection("users").doc(sourceId);
-        const userDoc = await userRef.get();
+    if (userDoc.get("followingCount") !== undefined) {
+      userRef.update({ followingCount: userDoc.get("followingCount") - 1 });
+    } else {
+      userRef.update({ followingCount: 0 });
+    }
 
-        if (userDoc.get("followingCount") !== undefined) {
-            userRef.update({ followingCount: userDoc.get("followingCount") - 1 });
-        } else {
-            userRef.update({ followingCount: 0 });
-        }
+    // Remove unfollowered user posts from user posts feed
+    const unfollowedUserFeedRef = admin
+      .firestore()
+      .collection("feeds")
+      .doc(sourceId)
+      .collection("userFeed")
+      .where("authorId", "==", targetId);
 
-        // Remove unfollowered user posts from user posts feed
-        const unfollowedUserFeedRef = admin
-            .firestore()
-            .collection('feeds')
-            .doc(sourceId)
-            .collection('userFeed')
-            .where("authorId", "==", targetId);
+    const unfollowedUserPostsSnapshot = await unfollowedUserFeedRef.get();
 
-        const unfollowedUserPostsSnapshot = await unfollowedUserFeedRef.get();
-
-        unfollowedUserPostsSnapshot.forEach((doc) => {
-            if (doc.exists) {
-                doc.ref.delete();
-            }
-        });
-
+    unfollowedUserPostsSnapshot.forEach((doc) => {
+      if (doc.exists) {
+        doc.ref.delete();
+      }
     });
+  });
 
-exports.onPostCreated = functions.firestore
-    .document("posts/{postId}")
-    .onCreate(async (snapshot, context) => {
-        const postId = context.params.postId;
-        const authorId = snapshot.get("authorId");
+exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(async (snapshot, context) => {
+  const postId = context.params.postId;
+  const authorId = snapshot.get("authorId");
 
+  // Add new post to feeds of all followers.
+  const userFollowerRelationshipsRef = admin
+    .firestore()
+    .collection("followingRelationships")
+    .where("targetId", "==", authorId);
 
-        // Add new post to feeds of all followers.
-        const userFollowerRelationshipsRef = admin
-            .firestore()
-            .collection('followingRelationships')
-            .where('targetId', '==', authorId);
+  const userFollowerRelationshipsSnapshot = await userFollowerRelationshipsRef.get();
+  userFollowerRelationshipsSnapshot.forEach((doc) => {
+    admin
+      .firestore()
+      .collection("feeds")
+      .doc(doc.get("sourceId"))
+      .collection("userFeed")
+      .doc(postId)
+      .set(snapshot.data());
+  });
+});
 
+exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate(async (snapshot, context) => {
+  const postId = context.params.postId;
 
-        const userFollowerRelationshipsSnapshot = await userFollowerRelationshipsRef.get();
-        userFollowerRelationshipsSnapshot.forEach((doc) => {
-            admin
-                .firestore()
-                .collection('feeds')
-                .doc(doc.get("sourceId"))
-                .collection('userFeed')
-                .doc(postId)
-                .set(snapshot.data());
-        });
-    });
+  // Get author id.
+  const authorId = snapshot.after.get("authorId");
 
-exports.onPostUpdated = functions.firestore
-    .document('/posts/{postId}')
-    .onUpdate(async (snapshot, context) => {
-        const postId = context.params.postId;
+  // Update post data in each follower's feed.
+  const updatedPostData = snapshot.after.data();
 
-        // Get author id.
-        const authorId = snapshot.after.get('authorId');
+  // Add new post to feeds of all followers.
+  const userFollowerRelationshipsRef = admin
+    .firestore()
+    .collection("followingRelationships")
+    .where("targetId", "==", authorId);
 
+  const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
 
-        // Update post data in each follower's feed.
-        const updatedPostData = snapshot.after.data();
+  for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+    let doc = userFollowersSnapshot.docs[i];
+    const feedsRef = admin.firestore().collection("feeds").doc(doc.get("sourceId")).collection("userFeed");
+    const postDoc = await feedsRef.doc(postId).get();
+    if (postDoc.exists) {
+      postDoc.ref.update(updatedPostData);
+    }
+  }
+});
 
-        // Add new post to feeds of all followers.
-        const userFollowerRelationshipsRef = admin
-            .firestore()
-            .collection('followingRelationships')
-            .where('targetId', '==', authorId);
+exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete(async (snapshot, context) => {
+  const postId = context.params.postId;
 
-        const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
+  // Get author id.
+  const authorId = snapshot.get("authorId");
 
-        for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
-            let doc = userFollowersSnapshot.docs[i];
-            const feedsRef = admin
-                .firestore()
-                .collection('feeds')
-                .doc(doc.get('sourceId'))
-                .collection('userFeed');
-            const postDoc = await feedsRef.doc(postId).get();
-            if (postDoc.exists) {
-                postDoc.ref.update(updatedPostData);
-            }
-        }
-    });
+  // Add new post to feeds of all followers.
+  const userFollowerRelationshipsRef = admin
+    .firestore()
+    .collection("followingRelationships")
+    .where("targetId", "==", authorId);
 
-exports.onPostDeleted = functions.firestore
-    .document('/posts/{postId}')
-    .onDelete(async (snapshot, context) => {
-        const postId = context.params.postId;
+  const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
 
-        // Get author id.
-        const authorId = snapshot.get('authorId');
+  logger.log(userFollowersSnapshot.docs.length);
 
-        // Add new post to feeds of all followers.
-        const userFollowerRelationshipsRef = admin
-            .firestore()
-            .collection('followingRelationships')
-            .where('targetId', '==', authorId);
+  for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+    let doc = userFollowersSnapshot.docs[i];
+    const feedsRef = admin.firestore().collection("feeds").doc(doc.get("sourceId")).collection("userFeed");
+    const postDoc = await feedsRef.doc(postId).get();
+    if (postDoc.exists) {
+      postDoc.ref.delete();
+    }
+  }
+});
 
-        const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
+exports.onLikeCreated = functions.firestore.document("/likes/{likeId}").onCreate(async (snapshot, context) => {
+  // Find postId
+  const postId = snapshot.get("postId");
 
-        logger.log(userFollowersSnapshot.docs.length);
+  // Increment likes
+  const postRef = admin.firestore().collection("posts").doc(postId);
+  postRef.update({ likes: FieldValue.increment(1) });
 
-        for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
-            let doc = userFollowersSnapshot.docs[i];
-            const feedsRef = admin
-                .firestore()
-                .collection('feeds')
-                .doc(doc.get('sourceId'))
-                .collection('userFeed');
-            const postDoc = await feedsRef.doc(postId).get();
-            if (postDoc.exists) {
-                postDoc.ref.delete();
-            }
-        }
+  // Create notification document
+  // Get author id from post and set as target
+  const postDoc = await postRef.get();
+  const targetId = postDoc.get("authorId");
 
-    });
+  // Get displayName and Profilepictureurl from user
+  const sourceId = snapshot.get("userId");
+  const sourceProfilePictureURL = snapshot.get("userProfilePictureURL");
+  const sourceDisplayName = snapshot.get("userDisplayName");
 
+  // if target and source are the same then don't do anything
+  if (sourceId === targetId) return;
 
-exports.onLikeCreated = functions.firestore
-    .document("/likes/{likeId}")
-    .onCreate(async (snapshot, context) => {
-        // Find postId
-        const postId = snapshot.get("postId");
+  const notificationRef = admin.firestore().collection("notifications").doc();
+  notificationRef.set({
+    id: notificationRef.id,
+    targetId: targetId,
+    sourceId: sourceId,
+    sourceDisplayName: sourceDisplayName,
+    sourceProfilePictureURL: sourceProfilePictureURL,
+    postId: postId,
+    type: "like",
+    dateTime: new Date(),
+    read: false,
+  });
+});
 
-        // Increment likes
-        const postRef = admin.firestore().collection("posts").doc(postId);
-        postRef.update({ likes: FieldValue.increment(1) });
+exports.onLikeDeleted = functions.firestore.document("/likes/{likeId}").onDelete(async (snapshot, context) => {
+  // Find postId
+  const postId = snapshot.get("postId");
 
-        // Create notification document
-        // Get author id from post and set as target 
-        const postDoc = await postRef.get();
-        const targetId = postDoc.get("authorId");
-
-        // Get displayName and Profilepictureurl from user
-        const sourceId = snapshot.get("userId");
-        const sourceProfilePictureURL = snapshot.get("userProfilePictureURL");
-        const sourceDisplayName = snapshot.get("userDisplayName");
-
-        // if target and source are the same then don't do anything
-        if (sourceId === targetId) return;
-
-        const notificationRef = admin.firestore().collection("notifications").doc();
-        notificationRef.set(
-            {
-                "id": notificationRef.id,
-                "targetId": targetId,
-                "sourceId": sourceId,
-                "sourceDisplayName": sourceDisplayName,
-                "sourceProfilePictureURL": sourceProfilePictureURL,
-                "postId": postId,
-                "type": "like",
-                "dateTime": new Date(),
-                "read": false,
-            }
-        );
-
-
-    });
-
-exports.onLikeDeleted = functions.firestore
-    .document("/likes/{likeId}")
-    .onDelete(async (snapshot, context) => {
-        // Find postId
-        const postId = snapshot.get("postId");
-
-        // Decrement likes
-        const postRef = admin.firestore().collection("posts").doc(postId);
-        postRef.update({ likes: FieldValue.increment(-1) });
-
-    });
+  // Decrement likes
+  const postRef = admin.firestore().collection("posts").doc(postId);
+  postRef.update({ likes: FieldValue.increment(-1) });
+});
 
 exports.onCommentCreated = functions.firestore
-    .document("/comments/{postId}/postComments/{commentId}")
-    .onCreate(async (snapshot, context) => {
-        // Create notification document
-        // Find postId
-        const postId = context.params.postId;
+  .document("/comments/{postId}/postComments/{commentId}")
+  .onCreate(async (snapshot, context) => {
+    // Create notification document
+    // Find postId
+    const postId = context.params.postId;
 
-        // Get author id from post and set as target 
-        const postRef = admin.firestore().collection("posts").doc(postId);
-        const postDoc = await postRef.get();
-        const targetId = postDoc.get("authorId");
+    // Get author id from post and set as target
+    const postRef = admin.firestore().collection("posts").doc(postId);
+    const postDoc = await postRef.get();
+    const targetId = postDoc.get("authorId");
 
-        // Get displayName and Profilepictureurl from comment
-        const sourceId = snapshot.get("authorId");
-        const sourceProfilePictureURL = snapshot.get("authorProfilePictureURL");
-        const sourceDisplayName = snapshot.get("authorDisplayName");
-        if (sourceId === targetId) return;
+    // Get displayName and Profilepictureurl from comment
+    const sourceId = snapshot.get("authorId");
+    const sourceProfilePictureURL = snapshot.get("authorProfilePictureURL");
+    const sourceDisplayName = snapshot.get("authorDisplayName");
+    if (sourceId === targetId) return;
 
-        const notificationRef = admin.firestore().collection("notifications").doc();
-        notificationRef.set(
-            {
-                "id": notificationRef.id,
-                "targetId": targetId,
-                "sourceId": sourceId,
-                "sourceDisplayName": sourceDisplayName,
-                "sourceProfilePictureURL": sourceProfilePictureURL,
-                "postId": postId,
-                "type": "comment",
-                "dateTime": new Date(),
-                "read": false,
-            }
-        );
-
-
+    const notificationRef = admin.firestore().collection("notifications").doc();
+    notificationRef.set({
+      id: notificationRef.id,
+      targetId: targetId,
+      sourceId: sourceId,
+      sourceDisplayName: sourceDisplayName,
+      sourceProfilePictureURL: sourceProfilePictureURL,
+      postId: postId,
+      type: "comment",
+      dateTime: new Date(),
+      read: false,
     });
+  });
 
 exports.onNotificationCreated = functions.firestore
-    .document("/notifications/{notificationId}")
-    .onCreate(async (snapshot, context) => {
-        const targetId = snapshot.get("targetId");
+  .document("/notifications/{notificationId}")
+  .onCreate(async (snapshot, context) => {
+    const targetId = snapshot.get("targetId");
 
-        const userRef = admin.firestore().collection("users").doc(targetId);
-        const userDoc = await userRef.get();
+    const userRef = admin.firestore().collection("users").doc(targetId);
+    const userDoc = await userRef.get();
 
-        const fcmToken = userDoc.get("fcmToken");
-        console.log(`fcmToken: ${fcmToken}`);
+    const fcmToken = userDoc.get("fcmToken");
+    console.log(`fcmToken: ${fcmToken}`);
 
-        if (fcmToken == null || fcmToken == undefined || fcmToken == "") return;
+    if (fcmToken == null || fcmToken == undefined || fcmToken == "") return;
 
-        const sourceDisplayName = snapshot.get("sourceDisplayName");
-        const type = snapshot.get("type");
-        let notificationText = '';
-        if (type == "like") {
-            notificationText = " liked your post.";
-        } else if (type == "comment") {
-            notificationText = " commented on your post.";
-        } else if (type == "follow") {
-            notificationText = " followed you.";
-        }
+    const sourceDisplayName = snapshot.get("sourceDisplayName");
+    const type = snapshot.get("type");
+    let notificationText = "";
+    if (type == "like") {
+      notificationText = " liked your post.";
+    } else if (type == "comment") {
+      notificationText = " commented on your post.";
+    } else if (type == "follow") {
+      notificationText = " followed you.";
+    }
 
-        const payload = {
-            notification: {
-                title: `${sourceDisplayName}${notificationText}`,
-            },
-            data: {
-                "type": type,
-            }
-        };
-        const options = {
-            priority: "high",
-            timeToLive: 60 * 60 * 24,
-        };
+    const payload = {
+      notification: {
+        title: `${sourceDisplayName}${notificationText}`,
+      },
+      data: {
+        type: type,
+      },
+    };
+    const options = {
+      priority: "high",
+      timeToLive: 60 * 60 * 24,
+    };
 
-        admin.messaging().sendToDevice(fcmToken, payload, options);
+    admin.messaging().sendToDevice(fcmToken, payload, options);
+  });
 
+exports.onReviewCreated = functions.firestore.document("/reviews/{reviewId}").onCreate(async (snapshot, context) => {
+  const reviewId = context.params.reviewId;
+  const munroId = snapshot.get("munroId");
+  const newReview = snapshot.data();
+  // Get munro doc
+  const munroRef = admin.firestore().collection("munros").doc(`${munroId}`);
+  const munroDoc = await munroRef.get();
+
+  console.log(`Munro doc: ${munroDoc.data()}`);
+
+  if (munroDoc.exists) {
+    // If exists increment review count and rating
+    console.log("Munro exists");
+    const oldRating = munroDoc.data().averageRating;
+    const oldCount = munroDoc.data().reviewCount;
+    const newRating = (oldRating * oldCount + newReview.rating) / (oldCount + 1);
+
+    munroRef.update({
+      reviewCount: FieldValue.increment(1),
+      averageRating: newRating,
     });
+  } else {
+    // If doesn't exist create munro doc and set review count and rating
+    console.log("Munro doesn't exist");
+    munroRef.set({
+      id: munroId,
+      reviewCount: 1,
+      averageRating: snapshot.get("rating"),
+    });
+  }
+
+  console.log(`Munro ${munroId} Updated`);
+});
+
+exports.onReviewUpdated = functions.firestore.document("/reviews/{reviewId}").onUpdate(async (snapshot, context) => {
+  // Get old and new review
+  const oldReview = snapshot.before.data();
+  const newReview = snapshot.after.data();
+
+  // Get munro doc
+  const munroRef = admin.firestore().collection("munros").doc(oldReview.munroId);
+  const munroDoc = await munroRef.get();
+
+  console.log(`Munro doc: ${munroDoc.data()}`);
+  if (munroDoc.exists) {
+    console.log("Munro exists");
+    // If it exists, update the average rating after this change
+    const oldRating = munroDoc.data().averageRating;
+    const oldCount = munroDoc.data().reviewCount;
+    const newRating = (oldRating * oldCount - oldReview.rating + newReview.rating) / oldCount;
+
+    munroRef.update({
+      averageRating: newRating,
+    });
+  } else {
+    console.log("Munro doesn't exist");
+    // If it doesn't exist, create a new munro doc and set the average rating
+    munroRef.set({
+      id: oldReview.munroId,
+      reviewCount: 1,
+      averageRating: newReview.rating,
+    });
+  }
+
+  // Update the munro doc
+  console.log(`Munro ${oldReview.munroId} Updated`);
+});
+
+exports.onReviewDeleted = functions.firestore.document("/reviews/{reviewId}").onDelete(async (snapshot, context) => {
+  // Get old review
+  const oldReview = snapshot.data();
+
+  // Get munro Doc
+  const munroRef = admin.firestore().collection("munros").doc(oldReview.munroId);
+  const munroDoc = await munroRef.get();
+
+  console.log(`Munro doc: ${munroDoc.data()}`);
+
+  // If it exists, update the average rating after this change
+  if (munroDoc.exists) {
+    console.log("Munro exists");
+    const oldRating = munroDoc.data().averageRating;
+    const oldCount = munroDoc.data().reviewCount;
+
+    if (oldCount - 1 > 0) {
+      const newRating = (oldRating * oldCount - oldReview.rating) / (oldCount - 1);
+
+      munroRef.update({
+        reviewCount: FieldValue.increment(-1),
+        averageRating: newRating,
+      });
+    } else {
+      munroRef.delete();
+    }
+  }
+  console.log(`Munro ${oldReview.munroId} Updated`);
+});
+
+exports.migrateMunroIds = functions.https.onRequest(async (req, res) => {
+  // Update posts
+  const postsRef = admin.firestore().collection("posts");
+  const snapshot = await postsRef.get();
+
+  const batch = admin.firestore().batch();
+
+  console.log("Starting Post Migration");
+  snapshot.docs.forEach((doc) => {
+    const post = doc.data();
+    console.log(`Post: ${post.uid}`);
+    if (post.includedMunroIds && Array.isArray(post.includedMunroIds)) {
+      const newMunroIds = post.includedMunroIds.map((id) => id.toString());
+      batch.update(doc.ref, { includedMunroIds: newMunroIds });
+    }
+
+    if (post.includedMunros && Array.isArray(post.includedMunros)) {
+      const newIncludedMunros = post.includedMunros.map((munro) => {
+        return { ...munro, id: munro.id.toString() };
+      });
+      batch.update(doc.ref, { includedMunros: newIncludedMunros });
+    }
+  });
+
+  console.log("Finsihsed Post Migration");
+  await batch.commit();
+
+  // Update users
+  const usersRef = admin.firestore().collection("users");
+  const usersSnapshot = await usersRef.get();
+
+  const usersBatch = admin.firestore().batch();
+
+  console.log("Starting User Migration");
+  usersSnapshot.docs.forEach((doc) => {
+    const user = doc.data();
+    console.log(`User: ${user.uid}`);
+    if (user.personalMunroData && Array.isArray(user.personalMunroData)) {
+      const personalMunroData = user.personalMunroData.map((munro) => {
+        return { ...munro, id: munro.id.toString() };
+      });
+      usersBatch.update(doc.ref, { personalMunroData: personalMunroData });
+    }
+  });
+
+  console.log("Finsihsed User Migration");
+
+  await usersBatch.commit();
+
+  res.send("Migration completed successfully");
+});
