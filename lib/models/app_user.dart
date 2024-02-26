@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:two_eight_two/models/munro_challenge_model.dart';
 
 class AppUser {
   final String? uid;
@@ -13,6 +14,7 @@ class AppUser {
   String? fcmToken;
 
   final List<Map<String, dynamic>>? personalMunroData;
+  final List<MunroChallenge>? munroChallenges;
 
   AppUser({
     this.uid,
@@ -26,6 +28,7 @@ class AppUser {
     this.bio,
     this.fcmToken,
     this.personalMunroData = personalMunroDataExample,
+    this.munroChallenges = const [],
   });
 
   Map<String, dynamic> toJSON() {
@@ -41,12 +44,17 @@ class AppUser {
       AppUserFields.bio: bio,
       AppUserFields.fcmToken: fcmToken,
       AppUserFields.personalMunroData: personalMunroData,
+      AppUserFields.munroChallenges: munroChallenges,
     };
   }
 
   static AppUser fromJSON(Map<String, dynamic> json) {
     List<dynamic> personalMunroData = json[AppUserFields.personalMunroData];
     List<Map<String, dynamic>> listPersonalMunroData = List<Map<String, dynamic>>.from(personalMunroData);
+
+    List<dynamic> munroChallenges = json[AppUserFields.munroChallenges];
+    List<MunroChallenge> listMunroChallenges = munroChallenges.map((e) => MunroChallenge.fromJSON(e)).toList();
+
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
       displayName: json[AppUserFields.displayName] as String?,
@@ -59,6 +67,7 @@ class AppUser {
       bio: json[AppUserFields.bio] as String?,
       fcmToken: json[AppUserFields.fcmToken] as String?,
       personalMunroData: listPersonalMunroData,
+      munroChallenges: listMunroChallenges,
     );
   }
 
@@ -74,19 +83,22 @@ class AppUser {
     String? bio,
     String? fcmToken,
     List<Map<String, dynamic>>? personalMunroData,
+    List<MunroChallenge>? munroChallenges,
   }) {
     return AppUser(
-        uid: uid ?? this.uid,
-        displayName: displayName ?? this.displayName,
-        searchName: searchName ?? this.searchName,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        profilePictureURL: profilePictureURL ?? this.profilePictureURL,
-        followersCount: followersCount ?? this.followersCount,
-        followingCount: followingCount ?? this.followingCount,
-        bio: bio ?? this.bio,
-        fcmToken: fcmToken ?? this.fcmToken,
-        personalMunroData: personalMunroData ?? this.personalMunroData);
+      uid: uid ?? this.uid,
+      displayName: displayName ?? this.displayName,
+      searchName: searchName ?? this.searchName,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      profilePictureURL: profilePictureURL ?? this.profilePictureURL,
+      followersCount: followersCount ?? this.followersCount,
+      followingCount: followingCount ?? this.followingCount,
+      bio: bio ?? this.bio,
+      fcmToken: fcmToken ?? this.fcmToken,
+      personalMunroData: personalMunroData ?? this.personalMunroData,
+      munroChallenges: munroChallenges ?? this.munroChallenges,
+    );
   }
 
   // From firebase
@@ -124,6 +136,7 @@ class AppUserFields {
   static String followersCount = 'followersCount';
   static String bio = 'bio';
   static String fcmToken = 'fcmToken';
+  static String munroChallenges = 'munroChallenges';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [
