@@ -13,7 +13,6 @@ class PostService {
   static Future createPost(BuildContext context) async {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
 
     try {
       createPostState.setStatus = CreatePostStatus.loading;

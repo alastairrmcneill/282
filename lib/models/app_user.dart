@@ -14,7 +14,7 @@ class AppUser {
   String? fcmToken;
 
   final List<Map<String, dynamic>>? personalMunroData;
-  final List<MunroChallenge>? munroChallenges;
+  final List<MunroChallenge> munroChallenges;
 
   AppUser({
     this.uid,
@@ -44,7 +44,7 @@ class AppUser {
       AppUserFields.bio: bio,
       AppUserFields.fcmToken: fcmToken,
       AppUserFields.personalMunroData: personalMunroData,
-      AppUserFields.munroChallenges: munroChallenges,
+      AppUserFields.munroChallenges: munroChallenges.map((e) => e.toJSON()).toList(),
     };
   }
 

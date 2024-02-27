@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/comments/state/comments_state.dart';
-import 'package:two_eight_two/screens/munro/state/munro_detail_state.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -73,6 +71,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<ReviewsState>(
           create: (_) => ReviewsState(),
+        ),
+        ChangeNotifierProvider<MunroChallengeState>(
+          create: (_) => MunroChallengeState(),
         ),
       ],
       child: MaterialApp(

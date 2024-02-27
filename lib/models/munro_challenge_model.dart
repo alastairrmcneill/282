@@ -1,7 +1,7 @@
 class MunroChallenge {
   final int year;
   final int target;
-  final Map<String, dynamic> completedMunros;
+  final List<Map<String, dynamic>> completedMunros;
 
   MunroChallenge({
     required this.year,
@@ -18,17 +18,23 @@ class MunroChallenge {
   }
 
   static MunroChallenge fromJSON(Map<String, dynamic> json) {
+    List<dynamic> completedMunros = json[MunroChallengeFields.completedMunros] as List<dynamic>;
+    List<Map<String, dynamic>> completedMunrosList = [];
+    for (var munro in completedMunros) {
+      completedMunrosList.add(munro as Map<String, dynamic>);
+    }
+
     return MunroChallenge(
       year: json[MunroChallengeFields.year] as int,
       target: json[MunroChallengeFields.target] as int,
-      completedMunros: json[MunroChallengeFields.completedMunros] as Map<String, dynamic>,
+      completedMunros: completedMunrosList,
     );
   }
 
   MunroChallenge copyWith({
     int? year,
     int? target,
-    Map<String, dynamic>? completedMunros,
+    List<Map<String, dynamic>>? completedMunros,
   }) {
     return MunroChallenge(
       year: year ?? this.year,
