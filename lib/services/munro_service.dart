@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/models/munro_challenge_model.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/services/munro_challenge_service.dart';
 
 class MunroService {
   static Future<void> loadMunroData(BuildContext context) async {
@@ -78,6 +80,7 @@ class MunroService {
     // State management
     UserState userState = Provider.of<UserState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
 
     if (userState.currentUser == null) return;
     // Update user data with new personal munro data
@@ -94,9 +97,24 @@ class MunroService {
       );
     }
 
-    UserDatabase.update(context, appUser: newAppUser);
+    // Update user data with munro goals
+    if (munroChallengeState.currentMunroChallenge != null) {
+      MunroChallenge newMunroChallenge = munroChallengeState.currentMunroChallenge!;
+      for (Munro munro in munros) {
+        newMunroChallenge.completedMunros.add({"id": munro.id, "date": DateTime.now().toUtc()});
+      }
 
-    // Create post
+      int index = userState.currentUser!.munroChallenges
+          .indexWhere((MunroChallenge challenge) => challenge.year == DateTime.now().year);
+
+      newAppUser.munroChallenges[index] = newMunroChallenge;
+    }
+
+    munroChallengeState.setChallengeCompleted = MunroChallengeService.checkMunroChallengeCompleted(
+      munroChallengeState.currentMunroChallenge,
+    );
+
+    UserDatabase.update(context, appUser: newAppUser);
   }
 
   static Future<void> toggleMunroSaved(

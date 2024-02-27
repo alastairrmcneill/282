@@ -61,14 +61,7 @@ class PostService {
       await PostsDatabase.create(context, post: post);
 
       // Complete munros
-      MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
-
-      // Navigate to the right place
-      // Navigator.pushNamedAndRemoveUntil(
-      //   context,
-      //   navigationState.navigateToRoute, // The name of the route you want to navigate to
-      //   (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-      // );
+      await MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
 
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;

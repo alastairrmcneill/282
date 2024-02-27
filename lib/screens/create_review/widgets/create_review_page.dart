@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
-import "package:two_eight_two/screens/create_review/state/create_review_state.dart";
 import "package:two_eight_two/screens/create_review/widgets/widgets.dart";
+import "package:two_eight_two/screens/notifiers.dart";
 import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
@@ -42,12 +42,23 @@ class CreateReviewPage extends StatelessWidget {
                   curve: Curves.easeInOut,
                 );
               } else {
-                // Navigate back to where you were when it was called?
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  "/home_screen", // The name of the route you want to navigate to
-                  (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-                );
+                MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
+
+                if (munroChallengeState.challengeCompleted) {
+                  // Navigate to the challenge complete screen
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    "/munro_challenge_complete_screen", // The name of the route you want to navigate to
+                    (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+                  );
+                } else {
+                  // Navigate back to where you were when it was called?
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    "/home_screen", // The name of the route you want to navigate to
+                    (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+                  );
+                }
               }
             });
             return const SizedBox();
@@ -91,11 +102,23 @@ class CreateReviewPage extends StatelessWidget {
           ),
           ElevatedButton(
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  "/home_screen", // The name of the route you want to navigate to
-                  (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-                );
+                MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
+
+                if (munroChallengeState.challengeCompleted) {
+                  // Navigate to the challenge complete screen
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    "/munro_challenge_complete_screen", // The name of the route you want to navigate to
+                    (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+                  );
+                } else {
+                  // Navigate back to where you were when it was called?
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    "/home_screen", // The name of the route you want to navigate to
+                    (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+                  );
+                }
               },
               child: Text("Skip")),
           ElevatedButton(

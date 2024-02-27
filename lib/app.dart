@@ -88,6 +88,7 @@ class App extends StatelessWidget {
           "/profile_tab": (context) => const HomeScreen(startingIndex: 3),
           "/auth_home_screen": (context) => const AuthHomeScreen(),
           "/munro_screen": (context) => const MunroScreen(),
+          "/munro_challenge_complete_screen": (context) => const MunroChallengeCompleteScreen(),
         },
         home: const HomeScreen(),
       ),

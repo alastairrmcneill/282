@@ -47,4 +47,9 @@ class MunroChallengeService {
       );
     }
   }
+
+  static bool checkMunroChallengeCompleted(MunroChallenge? munroChallenge) {
+    if (munroChallenge == null) return false;
+    return munroChallenge.completedMunros.length >= munroChallenge.target;
+  }
 }

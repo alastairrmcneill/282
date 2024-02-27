@@ -7,12 +7,14 @@ class MunroChallengeState extends ChangeNotifier {
   List<MunroChallenge> _previousMunroChallenges = [];
   MunroChallenge? _currentMunroChallenge;
   int _munroChallengeCountForm = 0;
+  bool _challengeCompleted = false;
 
   MunroChallengeStatus get status => _status;
   Error get error => _error;
   List<MunroChallenge> get previousMunroChallenges => _previousMunroChallenges;
   MunroChallenge? get currentMunroChallenge => _currentMunroChallenge;
   int get munroChallengeCountForm => _munroChallengeCountForm;
+  bool get challengeCompleted => _challengeCompleted;
 
   set setStatus(MunroChallengeStatus searchStatus) {
     _status = searchStatus;
@@ -44,6 +46,12 @@ class MunroChallengeState extends ChangeNotifier {
     _status = MunroChallengeStatus.initial;
     _error = Error();
     _munroChallengeCountForm = 0;
+    _challengeCompleted = false;
+  }
+
+  set setChallengeCompleted(bool challengeCompleted) {
+    _challengeCompleted = challengeCompleted;
+    notifyListeners();
   }
 }
 
