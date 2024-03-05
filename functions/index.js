@@ -433,6 +433,81 @@ exports.onReviewDeleted = functions.firestore.document("/reviews/{reviewId}").on
   console.log(`Munro ${oldReview.munroId} Updated`);
 });
 
+exports.onAchievementCreated = functions.firestore
+  .document("/achievements/{achievementId}")
+  .onCreate(async (snapshot, context) => {
+    console.log("Achievement Created");
+    const achievementId = context.params.achievementId;
+    const achievement = snapshot.data();
+
+    const usersRef = admin.firestore().collection("users");
+    const usersSnapshot = await usersRef.get();
+
+    let batch = admin.firestore().batch();
+
+    usersSnapshot.forEach((userDoc) => {
+      console.log(`User: ${userDoc.id}`);
+      let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
+
+      let achievementData = {
+        ...achievement,
+        completed: false,
+      };
+      batch.set(achievementRef, achievementData);
+    });
+
+    await batch.commit();
+
+    console.log("Achievement added to all users successfully");
+  });
+
+exports.onAchievementUpdated = functions.firestore
+  .document("/achievements/{achievementId}")
+  .onUpdate(async (snapshot, context) => {
+    console.log("Achievement Updated");
+    const achievementId = context.params.achievementId;
+    const achievement = snapshot.after.data();
+
+    const usersRef = admin.firestore().collection("users");
+    const usersSnapshot = await usersRef.get();
+
+    let batch = admin.firestore().batch();
+
+    usersSnapshot.forEach((userDoc) => {
+      console.log(`User: ${userDoc.id}`);
+      let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
+
+      batch.set(achievementRef, achievement, { merge: true });
+    });
+
+    await batch.commit();
+
+    console.log("Achievement updated for all users successfully");
+  });
+
+exports.onAchievementDeleted = functions.firestore
+  .document("/achievements/{achievementId}")
+  .onDelete(async (snapshot, context) => {
+    console.log("Achievement Deleted");
+    const achievementId = context.params.achievementId;
+
+    const usersRef = admin.firestore().collection("users");
+    const usersSnapshot = await usersRef.get();
+
+    let batch = admin.firestore().batch();
+
+    usersSnapshot.forEach((userDoc) => {
+      console.log(`User: ${userDoc.id}`);
+      let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
+
+      batch.delete(achievementRef);
+    });
+
+    await batch.commit();
+
+    console.log("Achievement deleted for all users successfully");
+  });
+
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
   // Update users
   const usersRef = admin.firestore().collection("users");
