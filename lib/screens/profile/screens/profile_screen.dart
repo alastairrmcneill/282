@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
@@ -53,6 +54,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               body: CenterText(text: profileState.error.message),
             );
           default:
+            AchievementDatabase.readAllUserAchievements(context, userUid: profileState.user?.uid ?? "");
+
             return _buildScreen(context, profileState);
         }
       },

@@ -16,3 +16,4 @@ export 'munro/state/munro_detail_state.dart';
 export 'create_review/state/create_review_state.dart';
 export 'reviews/state/reviews_state.dart';
 export 'munro_challenge/state/munro_challenge_state.dart';
+export 'achievements/state/achievements_state.dart';
