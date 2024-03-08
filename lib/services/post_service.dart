@@ -63,6 +63,10 @@ class PostService {
       // Complete munros
       await MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
 
+      // Check for achievements
+      print("Checking achievements");
+      AchievementService.checkAchievements(context);
+
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {

@@ -12,3 +12,4 @@ export 'push_notification_service.dart';
 export '../screens/settings/service/settings_service.dart';
 export 'review_service.dart';
 export 'munro_challenge_service.dart';
+export 'achievement_service.dart';

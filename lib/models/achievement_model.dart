@@ -69,3 +69,11 @@ class AchievementFields {
   static const String completed = 'completed';
   static const String criteria = 'criteria';
 }
+
+class AchievementTypes {
+  static const String totalCount = "totalCount";
+}
+
+class CriteriaFields {
+  static const String count = "count";
+}
