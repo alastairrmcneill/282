@@ -45,6 +45,15 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
+                MaterialPageRoute(builder: (_) => const AchievementListScreen()),
+              );
+            },
+            title: const Text("Achievements"),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
                 MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
               );
             },
