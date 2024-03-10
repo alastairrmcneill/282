@@ -42,13 +42,12 @@ class CreateReviewPage extends StatelessWidget {
                   curve: Curves.easeInOut,
                 );
               } else {
-                MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
-
-                if (munroChallengeState.challengeCompleted) {
-                  // Navigate to the challenge complete screen
+                AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+                print("recentlyCompletedAchievements: ${achievementsState.recentlyCompletedAchievements.length}");
+                if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    "/munro_challenge_complete_screen", // The name of the route you want to navigate to
+                    "/achievement_screen", // The name of the route you want to navigate to
                     (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                   );
                 } else {
@@ -102,13 +101,12 @@ class CreateReviewPage extends StatelessWidget {
           ),
           ElevatedButton(
               onPressed: () {
-                MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
-
-                if (munroChallengeState.challengeCompleted) {
-                  // Navigate to the challenge complete screen
+                AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+                print("recentlyCompletedAchievements: ${achievementsState.recentlyCompletedAchievements.length}");
+                if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    "/munro_challenge_complete_screen", // The name of the route you want to navigate to
+                    "/achievement_screen", // The name of the route you want to navigate to
                     (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                   );
                 } else {

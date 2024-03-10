@@ -55,6 +55,7 @@ class AchievementsState extends ChangeNotifier {
     _error = Error();
     _achievements = [];
     _currentAchievement = null;
+    _recentlyCompletedAchievements = [];
   }
 }
 

@@ -92,6 +92,7 @@ class App extends StatelessWidget {
           "/auth_home_screen": (context) => const AuthHomeScreen(),
           "/munro_screen": (context) => const MunroScreen(),
           "/munro_challenge_complete_screen": (context) => const MunroChallengeCompleteScreen(),
+          "/achievement_screen": (context) => const AchievementsScreen(),
         },
         home: const HomeScreen(),
       ),
