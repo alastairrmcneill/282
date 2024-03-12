@@ -72,6 +72,7 @@ class AchievementFields {
 
 class AchievementTypes {
   static const String totalCount = "totalCount";
+  static const String annualGoal = "annualGoal";
 }
 
 class CriteriaFields {

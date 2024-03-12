@@ -16,13 +16,15 @@ class AchievementListScreen extends StatelessWidget {
       body: Center(
         child: ListView(
           children: [
-            ...achievementsState.achievements.map(
-              (Achievement achievement) => ListTile(
-                title: Text(achievement.name),
-                subtitle: Text(achievement.description),
-                trailing: achievement.completed ? const Icon(Icons.check) : null,
-              ),
-            ),
+            ...achievementsState.achievements
+                .where((Achievement achievement) => achievement.type != AchievementTypes.annualGoal)
+                .map(
+                  (Achievement achievement) => ListTile(
+                    title: Text(achievement.name),
+                    subtitle: Text(achievement.description),
+                    trailing: achievement.completed ? const Icon(Icons.check) : null,
+                  ),
+                ),
           ],
         ),
       ),

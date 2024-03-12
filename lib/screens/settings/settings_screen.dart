@@ -36,10 +36,10 @@ class SettingsScreen extends StatelessWidget {
               munroChallengeState.reset();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => CreateMunroChallengeScreen()),
+                MaterialPageRoute(builder: (_) => const MunroChallengeListScreen()),
               );
             },
-            title: const Text("Create Munro Challenge"),
+            title: const Text("Munro Challenges"),
           ),
           ListTile(
             onTap: () {

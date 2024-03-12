@@ -447,13 +447,23 @@ exports.onAchievementCreated = functions.firestore
 
     usersSnapshot.forEach((userDoc) => {
       console.log(`User: ${userDoc.id}`);
-      let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
+      // let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
 
+      // let achievementData = {
+      //   ...achievement,
+      //   completed: false,
+      // };
+      // batch.set(achievementRef, achievementData);
+
+      let userRef = usersRef.doc(userDoc.id);
       let achievementData = {
-        ...achievement,
-        completed: false,
+        [`achievements.${context.params.achievementId}`]: {
+          ...snapshot.data(),
+          completed: false,
+          progress: 0,
+        },
       };
-      batch.set(achievementRef, achievementData);
+      batch.update(userRef, achievementData, { merge: true });
     });
 
     await batch.commit();
@@ -475,9 +485,23 @@ exports.onAchievementUpdated = functions.firestore
 
     usersSnapshot.forEach((userDoc) => {
       console.log(`User: ${userDoc.id}`);
-      let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
+      let userRef = usersRef.doc(userDoc.id);
 
-      batch.set(achievementRef, achievement, { merge: true });
+      // Fetch the current user's achievement data
+      const userAchievementData = userDoc.data().achievements[achievementId];
+
+      // Merge the current user's achievement data with the updated achievement data
+      const mergedAchievementData = {
+        ...achievement,
+        completed: userAchievementData.completed ?? false,
+        progress: userAchievementData.progress ?? 0,
+      };
+
+      let achievementData = {
+        [`achievements.${achievementId}`]: mergedAchievementData,
+      };
+
+      batch.update(userRef, achievementData, { merge: true });
     });
 
     await batch.commit();
@@ -498,9 +522,12 @@ exports.onAchievementDeleted = functions.firestore
 
     usersSnapshot.forEach((userDoc) => {
       console.log(`User: ${userDoc.id}`);
-      let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
 
-      batch.delete(achievementRef);
+      let userRef = usersRef.doc(userDoc.id);
+      let achievementData = {
+        [`achievements.${context.params.achievementId}`]: FieldValue.delete(),
+      };
+      batch.update(userRef, achievementData, { merge: true });
     });
 
     await batch.commit();
