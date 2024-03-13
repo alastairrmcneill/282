@@ -54,8 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               body: CenterText(text: profileState.error.message),
             );
           default:
-            AchievementDatabase.readAllUserAchievements(context, userUid: profileState.user?.uid ?? "");
-
             return _buildScreen(context, profileState);
         }
       },

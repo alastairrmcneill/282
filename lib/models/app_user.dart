@@ -14,6 +14,7 @@ class AppUser {
   String? fcmToken;
 
   final List<Map<String, dynamic>>? personalMunroData;
+  final Map<String, dynamic>? achievements;
   final List<MunroChallenge> munroChallenges;
 
   AppUser({
@@ -29,6 +30,7 @@ class AppUser {
     this.fcmToken,
     this.personalMunroData = personalMunroDataExample,
     this.munroChallenges = const [],
+    this.achievements,
   });
 
   Map<String, dynamic> toJSON() {
@@ -44,6 +46,7 @@ class AppUser {
       AppUserFields.bio: bio,
       AppUserFields.fcmToken: fcmToken,
       AppUserFields.personalMunroData: personalMunroData,
+      AppUserFields.achievements: achievements,
       AppUserFields.munroChallenges: munroChallenges.map((e) => e.toJSON()).toList(),
     };
   }
@@ -68,6 +71,7 @@ class AppUser {
       fcmToken: json[AppUserFields.fcmToken] as String?,
       personalMunroData: listPersonalMunroData,
       munroChallenges: listMunroChallenges,
+      achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
     );
   }
 
@@ -84,6 +88,7 @@ class AppUser {
     String? fcmToken,
     List<Map<String, dynamic>>? personalMunroData,
     List<MunroChallenge>? munroChallenges,
+    Map<String, dynamic>? achievements,
   }) {
     return AppUser(
       uid: uid ?? this.uid,
@@ -98,6 +103,7 @@ class AppUser {
       fcmToken: fcmToken ?? this.fcmToken,
       personalMunroData: personalMunroData ?? this.personalMunroData,
       munroChallenges: munroChallenges ?? this.munroChallenges,
+      achievements: achievements ?? this.achievements,
     );
   }
 
@@ -119,6 +125,8 @@ class AppUser {
       ${AppUserFields.followingCount}: $followersCount,
       ${AppUserFields.followersCount}: $followersCount,
       ${AppUserFields.personalMunroData}: $personalMunroData, 
+      ${AppUserFields.munroChallenges}: $munroChallenges,
+      ${AppUserFields.achievements}: $achievements,
       ${AppUserFields.bio}: $bio,
       ${AppUserFields.fcmToken}:$fcmToken
       )''';
@@ -137,6 +145,7 @@ class AppUserFields {
   static String bio = 'bio';
   static String fcmToken = 'fcmToken';
   static String munroChallenges = 'munroChallenges';
+  static String achievements = 'achievements';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [

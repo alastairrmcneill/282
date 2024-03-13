@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/models/munro_challenge_model.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/services/munro_challenge_service.dart';

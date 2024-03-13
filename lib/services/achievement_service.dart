@@ -14,42 +14,22 @@ class AchievementService {
     try {
       achievementsState.setStatus = AchievementsStatus.loading;
 
-      List<Achievement> achievements = await AchievementDatabase.readAllUserAchievements(
-        context,
-        userUid: userState.currentUser?.uid ?? "",
-      );
+      List<Achievement> achievementList = [];
 
-      achievementsState.setAchievements = achievements;
+      if (userState.currentUser != null) {
+        for (String key in userState.currentUser!.achievements?.keys ?? []) {
+          Achievement achievement = Achievement.fromJSON(userState.currentUser!.achievements![key]);
+          achievementList.add(achievement);
+        }
+      }
+      achievementsState.setAchievements = achievementList;
 
+      // Set status
       achievementsState.setStatus = AchievementsStatus.loaded;
     } catch (error) {
       achievementsState.setError = Error(
         code: error.toString(),
-        message: "There was an error fetching your achievements. Please try again.",
-      );
-    }
-  }
-
-  // Get profile achievements
-  static Future getProfileAchievements(BuildContext context) async {
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
-
-    try {
-      achievementsState.setStatus = AchievementsStatus.loading;
-
-      List<Achievement> achievements = await AchievementDatabase.readAllUserAchievements(
-        context,
-        userUid: profileState.user?.uid ?? "",
-      );
-
-      achievementsState.setAchievements = achievements;
-
-      achievementsState.setStatus = AchievementsStatus.loaded;
-    } catch (error) {
-      achievementsState.setError = Error(
-        code: error.toString(),
-        message: "There was an error fetching the user's achievements. Please try again.",
+        message: "There was an issue loading you achievement data",
       );
     }
   }
@@ -59,11 +39,11 @@ class AchievementService {
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
-      await AchievementDatabase.updateUserAchievement(
-        context,
-        userUid: userState.currentUser?.uid ?? "",
-        achievement: achievement,
-      );
+      if (userState.currentUser != null) {
+        userState.currentUser!.achievements![achievement.uid] = achievement.toJSON();
+
+        await UserDatabase.update(context, appUser: userState.currentUser!);
+      }
     } catch (error) {
       showErrorDialog(context, message: "There was an error updating your achievement. Please try again.");
     }
