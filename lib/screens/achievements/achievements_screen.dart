@@ -12,7 +12,7 @@ class AchievementsScreen extends StatelessWidget {
     return PopScope(
       onPopInvoked: (didPop) {
         if (didPop) {
-          achievementsState.reset();
+          achievementsState.setRecentlyCompletedAchievements = [];
 
           Navigator.pushNamedAndRemoveUntil(
             context,
@@ -29,7 +29,7 @@ class AchievementsScreen extends StatelessWidget {
             IconButton(
               onPressed: () {
                 AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
-                achievementsState.reset();
+                achievementsState.setRecentlyCompletedAchievements = [];
 
                 Navigator.pushNamedAndRemoveUntil(
                   context,

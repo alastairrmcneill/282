@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -10,31 +11,31 @@ class CreateMunroChallengeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MunroChallengeState>(
-      builder: (context, munroChallengeState, child) {
-        switch (munroChallengeState.status) {
-          case MunroChallengeStatus.error:
-            print(munroChallengeState.error.code);
+    return Consumer<AchievementsState>(
+      builder: (context, achievementsState, child) {
+        switch (achievementsState.status) {
+          case AchievementsStatus.error:
+            print(achievementsState.error.code);
             return Scaffold(
               appBar: AppBar(
-                title: const Text('Create Munro Challenge'),
+                title: const Text('Update Munro Challenge'),
                 centerTitle: false,
               ),
-              body: CenterText(text: munroChallengeState.error.message),
+              body: CenterText(text: achievementsState.error.message),
             );
-          case MunroChallengeStatus.loaded:
+          case AchievementsStatus.loaded:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pop(context);
             });
             return const SizedBox();
           default:
-            return _buildScreen(context, munroChallengeState);
+            return _buildScreen(context, achievementsState);
         }
       },
     );
   }
 
-  Widget _buildScreen(BuildContext context, MunroChallengeState munroChallengeState) {
+  Widget _buildScreen(BuildContext context, AchievementsState achievementsState) {
     return Stack(
       children: [
         Scaffold(
@@ -51,7 +52,8 @@ class CreateMunroChallengeScreen extends StatelessWidget {
                 Form(
                   key: _formKey,
                   child: TextFormField(
-                    initialValue: munroChallengeState.currentMunroChallenge?.target.toString() ?? '0',
+                    initialValue:
+                        achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
                     decoration: const InputDecoration(
                       labelText: 'Number of Munros',
                     ),
@@ -67,7 +69,7 @@ class CreateMunroChallengeScreen extends StatelessWidget {
                       return null;
                     },
                     onSaved: (value) {
-                      munroChallengeState.setMunroChallengeCountForm = int.parse(value!);
+                      achievementsState.currentAchievement?.criteria[CriteriaFields.count] = int.parse(value!);
                     },
                   ),
                 ),
@@ -77,7 +79,7 @@ class CreateMunroChallengeScreen extends StatelessWidget {
                       return;
                     }
                     _formKey.currentState!.save();
-                    MunroChallengeService.setMunroChallenge(context);
+                    AchievementService.setMunroChallenge(context);
                   },
                   child: const Text('Create Munro Challenge'),
                 ),
@@ -85,7 +87,7 @@ class CreateMunroChallengeScreen extends StatelessWidget {
             ),
           ),
         ),
-        munroChallengeState.status == CreatePostStatus.loading
+        achievementsState.status == MunroChallengeStatus.loading
             ? Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.8,

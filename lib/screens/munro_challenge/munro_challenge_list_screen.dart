@@ -9,7 +9,7 @@ class MunroChallengeListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Munro Challenge'),
@@ -24,12 +24,16 @@ class MunroChallengeListScreen extends StatelessWidget {
                     title: Text(achievement.name),
                     subtitle: Text(achievement.description),
                     trailing: achievement.completed ? const Icon(Icons.check) : null,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CreateMunroChallengeScreen(),
-                      ),
-                    ),
+                    onTap: () {
+                      achievementsState.reset();
+                      achievementsState.setCurrentAchievement = achievement;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CreateMunroChallengeScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ),
           ],

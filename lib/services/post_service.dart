@@ -70,6 +70,7 @@ class PostService {
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error) {
+      print("Error: $error");
       createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
     }
   }

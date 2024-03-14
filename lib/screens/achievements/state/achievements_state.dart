@@ -7,12 +7,14 @@ class AchievementsState extends ChangeNotifier {
   List<Achievement> _achievements = [];
   List<Achievement> _recentlyCompletedAchievements = [];
   Achievement? _currentAchievement;
+  int _achievementFormCount = 0;
 
   AchievementsStatus get status => _status;
   Error get error => _error;
   List<Achievement> get achievements => _achievements;
   List<Achievement> get recentlyCompletedAchievements => _recentlyCompletedAchievements;
   Achievement? get currentAchievement => _currentAchievement;
+  int get achievementFormCount => _achievementFormCount;
 
   set setStatus(AchievementsStatus searchStatus) {
     _status = searchStatus;
@@ -50,12 +52,22 @@ class AchievementsState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setAchievementFormCount(int achievementFormCount) {
+    _achievementFormCount = achievementFormCount;
+    notifyListeners();
+  }
+
   void reset() {
     _status = AchievementsStatus.initial;
     _error = Error();
-    _achievements = [];
     _currentAchievement = null;
     _recentlyCompletedAchievements = [];
+    _achievementFormCount = 0;
+  }
+
+  void resetAll() {
+    reset();
+    _achievements = [];
   }
 }
 

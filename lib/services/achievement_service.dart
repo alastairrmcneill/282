@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -49,21 +50,55 @@ class AchievementService {
     }
   }
 
+  static Future setMunroChallenge(BuildContext context) async {
+    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+
+    if (achievementsState.currentAchievement == null) return;
+
+    Achievement achievement = achievementsState.currentAchievement!;
+
+    try {
+      achievementsState.setStatus = AchievementsStatus.loading;
+
+      Achievement newAchievement = achievement.copy(
+        completed: _checkAnnualGoal(context, achievement: achievement, userState: userState),
+      );
+
+      await _updateUserAchievement(context, achievement: newAchievement);
+
+      achievementsState.updateAchievement = newAchievement;
+
+      // Set status
+      achievementsState.setStatus = AchievementsStatus.loaded;
+    } catch (error) {
+      achievementsState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue setting you munro challenge.",
+      );
+    }
+  }
+
   // Check if achievements are completed
   static checkAchievements(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
     AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
 
     for (Achievement achievement in achievementsState.achievements) {
+      print("Achievement: ${achievement.name}");
       if (achievement.completed) {
         print('Achievement already completed: ${achievement.name}');
         continue;
       }
 
-      print('Checking achievement: ${achievement.name}');
       switch (achievement.type) {
         case AchievementTypes.totalCount:
           _checkTotalCount(context, achievement: achievement, userState: userState);
+          break;
+        case AchievementTypes.annualGoal:
+          _checkAnnualGoal(context, achievement: achievement, userState: userState);
           break;
         default:
           break;
@@ -80,6 +115,39 @@ class AchievementService {
     if (totalCompleted >= achievement.criteria[CriteriaFields.count]) {
       print("Achievement completed: ${achievement.name}");
       _markAsCompleted(context, achievement: achievement);
+    }
+  }
+
+  static bool _checkAnnualGoal(BuildContext context, {required Achievement achievement, required UserState userState}) {
+    print("Checking annual goal");
+    if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) {
+      print("Not this year");
+      return false;
+    }
+
+    List munrosCompletedThisYear = userState.currentUser?.personalMunroData?.where((element) {
+          bool summited = element[MunroFields.summited] as bool;
+          if (!summited) return false;
+          int achievementYear = achievement.criteria[CriteriaFields.year] as int;
+          var summitedDate = element[MunroFields.summitedDate];
+          if (summitedDate == null) return false;
+
+          if (summitedDate is Timestamp) {
+            summitedDate = summitedDate.toDate();
+          }
+          int summitedYear = summitedDate.year;
+
+          return summited && summitedYear == achievementYear;
+        }).toList() ??
+        [];
+
+    print("Total completed in goal year: ${munrosCompletedThisYear.length}");
+    print("Goal count: ${achievement.criteria[CriteriaFields.count]}");
+    if (munrosCompletedThisYear.length >= achievement.criteria[CriteriaFields.count]) {
+      _markAsCompleted(context, achievement: achievement);
+      return true;
+    } else {
+      return false;
     }
   }
 

@@ -447,13 +447,6 @@ exports.onAchievementCreated = functions.firestore
 
     usersSnapshot.forEach((userDoc) => {
       console.log(`User: ${userDoc.id}`);
-      // let achievementRef = usersRef.doc(userDoc.id).collection("userAchievements").doc(achievementId);
-
-      // let achievementData = {
-      //   ...achievement,
-      //   completed: false,
-      // };
-      // batch.set(achievementRef, achievementData);
 
       let userRef = usersRef.doc(userDoc.id);
       let achievementData = {

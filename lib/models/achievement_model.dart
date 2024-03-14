@@ -77,4 +77,12 @@ class AchievementTypes {
 
 class CriteriaFields {
   static const String count = "count";
+  static const String status = "status";
+  static const String year = "year";
+}
+
+class AnnualGoalStatus {
+  static const String pending = "pending";
+  static const String inProgress = "InProgress";
+  static const String completed = "Completed";
 }
