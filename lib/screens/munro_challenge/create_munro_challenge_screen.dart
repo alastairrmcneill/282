@@ -87,7 +87,7 @@ class CreateMunroChallengeScreen extends StatelessWidget {
             ),
           ),
         ),
-        achievementsState.status == MunroChallengeStatus.loading
+        achievementsState.status == AchievementsStatus.loading
             ? Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.8,

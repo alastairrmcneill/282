@@ -32,8 +32,6 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
-              munroChallengeState.reset();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const MunroChallengeListScreen()),

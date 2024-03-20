@@ -18,7 +18,6 @@ export 'create_review/create_review_screen.dart';
 export 'reviews/reviews_screen.dart';
 export 'create_review/edit_review_screen.dart';
 export 'munro_challenge/create_munro_challenge_screen.dart';
-export 'munro_challenge/munro_challenge_complete_screen.dart';
 export 'munro_challenge/munro_challenge_list_screen.dart';
 export 'achievements/achievements_screen.dart';
 export 'achievements/achievements_list_screen.dart';

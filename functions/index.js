@@ -28,6 +28,7 @@ const functions = require("firebase-functions/v1");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 const { FieldValue } = require("firebase-admin/firestore");
+const { user } = require("firebase-functions/v1/auth");
 
 admin.initializeApp();
 
@@ -483,11 +484,23 @@ exports.onAchievementUpdated = functions.firestore
       // Fetch the current user's achievement data
       const userAchievementData = userDoc.data().achievements[achievementId];
 
+      if (!userAchievementData || userAchievementData.completed === undefined) {
+        userCompleted = false;
+      } else {
+        userCompleted = userAchievementData.completed;
+      }
+
+      if (!userAchievementData || userAchievementData.progress === undefined) {
+        userProgress = 0;
+      } else {
+        userProgress = userAchievementData.progress;
+      }
+
       // Merge the current user's achievement data with the updated achievement data
       const mergedAchievementData = {
         ...achievement,
-        completed: userAchievementData.completed ?? false,
-        progress: userAchievementData.progress ?? 0,
+        completed: userCompleted,
+        progress: userProgress,
       };
 
       let achievementData = {

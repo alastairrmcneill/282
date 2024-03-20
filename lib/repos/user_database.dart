@@ -29,9 +29,7 @@ class UserDatabase {
 
   // Read current user
   static Future readCurrentUser(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
-    // userState.setStatus = UserStatus.loading;
+    UserState userState = Provider.of<UserState>(context, listen: false); // userState.setStatus = UserStatus.loading;
     try {
       String? uid = AuthService.currentUserId;
       if (uid == null) {
@@ -50,11 +48,6 @@ class UserDatabase {
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       AppUser appUser = AppUser.fromJSON(data);
-
-      munroChallengeState.setCurrentMunroChallenge =
-          appUser.munroChallenges.where((element) => element.year == DateTime.now().year).firstOrNull;
-      munroChallengeState.setPreviousMunroChallenges =
-          appUser.munroChallenges.where((element) => element.year != DateTime.now().year).toList();
 
       userState.setCurrentUser = appUser;
       // userState.setStatus = UserStatus.loaded;

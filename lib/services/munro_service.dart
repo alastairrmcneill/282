@@ -78,7 +78,6 @@ class MunroService {
     // State management
     UserState userState = Provider.of<UserState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    MunroChallengeState munroChallengeState = Provider.of<MunroChallengeState>(context, listen: false);
 
     if (userState.currentUser == null) return;
     // Update user data with new personal munro data
@@ -93,19 +92,6 @@ class MunroService {
         summited: true,
         summitedDate: DateTime.now().toUtc(),
       );
-    }
-
-    // Update user data with munro goals
-    if (munroChallengeState.currentMunroChallenge != null) {
-      MunroChallenge newMunroChallenge = munroChallengeState.currentMunroChallenge!;
-      for (Munro munro in munros) {
-        newMunroChallenge.completedMunros.add({"id": munro.id, "date": DateTime.now().toUtc()});
-      }
-
-      int index = userState.currentUser!.munroChallenges
-          .indexWhere((MunroChallenge challenge) => challenge.year == DateTime.now().year);
-
-      newAppUser.munroChallenges[index] = newMunroChallenge;
     }
 
     UserDatabase.update(context, appUser: newAppUser);

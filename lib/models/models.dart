@@ -8,5 +8,4 @@ export 'comment_model.dart';
 export 'like_model.dart';
 export 'notifications_model.dart';
 export 'review_model.dart';
-export 'munro_challenge_model.dart';
 export 'achievement_model.dart';

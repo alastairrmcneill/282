@@ -72,9 +72,6 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<ReviewsState>(
           create: (_) => ReviewsState(),
         ),
-        ChangeNotifierProvider<MunroChallengeState>(
-          create: (_) => MunroChallengeState(),
-        ),
         ChangeNotifierProvider<AchievementsState>(
           create: (_) => AchievementsState(),
         ),
@@ -91,7 +88,6 @@ class App extends StatelessWidget {
           "/profile_tab": (context) => const HomeScreen(startingIndex: 3),
           "/auth_home_screen": (context) => const AuthHomeScreen(),
           "/munro_screen": (context) => const MunroScreen(),
-          "/munro_challenge_complete_screen": (context) => const MunroChallengeCompleteScreen(),
           "/achievement_screen": (context) => const AchievementsScreen(),
         },
         home: const HomeScreen(),

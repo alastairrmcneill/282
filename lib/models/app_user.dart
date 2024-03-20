@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:two_eight_two/models/munro_challenge_model.dart';
 
 class AppUser {
   final String? uid;
@@ -15,7 +14,6 @@ class AppUser {
 
   final List<Map<String, dynamic>>? personalMunroData;
   final Map<String, dynamic>? achievements;
-  final List<MunroChallenge> munroChallenges;
 
   AppUser({
     this.uid,
@@ -29,7 +27,6 @@ class AppUser {
     this.bio,
     this.fcmToken,
     this.personalMunroData = personalMunroDataExample,
-    this.munroChallenges = const [],
     this.achievements,
   });
 
@@ -47,17 +44,12 @@ class AppUser {
       AppUserFields.fcmToken: fcmToken,
       AppUserFields.personalMunroData: personalMunroData,
       AppUserFields.achievements: achievements,
-      AppUserFields.munroChallenges: munroChallenges.map((e) => e.toJSON()).toList(),
     };
   }
 
   static AppUser fromJSON(Map<String, dynamic> json) {
     List<dynamic> personalMunroData = json[AppUserFields.personalMunroData];
     List<Map<String, dynamic>> listPersonalMunroData = List<Map<String, dynamic>>.from(personalMunroData);
-
-    List<dynamic> munroChallenges = json[AppUserFields.munroChallenges];
-    List<MunroChallenge> listMunroChallenges = munroChallenges.map((e) => MunroChallenge.fromJSON(e)).toList();
-
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
       displayName: json[AppUserFields.displayName] as String?,
@@ -70,7 +62,6 @@ class AppUser {
       bio: json[AppUserFields.bio] as String?,
       fcmToken: json[AppUserFields.fcmToken] as String?,
       personalMunroData: listPersonalMunroData,
-      munroChallenges: listMunroChallenges,
       achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
     );
   }
@@ -87,7 +78,6 @@ class AppUser {
     String? bio,
     String? fcmToken,
     List<Map<String, dynamic>>? personalMunroData,
-    List<MunroChallenge>? munroChallenges,
     Map<String, dynamic>? achievements,
   }) {
     return AppUser(
@@ -102,7 +92,6 @@ class AppUser {
       bio: bio ?? this.bio,
       fcmToken: fcmToken ?? this.fcmToken,
       personalMunroData: personalMunroData ?? this.personalMunroData,
-      munroChallenges: munroChallenges ?? this.munroChallenges,
       achievements: achievements ?? this.achievements,
     );
   }
@@ -122,10 +111,9 @@ class AppUser {
       ${AppUserFields.firstName}: $firstName,
       ${AppUserFields.lastName}: $lastName,
       ${AppUserFields.profilePictureURL}: $profilePictureURL,
-      ${AppUserFields.followingCount}: $followersCount,
-      ${AppUserFields.followersCount}: $followersCount,
+      ${AppUserFields.followingCount}: $followersCount, 
+      ${AppUserFields.followersCount}: $followersCount, 
       ${AppUserFields.personalMunroData}: $personalMunroData, 
-      ${AppUserFields.munroChallenges}: $munroChallenges,
       ${AppUserFields.achievements}: $achievements,
       ${AppUserFields.bio}: $bio,
       ${AppUserFields.fcmToken}:$fcmToken
