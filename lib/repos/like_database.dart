@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/services/log_service.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class LikeDatabase {
@@ -19,7 +20,8 @@ class LikeDatabase {
       Like newLike = like.copyWith(uid: ref.id);
 
       await ref.set(newLike.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating the like.");
     }
   }
@@ -37,7 +39,8 @@ class LikeDatabase {
           .get();
 
       await querySnapshot.docs[0].reference.delete();
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting the like.");
     }
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsDatabase {
@@ -15,7 +16,8 @@ class CommentsDatabase {
       Comment newComment = comment.copyWith(uid: ref.id);
 
       await ref.set(newComment.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your comment.");
     }
   }
@@ -26,7 +28,8 @@ class CommentsDatabase {
       DocumentReference ref = _commentsRef.doc(comment.postId).collection('postComments').doc(comment.uid);
 
       await ref.update(comment.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your comment.");
     }
   }
@@ -46,7 +49,8 @@ class CommentsDatabase {
       Comment comment = Comment.fromJSON(data);
 
       return comment;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
       return null;
     }
@@ -65,7 +69,8 @@ class CommentsDatabase {
       }
 
       return comments;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
       return comments;
     }
@@ -116,7 +121,8 @@ class CommentsDatabase {
       DocumentReference ref = _commentsRef.doc(comment.postId).collection('postComments').doc(comment.uid!);
 
       await ref.delete();
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your comment");
     }
   }

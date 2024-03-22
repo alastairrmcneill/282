@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class Post {
   final String? uid;

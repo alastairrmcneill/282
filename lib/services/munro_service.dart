@@ -38,7 +38,8 @@ class MunroService {
 
       // Load munro additional munro data
       loadAdditionalMunroData(context);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       munroState.setError = Error(
         code: error.toString(),
         message: "There was an issue loading you munro data",

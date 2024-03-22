@@ -57,7 +57,8 @@ class AuthService {
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
     }
@@ -89,7 +90,8 @@ class AuthService {
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
     }
@@ -104,7 +106,8 @@ class AuthService {
       await _auth.sendPasswordResetEmail(email: email);
       stopCircularProgressOverlay(context);
       showSnackBar(context, 'Sent password reset email.');
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
     }
@@ -129,7 +132,8 @@ class AuthService {
       await resetAppData(context);
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, "/home_screen");
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
     }
@@ -186,9 +190,11 @@ class AuthService {
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.code);
-    } on SignInWithAppleAuthorizationException catch (error) {
+    } on SignInWithAppleAuthorizationException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message);
     }
   }
@@ -224,7 +230,8 @@ class AuthService {
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.code);
     }
   }
@@ -256,7 +263,8 @@ class AuthService {
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, "/home_screen");
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
     }
   }

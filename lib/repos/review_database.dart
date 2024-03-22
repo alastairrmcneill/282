@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewDatabase {
@@ -15,7 +16,8 @@ class ReviewDatabase {
       Review newReview = review.copyWith(uid: ref.id);
 
       await ref.set(newReview.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your review.");
     }
   }
@@ -26,7 +28,8 @@ class ReviewDatabase {
       DocumentReference ref = _reviewsRef.doc(review.uid);
 
       await ref.update(review.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your review.");
     }
   }
@@ -42,7 +45,8 @@ class ReviewDatabase {
       Review review = Review.fromJSON(data);
 
       return review;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your review.");
       return null;
     }
@@ -84,7 +88,8 @@ class ReviewDatabase {
         reviews.add(review);
       }
       return reviews;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your reviews.");
       return [];
     }
@@ -126,7 +131,8 @@ class ReviewDatabase {
         reviews.add(review);
       }
       return reviews;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your reviews.");
       return [];
     }
@@ -138,7 +144,8 @@ class ReviewDatabase {
       DocumentReference ref = _reviewsRef.doc(uid);
 
       await ref.delete();
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your review.");
     }
   }

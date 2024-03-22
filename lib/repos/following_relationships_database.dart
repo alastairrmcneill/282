@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FollowingRelationshipsDatabase {
@@ -33,7 +34,8 @@ class FollowingRelationshipsDatabase {
       FollowingRelationship newFollowingRelationship = followingRelationship.copyWith(uid: ref.id);
 
       await ref.set(newFollowingRelationship.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating the relationship.");
     }
   }
@@ -47,7 +49,8 @@ class FollowingRelationshipsDatabase {
           .get();
 
       await querySnapshot.docs[0].reference.delete();
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting the relationship.");
     }
   }

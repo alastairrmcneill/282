@@ -69,7 +69,8 @@ class PostService {
 
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       print("Error: $error");
       createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
     }
@@ -104,7 +105,8 @@ class PostService {
 
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       createPostState.setError = Error(message: "There was an issue uploading your post. Please try again");
     }
   }
@@ -125,7 +127,8 @@ class PostService {
       LikeService.getLikedPostIds(context, posts: posts);
 
       return posts;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       feedState.setError = Error(message: "There was an retreiving your posts. Please try again.");
     }
   }
@@ -156,7 +159,8 @@ class PostService {
       profileState.addPosts = newPosts;
 
       profileState.setStatus = ProfileStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue loading your posts. Please try again.");
     }
   }
@@ -184,7 +188,8 @@ class PostService {
 
       feedState.setPosts = posts;
       feedState.setStatus = FeedStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       feedState.setError = Error(
         code: error.toString(),
         message: "There was an retreiving your posts. Please try again.",
@@ -217,7 +222,8 @@ class PostService {
 
       feedState.addPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       feedState.setError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }
@@ -246,7 +252,8 @@ class PostService {
 
       munroDetailState.setGalleryPosts = posts;
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       munroDetailState.setError =
           Error(message: "There was an issue loading pictures for this munro. Please try again.");
     }
@@ -273,7 +280,8 @@ class PostService {
 
       munroDetailState.addGalleryPosts = newPosts;
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       munroDetailState.setError =
           Error(message: "There was an issue loading pictures for this munro. Please try again.");
     }

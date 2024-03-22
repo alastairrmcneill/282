@@ -39,7 +39,8 @@ class FollowingService {
       profileState.setUser = tempUser;
       profileState.setIsFollowing = true;
       stopCircularProgressOverlay(context);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue following this user. Please try again.");
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: "There was an issue following this user. Please try again.");
@@ -72,7 +73,8 @@ class FollowingService {
       profileState.setIsFollowing = false;
 
       stopCircularProgressOverlay(context);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue unfollowing this user. Please try again.");
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: "There was an issue unfollowing this user. Please try again.");
@@ -96,7 +98,8 @@ class FollowingService {
       );
 
       followersState.setStatus = FollowersStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       followersState.setError = Error(message: "There was an issue. Please try again.");
     }
   }
@@ -119,7 +122,8 @@ class FollowingService {
         lastFollowingRelationshipID: lastFollowingRelationshipID,
       );
       followersState.setStatus = FollowersStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       followersState.setError = Error(message: "There was an issue. Please try again.");
     }
   }
@@ -142,7 +146,8 @@ class FollowingService {
         lastFollowingRelationshipID: lastFollowingRelationshipID,
       );
       followersState.setStatus = FollowersStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       followersState.setError = Error(message: "There was an issue. Please try again.");
     }
   }

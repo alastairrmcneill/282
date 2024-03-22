@@ -15,7 +15,8 @@ class SearchService {
       userSearchState.setUsers = await UserDatabase.searchUsers(context, query: query.toLowerCase(), lastUserId: null);
 
       userSearchState.setStatus = SearchStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       userSearchState.setError = Error(message: "There was an issue with the search. Please try again.");
     }
   }
@@ -35,7 +36,8 @@ class SearchService {
       // Add posts from database
       userSearchState.addUsers = await UserDatabase.searchUsers(context, query: query, lastUserId: lastUserId);
       userSearchState.setStatus = SearchStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       userSearchState.setError = Error(message: "There was an issue loading more. Please try again.");
     }
   }

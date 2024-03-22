@@ -32,10 +32,10 @@ class ProfileState extends ChangeNotifier {
   }
 
   void navigateBack() {
-    if (_profileHistory.isNotEmpty) {
+    if (_profileHistory.isNotEmpty && _postsHisotry.isNotEmpty) {
       _profileHistory.removeAt(0);
       _postsHisotry.removeAt(0);
-      if (_profileHistory.isNotEmpty) {
+      if (_profileHistory.isNotEmpty && _postsHisotry.isNotEmpty) {
         _user = _profileHistory[0];
         _posts = _postsHisotry[0];
       } else {

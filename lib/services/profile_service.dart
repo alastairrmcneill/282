@@ -34,7 +34,8 @@ class ProfileService {
 
       // Set loading status?
       profileState.setStatus = ProfileStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       profileState.setError = Error(
         code: error.toString(),
         message: "There was an issue. Please try again.",
@@ -55,7 +56,8 @@ class ProfileService {
       );
 
       return querySnapshot.docs.isNotEmpty;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       return false;
     }
   }
@@ -84,7 +86,8 @@ class ProfileService {
       profileState.setUser = await UserDatabase.readUserFromUid(context, uid: appUser.uid!);
       stopCircularProgressOverlay(context);
       Navigator.pop(context);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: "There was an issue updating your account");
     }

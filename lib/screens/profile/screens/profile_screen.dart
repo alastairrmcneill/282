@@ -153,7 +153,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                               final token = await FirebaseMessaging.instance.getToken();
                                               print(token);
-                                            } catch (error) {
+                                            } catch (error, stackTrace) {
+                                              Log.error("Error: $error", stackTrace: stackTrace);
                                               print(error);
                                             }
                                           },
@@ -185,7 +186,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                               final token = await FirebaseMessaging.instance.getToken();
                                               print(token);
-                                            } catch (error) {
+                                            } catch (error, stackTrace) {
+                                              Log.error("Error: $error", stackTrace: stackTrace);
                                               print(error);
                                             }
                                           },

@@ -22,7 +22,8 @@ class UserDatabase {
       if (!userDocSnapshot.exists) {
         await userDocRef.set(appUser.toJSON());
       }
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your account.");
     }
   }
@@ -51,7 +52,8 @@ class UserDatabase {
 
       userState.setCurrentUser = appUser;
       // userState.setStatus = UserStatus.loaded;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       // userState.setError = Error(code: error.toString(), message: "There was an error fetching your account.");
       showErrorDialog(context, message: error.message ?? "There was an error fetching your account");
     }
@@ -63,7 +65,8 @@ class UserDatabase {
       DocumentReference ref = _userRef.doc(appUser.uid);
 
       await ref.update(appUser.toJSON());
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your account.");
     }
   }
@@ -74,7 +77,8 @@ class UserDatabase {
       DocumentReference ref = _userRef.doc(uid);
 
       await ref.delete();
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
     }
   }
@@ -89,7 +93,8 @@ class UserDatabase {
       AppUser appUser = AppUser.fromJSON(data);
 
       return appUser;
-    } on FirebaseException catch (error) {
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
       return null;
     }

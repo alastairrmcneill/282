@@ -24,7 +24,8 @@ class NotificationsService {
 
       // Update status
       notificationsState.setStatus = NotificationsStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       notificationsState.setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your notifications. Please try again.",
@@ -53,7 +54,8 @@ class NotificationsService {
       );
 
       notificationsState.setStatus = NotificationsStatus.loaded;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      Log.error("Error: $error", stackTrace: stackTrace);
       notificationsState.setError = Error(
         code: error.toString(),
         message: "There was an issue loading you notifications. Please try again.",
