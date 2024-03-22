@@ -138,7 +138,7 @@ class PostsDatabase {
       querySnapshot = await _feedsRef
           .doc(userId)
           .collection('userFeed')
-          .orderBy(PostFields.dateTime, descending: false)
+          .orderBy(PostFields.dateTime, descending: true)
           .limit(10)
           .get();
     } else {
