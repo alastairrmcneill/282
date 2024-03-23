@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -9,5 +10,15 @@ main() async {
   await PushNotificationService.initPushNotificaitons();
 
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
-  runApp(App(flavor: "Development"));
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://bfa467006bce072639aca5c3a7474f3c@o4506950554353664.ingest.us.sentry.io/4506950555664384';
+      options.tracesSampleRate = 1.0;
+      options.environment = "Dev";
+      options.attachScreenshot = true;
+      options.enableNativeCrashHandling = true;
+    },
+    appRunner: () => runApp(App(flavor: "Development")),
+  );
 }

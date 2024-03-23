@@ -51,7 +51,7 @@ class NotificationsDatabase {
 
       await ref.update(notification.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error marking your notificaiton as done.");
     }
   }

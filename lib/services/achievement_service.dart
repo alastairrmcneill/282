@@ -29,7 +29,7 @@ class AchievementService {
       // Set status
       achievementsState.setStatus = AchievementsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       achievementsState.setError = Error(
         code: error.toString(),
         message: "There was an issue loading you achievement data",
@@ -48,7 +48,7 @@ class AchievementService {
         await UserDatabase.update(context, appUser: userState.currentUser!);
       }
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error updating your achievement. Please try again.");
     }
   }
@@ -77,7 +77,7 @@ class AchievementService {
       // Set status
       achievementsState.setStatus = AchievementsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       achievementsState.setError = Error(
         code: error.toString(),
         message: "There was an issue setting you munro challenge.",

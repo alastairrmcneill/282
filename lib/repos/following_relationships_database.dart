@@ -35,7 +35,7 @@ class FollowingRelationshipsDatabase {
 
       await ref.set(newFollowingRelationship.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating the relationship.");
     }
   }
@@ -50,7 +50,7 @@ class FollowingRelationshipsDatabase {
 
       await querySnapshot.docs[0].reference.delete();
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting the relationship.");
     }
   }

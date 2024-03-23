@@ -17,7 +17,7 @@ class CommentsDatabase {
 
       await ref.set(newComment.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your comment.");
     }
   }
@@ -29,7 +29,7 @@ class CommentsDatabase {
 
       await ref.update(comment.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your comment.");
     }
   }
@@ -50,7 +50,7 @@ class CommentsDatabase {
 
       return comment;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
       return null;
     }
@@ -70,7 +70,7 @@ class CommentsDatabase {
 
       return comments;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
       return comments;
     }
@@ -122,7 +122,7 @@ class CommentsDatabase {
 
       await ref.delete();
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your comment");
     }
   }

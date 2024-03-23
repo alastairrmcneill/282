@@ -21,7 +21,7 @@ class LikeDatabase {
 
       await ref.set(newLike.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating the like.");
     }
   }
@@ -40,7 +40,7 @@ class LikeDatabase {
 
       await querySnapshot.docs[0].reference.delete();
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting the like.");
     }
   }

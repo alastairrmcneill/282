@@ -18,7 +18,7 @@ class PostsDatabase {
 
       await ref.set(newPost.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your post.");
     }
   }
@@ -30,7 +30,7 @@ class PostsDatabase {
 
       await ref.update(post.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your post.");
     }
   }
@@ -47,7 +47,7 @@ class PostsDatabase {
 
       return post;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your post.");
       return null;
     }
@@ -67,7 +67,7 @@ class PostsDatabase {
 
       return posts;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your post.");
       return posts;
     }
@@ -108,7 +108,7 @@ class PostsDatabase {
 
       return posts;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       return [];
     }
   }
@@ -120,7 +120,7 @@ class PostsDatabase {
 
       await ref.delete();
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your post");
     }
   }

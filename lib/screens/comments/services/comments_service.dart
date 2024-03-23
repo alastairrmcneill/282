@@ -35,7 +35,7 @@ class CommentsService {
       commentsState.setCommentText = null;
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       commentsState.setError = Error(message: "There was an issue posting your comment. Please try again");
     }
   }
@@ -60,7 +60,7 @@ class CommentsService {
       // Update status
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       commentsState.setError =
           Error(code: error.toString(), message: "There was an issue retreiving the comments. Please try again.");
     }
@@ -87,7 +87,7 @@ class CommentsService {
 
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       commentsState.setError = Error(message: "There was an issue loading the comments. Please try again.");
     }
   }

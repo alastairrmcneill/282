@@ -17,7 +17,7 @@ class ReviewDatabase {
 
       await ref.set(newReview.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your review.");
     }
   }
@@ -29,7 +29,7 @@ class ReviewDatabase {
 
       await ref.update(review.toJSON());
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your review.");
     }
   }
@@ -46,7 +46,7 @@ class ReviewDatabase {
 
       return review;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your review.");
       return null;
     }
@@ -89,7 +89,7 @@ class ReviewDatabase {
       }
       return reviews;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your reviews.");
       return [];
     }
@@ -132,7 +132,7 @@ class ReviewDatabase {
       }
       return reviews;
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your reviews.");
       return [];
     }
@@ -145,7 +145,7 @@ class ReviewDatabase {
 
       await ref.delete();
     } on FirebaseException catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your review.");
     }
   }

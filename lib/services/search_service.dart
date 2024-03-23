@@ -17,7 +17,7 @@ class SearchService {
 
       userSearchState.setStatus = SearchStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       userSearchState.setError = Error(message: "There was an issue with the search. Please try again.");
     }
   }
@@ -38,7 +38,7 @@ class SearchService {
       userSearchState.addUsers = await UserDatabase.searchUsers(context, query: query, lastUserId: lastUserId);
       userSearchState.setStatus = SearchStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       userSearchState.setError = Error(message: "There was an issue loading more. Please try again.");
     }
   }

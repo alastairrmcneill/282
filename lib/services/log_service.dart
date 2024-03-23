@@ -1,17 +1,28 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class Log {
-  static void info(String message) {
-    print("INFO: $message");
-  }
-
   static void error(String message, {StackTrace? stackTrace}) {
-    print("ERROR: $message");
-    print("Stack Trace: $stackTrace");
+    if (kDebugMode) {
+      print("ERROR: $message");
+      print("Stack Trace: $stackTrace");
+    } else {
+      Sentry.captureException(
+        Exception(message),
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   static void fatal(FlutterErrorDetails details) {
-    print("FATAL: ${details.exception}");
-    print(details.stack);
+    if (kDebugMode) {
+      print("FATAL: ${details.exception}");
+      print(details.stack);
+    } else {
+      Sentry.captureException(
+        details.exception,
+        stackTrace: details.stack,
+      );
+    }
   }
 }

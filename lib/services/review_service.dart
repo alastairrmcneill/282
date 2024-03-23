@@ -35,7 +35,7 @@ class ReviewService {
       MunroService.loadAdditionalMunroData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       createReviewState.setError = Error(
         message: "There was an issue posting your review. Please try again",
         code: error.toString(),
@@ -65,7 +65,7 @@ class ReviewService {
       MunroService.loadAdditionalMunroData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       createReviewState.setError = Error(
         message: "There was an issue editing your review. Please try again",
         code: error.toString(),
@@ -89,7 +89,7 @@ class ReviewService {
       reviewsState.setReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       reviewsState.setError = Error(
         message: "There was an issue getting your reviews. Please try again",
         code: error.toString(),
@@ -114,7 +114,7 @@ class ReviewService {
       reviewsState.addReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       reviewsState.setError = Error(
         message: "There was an issue getting your reviews. Please try again",
         code: error.toString(),
@@ -139,7 +139,7 @@ class ReviewService {
       reviewsState.setReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       reviewsState.setError = Error(
         message: "There was an issue getting reviews for this munro. Please try again",
         code: error.toString(),
@@ -164,7 +164,7 @@ class ReviewService {
       reviewsState.addReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       reviewsState.setError = Error(
         message: "There was an issue getting reviews for this munro. Please try again",
         code: error.toString(),
@@ -185,7 +185,7 @@ class ReviewService {
       reviewsState.removeReview(review);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error("Error: $error", stackTrace: stackTrace);
+      Log.error(error.toString(), stackTrace: stackTrace);
       createReviewState.setError = Error(
         message: "There was an issue deleting your review. Please try again",
         code: error.toString(),
