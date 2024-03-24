@@ -3,6 +3,7 @@ import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/create_review/widgets/widgets.dart";
 import "package:two_eight_two/screens/notifiers.dart";
+import "package:two_eight_two/screens/screens.dart";
 import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
@@ -24,7 +25,7 @@ class CreateReviewPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushNamedAndRemoveUntil(
                         context,
-                        "/home_screen", // The name of the route you want to navigate to
+                        HomeScreen.route, // The name of the route you want to navigate to
                         (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                       );
                     },
@@ -47,14 +48,14 @@ class CreateReviewPage extends StatelessWidget {
                 if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    "/achievement_screen", // The name of the route you want to navigate to
+                    AchievementsScreen.route, // The name of the route you want to navigate to
                     (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                   );
                 } else {
                   // Navigate back to where you were when it was called?
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    "/home_screen", // The name of the route you want to navigate to
+                    HomeScreen.route, // The name of the route you want to navigate to
                     (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                   );
                 }
@@ -106,14 +107,14 @@ class CreateReviewPage extends StatelessWidget {
                 if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    "/achievement_screen", // The name of the route you want to navigate to
+                    AchievementsScreen.route, // The name of the route you want to navigate to
                     (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                   );
                 } else {
                   // Navigate back to where you were when it was called?
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    "/home_screen", // The name of the route you want to navigate to
+                    HomeScreen.route, // The name of the route you want to navigate to
                     (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                   );
                 }

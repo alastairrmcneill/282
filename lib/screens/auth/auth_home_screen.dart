@@ -6,6 +6,8 @@ import 'package:two_eight_two/screens/auth/screens/screens.dart';
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
 
+  static String route = '/auth_home_screen';
+
   @override
   State<AuthHomeScreen> createState() => _AuthHomeScreenState();
 }

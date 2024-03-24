@@ -25,13 +25,13 @@ class MunroSummitedButton extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 if (userState.currentUser == null) {
-                  navigationState.setNavigateToRoute = "/home_screen";
+                  navigationState.setNavigateToRoute = HomeScreen.route;
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                 } else {
                   createPostState.reset();
                   if (munroState.selectedMunro != null) {
                     createPostState.addMunro(munroState.selectedMunro!);
-                    navigationState.setNavigateToRoute = "/home_screen";
+                    navigationState.setNavigateToRoute = HomeScreen.route;
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => CreatePostScreen(),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/achievements/state/achievements_state.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
+
+  static const String route = "/achievements_screen";
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class AchievementsScreen extends StatelessWidget {
 
           Navigator.pushNamedAndRemoveUntil(
             context,
-            "/home_screen", // The name of the route you want to navigate to
+            HomeScreen.route, // The name of the route you want to navigate to
             (Route<dynamic> route) => false, // This predicate ensures all routes are removed
           );
         }
@@ -33,7 +36,7 @@ class AchievementsScreen extends StatelessWidget {
 
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  "/home_screen", // The name of the route you want to navigate to
+                  HomeScreen.route, // The name of the route you want to navigate to
                   (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                 );
               },

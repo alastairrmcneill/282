@@ -124,8 +124,8 @@ class MunroSummaryTile extends StatelessWidget {
                       child: InkWell(
                         onTap: () async {
                           if (user == null) {
-                            navigationState.setNavigateToRoute = "/home_screen";
-                            Navigator.pushNamed(context, "/auth_home_screen");
+                            navigationState.setNavigateToRoute = HomeScreen.route;
+                            Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             await MunroService.toggleMunroSaved(context, munro: munro);
                           }
@@ -138,14 +138,14 @@ class MunroSummaryTile extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           if (user == null) {
-                            navigationState.setNavigateToRoute = "/home_screen";
-                            Navigator.pushNamed(context, "/auth_home_screen");
+                            navigationState.setNavigateToRoute = HomeScreen.route;
+                            Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             if (munro.summited) return;
                             munroState.setSelectedMunro = munro;
                             createPostState.reset();
                             createPostState.addMunro(munro);
-                            navigationState.setNavigateToRoute = "/home_screen";
+                            navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.push(
                               context,
                               MaterialPageRoute(

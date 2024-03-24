@@ -9,6 +9,8 @@ import 'package:two_eight_two/widgets/stat_text.dart';
 class MunroScreen extends StatefulWidget {
   const MunroScreen({super.key});
 
+  static const String route = "/munro_screen";
+
   @override
   State<MunroScreen> createState() => _MunroScreenState();
 }

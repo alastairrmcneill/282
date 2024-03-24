@@ -24,7 +24,7 @@ class FollowingButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () async {
         if (loggedInUser == null) {
-          navigationState.setNavigateToRoute = "/feed_tab";
+          navigationState.setNavigateToRoute = HomeScreen.feedTabRoute;
           Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
         } else {
           if (isFollowing) {

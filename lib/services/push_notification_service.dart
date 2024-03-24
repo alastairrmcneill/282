@@ -44,7 +44,7 @@ class PushNotificationService {
   static Future<void> handleBackgroundNotificaiton(RemoteMessage? message) async {
     if (message == null) return;
 
-    navigatorKey.currentState?.pushReplacementNamed("/feed_tab");
+    navigatorKey.currentState?.pushReplacementNamed(HomeScreen.feedTabRoute);
     PostService.getFeed(navigatorKey.currentContext!);
     NotificationsService.getUserNotifications(navigatorKey.currentContext!);
     navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const NotificationsScreen()));

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -131,7 +132,7 @@ class AuthService {
 
       await resetAppData(context);
       // Navigate to the right place
-      Navigator.pushReplacementNamed(context, "/home_screen");
+      Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
@@ -262,7 +263,7 @@ class AuthService {
       await _auth.currentUser?.delete();
 
       // Navigate to the right place
-      Navigator.pushReplacementNamed(context, "/home_screen");
+      Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
@@ -293,21 +294,21 @@ class AuthService {
   static Future _afterSignInNavigation(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     switch (navigationState.navigateToRoute) {
-      case "/home_screen":
+      case HomeScreen.route:
         MunroService.loadPersonalMunroData(context);
         break;
-      case "/feed_tab":
+      case HomeScreen.feedTabRoute:
         PostService.getFeed(context);
         NotificationsService.getUserNotifications(context);
         break;
-      case "/saved_tab":
+      case HomeScreen.savedTabRoute:
         MunroService.loadPersonalMunroData(context);
         break;
-      case "/profile_tab":
+      case HomeScreen.profileTabRoute:
         await UserDatabase.readCurrentUser(context);
         ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
         break;
-      case "/munro_screen":
+      case MunroScreen.route:
         break;
       default:
     }

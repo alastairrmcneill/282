@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/achievements/achievements_screen.dart';
+import 'package:two_eight_two/screens/auth/auth_home_screen.dart';
+import 'package:two_eight_two/screens/nav/home_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -81,14 +84,14 @@ class App extends StatelessWidget {
         theme: MyTheme.lightTheme,
         navigatorKey: navigatorKey,
         routes: {
-          "/home_screen": (context) => const HomeScreen(startingIndex: 0),
-          "/feed_tab": (context) => const HomeScreen(startingIndex: 1),
+          HomeScreen.route: (context) => const HomeScreen(startingIndex: 0),
+          HomeScreen.feedTabRoute: (context) => const HomeScreen(startingIndex: 1),
           // "/record_tab": (context) => const HomeScreen(startingIndex: 2),
-          "/saved_tab": (context) => const HomeScreen(startingIndex: 2),
-          "/profile_tab": (context) => const HomeScreen(startingIndex: 3),
-          "/auth_home_screen": (context) => const AuthHomeScreen(),
-          "/munro_screen": (context) => const MunroScreen(),
-          "/achievement_screen": (context) => const AchievementsScreen(),
+          HomeScreen.savedTabRoute: (context) => const HomeScreen(startingIndex: 2),
+          HomeScreen.profileTabRoute: (context) => const HomeScreen(startingIndex: 3),
+          AuthHomeScreen.route: (context) => const AuthHomeScreen(),
+          MunroScreen.route: (context) => const MunroScreen(),
+          AchievementsScreen.route: (context) => const AchievementsScreen(),
         },
         home: const HomeScreen(),
       ),

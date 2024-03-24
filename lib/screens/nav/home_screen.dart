@@ -11,6 +11,11 @@ class HomeScreen extends StatefulWidget {
   final int? startingIndex;
   const HomeScreen({super.key, this.startingIndex = 0});
 
+  static const String route = '/home_screen';
+  static const String feedTabRoute = '/feed_tab';
+  static const String savedTabRoute = '/saved_tab';
+  static const String profileTabRoute = '/profile_tab';
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -64,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 if (value == 1) {
                   if (user == null) {
-                    navigationState.setNavigateToRoute = "/feed_tab";
+                    navigationState.setNavigateToRoute = HomeScreen.feedTabRoute;
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                   } else {
                     // Navigate to feed
@@ -75,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 if (value == 2) {
                   if (user == null) {
-                    navigationState.setNavigateToRoute = "/saved_tab";
+                    navigationState.setNavigateToRoute = HomeScreen.savedTabRoute;
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                   } else {
                     // Navigate to saved
@@ -85,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 if (value == 3) {
                   if (user == null) {
-                    navigationState.setNavigateToRoute = "/profile_tab";
+                    navigationState.setNavigateToRoute = HomeScreen.profileTabRoute;
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
                   } else {
                     // Navigate to saved
