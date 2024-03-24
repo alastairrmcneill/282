@@ -49,7 +49,7 @@ class AuthService {
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
       );
-      await UserDatabase.create(context, appUser: appUser);
+      await UserService.createUser(context, appUser: appUser);
 
       stopCircularProgressOverlay(context);
 
@@ -80,7 +80,7 @@ class AuthService {
       if (_auth.currentUser == null) return;
 
       // Fetch database detail
-      await UserDatabase.readCurrentUser(context);
+      await UserService.readCurrentUser(context);
 
       // Save to a provider
 
@@ -127,7 +127,7 @@ class AuthService {
       AppUser? appUser = userState.currentUser;
       if (appUser != null) {
         AppUser newAppUser = appUser.copyWith(fcmToken: null);
-        UserDatabase.update(context, appUser: newAppUser);
+        UserService.updateUser(context, appUser: newAppUser);
       }
 
       await resetAppData(context);
@@ -184,7 +184,7 @@ class AuthService {
         displayName: _auth.currentUser!.displayName,
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
       );
-      await UserDatabase.create(context, appUser: appUser);
+      await UserService.createUser(context, appUser: appUser);
 
       // Navigate to the right place
       await _afterSignInNavigation(context);
@@ -224,7 +224,7 @@ class AuthService {
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
         profilePictureURL: _auth.currentUser!.photoURL,
       );
-      await UserDatabase.create(context, appUser: appUser);
+      await UserService.createUser(context, appUser: appUser);
 
       // Navigate to the right place
       await _afterSignInNavigation(context);
@@ -305,7 +305,7 @@ class AuthService {
         MunroService.loadPersonalMunroData(context);
         break;
       case HomeScreen.profileTabRoute:
-        await UserDatabase.readCurrentUser(context);
+        await UserService.readCurrentUser(context);
         ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
         break;
       case MunroScreen.route:

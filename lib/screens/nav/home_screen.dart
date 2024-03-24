@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future _loadData() async {
-    await UserDatabase.readCurrentUser(context).whenComplete(() => setState(() => loading = false));
+    await UserService.readCurrentUser(context).whenComplete(() => setState(() => loading = false));
     MunroService.loadMunroData(context);
     AchievementService.getUserAchievements(context);
   }

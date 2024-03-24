@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -25,37 +24,6 @@ class UserDatabase {
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your account.");
-    }
-  }
-
-  // Read current user
-  static Future readCurrentUser(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false); // userState.setStatus = UserStatus.loading;
-    try {
-      String? uid = AuthService.currentUserId;
-      if (uid == null) {
-        // userState.setStatus = UserStatus.loaded;
-        return;
-      }
-
-      DocumentReference ref = _userRef.doc(uid);
-      DocumentSnapshot documentSnapshot = await ref.get();
-
-      if (!documentSnapshot.exists) {
-        // userState.setStatus = UserStatus.loaded;
-        return;
-      }
-
-      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
-
-      AppUser appUser = AppUser.fromJSON(data);
-
-      userState.setCurrentUser = appUser;
-      // userState.setStatus = UserStatus.loaded;
-    } on FirebaseException catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      // userState.setError = Error(code: error.toString(), message: "There was an error fetching your account.");
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your account");
     }
   }
 
@@ -83,6 +51,7 @@ class UserDatabase {
     }
   }
 
+  // Read single user
   static Future<AppUser?> readUserFromUid(BuildContext context, {required String uid}) async {
     try {
       DocumentReference ref = _userRef.doc(uid);
@@ -100,9 +69,10 @@ class UserDatabase {
     }
   }
 
-  static Future<List<AppUser>> searchUsers(
+  // Read multiple users
+  static Future<List<AppUser>> readUsersByName(
     BuildContext context, {
-    required String query,
+    required String searchTerm,
     required String? lastUserId,
   }) async {
     List<AppUser> searchResult = [];
@@ -114,8 +84,8 @@ class UserDatabase {
       userSnap = await _db
           .collection('users')
           .orderBy(AppUserFields.searchName, descending: false)
-          .startAt([query])
-          .endAt(["$query\uf8ff"])
+          .startAt([searchTerm])
+          .endAt(["$searchTerm\uf8ff"])
           .limit(20)
           .get();
     } else {
@@ -127,7 +97,7 @@ class UserDatabase {
           .collection('users')
           .orderBy(AppUserFields.searchName, descending: false)
           .startAfterDocument(lastUserDoc)
-          .endAt(["$query\uf8ff"])
+          .endAt(["$searchTerm\uf8ff"])
           .limit(20)
           .get();
     }

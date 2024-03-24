@@ -97,7 +97,7 @@ class MunroService {
       );
     }
 
-    UserDatabase.update(context, appUser: newAppUser);
+    UserService.updateUser(context, appUser: newAppUser);
   }
 
   static Future<void> toggleMunroSaved(
@@ -115,7 +115,7 @@ class MunroService {
     newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved] =
         !newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved];
 
-    UserDatabase.update(context, appUser: newAppUser);
+    UserService.updateUser(context, appUser: newAppUser);
 
     // Update munro notifier
     munroState.updateMunro(

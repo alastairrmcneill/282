@@ -45,7 +45,7 @@ class AchievementService {
       if (userState.currentUser != null) {
         userState.currentUser!.achievements![achievement.uid] = achievement.toJSON();
 
-        await UserDatabase.update(context, appUser: userState.currentUser!);
+        await UserService.updateUser(context, appUser: userState.currentUser!);
       }
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

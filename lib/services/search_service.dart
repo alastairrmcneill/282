@@ -13,7 +13,11 @@ class SearchService {
       userSearchState.setStatus = SearchStatus.loading;
 
       // Search
-      userSearchState.setUsers = await UserDatabase.searchUsers(context, query: query.toLowerCase(), lastUserId: null);
+      userSearchState.setUsers = await UserService.searchUsers(
+        context,
+        searchTerm: query.toLowerCase(),
+        lastUserId: null,
+      );
 
       userSearchState.setStatus = SearchStatus.loaded;
     } catch (error, stackTrace) {
@@ -35,7 +39,11 @@ class SearchService {
       }
 
       // Add posts from database
-      userSearchState.addUsers = await UserDatabase.searchUsers(context, query: query, lastUserId: lastUserId);
+      userSearchState.addUsers = await UserService.searchUsers(
+        context,
+        searchTerm: query.toLowerCase(),
+        lastUserId: lastUserId,
+      );
       userSearchState.setStatus = SearchStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

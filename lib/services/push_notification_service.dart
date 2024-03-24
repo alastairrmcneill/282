@@ -26,7 +26,7 @@ class PushNotificationService {
         AppUser appUser = userState.currentUser!;
         AppUser newAppUser = appUser.copyWith(fcmToken: token);
 
-        UserDatabase.update(context, appUser: newAppUser);
+        UserService.updateUser(context, appUser: newAppUser);
       }
     }
 
@@ -60,7 +60,7 @@ class PushNotificationService {
       if (userState.currentUser != null) {
         AppUser appUser = userState.currentUser!;
         AppUser newAppUser = appUser.copyWith(fcmToken: token);
-        UserDatabase.update(context, appUser: newAppUser);
+        UserService.updateUser(context, appUser: newAppUser);
       }
     }
   }
@@ -72,7 +72,7 @@ class PushNotificationService {
       AppUser appUser = userState.currentUser!;
       if (appUser.fcmToken != null) {
         AppUser newAppUser = appUser.copyWith(fcmToken: "");
-        UserDatabase.update(context, appUser: newAppUser);
+        UserService.updateUser(context, appUser: newAppUser);
       }
     }
   }

@@ -80,7 +80,7 @@ class ProfileService {
       await AuthService.updateAuthUser(context, appUser: appUser);
 
       // Update user database
-      await UserDatabase.update(context, appUser: appUser);
+      await UserService.updateUser(context, appUser: appUser);
 
       // Update profile
       profileState.setUser = await UserDatabase.readUserFromUid(context, uid: appUser.uid!);
