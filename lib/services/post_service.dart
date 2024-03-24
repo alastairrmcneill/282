@@ -78,6 +78,7 @@ class PostService {
 
   static Future editPost(BuildContext context) async {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     try {
       createPostState.setStatus = CreatePostStatus.loading;
 
@@ -104,6 +105,7 @@ class PostService {
       MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
 
       // Update state
+      profileState.updatePost(newPost);
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

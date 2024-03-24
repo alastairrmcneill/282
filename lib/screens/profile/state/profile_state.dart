@@ -80,6 +80,21 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
+  updatePost(Post post) {
+    int index = _posts.indexWhere((element) => element.uid == post.uid);
+    if (index != -1) {
+      _posts[index] = post;
+    }
+
+    for (var i = 0; i < _postsHisotry.length; i++) {
+      int index = _postsHisotry[i].indexWhere((element) => element.uid == post.uid);
+      if (index != -1) {
+        _postsHisotry[i][index] = post;
+      }
+    }
+    notifyListeners();
+  }
+
   set setError(Error error) {
     _status = ProfileStatus.error;
     _error = error;

@@ -87,7 +87,8 @@ class MunroService {
 
     for (Munro munro in munros) {
       newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = true;
-      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDate] = DateTime.now().toUtc();
+      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDate] =
+          Timestamp.fromDate(DateTime.now().toUtc());
       // Update munro notifier
       munroState.updateMunro(
         munroId: munro.id,
