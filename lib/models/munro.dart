@@ -81,7 +81,7 @@ class Munro {
       pictureURL: json[MunroFields.pictureURL] as String,
       summited: (json[MunroFields.summited] as bool),
       summitedDate:
-          json[MunroFields.summitedDate] != null ? DateTime.parse(json[MunroFields.summitedDate] as String) : null,
+          json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating: json[MunroFields.averageRating] as double?,
       reviewCount: json[MunroFields.reviewCount] as int?,
