@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -11,6 +12,7 @@ class MunroFilterListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
+    SettingsState settingsState = Provider.of<SettingsState>(context);
     return GestureDetector(
       onTap: () {
         munroState.setFilterString = "";
@@ -55,7 +57,7 @@ class MunroFilterListTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${munro.meters}m',
+                        settingsState.metricHeight ? '${munro.meters}m' : '${munro.feet}ft',
                         style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w800,

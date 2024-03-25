@@ -25,6 +25,7 @@ class _MunroScreenState extends State<MunroScreen> {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
+    SettingsState settingsState = Provider.of<SettingsState>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -46,7 +47,11 @@ class _MunroScreenState extends State<MunroScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        StatText(text: "Height", stat: "${munroState.selectedMunro?.meters}m"),
+                        StatText(
+                            text: "Height",
+                            stat: settingsState.metricHeight
+                                ? "${munroState.selectedMunro?.meters}m"
+                                : "${munroState.selectedMunro?.feet}ft"),
                         StatText(text: "Area", stat: munroState.selectedMunro?.area ?? ""),
                       ],
                     ),

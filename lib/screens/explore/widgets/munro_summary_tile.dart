@@ -21,6 +21,7 @@ class MunroSummaryTile extends StatelessWidget {
     MunroState munroState = Provider.of<MunroState>(context);
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
+    SettingsState settingsState = Provider.of<SettingsState>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -86,7 +87,9 @@ class MunroSummaryTile extends StatelessWidget {
                               ),
                         const SizedBox(height: 3),
                         Text(
-                          "${munro.meters}m - ${munro.area}",
+                          settingsState.metricHeight
+                              ? "${munro.meters}m - ${munro.area}"
+                              : "${munro.feet}ft - ${munro.area}",
                           style: TextStyle(fontSize: 12),
                         ),
                         Row(
