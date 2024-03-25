@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class MunroSelector extends StatefulWidget {
@@ -18,34 +19,41 @@ class _MunroSelectorState extends State<MunroSelector> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
-            return ListView(
-              children: munroState.munroList.map((Munro munro) {
-                return Column(
+            return Consumer<MunroState>(
+              builder: (context, munroState, child) {
+                return ListView(
                   children: [
-                    ListTile(
-                      title: Text(
-                        munro.name,
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      subtitle: munro.extra == "" ? Text(munro.area) : Text("${munro.extra} - ${munro.area}"),
-                      trailing: createPostState.selectedMunros.contains(munro) ? Icon(Icons.check_rounded) : null,
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      onTap: () {
-                        if (createPostState.selectedMunros.contains(munro)) {
-                          createPostState.removeMunro(munro);
-                        } else {
-                          createPostState.addMunro(munro);
-                        }
-                        setState(() {});
-                        setModalState(() {});
-                        formState.didChange(createPostState.selectedMunros);
-                      },
-                    ),
-                    Divider(),
+                    const CreatePostMunroSearchbar(),
+                    ...munroState.createPostFilteredMunroList.map((Munro munro) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            title: Text(
+                              munro.name,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            subtitle: munro.extra == "" ? Text(munro.area) : Text("${munro.extra} - ${munro.area}"),
+                            trailing: createPostState.selectedMunros.contains(munro) ? Icon(Icons.check_rounded) : null,
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            onTap: () {
+                              if (createPostState.selectedMunros.contains(munro)) {
+                                createPostState.removeMunro(munro);
+                              } else {
+                                createPostState.addMunro(munro);
+                              }
+                              setState(() {});
+                              setModalState(() {});
+                              formState.didChange(createPostState.selectedMunros);
+                            },
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    }),
                   ],
                 );
-              }).toList(),
+              },
             );
           },
         );
@@ -81,7 +89,10 @@ class _MunroSelectorState extends State<MunroSelector> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => _showModalSheet(munroState, createPostState, formState),
+                  onTap: () {
+                    munroState.setCreatePostFilterString = "";
+                    _showModalSheet(munroState, createPostState, formState);
+                  },
                   child: const Icon(
                     Icons.add_rounded,
                   ),

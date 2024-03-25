@@ -8,12 +8,15 @@ class MunroState extends ChangeNotifier {
   Munro? _selectedMunro;
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
+  List<Munro> _createPostFilteredMunroList = [];
+  String _createPostFilterString = '';
 
   MunroStatus get status => _status;
   Error get error => _error;
   List<Munro> get munroList => _munroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
   Munro? get selectedMunro => _selectedMunro;
+  List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
 
   set setStatus(MunroStatus searchStatus) {
     _status = searchStatus;
@@ -58,13 +61,41 @@ class MunroState extends ChangeNotifier {
   _filter() {
     List<Munro> runningList = [];
     if (_filterString != "") {
-      runningList = _munroList
-          .where(
-            (munro) => munro.name.toLowerCase().contains(_filterString.toLowerCase()),
-          )
-          .toList();
+      runningList = _munroList.where(
+        (munro) {
+          if (munro.name.toLowerCase().contains(_filterString.toLowerCase())) return true;
+          if (munro.area.toLowerCase().contains(_filterString.toLowerCase())) return true;
+          if (munro.extra != null) {
+            if (munro.extra!.toLowerCase().contains(_filterString.toLowerCase())) return true;
+          }
+          return false;
+        },
+      ).toList();
     }
     _filteredMunroList = runningList;
+    notifyListeners();
+  }
+
+  set setCreatePostFilterString(String filterString) {
+    _createPostFilterString = filterString;
+    _createPostFilter();
+  }
+
+  _createPostFilter() {
+    List<Munro> runningList = _munroList;
+    if (_createPostFilterString != "") {
+      runningList = _munroList.where(
+        (munro) {
+          if (munro.name.toLowerCase().contains(_createPostFilterString.toLowerCase())) return true;
+          if (munro.area.toLowerCase().contains(_createPostFilterString.toLowerCase())) return true;
+          if (munro.extra != null) {
+            if (munro.extra!.toLowerCase().contains(_createPostFilterString.toLowerCase())) return true;
+          }
+          return false;
+        },
+      ).toList();
+    }
+    _createPostFilteredMunroList = runningList;
     notifyListeners();
   }
 
@@ -75,6 +106,10 @@ class MunroState extends ChangeNotifier {
     _selectedMunro;
     _filteredMunroList = [];
     _filterString = '';
+    _createPostFilteredMunroList = [];
+    _createPostFilterString = '';
+    _filter();
+    _createPostFilter();
   }
 }
 
