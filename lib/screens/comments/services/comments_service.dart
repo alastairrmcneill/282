@@ -88,16 +88,21 @@ class CommentsService {
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      commentsState.setError = Error(message: "There was an issue loading the comments. Please try again.");
+      commentsState.setError = Error(message: "There was an issue retreiving the comments. Please try again.");
     }
   }
 
   static Future deleteComment(BuildContext context, {required Comment comment}) async {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
 
-    if (commentsState.comments.contains(comment)) {
-      commentsState.removeComment(comment);
+    try {
+      if (commentsState.comments.contains(comment)) {
+        commentsState.removeComment(comment);
+      }
+      CommentsDatabase.deleteComment(context, comment: comment);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      commentsState.setError = Error(message: "There was an issue deleting the comment. Please try again.");
     }
-    CommentsDatabase.deleteComment(context, comment: comment);
   }
 }

@@ -7,19 +7,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/services/log_service.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
   const CreatePostImagePicker({super.key});
 
   Future pickImage(CreatePostState createPostState) async {
     try {
-      print("Starting image picker");
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
-      print("Finished image picker");
       createPostState.addImage(File(image.path));
-    } catch (e) {
-      createPostState.setError = Error(code: e.toString(), message: "There was an issue selecting your image.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      createPostState.setError = Error(code: error.toString(), message: "There was an issue selecting your image.");
     }
   }
 

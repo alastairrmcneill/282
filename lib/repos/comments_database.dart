@@ -19,6 +19,9 @@ class CommentsDatabase {
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your comment.");
+    } on Exception catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -31,6 +34,9 @@ class CommentsDatabase {
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error updating your comment.");
+    } on Exception catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -84,35 +90,40 @@ class CommentsDatabase {
     List<Comment> comments = [];
     QuerySnapshot querySnapshot;
 
-    if (lastCommentId == null) {
-      // Load first bathc
-      querySnapshot = await _commentsRef
-          .doc(postId)
-          .collection('postComments')
-          .orderBy(PostFields.dateTime, descending: true)
-          .limit(15)
-          .get();
-    } else {
-      final lastCommentDoc = await _commentsRef.doc(postId).collection('postComments').doc(lastCommentId).get();
+    try {
+      if (lastCommentId == null) {
+        // Load first bathc
+        querySnapshot = await _commentsRef
+            .doc(postId)
+            .collection('postComments')
+            .orderBy(PostFields.dateTime, descending: true)
+            .limit(15)
+            .get();
+      } else {
+        final lastCommentDoc = await _commentsRef.doc(postId).collection('postComments').doc(lastCommentId).get();
 
-      if (!lastCommentDoc.exists) return [];
+        if (!lastCommentDoc.exists) return [];
 
-      querySnapshot = await _commentsRef
-          .doc(postId)
-          .collection('postComments')
-          .orderBy(PostFields.dateTime, descending: true)
-          .startAfterDocument(lastCommentDoc)
-          .limit(15)
-          .get();
+        querySnapshot = await _commentsRef
+            .doc(postId)
+            .collection('postComments')
+            .orderBy(PostFields.dateTime, descending: true)
+            .startAfterDocument(lastCommentDoc)
+            .limit(15)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        Comment comment = Comment.fromJSON(doc.data() as Map<String, dynamic>);
+
+        comments.add(comment);
+      }
+      return comments;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
+      return comments;
     }
-
-    for (var doc in querySnapshot.docs) {
-      Comment comment = Comment.fromJSON(doc.data() as Map<String, dynamic>);
-
-      comments.add(comment);
-    }
-
-    return comments;
   }
 
   // Delete comment

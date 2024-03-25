@@ -59,7 +59,7 @@ class NotificationsService {
       Log.error(error.toString(), stackTrace: stackTrace);
       notificationsState.setError = Error(
         code: error.toString(),
-        message: "There was an issue loading you notifications. Please try again.",
+        message: "There was an issue retreiving your notifications. Please try again.",
       );
     }
   }
@@ -67,9 +67,17 @@ class NotificationsService {
   static Future markNotificationAsRead(BuildContext context, {required Notif notification}) async {
     NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
 
-    Notif newNotification = notification.copyWith(read: true);
+    try {
+      Notif newNotification = notification.copyWith(read: true);
 
-    NotificationsDatabase.updateNotif(context, notification: newNotification);
-    notificationsState.markNotificationAsRead(notification);
+      NotificationsDatabase.updateNotif(context, notification: newNotification);
+      notificationsState.markNotificationAsRead(notification);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      notificationsState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue marking your notification as done. Please try again.",
+      );
+    }
   }
 }

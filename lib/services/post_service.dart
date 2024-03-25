@@ -233,11 +233,16 @@ class PostService {
   static Future deletePost(BuildContext context, {required Post post}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
-    if (profileState.posts.contains(post)) {
-      profileState.removePost(post);
-    }
+    try {
+      if (profileState.posts.contains(post)) {
+        profileState.removePost(post);
+      }
 
-    PostsDatabase.deletePostWithUID(context, uid: post.uid ?? "");
+      PostsDatabase.deletePostWithUID(context, uid: post.uid ?? "");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      profileState.setError = Error(message: "There was an issue deleting your post. Please try again.");
+    }
   }
 
   static Future getMunroPosts(BuildContext context, {required Munro munro, int count = 50}) async {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
@@ -145,17 +144,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : Expanded(
                                         child: ElevatedButton(
                                           onPressed: () async {
-                                            print('Share');
-                                            print("new");
                                             try {
-                                              print('testing');
                                               await FirebaseMessaging.instance.requestPermission();
-
                                               final token = await FirebaseMessaging.instance.getToken();
-                                              print(token);
                                             } catch (error, stackTrace) {
                                               Log.error(error.toString(), stackTrace: stackTrace);
-                                              print(error);
                                             }
                                           },
                                           child: Text('Share profile'),
@@ -178,17 +171,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : Expanded(
                                         child: ElevatedButton(
                                           onPressed: () async {
-                                            print('Share');
-                                            print("new");
                                             try {
-                                              print('testing');
                                               await FirebaseMessaging.instance.requestPermission();
-
                                               final token = await FirebaseMessaging.instance.getToken();
-                                              print(token);
-                                            } catch (error, stackTrace) {
+                                            } on Exception catch (error, stackTrace) {
                                               Log.error(error.toString(), stackTrace: stackTrace);
-                                              print(error);
                                             }
                                           },
                                           child: Text('Share profile'),

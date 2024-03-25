@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
@@ -47,8 +46,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {
         _image = File(image.path);
       });
-    } on PlatformException catch (e) {
-      print("Image picker error: ${e.message}");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
     }
   }
 

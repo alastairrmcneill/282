@@ -107,8 +107,9 @@ class PostsDatabase {
       }
 
       return posts;
-    } catch (error, stackTrace) {
+    } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an issue getting the posts.");
       return [];
     }
   }
@@ -133,35 +134,41 @@ class PostsDatabase {
     List<Post> posts = [];
     QuerySnapshot querySnapshot;
 
-    if (lastPostId == null) {
-      // Load first bathc
-      querySnapshot = await _feedsRef
-          .doc(userId)
-          .collection('userFeed')
-          .orderBy(PostFields.dateTime, descending: true)
-          .limit(10)
-          .get();
-    } else {
-      final lastPostDoc = await _postsRef.doc(lastPostId).get();
+    try {
+      if (lastPostId == null) {
+        // Load first bathc
+        querySnapshot = await _feedsRef
+            .doc(userId)
+            .collection('userFeed')
+            .orderBy(PostFields.dateTime, descending: true)
+            .limit(10)
+            .get();
+      } else {
+        final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
-      if (!lastPostDoc.exists) return [];
+        if (!lastPostDoc.exists) return [];
 
-      querySnapshot = await _feedsRef
-          .doc(userId)
-          .collection('userFeed')
-          .orderBy(PostFields.dateTime, descending: true)
-          .startAfterDocument(lastPostDoc)
-          .limit(10)
-          .get();
+        querySnapshot = await _feedsRef
+            .doc(userId)
+            .collection('userFeed')
+            .orderBy(PostFields.dateTime, descending: true)
+            .startAfterDocument(lastPostDoc)
+            .limit(10)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
+
+        posts.add(post);
+      }
+
+      return posts;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error getting the posts. Please try again.");
+      return posts;
     }
-
-    for (var doc in querySnapshot.docs) {
-      Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
-
-      posts.add(post);
-    }
-
-    return posts;
   }
 
   static Future getPostsFromMunro(
@@ -173,37 +180,43 @@ class PostsDatabase {
     List<Post> posts = [];
     QuerySnapshot querySnapshot;
 
-    if (lastPostId == null) {
-      // Load first batch
-      querySnapshot = await _postsRef
-          .where(PostFields.imageURLs, isNotEqualTo: [])
-          .orderBy(PostFields.imageURLs)
-          .orderBy(PostFields.dateTime, descending: true)
-          .where(PostFields.includedMunroIds, arrayContains: munroId)
-          .where(PostFields.public, isEqualTo: true)
-          .limit(count)
-          .get();
-    } else {
-      final lastPostDoc = await _postsRef.doc(lastPostId).get();
+    try {
+      if (lastPostId == null) {
+        // Load first batch
+        querySnapshot = await _postsRef
+            .where(PostFields.imageURLs, isNotEqualTo: [])
+            .orderBy(PostFields.imageURLs)
+            .orderBy(PostFields.dateTime, descending: true)
+            .where(PostFields.includedMunroIds, arrayContains: munroId)
+            .where(PostFields.public, isEqualTo: true)
+            .limit(count)
+            .get();
+      } else {
+        final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
-      if (!lastPostDoc.exists) return [];
+        if (!lastPostDoc.exists) return [];
 
-      querySnapshot = await _postsRef
-          .where(PostFields.imageURLs, isNotEqualTo: [])
-          .orderBy(PostFields.imageURLs)
-          .orderBy(PostFields.dateTime, descending: true)
-          .startAfterDocument(lastPostDoc)
-          .where(PostFields.includedMunroIds, arrayContains: munroId)
-          .where(PostFields.public, isEqualTo: true)
-          .limit(count)
-          .get();
+        querySnapshot = await _postsRef
+            .where(PostFields.imageURLs, isNotEqualTo: [])
+            .orderBy(PostFields.imageURLs)
+            .orderBy(PostFields.dateTime, descending: true)
+            .startAfterDocument(lastPostDoc)
+            .where(PostFields.includedMunroIds, arrayContains: munroId)
+            .where(PostFields.public, isEqualTo: true)
+            .limit(count)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
+        posts.add(post);
+      }
+
+      return posts;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error getting the posts. Please try again.");
+      return posts;
     }
-
-    for (var doc in querySnapshot.docs) {
-      Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
-      posts.add(post);
-    }
-
-    return posts;
   }
 }

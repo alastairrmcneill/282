@@ -16,33 +16,39 @@ class NotificationsDatabase {
     List<Notif> notifications = [];
     QuerySnapshot querySnapshot;
 
-    if (lastNotificationId == null) {
-      // Load first batch
-      querySnapshot = await _notificationsRef
-          .where(NotifFields.targetId, isEqualTo: userId)
-          .orderBy(NotifFields.dateTime, descending: true)
-          .limit(10)
-          .get();
-    } else {
-      final lastNotificationDoc = await _notificationsRef.doc(lastNotificationId).get();
+    try {
+      if (lastNotificationId == null) {
+        // Load first batch
+        querySnapshot = await _notificationsRef
+            .where(NotifFields.targetId, isEqualTo: userId)
+            .orderBy(NotifFields.dateTime, descending: true)
+            .limit(10)
+            .get();
+      } else {
+        final lastNotificationDoc = await _notificationsRef.doc(lastNotificationId).get();
 
-      if (!lastNotificationDoc.exists) return [];
+        if (!lastNotificationDoc.exists) return [];
 
-      querySnapshot = await _notificationsRef
-          .where(NotifFields.targetId, isEqualTo: userId)
-          .orderBy(NotifFields.dateTime, descending: true)
-          .startAfterDocument(lastNotificationDoc)
-          .limit(10)
-          .get();
+        querySnapshot = await _notificationsRef
+            .where(NotifFields.targetId, isEqualTo: userId)
+            .orderBy(NotifFields.dateTime, descending: true)
+            .startAfterDocument(lastNotificationDoc)
+            .limit(10)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        Notif notification = Notif.fromJSON(doc.data() as Map<String, dynamic>);
+
+        notifications.add(notification);
+      }
+
+      return notifications;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error getting your notification.");
+      return notifications;
     }
-
-    for (var doc in querySnapshot.docs) {
-      Notif notification = Notif.fromJSON(doc.data() as Map<String, dynamic>);
-
-      notifications.add(notification);
-    }
-
-    return notifications;
   }
 
   static Future updateNotif(BuildContext context, {required Notif notification}) async {

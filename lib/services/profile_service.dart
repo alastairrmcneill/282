@@ -38,7 +38,7 @@ class ProfileService {
       Log.error(error.toString(), stackTrace: stackTrace);
       profileState.setError = Error(
         code: error.toString(),
-        message: "There was an issue. Please try again.",
+        message: "There was an issue loading the profile. Please try again.",
       );
     }
   }
@@ -89,7 +89,7 @@ class ProfileService {
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
-      showErrorDialog(context, message: "There was an issue updating your account");
+      showErrorDialog(context, message: "There was an issue updating the profile.");
     }
   }
 }

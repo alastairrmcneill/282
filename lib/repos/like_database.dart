@@ -50,52 +50,63 @@ class LikeDatabase {
     required List<Post> posts,
   }) async {
     final Set<String> postIds = {};
-    for (final Post post in posts) {
-      final likeDocs = await _likesRef
-          .where(LikeFields.postId, isEqualTo: post.uid)
-          .where(LikeFields.userId, isEqualTo: userId)
-          .limit(1)
-          .get();
-      if (likeDocs.docs.isNotEmpty) {
-        if (likeDocs.docs[0].exists) {
-          postIds.add(post.uid!);
+
+    try {
+      for (final Post post in posts) {
+        final likeDocs = await _likesRef
+            .where(LikeFields.postId, isEqualTo: post.uid)
+            .where(LikeFields.userId, isEqualTo: userId)
+            .limit(1)
+            .get();
+        if (likeDocs.docs.isNotEmpty) {
+          if (likeDocs.docs[0].exists) {
+            postIds.add(post.uid!);
+          }
         }
       }
-    }
 
-    return postIds;
+      return postIds;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      return postIds;
+    }
   }
 
   static Future<List<Like>> readPostLikes({required String postId, required String? lastLikeId}) async {
     List<Like> likes = [];
     QuerySnapshot querySnapshot;
 
-    if (lastLikeId == null) {
-      // Load first batch
-      querySnapshot = await _likesRef
-          .where(LikeFields.postId, isEqualTo: postId)
-          .orderBy(LikeFields.userDisplayName, descending: true)
-          .limit(30)
-          .get();
-    } else {
-      final lastLikeDoc = await _likesRef.doc(lastLikeId).get();
+    try {
+      if (lastLikeId == null) {
+        // Load first batch
+        querySnapshot = await _likesRef
+            .where(LikeFields.postId, isEqualTo: postId)
+            .orderBy(LikeFields.userDisplayName, descending: true)
+            .limit(30)
+            .get();
+      } else {
+        final lastLikeDoc = await _likesRef.doc(lastLikeId).get();
 
-      if (!lastLikeDoc.exists) return [];
+        if (!lastLikeDoc.exists) return [];
 
-      querySnapshot = await _likesRef
-          .where(LikeFields.postId, isEqualTo: postId)
-          .orderBy(LikeFields.userDisplayName, descending: true)
-          .startAfterDocument(lastLikeDoc)
-          .limit(30)
-          .get();
+        querySnapshot = await _likesRef
+            .where(LikeFields.postId, isEqualTo: postId)
+            .orderBy(LikeFields.userDisplayName, descending: true)
+            .startAfterDocument(lastLikeDoc)
+            .limit(30)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        Like like = Like.fromJSON(doc.data() as Map<String, dynamic>);
+
+        likes.add(like);
+      }
+
+      return likes;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      return likes;
     }
-
-    for (var doc in querySnapshot.docs) {
-      Like like = Like.fromJSON(doc.data() as Map<String, dynamic>);
-
-      likes.add(like);
-    }
-
-    return likes;
   }
 }

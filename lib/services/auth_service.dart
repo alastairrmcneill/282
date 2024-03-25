@@ -61,6 +61,10 @@ class AuthService {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.code);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -93,7 +97,11 @@ class AuthService {
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
-      showErrorDialog(context, message: error.code);
+      showErrorDialog(context, message: error.message ?? "There was an error signing in.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -109,7 +117,11 @@ class AuthService {
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
-      showErrorDialog(context, message: error.code);
+      showErrorDialog(context, message: error.message ?? "There was an error retreiving password. Please try again.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -135,7 +147,11 @@ class AuthService {
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
-      showErrorDialog(context, message: error.code);
+      showErrorDialog(context, message: error.message ?? "There was an error signing out. Please try again.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -190,12 +206,15 @@ class AuthService {
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
-    } on FirebaseAuthException catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.code);
     } on SignInWithAppleAuthorizationException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message);
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error signing in.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -232,7 +251,10 @@ class AuthService {
       await PushNotificationService.initNotifications(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.code);
+      showErrorDialog(context, message: error.message ?? "There was an error signing in.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
     }
   }
 
@@ -240,17 +262,27 @@ class AuthService {
     // Update auth user details
     if (_auth.currentUser == null) return;
 
-    await _auth.currentUser!.updateDisplayName(appUser.displayName).whenComplete(
-      () async {
-        await _auth.currentUser!.reload();
-      },
-    );
+    try {
+      await _auth.currentUser!.updateDisplayName(appUser.displayName).whenComplete(
+        () async {
+          await _auth.currentUser!.reload();
+        },
+      );
 
-    await _auth.currentUser!.updatePhotoURL(appUser.profilePictureURL).whenComplete(
-      () async {
-        await _auth.currentUser!.reload();
-      },
-    );
+      await _auth.currentUser!.updatePhotoURL(appUser.profilePictureURL).whenComplete(
+        () async {
+          await _auth.currentUser!.reload();
+        },
+      );
+    } on FirebaseAuthException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.message ?? "There was an error updating your profile.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.toString());
+    }
   }
 
   static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
@@ -262,7 +294,12 @@ class AuthService {
       Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.toString() ?? "There was an error deleting your account");
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.message ?? "There was an error deleting your account. Please try again.");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      showErrorDialog(context, message: error.toString());
     }
   }
 

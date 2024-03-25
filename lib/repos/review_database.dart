@@ -91,7 +91,7 @@ class ReviewDatabase {
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your reviews.");
-      return [];
+      return reviews;
     }
   }
 
@@ -134,7 +134,7 @@ class ReviewDatabase {
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error fetching your reviews.");
-      return [];
+      return reviews;
     }
   }
 

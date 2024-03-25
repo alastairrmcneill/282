@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/munro_service.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class ReviewService {

@@ -77,34 +77,40 @@ class UserDatabase {
     List<AppUser> searchResult = [];
     QuerySnapshot<Map<String, dynamic>> userSnap;
 
-    if (lastUserId == null) {
-      // Carry out first search
+    try {
+      if (lastUserId == null) {
+        // Carry out first search
 
-      userSnap = await _db
-          .collection('users')
-          .orderBy(AppUserFields.searchName, descending: false)
-          .startAt([searchTerm])
-          .endAt(["$searchTerm\uf8ff"])
-          .limit(20)
-          .get();
-    } else {
-      // Carry out paginated search
-      final lastUserDoc = await _db.collection('users').doc(lastUserId).get();
+        userSnap = await _db
+            .collection('users')
+            .orderBy(AppUserFields.searchName, descending: false)
+            .startAt([searchTerm])
+            .endAt(["$searchTerm\uf8ff"])
+            .limit(20)
+            .get();
+      } else {
+        // Carry out paginated search
+        final lastUserDoc = await _db.collection('users').doc(lastUserId).get();
 
-      if (!lastUserDoc.exists) return [];
-      userSnap = await _db
-          .collection('users')
-          .orderBy(AppUserFields.searchName, descending: false)
-          .startAfterDocument(lastUserDoc)
-          .endAt(["$searchTerm\uf8ff"])
-          .limit(20)
-          .get();
+        if (!lastUserDoc.exists) return [];
+        userSnap = await _db
+            .collection('users')
+            .orderBy(AppUserFields.searchName, descending: false)
+            .startAfterDocument(lastUserDoc)
+            .endAt(["$searchTerm\uf8ff"])
+            .limit(20)
+            .get();
+      }
+
+      for (var doc in userSnap.docs) {
+        searchResult.add(AppUser.fromJSON(doc.data()));
+      }
+
+      return searchResult;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
+      return searchResult;
     }
-
-    for (var doc in userSnap.docs) {
-      searchResult.add(AppUser.fromJSON(doc.data()));
-    }
-
-    return searchResult;
   }
 }

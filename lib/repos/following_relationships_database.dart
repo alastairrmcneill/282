@@ -61,36 +61,42 @@ class FollowingRelationshipsDatabase {
     required String? lastFollowingRelationshipID,
   }) async {
     List<FollowingRelationship> followers = [];
-
     QuerySnapshot<Object?> querySnapshot;
 
-    if (lastFollowingRelationshipID == null) {
-      // First loading
-      querySnapshot = await _followingRelationshipRef
-          .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
-          .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
-          .limit(20) // We only need to check if at least one document exists
-          .get();
-    } else {
-      // Paginating
-      final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
+    try {
+      if (lastFollowingRelationshipID == null) {
+        // First loading
+        querySnapshot = await _followingRelationshipRef
+            .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
+            .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
+            .limit(20) // We only need to check if at least one document exists
+            .get();
+      } else {
+        // Paginating
+        final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
 
-      if (!lastFollowingRelationshipDoc.exists) return [];
+        if (!lastFollowingRelationshipDoc.exists) return [];
 
-      querySnapshot = await _followingRelationshipRef
-          .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
-          .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
-          .startAfterDocument(lastFollowingRelationshipDoc)
-          .limit(20)
-          .get();
+        querySnapshot = await _followingRelationshipRef
+            .where(FollowingRelationshipFields.targetId, isEqualTo: targetId)
+            .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
+            .startAfterDocument(lastFollowingRelationshipDoc)
+            .limit(20)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        FollowingRelationship followingRelationship =
+            FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
+
+        followers.add(followingRelationship);
+      }
+      return followers;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error creating the relationship.");
+      return followers;
     }
-
-    for (var doc in querySnapshot.docs) {
-      FollowingRelationship followingRelationship = FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
-
-      followers.add(followingRelationship);
-    }
-    return followers;
   }
 
   static Future<List<FollowingRelationship>> getFollowingFromUid(
@@ -99,36 +105,42 @@ class FollowingRelationshipsDatabase {
     required String? lastFollowingRelationshipID,
   }) async {
     List<FollowingRelationship> following = [];
-
     QuerySnapshot<Object?> querySnapshot;
 
-    if (lastFollowingRelationshipID == null) {
-      // First loading
-      querySnapshot = await _followingRelationshipRef
-          .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
-          .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
-          .limit(20) // We only need to check if at least one document exists
-          .get();
-    } else {
-      // Paginating
-      final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
+    try {
+      if (lastFollowingRelationshipID == null) {
+        // First loading
+        querySnapshot = await _followingRelationshipRef
+            .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
+            .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
+            .limit(20) // We only need to check if at least one document exists
+            .get();
+      } else {
+        // Paginating
+        final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
 
-      if (!lastFollowingRelationshipDoc.exists) return [];
+        if (!lastFollowingRelationshipDoc.exists) return [];
 
-      querySnapshot = await _followingRelationshipRef
-          .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
-          .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
-          .startAfterDocument(lastFollowingRelationshipDoc)
-          .limit(20)
-          .get();
+        querySnapshot = await _followingRelationshipRef
+            .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
+            .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
+            .startAfterDocument(lastFollowingRelationshipDoc)
+            .limit(20)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        FollowingRelationship followingRelationship =
+            FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
+
+        following.add(followingRelationship);
+      }
+      return following;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error creating the relationship.");
+      return following;
     }
-
-    for (var doc in querySnapshot.docs) {
-      FollowingRelationship followingRelationship = FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
-
-      following.add(followingRelationship);
-    }
-    return following;
   }
 
   // Read

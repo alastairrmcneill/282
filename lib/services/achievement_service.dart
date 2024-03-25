@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -47,6 +46,10 @@ class AchievementService {
 
         await UserService.updateUser(context, appUser: userState.currentUser!);
       }
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context,
+          message: error.message ?? "There was an error updating your achievement. Please try again.");
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error updating your achievement. Please try again.");
@@ -76,6 +79,12 @@ class AchievementService {
 
       // Set status
       achievementsState.setStatus = AchievementsStatus.loaded;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      achievementsState.setError = Error(
+        code: error.toString(),
+        message: error.message ?? "There was an issue setting you munro challenge.",
+      );
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       achievementsState.setError = Error(
