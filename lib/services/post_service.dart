@@ -79,6 +79,7 @@ class PostService {
   static Future editPost(BuildContext context) async {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    FeedState feedState = Provider.of<FeedState>(context, listen: false);
     try {
       createPostState.setStatus = CreatePostStatus.loading;
 
@@ -106,6 +107,7 @@ class PostService {
 
       // Update state
       profileState.updatePost(newPost);
+      feedState.updatePost(newPost);
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -232,11 +234,11 @@ class PostService {
 
   static Future deletePost(BuildContext context, {required Post post}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    FeedState feedState = Provider.of<FeedState>(context, listen: false);
 
     try {
-      if (profileState.posts.contains(post)) {
-        profileState.removePost(post);
-      }
+      profileState.removePost(post);
+      feedState.removePost(post);
 
       PostsDatabase.deletePostWithUID(context, uid: post.uid ?? "");
     } catch (error, stackTrace) {

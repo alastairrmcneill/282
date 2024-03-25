@@ -155,8 +155,11 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
     .collection("followingRelationships")
     .where("targetId", "==", authorId);
 
+  // Add post to all followers feeds
   const userFollowerRelationshipsSnapshot = await userFollowerRelationshipsRef.get();
+  console.log("Starting to add post to feeds");
   userFollowerRelationshipsSnapshot.forEach((doc) => {
+    console.log(`Adding post to feed of ${doc.get("sourceId")}`);
     admin
       .firestore()
       .collection("feeds")
@@ -165,6 +168,12 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
       .doc(postId)
       .set(snapshot.data());
   });
+
+  // Add post to author's feed
+  console.log(`Adding post to feed of ${authorId}`);
+  admin.firestore().collection("feeds").doc(authorId).collection("userFeed").doc(postId).set(snapshot.data());
+
+  console.log("Post added to feeds successfully");
 });
 
 exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate(async (snapshot, context) => {
@@ -184,7 +193,9 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
 
   const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
 
+  console.log("Starting to update post in feeds");
   for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+    console.log(`Updating post in feed of ${userFollowersSnapshot.docs[i].get("sourceId")}`);
     let doc = userFollowersSnapshot.docs[i];
     const feedsRef = admin.firestore().collection("feeds").doc(doc.get("sourceId")).collection("userFeed");
     const postDoc = await feedsRef.doc(postId).get();
@@ -192,6 +203,17 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
       postDoc.ref.update(updatedPostData);
     }
   }
+
+  // Update post data in author's feed.
+  console.log(`Updating post in feed of ${authorId}`);
+  const authorFeedRef = admin.firestore().collection("feeds").doc(authorId).collection("userFeed");
+  const authorPostDoc = await authorFeedRef.doc(postId).get();
+
+  if (authorPostDoc.exists) {
+    authorPostDoc.ref.update(updatedPostData);
+  }
+
+  console.log("Post updated in feeds successfully");
 });
 
 exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete(async (snapshot, context) => {
@@ -208,9 +230,11 @@ exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete
 
   const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
 
-  logger.log(userFollowersSnapshot.docs.length);
+  // Delete post from each follower's feed.
+  console.log("Starting to delete post from feeds");
 
   for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+    console.log(`Deleting post from feed of ${userFollowersSnapshot.docs[i].get("sourceId")}`);
     let doc = userFollowersSnapshot.docs[i];
     const feedsRef = admin.firestore().collection("feeds").doc(doc.get("sourceId")).collection("userFeed");
     const postDoc = await feedsRef.doc(postId).get();
@@ -218,6 +242,16 @@ exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete
       postDoc.ref.delete();
     }
   }
+
+  // Update post data in author's feed.
+  console.log(`Deleting post from feed of ${authorId}`);
+  const authorFeedRef = admin.firestore().collection("feeds").doc(authorId).collection("userFeed");
+  const authorPostDoc = await authorFeedRef.doc(postId).get();
+  if (authorPostDoc.exists) {
+    authorPostDoc.ref.delete();
+  }
+
+  console.log("Post deleted from feeds successfully");
 });
 
 exports.onLikeCreated = functions.firestore.document("/likes/{likeId}").onCreate(async (snapshot, context) => {

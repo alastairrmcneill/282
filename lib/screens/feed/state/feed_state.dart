@@ -30,6 +30,21 @@ class FeedState extends ChangeNotifier {
     _posts.addAll(posts);
     notifyListeners();
   }
+
+  updatePost(Post post) {
+    int index = _posts.indexWhere((element) => element.uid == post.uid);
+    if (index != -1) {
+      _posts[index] = post;
+    }
+    notifyListeners();
+  }
+
+  removePost(Post post) {
+    if (_posts.contains(post)) {
+      _posts.remove(post);
+    }
+    notifyListeners();
+  }
 }
 
 enum FeedStatus { initial, loading, loaded, paginating, error }
