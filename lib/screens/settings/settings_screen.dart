@@ -69,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 message: "Are you sure you want to delete account and all associated data?",
                 onConfirm: () async {
-                  await AuthService.deleteUserFromUid(context, uid: user!.uid!);
+                  await AuthService.deleteUser(context, appUser: user!);
                 },
               );
             },

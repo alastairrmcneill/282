@@ -10,7 +10,6 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-import 'package:two_eight_two/repos/repos.dart';
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -254,19 +253,16 @@ class AuthService {
     );
   }
 
-  static Future deleteUserFromUid(BuildContext context, {required String uid}) async {
+  static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
     try {
-      UserState userState = Provider.of<UserState>(context, listen: false);
-
-      userState.setCurrentUser = null;
-      await UserDatabase.deleteUserWithUID(context, uid: _auth.currentUser!.uid);
       await _auth.currentUser?.delete();
+      await UserService.deleteUser(context, appUser: appUser);
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
+      showErrorDialog(context, message: error.toString() ?? "There was an error deleting your account");
     }
   }
 

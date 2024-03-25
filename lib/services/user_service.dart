@@ -15,8 +15,10 @@ class UserService {
   }
 
   static Future updateUser(BuildContext context, {required AppUser appUser}) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
     try {
-      await UserService.updateUser(context, appUser: appUser);
+      await UserDatabase.update(context, appUser: appUser);
+      userState.setCurrentUser = appUser;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
     }
@@ -25,11 +27,11 @@ class UserService {
   static Future readCurrentUser(BuildContext context) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
     try {
-      // userState.setStatus = UserStatus.loading;
+      userState.setStatus = UserStatus.loading;
 
       String? uid = AuthService.currentUserId;
       if (uid == null) {
-        // userState.setStatus = UserStatus.loaded;
+        userState.setStatus = UserStatus.loaded;
         return;
       }
 
@@ -37,10 +39,21 @@ class UserService {
 
       userState.setCurrentUser = appUser;
 
-      // userState.setStatus = UserStatus.loaded;
+      userState.setStatus = UserStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       userState.setError = Error(code: error.toString(), message: "There was an error fetching the account.");
+    }
+  }
+
+  static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    try {
+      await UserDatabase.deleteUserWithUID(context, uid: appUser.uid!);
+      userState.setCurrentUser = null;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      userState.setError = Error(code: error.toString(), message: "There was an error deleting the account.");
     }
   }
 
