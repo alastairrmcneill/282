@@ -42,6 +42,7 @@ class AchievementService {
 
     try {
       if (userState.currentUser != null) {
+        // Change this to add all achievements in the notifier
         userState.currentUser!.achievements![achievement.uid] = achievement.toJSON();
 
         await UserService.updateUser(context, appUser: userState.currentUser!);
@@ -49,10 +50,10 @@ class AchievementService {
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context,
-          message: error.message ?? "There was an error updating your achievement. Please try again.");
+          message: error.message ?? "There was an error updating your achievements. Please try again.");
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: "There was an error updating your achievement. Please try again.");
+      showErrorDialog(context, message: "There was an error updating your achievements Please try again.");
     }
   }
 
@@ -117,6 +118,10 @@ class AchievementService {
           break;
       }
     }
+
+    // Update database
+    // TODO: add this in
+    // _updateUserAchievements(context);
   }
 
   static void _checkTotalCount(BuildContext context, {required Achievement achievement, required UserState userState}) {
@@ -177,6 +182,7 @@ class AchievementService {
     print("Added to new notifier");
 
     // Update database
+    // TODO: Remove this and save for later
     _updateUserAchievement(context, achievement: newAchievement);
     print("Updating database");
   }
