@@ -32,6 +32,228 @@ const { user } = require("firebase-functions/v1/auth");
 
 admin.initializeApp();
 
+exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
+  const userId = context.params.userId;
+
+  // Create user feed
+  console.log(`Creating feed for user: ${userId}`);
+  const userFeedRef = admin.firestore().collection("feeds").doc(userId);
+  userFeedRef.set({});
+  console.log(`Feed created for user: ${userId}`);
+
+  // Get my profile
+  console.log("Getting my profile");
+  const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3");
+  const myProfile = await myProfileRef.get();
+  console.log("Got my profile");
+
+  // Create following relationships between the new user and me
+  console.log("Create following relationships between the new user and me");
+  const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
+  const userFollowingRelationshipRef = followingRelationshipsRef.doc();
+  userFollowingRelationshipRef.set({
+    uid: userFollowingRelationshipRef.id,
+    sourceId: userId,
+    sourceDisplayName: snapshot.get("displayName"),
+    sourceProfilePictureURL: snapshot.get("profilePictureURL"),
+    targetId: myProfile.get("uid"),
+    targetDisplayName: myProfile.get("displayName"),
+    targetProfilePictureURL: myProfile.get("profilePictureURL"),
+  });
+  console.log("Following relationship created between the new user and me");
+
+  // Create following relationship between me and the new user
+  console.log("Create following relationship between me and the new user");
+  const userFollowedRelationshipRef = followingRelationshipsRef.doc();
+  userFollowedRelationshipRef.set({
+    uid: userFollowedRelationshipRef.id,
+    sourceId: myProfile.get("uid"),
+    sourceDisplayName: myProfile.get("displayName"),
+    sourceProfilePictureURL: myProfile.get("profilePictureURL"),
+    targetId: userId,
+    targetDisplayName: snapshot.get("displayName"),
+    targetProfilePictureURL: snapshot.get("profilePictureURL"),
+  });
+  console.log("Following relationship created between me and the new user");
+
+  // Create user achievements
+  console.log("Create user achievements");
+  const achievementsRef = admin.firestore().collection("achievements");
+  const achievementsSnapshot = await achievementsRef.get();
+  const userRef = admin.firestore().collection("users").doc(userId);
+
+  let batch = admin.firestore().batch();
+
+  let achievementData = {};
+
+  achievementsSnapshot.forEach((doc) => {
+    console.log(`Achievement: ${doc.id}`);
+    let achievementId = doc.id;
+    achievementData = {
+      ...achievementData,
+      [achievementId]: {
+        ...doc.data(),
+        completed: false,
+        progress: 0,
+      },
+    };
+  });
+  batch.update(userRef, { achievements: achievementData });
+
+  await batch.commit();
+  console.log("User achievements created");
+  console.log("User created successfully");
+});
+
+exports.onUserUpdated = functions.firestore.document("users/{userId}").onUpdate(async (snapshot, context) => {
+  const userId = context.params.userId;
+  const before = snapshot.before.data();
+  const after = snapshot.after.data();
+
+  if (before.displayName === after.displayName && before.profilePictureURL === after.profilePictureURL) {
+    console.log("No changes to user");
+    return;
+  }
+
+  // Update comments
+  // TODO: Update comments where user is author
+
+  // Update following relationship where user is source
+  console.log("Update following relationships user is source");
+  const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
+  const userFollowingRelationshipRef = followingRelationshipsRef.where("sourceId", "==", userId);
+  const userFollowingRelationshipSnapshot = await userFollowingRelationshipRef.get();
+
+  userFollowingRelationshipSnapshot.forEach((doc) => {
+    console.log(`Updating following relationship: ${doc.id}`);
+    doc.ref.update({
+      sourceDisplayName: snapshot.after.get("displayName"),
+      sourceProfilePictureURL: snapshot.after.get("profilePictureURL"),
+    });
+  });
+  console.log("Following relationships updated");
+
+  // Update following relationship where user is target
+  console.log("Update following relationship where user is target");
+  const userFollowedRelationshipRef = followingRelationshipsRef.where("targetId", "==", userId);
+  const userFollowedRelationshipSnapshot = await userFollowedRelationshipRef.get();
+
+  userFollowedRelationshipSnapshot.forEach((doc) => {
+    console.log(`Updating following relationship: ${doc.id}`);
+    doc.ref.update({
+      targetDisplayName: snapshot.after.get("displayName"),
+      targetProfilePictureURL: snapshot.after.get("profilePictureURL"),
+    });
+  });
+  console.log("Following relationship where user is target updated ");
+
+  // Update posts
+  console.log("Update posts");
+  const postsRef = admin.firestore().collection("posts").where("authorId", "==", userId);
+  const postsSnapshot = await postsRef.get();
+
+  postsSnapshot.forEach((doc) => {
+    console.log(`Updating post: ${doc.id}`);
+    doc.ref.update({
+      authorDisplayName: snapshot.after.get("displayName"),
+      authorProfilePictureURL: snapshot.after.get("profilePictureURL"),
+    });
+  });
+  console.log("Posts updated");
+
+  console.log("User updated successfully");
+});
+
+exports.onUserDeleted = functions.firestore.document("users/{userId}").onDelete(async (snapshot, context) => {
+  const userId = context.params.userId;
+
+  // Delete user comments
+  console.log(`Deleting comments for user: ${userId}`);
+  const userCommentsRef = admin.firestore().collection("comments").where("authorId", "==", userId);
+  const userCommentsSnapshot = await userCommentsRef.get();
+
+  userCommentsSnapshot.forEach((doc) => {
+    console.log(`Deleting comment: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Comments deleted for user");
+
+  // Delete user feed
+  console.log(`Deleting feed for user: ${userId}`);
+  const userFeedRef = admin.firestore().collection("feeds").doc(userId);
+  userFeedRef.delete();
+  console.log(`Feed deleted for user: ${userId}`);
+
+  // Delete following relationships where user is source
+  console.log("Delete following relationships where user is source");
+  const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
+  const userFollowingRelationshipRef = followingRelationshipsRef.where("sourceId", "==", userId);
+  const userFollowingRelationshipSnapshot = await userFollowingRelationshipRef.get();
+
+  userFollowingRelationshipSnapshot.forEach((doc) => {
+    console.log(`Deleting following relationship: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Following relationships where user is source deleted");
+
+  // Delete following relationships where user is target
+  console.log("Delete following relationships where user is target");
+  const userFollowedRelationshipRef = followingRelationshipsRef.where("targetId", "==", userId);
+  const userFollowedRelationshipSnapshot = await userFollowedRelationshipRef.get();
+
+  userFollowedRelationshipSnapshot.forEach((doc) => {
+    console.log(`Deleting following relationship: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Following relationships where user is target deleted");
+
+  // Delete likes
+  console.log("Delete likes");
+  const likesRef = admin.firestore().collection("likes").where("userId", "==", userId);
+  const likesSnapshot = await likesRef.get();
+
+  likesSnapshot.forEach((doc) => {
+    console.log(`Deleting like: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Likes deleted");
+
+  // Delete notifications
+  console.log("Delete notifications");
+  const notificationsRef = admin.firestore().collection("notifications").where("sourceId", "==", userId);
+  const notificationsSnapshot = await notificationsRef.get();
+
+  notificationsSnapshot.forEach((doc) => {
+    console.log(`Deleting notification: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Notifications deleted");
+
+  // Delete posts
+  console.log("Delete posts");
+  const postsRef = admin.firestore().collection("posts").where("authorId", "==", userId);
+  const postsSnapshot = await postsRef.get();
+
+  postsSnapshot.forEach((doc) => {
+    console.log(`Deleting post: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Posts deleted");
+
+  // Delete reviews
+  console.log("Delete reviews");
+  const reviewsRef = admin.firestore().collection("reviews").where("authorId", "==", userId);
+  const reviewsSnapshot = await reviewsRef.get();
+
+  reviewsSnapshot.forEach((doc) => {
+    console.log(`Deleting review: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Reviews deleted");
+
+  console.log("User deleted successfully");
+});
+
 exports.onFollowUser = functions.firestore
   .document("followingRelationships/{relationshipId}")
   .onCreate(async (snapshot, context) => {
