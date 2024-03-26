@@ -115,14 +115,14 @@ class PostService {
     }
   }
 
-  static Future getProfilePosts(BuildContext context) async {
-    ProfileState feedState = Provider.of<ProfileState>(context, listen: false);
-
+  static Future<List<Post>> getProfilePosts(BuildContext context) async {
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    List<Post> posts = [];
     try {
       // Get posts
-      List<Post> posts = await PostsDatabase.readPostsFromUserId(
+      posts = await PostsDatabase.readPostsFromUserId(
         context,
-        userId: feedState.user?.uid ?? "",
+        userId: profileState.user?.uid ?? "",
         lastPostId: null,
       );
 
@@ -133,7 +133,8 @@ class PostService {
       return posts;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      feedState.setError = Error(message: "There was an retreiving your posts. Please try again.");
+      profileState.setError = Error(message: "There was an retreiving your posts. Please try again.");
+      return posts;
     }
   }
 

@@ -242,6 +242,7 @@ class AuthService {
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
         profilePictureURL: _auth.currentUser!.photoURL,
       );
+
       await UserService.createUser(context, appUser: appUser);
 
       // Navigate to the right place
@@ -328,18 +329,18 @@ class AuthService {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     switch (navigationState.navigateToRoute) {
       case HomeScreen.route:
-        MunroService.loadPersonalMunroData(context);
+        await MunroService.loadPersonalMunroData(context);
         break;
       case HomeScreen.feedTabRoute:
-        PostService.getFeed(context);
+        await PostService.getFeed(context);
         NotificationsService.getUserNotifications(context);
         break;
       case HomeScreen.savedTabRoute:
-        MunroService.loadPersonalMunroData(context);
+        await MunroService.loadPersonalMunroData(context);
         break;
       case HomeScreen.profileTabRoute:
         await UserService.readCurrentUser(context);
-        ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
+        await ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
         break;
       case MunroScreen.route:
         break;
