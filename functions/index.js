@@ -43,7 +43,8 @@ exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(
 
   // Get my profile
   console.log("Getting my profile");
-  const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3");
+  const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3"); // Dev
+  // const myProfileRef = admin.firestore().collection("users").doc("v3qXEVdb6BYhB4wdyCeIfjSukbE2"); // Prod
   const myProfile = await myProfileRef.get();
   console.log("Got my profile");
 
@@ -169,7 +170,7 @@ exports.onUserDeleted = functions.firestore.document("users/{userId}").onDelete(
 
   // Delete user comments
   console.log(`Deleting comments for user: ${userId}`);
-  const userCommentsRef = admin.firestore().collection("comments").where("authorId", "==", userId);
+  const userCommentsRef = admin.firestore().collectionGroup("postComments").where("authorId", "==", userId);
   const userCommentsSnapshot = await userCommentsRef.get();
 
   userCommentsSnapshot.forEach((doc) => {
@@ -220,13 +221,22 @@ exports.onUserDeleted = functions.firestore.document("users/{userId}").onDelete(
 
   // Delete notifications
   console.log("Delete notifications");
-  const notificationsRef = admin.firestore().collection("notifications").where("sourceId", "==", userId);
-  const notificationsSnapshot = await notificationsRef.get();
+  const notificationsTargetRef = admin.firestore().collection("notifications").where("targetId", "==", userId);
+  const notificationsTargetSnapshot = await notificationsTargetRef.get();
 
-  notificationsSnapshot.forEach((doc) => {
+  notificationsTargetSnapshot.forEach((doc) => {
     console.log(`Deleting notification: ${doc.id}`);
     doc.ref.delete();
   });
+
+  const notificationsSourceRef = admin.firestore().collection("notifications").where("sourceId", "==", userId);
+  const notificationsSourceSnapshot = await notificationsSourceRef.get();
+
+  notificationsSourceSnapshot.forEach((doc) => {
+    console.log(`Deleting notification: ${doc.id}`);
+    doc.ref.delete();
+  });
+
   console.log("Notifications deleted");
 
   // Delete posts
