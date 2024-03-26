@@ -197,7 +197,7 @@ class PostService {
       Log.error(error.toString(), stackTrace: stackTrace);
       feedState.setError = Error(
         code: error.toString(),
-        message: "There was an retreiving your posts. Please try again.",
+        message: "There was an issue retreiving your posts. Please try again.",
       );
     }
   }
