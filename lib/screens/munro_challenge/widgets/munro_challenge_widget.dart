@@ -36,8 +36,6 @@ class MunroChallengeWidget extends StatelessWidget {
             ));
 
     if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) return const SizedBox();
-    print("Munro Challenge Widget");
-    print(achievement.toJSON());
     return Container(
       width: double.infinity,
       height: 150,
