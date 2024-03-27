@@ -24,16 +24,18 @@ class MunroChallengeListScreen extends StatelessWidget {
                     title: Text(achievement.name),
                     subtitle: Text(achievement.description),
                     trailing: achievement.completed ? const Icon(Icons.check) : null,
-                    onTap: () {
-                      achievementsState.reset();
-                      achievementsState.setCurrentAchievement = achievement;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CreateMunroChallengeScreen(),
-                        ),
-                      );
-                    },
+                    onTap: achievement.criteria[CriteriaFields.year] == DateTime.now().year
+                        ? () {
+                            achievementsState.reset();
+                            achievementsState.setCurrentAchievement = achievement;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CreateMunroChallengeScreen(),
+                              ),
+                            );
+                          }
+                        : null,
                   ),
                 ),
           ],

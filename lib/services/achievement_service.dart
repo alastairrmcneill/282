@@ -36,27 +36,29 @@ class AchievementService {
     }
   }
 
-  // Update User Achievement
-  static Future _updateUserAchievement(BuildContext context, {required Achievement achievement}) async {
+  // Update User Achievements
+  static Future _updateUserAchievements(BuildContext context) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
+    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
 
     try {
       if (userState.currentUser != null) {
-        // Change this to add all achievements in the notifier
-        userState.currentUser!.achievements![achievement.uid] = achievement.toJSON();
+        for (Achievement achievement in achievementsState.achievements) {
+          userState.currentUser!.achievements?[achievement.uid] = achievement.toJSON();
+        }
 
         await UserService.updateUser(context, appUser: userState.currentUser!);
       }
-    } on FirebaseException catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context,
-          message: error.message ?? "There was an error updating your achievements. Please try again.");
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: "There was an error updating your achievements Please try again.");
+      showErrorDialog(
+        context,
+        message: "There was an error updating your achievements Please try again.",
+      );
     }
   }
 
+  // Set Munro Challenge data
   static Future setMunroChallenge(BuildContext context) async {
     AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
@@ -70,22 +72,25 @@ class AchievementService {
     try {
       achievementsState.setStatus = AchievementsStatus.loading;
 
+      // Check if achievement is already completed
+      int totalCompleted =
+          userState.currentUser?.personalMunroData?.where((element) => element[MunroFields.summited] as bool).length ??
+              0;
+      bool completed = totalCompleted >= achievement.criteria[CriteriaFields.count];
+
       Achievement newAchievement = achievement.copy(
-        completed: _checkAnnualGoal(context, achievement: achievement, userState: userState),
+        progress: totalCompleted,
+        completed: completed,
       );
 
-      await _updateUserAchievement(context, achievement: newAchievement);
-
+      // Update notifier
       achievementsState.updateAchievement = newAchievement;
+
+      // Update database
+      await _updateUserAchievements(context);
 
       // Set status
       achievementsState.setStatus = AchievementsStatus.loaded;
-    } on FirebaseException catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      achievementsState.setError = Error(
-        code: error.toString(),
-        message: error.message ?? "There was an issue setting you munro challenge.",
-      );
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       achievementsState.setError = Error(
@@ -102,17 +107,23 @@ class AchievementService {
 
     for (Achievement achievement in achievementsState.achievements) {
       print("Achievement: ${achievement.name}");
-      if (achievement.completed) {
-        print('Achievement already completed: ${achievement.name}');
-        continue;
-      }
 
       switch (achievement.type) {
         case AchievementTypes.totalCount:
-          _checkTotalCount(context, achievement: achievement, userState: userState);
+          _checkTotalCount(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
           break;
         case AchievementTypes.annualGoal:
-          _checkAnnualGoal(context, achievement: achievement, userState: userState);
+          _checkAnnualGoal(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
           break;
         default:
           break;
@@ -120,29 +131,49 @@ class AchievementService {
     }
 
     // Update database
-    // TODO: add this in
-    // _updateUserAchievements(context);
+    _updateUserAchievements(context);
   }
 
-  static void _checkTotalCount(BuildContext context, {required Achievement achievement, required UserState userState}) {
+  // All Time challenges
+  static void _checkTotalCount(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    // Get total completed
     int totalCompleted =
         userState.currentUser?.personalMunroData?.where((element) => element[MunroFields.summited] as bool).length ?? 0;
-    print("Total completed: $totalCompleted");
-    print(
-        "totalCompleted >= achievement.criteria[CriteriaFields.count]: ${totalCompleted >= achievement.criteria[CriteriaFields.count]}");
-    if (totalCompleted >= achievement.criteria[CriteriaFields.count]) {
-      print("Achievement completed: ${achievement.name}");
-      _markAsCompleted(context, achievement: achievement);
+
+    // Compare to goal
+    bool completed = totalCompleted >= achievement.criteria[CriteriaFields.count];
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: totalCompleted,
+        completed: true,
+      );
     }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: totalCompleted,
+      completed: completed,
+    );
   }
 
-  static bool _checkAnnualGoal(BuildContext context, {required Achievement achievement, required UserState userState}) {
-    print("Checking annual goal");
-    if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) {
-      print("Not this year");
-      return false;
-    }
+  // Annual goal challenges
+  static _checkAnnualGoal(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) return;
 
+    // Get total completed this year
     List munrosCompletedThisYear = userState.currentUser?.personalMunroData?.where((element) {
           bool summited = element[MunroFields.summited] as bool;
           if (!summited) return false;
@@ -158,32 +189,24 @@ class AchievementService {
           return summited && summitedYear == achievementYear;
         }).toList() ??
         [];
+    int completedThisYear = munrosCompletedThisYear.length;
 
-    print("Total completed in goal year: ${munrosCompletedThisYear.length}");
-    print("Goal count: ${achievement.criteria[CriteriaFields.count]}");
-    if (munrosCompletedThisYear.length >= achievement.criteria[CriteriaFields.count]) {
-      _markAsCompleted(context, achievement: achievement);
-      return true;
-    } else {
-      return false;
+    // Compare to goal
+    bool completed = completedThisYear >= achievement.criteria[CriteriaFields.count];
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: completedThisYear,
+        completed: true,
+      );
     }
-  }
 
-  static void _markAsCompleted(BuildContext context, {required Achievement achievement}) {
-    Achievement newAchievement = achievement.copy(completed: true);
-
-    // Update notifier
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
-    achievementsState.updateAchievement = newAchievement;
-    print("Updated notifier");
-
-    // Add to new notifier
-    achievementsState.addRecentlyCompletedAchievement = newAchievement;
-    print("Added to new notifier");
-
-    // Update database
-    // TODO: Remove this and save for later
-    _updateUserAchievement(context, achievement: newAchievement);
-    print("Updating database");
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: completedThisYear,
+      completed: completed,
+    );
   }
 }

@@ -20,6 +20,7 @@ class MunroChallengeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+
     Achievement achievement = achievementsState.achievements.firstWhere(
         (Achievement achievement) =>
             achievement.type == AchievementTypes.annualGoal &&
@@ -35,7 +36,8 @@ class MunroChallengeWidget extends StatelessWidget {
             ));
 
     if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) return const SizedBox();
-
+    print("Munro Challenge Widget");
+    print(achievement.toJSON());
     return Container(
       width: double.infinity,
       height: 150,
