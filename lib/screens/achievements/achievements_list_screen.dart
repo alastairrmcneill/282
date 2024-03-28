@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 class AchievementListScreen extends StatelessWidget {
   const AchievementListScreen({super.key});
@@ -23,6 +24,12 @@ class AchievementListScreen extends StatelessWidget {
                     title: Text(achievement.name),
                     subtitle: Text(achievement.description),
                     trailing: achievement.completed ? const Icon(Icons.check) : null,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AchievementDetailScreen(achievement: achievement),
+                      ),
+                    ),
                   ),
                 ),
           ],
