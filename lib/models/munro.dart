@@ -83,7 +83,9 @@ class Munro {
       summitedDate:
           json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
       saved: json[MunroFields.saved] as bool? ?? false,
-      averageRating: json[MunroFields.averageRating] as double?,
+      averageRating:
+          json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
+      // averageRating: json[MunroFields.averageRating] as double?,
       reviewCount: json[MunroFields.reviewCount] as int?,
     );
   }

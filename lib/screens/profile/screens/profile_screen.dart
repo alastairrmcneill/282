@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro_challenge/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
@@ -188,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ? const SizedBox()
                           : Column(
                               children: [
-                                flavorState.flavor == "Production" ? const SizedBox() : const ProfileMediaHistory(),
+                                const MunroChallengeWidget(),
                                 profileState.posts.isEmpty
                                     ? const Padding(
                                         padding: EdgeInsets.symmetric(vertical: 20),

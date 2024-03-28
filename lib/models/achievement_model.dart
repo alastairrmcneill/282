@@ -5,6 +5,7 @@ class Achievement {
   final String type;
   final bool completed;
   final Map criteria;
+  final int progress;
 
   Achievement({
     required this.uid,
@@ -13,6 +14,7 @@ class Achievement {
     required this.type,
     required this.completed,
     required this.criteria,
+    required this.progress,
   });
 
   Map<String, dynamic> toJSON() {
@@ -23,6 +25,7 @@ class Achievement {
       AchievementFields.type: type,
       AchievementFields.completed: completed,
       AchievementFields.criteria: criteria,
+      AchievementFields.progress: progress,
     };
   }
 
@@ -34,6 +37,7 @@ class Achievement {
       type: data[AchievementFields.type] as String,
       completed: data[AchievementFields.completed] as bool,
       criteria: data[AchievementFields.criteria] as Map,
+      progress: data[AchievementFields.progress] as int? ?? 0,
     );
   }
 
@@ -44,6 +48,7 @@ class Achievement {
     String? type,
     bool? completed,
     Map? criteria,
+    int? progress,
   }) {
     return Achievement(
       uid: uid ?? this.uid,
@@ -52,12 +57,19 @@ class Achievement {
       type: type ?? this.type,
       completed: completed ?? this.completed,
       criteria: criteria ?? this.criteria,
+      progress: progress ?? this.progress,
     );
   }
 
   @override
   String toString() {
-    return "Achievement: ${AchievementFields.uid}: $uid, ${AchievementFields.name}: $name, ${AchievementFields.description}: $description, ${AchievementFields.type}: $type, ${AchievementFields.completed}: $completed, ${AchievementFields.criteria}: $criteria";
+    return """Achievement: ${AchievementFields.uid}: $uid, 
+                          ${AchievementFields.name}: $name, 
+                          ${AchievementFields.description}: $description, 
+                          ${AchievementFields.type}: $type, 
+                          ${AchievementFields.completed}: 
+                          $completed, ${AchievementFields.criteria}: $criteria, 
+                          ${AchievementFields.progress}: $progress""";
   }
 }
 
@@ -68,11 +80,16 @@ class AchievementFields {
   static const String type = 'type';
   static const String completed = 'completed';
   static const String criteria = 'criteria';
+  static const String progress = 'progress';
 }
 
 class AchievementTypes {
   static const String totalCount = "totalCount";
   static const String annualGoal = "annualGoal";
+  static const String highestMunros = "highestMunros";
+  static const String lowestMunros = "lowestMunros";
+  static const String monthlyMunro = "monthlyMunro";
+  static const String multiMunroDay = "multiMunroDay";
 }
 
 class CriteriaFields {

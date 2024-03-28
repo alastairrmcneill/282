@@ -21,3 +21,4 @@ export 'munro_challenge/create_munro_challenge_screen.dart';
 export 'munro_challenge/munro_challenge_list_screen.dart';
 export 'achievements/achievements_screen.dart';
 export 'achievements/achievements_list_screen.dart';
+export 'achievements/achievement_details_screen.dart';
