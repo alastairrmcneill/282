@@ -86,6 +86,10 @@ class AchievementFields {
 class AchievementTypes {
   static const String totalCount = "totalCount";
   static const String annualGoal = "annualGoal";
+  static const String highestMunros = "highestMunros";
+  static const String lowestMunros = "lowestMunros";
+  static const String monthlyMunro = "monthlyMunro";
+  static const String multiMunroDay = "multiMunroDay";
 }
 
 class CriteriaFields {

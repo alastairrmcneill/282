@@ -106,8 +106,6 @@ class AchievementService {
     AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
 
     for (Achievement achievement in achievementsState.achievements) {
-      print("Achievement: ${achievement.name}");
-
       switch (achievement.type) {
         case AchievementTypes.totalCount:
           _checkTotalCount(
@@ -125,6 +123,38 @@ class AchievementService {
             achievementsState: achievementsState,
           );
           break;
+        case AchievementTypes.highestMunros:
+          _checkHighestMunros(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
+          break;
+        case AchievementTypes.lowestMunros:
+          _checkLowestMunros(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
+          break;
+        case AchievementTypes.monthlyMunro:
+          _checkMonthlyMunro(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
+          break;
+        case AchievementTypes.multiMunroDay:
+          _checkMultiMunroDay(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
+          break;
         default:
           break;
       }
@@ -135,7 +165,7 @@ class AchievementService {
   }
 
   // All Time challenges
-  static void _checkTotalCount(
+  static _checkTotalCount(
     BuildContext context, {
     required Achievement achievement,
     required UserState userState,
@@ -206,6 +236,179 @@ class AchievementService {
     // Add to regular notifier
     achievementsState.updateAchievement = achievement.copy(
       progress: completedThisYear,
+      completed: completed,
+    );
+  }
+
+  // Highest Munros
+  static _checkHighestMunros(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    // Get highest munros
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    List<Munro> munros = munroState.munroList;
+    munros.sort((a, b) => b.feet - a.feet);
+
+    int count = achievement.criteria[CriteriaFields.count] as int;
+
+    List<Munro> highestMunros = munros.sublist(0, count);
+
+    // Get my list of summits from highest x number
+    int numSummited = highestMunros.where((munro) {
+      // Get the personal data for this munro
+      var personalMunroData = userState.currentUser?.personalMunroData?[int.parse(munro.id) - 1];
+
+      // Check if the munro has been summited
+      return personalMunroData?[MunroFields.summited] ?? false;
+    }).length;
+
+    // Compare to goal
+    bool completed = numSummited >= count;
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: numSummited,
+        completed: true,
+      );
+    }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: numSummited,
+      completed: completed,
+    );
+  }
+
+  // Lowest Munros
+  static _checkLowestMunros(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    // Get lowest munros
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    List<Munro> munros = munroState.munroList;
+    munros.sort((a, b) => a.feet - b.feet);
+
+    int count = achievement.criteria[CriteriaFields.count] as int;
+
+    List<Munro> lowestMunros = munros.sublist(0, count);
+
+    // Get my list of summits from highest x number
+    int numSummited = lowestMunros.where((munro) {
+      // Get the personal data for this munro
+      var personalMunroData = userState.currentUser?.personalMunroData?[int.parse(munro.id) - 1];
+
+      // Check if the munro has been summited
+      return personalMunroData?[MunroFields.summited] ?? false;
+    }).length;
+
+    // Compare to goal
+    bool completed = numSummited >= count;
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: numSummited,
+        completed: true,
+      );
+    }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: numSummited,
+      completed: completed,
+    );
+  }
+
+  // Monhtly Munros
+  static _checkMonthlyMunro(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    // Get munros by month
+    Map<int, int> monthCounts = {
+      for (var i = 1; i <= 12; i++) i: 0,
+    };
+
+    userState.currentUser?.personalMunroData?.forEach((munroData) {
+      Timestamp? summitedDate = munroData[MunroFields.summitedDate] as Timestamp?;
+
+      if (summitedDate != null) {
+        // Increment the count for the month of the summited date
+        int month = summitedDate.toDate().month;
+        monthCounts[month] = (monthCounts[month] ?? 0) + 1;
+      }
+    });
+
+    int monthsWithCompletedMunro = monthCounts.values.where((int count) => count > 0).length;
+
+    // Compare to goal
+    bool completed = monthsWithCompletedMunro == 12;
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: monthsWithCompletedMunro,
+        completed: true,
+      );
+    }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: monthsWithCompletedMunro,
+      completed: completed,
+    );
+  }
+
+  // Multi Munro Day
+  static _checkMultiMunroDay(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    // Get multi munro days
+    Map<DateTime, int> dateCounts = {};
+
+    userState.currentUser?.personalMunroData?.forEach((munro) {
+      Timestamp? summitedDate = munro[MunroFields.summitedDate] as Timestamp?;
+
+      if (summitedDate != null) {
+        // Increment the count for the month of the summited date
+        DateTime dateTime = summitedDate.toDate();
+        DateTime date = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+        dateCounts[date] = (dateCounts[date] ?? 0) + 1;
+      }
+    });
+
+    int daysWithCorrectCount =
+        dateCounts.values.where((int count) => count == achievement.criteria[CriteriaFields.count]).length;
+
+    // Compare to goal
+    bool completed = daysWithCorrectCount > 0;
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        completed: true,
+      );
+    }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
       completed: completed,
     );
   }
