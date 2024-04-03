@@ -9,3 +9,4 @@ export 'like_model.dart';
 export 'notifications_model.dart';
 export 'review_model.dart';
 export 'achievement_model.dart';
+export 'weather_model.dart';

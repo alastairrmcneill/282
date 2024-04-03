@@ -14,3 +14,4 @@ export 'review_service.dart';
 export 'achievement_service.dart';
 export 'log_service.dart';
 export 'user_service.dart';
+export 'weather_service.dart';

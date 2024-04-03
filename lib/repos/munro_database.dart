@@ -26,10 +26,12 @@ class MunroDatabase {
 
     // Convert to list of maps
     List<Map<String, dynamic>> munroData = [];
+
     for (var doc in querySnapshot.docs) {
       munroData.add(doc.data() as Map<String, dynamic>);
     }
 
+    print('Get Additional Munro Data: ${querySnapshot.docs.length} munros found');
     // Return the data as a list of maps
     return munroData;
   }

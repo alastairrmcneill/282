@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
-import 'package:two_eight_two/services/munro_service.dart';
+import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/stat_text.dart';
 
 class MunroScreen extends StatefulWidget {
@@ -65,6 +66,7 @@ class _MunroScreenState extends State<MunroScreen> {
                     const Text('Reviews'),
                     const AverageMunroRating(),
                     const ReviewsListWidget(),
+                    const MunroWeatherWidget(),
                   ],
                 ),
               ),

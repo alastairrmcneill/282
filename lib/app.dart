@@ -78,6 +78,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<AchievementsState>(
           create: (_) => AchievementsState(),
         ),
+        ChangeNotifierProvider<WeatherState>(
+          create: (_) => WeatherState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",
