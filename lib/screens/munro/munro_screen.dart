@@ -67,6 +67,7 @@ class _MunroScreenState extends State<MunroScreen> {
                     const AverageMunroRating(),
                     const ReviewsListWidget(),
                     const MunroWeatherWidget(),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
