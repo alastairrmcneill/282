@@ -22,3 +22,4 @@ export 'munro_challenge/munro_challenge_list_screen.dart';
 export 'achievements/achievements_screen.dart';
 export 'achievements/achievements_list_screen.dart';
 export 'achievements/achievement_details_screen.dart';
+export 'weather/weather_screen.dart';

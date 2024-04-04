@@ -95,6 +95,7 @@ class App extends StatelessWidget {
           AuthHomeScreen.route: (context) => const AuthHomeScreen(),
           MunroScreen.route: (context) => const MunroScreen(),
           AchievementsScreen.route: (context) => const AchievementsScreen(),
+          WeatherScreen.route: (context) => const WeatherScreen(),
         },
         home: const HomeScreen(),
       ),
