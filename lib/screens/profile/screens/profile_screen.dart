@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -146,8 +145,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             try {
-                                              await FirebaseMessaging.instance.requestPermission();
-                                              final token = await FirebaseMessaging.instance.getToken();
+                                              print('Share');
+                                              // await FirebaseMessaging.instance.requestPermission();
+                                              // final token = await FirebaseMessaging.instance.getToken();
                                             } catch (error, stackTrace) {
                                               Log.error(error.toString(), stackTrace: stackTrace);
                                             }
@@ -173,8 +173,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             try {
-                                              await FirebaseMessaging.instance.requestPermission();
-                                              final token = await FirebaseMessaging.instance.getToken();
+                                              print('Share');
+                                              // await FirebaseMessaging.instance.requestPermission();
+                                              // final token = await FirebaseMessaging.instance.getToken();
                                             } on Exception catch (error, stackTrace) {
                                               Log.error(error.toString(), stackTrace: stackTrace);
                                             }
