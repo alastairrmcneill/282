@@ -9,7 +9,7 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
-  await dotenv.load(fileName: '/Users/alastair/Documents/Development/Flutter/TwoEightTwo/.env');
+  await dotenv.load();
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
 
   await SentryFlutter.init(
