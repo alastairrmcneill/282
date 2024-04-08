@@ -10,7 +10,7 @@ jobs:
     name: build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Decode GoogleServices-Info.plist
         run: |
@@ -22,6 +22,29 @@ jobs:
 
       - name: Decode .env file
         run: echo "${{ secrets.DOT_ENV_BASE_64 }}" | base64 --decode > .env
+
+        # Test
+
+        # Setup Java in the VM
+      - name: Setup Java to compile the Android project
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: 12
+
+        # Setup Flutter in the VM
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+
+      # Run flutter commands
+      - name: Run flutter pub get
+        run:
+          flutter clean
+          flutter pub get
+
+          # End of test
 
       - uses: cedvdb/action-flutter-build-ios@v1
         with:
