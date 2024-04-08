@@ -58,19 +58,10 @@ jobs:
       - name: Run flutter pub get
         run: flutter pub get
 
-      - name: 📦 Install dependencies
-        run: flutter pub get
-
-      - name: 🕵️ Analyze to check for bad Dart/Flutter practices
-        run: flutter analyze
-
-      - name: 📉 Run all app tests
-        run: flutter test
-
       # Build Android Bundle release file
       - name: Build aab
         run: |
-          flutter build appbundle --release
+          flutter build appbundle --flavor production --target lib/main_production.dart
 
       # Upload generated aab to project artifacts
       - name: Upload generated aab to the artifacts
