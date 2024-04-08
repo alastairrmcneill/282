@@ -26,7 +26,7 @@ jobs:
       - uses: cedvdb/action-flutter-build-ios@v1
         with:
           # always use --export-options-plist=ios/GithubActionsExportOptions.plist
-          build-cmd: flutter build ios --release --flavor production --target=lib/main_production.dart --export-options-plist=ios/GithubActionsExportOptions.plist
+          build-cmd: flutter build ipa --release --flavor production --target=lib/main_production.dart --export-options-plist=ios/GithubActionsExportOptions.plist
           certificate-base64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
           certificate-password: ${{ secrets.IOS_P12_PASSWORD }}
           provisioning-profile-base64: ${{ secrets.IOS_MOBILE_PROVISIONING_BASE_64 }}
