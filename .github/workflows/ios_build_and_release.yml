@@ -1,0 +1,65 @@
+name: GitHub iOS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Decode GoogleServices-Info.plist
+        run: |
+          echo "${{ secrets.IOS_GOOGLE_SERVICES_INFO_BASE64 }}" | base64 --decode > ios/config/production/GoogleService-Info.plist
+
+      - name: Decode App Delegate
+        run: |
+          echo "${{ secrets.IOS_APP_DELEGATE_BASE64 }}" | base64 --decode > ios/Runner/AppDelegate.swift
+
+      - name: Decode .env file
+        run: echo "${{ secrets.DOT_ENV_BASE_64 }}" | base64 --decode > .env
+
+      - uses: cedvdb/action-flutter-build-ios@v1
+        with:
+          # always use --export-options-plist=ios/GithubActionsExportOptions.plist
+          build-cmd: flutter build ios --release --flavor production --target=lib/main_production.dart --export-options-plist=ios/GithubActionsExportOptions.plist
+          certificate-base64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
+          certificate-password: ${{ secrets.IOS_P12_PASSWORD }}
+          provisioning-profile-base64: ${{ secrets.IOS_MOBILE_PROVISIONING_BASE_64 }}
+          keychain-password: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+
+      - name: Archive IPA
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-ipa
+          # Try running the build locally with the build command to be sure of this path
+          path: build/ios/ipa/test_ci_cd.ipa
+
+      - name: Setup directories
+        run: |
+          mkdir -p private_keys
+          echo "Directory created at private_keys"
+          ls
+
+      - name: Decode Base64-encoded Private Key
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.IOS_APP_STORE_CONNECT_KEY_ID }}
+        run: |
+          echo "$${{ secrets.IOS_AUTH_KEY_BASE_64 }}" | base64 --decode > private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8
+          echo "Decoded private key saved at private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8"
+
+      - name: Upload to TestFlight
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.IOS_APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.IOS_APP_STORE_CONNECT_KEY_ID }}
+        run: |
+          xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa \
+          --apiKey $APP_STORE_CONNECT_KEY_ID \
+          --apiIssuer $APP_STORE_CONNECT_ISSUER_ID \
+          --apiKeyId $APP_STORE_CONNECT_KEY_ID \
+          --private-key private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8 \
+          --verbose
