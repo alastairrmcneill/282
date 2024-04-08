@@ -92,5 +92,5 @@ jobs:
           serviceAccountJson: store_credentials.json
           packageName: com.alastairrmcneill.testCICD
           releaseFiles: build/app/outputs/bundle/productionRelease/app-production-release.aab
-          track: open
+          track: beta
           status: draft
