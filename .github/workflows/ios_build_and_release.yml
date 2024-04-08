@@ -1,4 +1,4 @@
-name: GitHub iOS
+name: iOS Build and Release
 
 on:
   push:
@@ -11,6 +11,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+
+      # Decode AndroidManifest.xml
+      - name: Decode AndroidManifest.xml
+        run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
 
       - name: Decode GoogleServices-Info.plist
         run: |
