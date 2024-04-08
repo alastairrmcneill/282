@@ -25,7 +25,6 @@ jobs:
 
       - uses: cedvdb/action-flutter-build-ios@v1
         with:
-          # always use --export-options-plist=ios/GithubActionsExportOptions.plist
           build-cmd: flutter build ipa --release --flavor production --target=lib/main_production.dart --export-options-plist=ios/GithubActionsExportOptions.plist
           certificate-base64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
           certificate-password: ${{ secrets.IOS_P12_PASSWORD }}
@@ -37,7 +36,7 @@ jobs:
         with:
           name: release-ipa
           # Try running the build locally with the build command to be sure of this path
-          path: build/ios/ipa/test_ci_cd.ipa
+          path: build/ios/ipa/282.ipa
 
       - name: Setup directories
         run: |
