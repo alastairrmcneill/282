@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +8,7 @@ import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -64,6 +67,18 @@ class SettingsScreen extends StatelessWidget {
               );
             },
             title: const Text("Units"),
+          ),
+          ListTile(
+            onTap: () async {
+              String url = Platform.isIOS
+                  ? "https://testflight.apple.com/join/CsiMRS87"
+                  : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
+
+              await launchUrl(
+                Uri.parse(url),
+              );
+            },
+            title: const Text("Rate 282"),
           ),
           ListTile(
             onTap: () {
