@@ -8,62 +8,49 @@ jobs:
   setup_and_build_android:
     name: Setup and Build App Bundle
     runs-on: ubuntu-latest
-    env:
-      AAB_PATH: build/app/outputs/bundle/release/app-release.aab
     steps:
-      # Checkout repository codebase
       - name: Checkout the code
         uses: actions/checkout@v3
 
-      # Setup Java in the VM
       - name: Setup Java to compile the Android project
         uses: actions/setup-java@v2
         with:
           distribution: "zulu"
-          java-version: 12
+          java-version: 20
 
-      # Setup Flutter in the VM
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.x"
 
-      # Decode Android env variables
       - name: Decode Android keystore
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE_64 }}" | base64 --decode > android/app/upload-keystore.jks
 
       - name: Decode Android key properties
         run: echo "${{ secrets.ANDROID_KEY_PROPERTIES_BASE_64 }}" | base64 --decode > android/key.properties
 
-      # Decode .env file
       - name: Decode .env file
         run: echo "${{ secrets.DOT_ENV_BASE_64 }}" | base64 --decode > .env
 
-      # Decode google-services.json
       - name: Decode google-services.json
         run: echo "${{ secrets.ANDROID_GOOGLE_SERVICES_JSON_BASE_64 }}" | base64 --decode > android/app/google-services.json
 
-      # Decode AndroidManifest.xml
       - name: Decode AndroidManifest.xml
         run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
 
-      # Decode google sign in files
       - name: Decode google sign in files
         run:
           echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_1_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_1_FILE_PATH }}
           echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_2_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_2_FILE_PATH }}
           echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_3_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_3_FILE_PATH }}
 
-      # Run flutter commands
       - name: Run flutter pub get
         run: flutter pub get
 
-      # Build Android Bundle release file
       - name: Build aab
         run: |
           flutter build appbundle --flavor production --target lib/main_production.dart
 
-      # Upload generated aab to project artifacts
       - name: Upload generated aab to the artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -75,14 +62,12 @@ jobs:
     needs: setup_and_build_android
     runs-on: ubuntu-latest
     steps:
-      # Download app bundle
       - name: Download App Bundle
         uses: actions/download-artifact@v2
         with:
           name: aab-stores
           path: build/app/outputs/bundle/productionRelease/
 
-      # Decode Android release Service Account
       - name: Decode Android Service Account
         run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT_BASE_64 }}" | base64 --decode > store_credentials.json
 

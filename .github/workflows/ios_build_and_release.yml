@@ -6,13 +6,13 @@ on:
       - main
 
 jobs:
-  build:
-    name: build
+  setup_and_build_IPA:
+    name: setup_and_build_IPA
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the code
+        uses: actions/checkout@v3
 
-      # Decode AndroidManifest.xml
       - name: Decode AndroidManifest.xml
         run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
 
@@ -42,20 +42,31 @@ jobs:
           name: release-ipa
           path: build/ios/ipa/282.ipa
 
-      - name: Setup directories
+  release_to_app_store:
+    name: Release to App Store
+    needs: setup_and_build_IPA
+    runs-on: macos-latest
+    steps:
+      - name: Download App Bundle
+        uses: actions/download-artifact@v2
+        with:
+          name: release-ipa
+          path: build/ios/ipa/
+
+      - name: Setup private_keys
         run: |
           mkdir -p private_keys
           echo "Directory created at private_keys"
           ls
 
-      - name: Decode Base64-encoded Private Key
+      - name: Decode Base64-encoded App Store Connect API Key
         env:
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.IOS_APP_STORE_CONNECT_KEY_ID }}
         run: |
           echo "${{ secrets.IOS_AUTH_KEY_BASE_64 }}" | base64 --decode > private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8
           echo "Decoded private key saved at private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8"
 
-      - name: Upload to TestFlight
+      - name: Upload to App Store Connect
         env:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.IOS_APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.IOS_APP_STORE_CONNECT_KEY_ID }}
