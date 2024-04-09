@@ -66,6 +66,24 @@ class SettingsScreen extends StatelessWidget {
             title: const Text("Units"),
           ),
           ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LegalScreen()),
+              );
+            },
+            title: const Text("Legal"),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AboutScreen()),
+              );
+            },
+            title: const Text("About"),
+          ),
+          ListTile(
             onTap: () async {
               await AuthService.signOut(context);
             },
