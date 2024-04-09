@@ -19,16 +19,12 @@ class AboutScreen extends StatelessWidget {
               children: [
                 ListTile(
                   title: const Text("Version"),
-                  subtitle: Text("${snapshot.data!.version}+${snapshot.data!.buildNumber}"),
-                ),
-                const ListTile(
-                  title: const Text("License"),
-                  subtitle: const Text("MIT"),
+                  subtitle: Text("${snapshot.data!.version} (${snapshot.data!.buildNumber})"),
                 ),
               ],
             );
           } else {
-            return CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),
