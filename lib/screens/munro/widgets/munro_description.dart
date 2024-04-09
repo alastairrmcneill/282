@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -31,6 +32,7 @@ class MunroDescription extends StatelessWidget {
                   );
                 } on Exception catch (error, stackTrace) {
                   Log.error(error.toString(), stackTrace: stackTrace);
+                  Clipboard.setData(ClipboardData(text: munroState.selectedMunro?.link ?? ""));
                   showSnackBar(context, 'Copied link. Go to browser to open.');
                 }
               },

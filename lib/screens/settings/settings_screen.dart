@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
@@ -70,6 +71,20 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () async {
+              try {
+                await launchUrl(
+                  Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
+                );
+              } on Exception catch (error, stackTrace) {
+                Log.error(error.toString(), stackTrace: stackTrace);
+                Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
+                showSnackBar(context, 'Copied email address. Go to email app to send.');
+              }
+            },
+            title: const Text("Email us"),
+          ),
+          ListTile(
+            onTap: () async {
               String url = Platform.isIOS
                   ? "https://testflight.apple.com/join/CsiMRS87"
                   : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
@@ -80,6 +95,7 @@ class SettingsScreen extends StatelessWidget {
                 );
               } on Exception catch (error, stackTrace) {
                 Log.error(error.toString(), stackTrace: stackTrace);
+                Clipboard.setData(ClipboardData(text: url));
                 showSnackBar(context, 'Copied link. Go to browser to open.');
               }
             },

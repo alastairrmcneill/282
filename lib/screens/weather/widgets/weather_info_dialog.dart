@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,6 +39,7 @@ class WeatherInfoDialog extends StatelessWidget {
                     );
                   } on Exception catch (error, stackTrace) {
                     Log.error(error.toString(), stackTrace: stackTrace);
+                    Clipboard.setData(ClipboardData(text: 'https://www.metoffice.gov.uk/'));
                     showSnackBar(context, 'Copied link. Go to browser to open.');
                   }
                 },
@@ -81,6 +83,7 @@ class WeatherInfoDialog extends StatelessWidget {
                     );
                   } on Exception catch (error, stackTrace) {
                     Log.error(error.toString(), stackTrace: stackTrace);
+                    Clipboard.setData(ClipboardData(text: 'https://www.metoffice.gov.uk/'));
                     showSnackBar(context, 'Copied link. Go to browser to open.');
                   }
                 },
