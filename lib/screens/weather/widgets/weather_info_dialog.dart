@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WeatherInfoDialog extends StatelessWidget {
@@ -30,9 +32,14 @@ class WeatherInfoDialog extends StatelessWidget {
               style: const TextStyle(color: Colors.blue),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  await launchUrl(
-                    Uri.parse('https://www.metoffice.gov.uk/'),
-                  );
+                  try {
+                    await launchUrl(
+                      Uri.parse('https://www.metoffice.gov.uk/'),
+                    );
+                  } on Exception catch (error, stackTrace) {
+                    Log.error(error.toString(), stackTrace: stackTrace);
+                    showSnackBar(context, 'Copied link. Go to browser to open.');
+                  }
                 },
             ),
           ],
@@ -68,9 +75,14 @@ class WeatherInfoDialog extends StatelessWidget {
               style: const TextStyle(color: Colors.blue),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  await launchUrl(
-                    Uri.parse('https://www.metoffice.gov.uk/'),
-                  );
+                  try {
+                    await launchUrl(
+                      Uri.parse('https://www.metoffice.gov.uk/'),
+                    );
+                  } on Exception catch (error, stackTrace) {
+                    Log.error(error.toString(), stackTrace: stackTrace);
+                    showSnackBar(context, 'Copied link. Go to browser to open.');
+                  }
                 },
             ),
           ],

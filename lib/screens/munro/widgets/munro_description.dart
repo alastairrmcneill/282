@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MunroDescription extends StatelessWidget {
@@ -23,9 +25,14 @@ class MunroDescription extends StatelessWidget {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
-                await launchUrl(
-                  Uri.parse(munroState.selectedMunro?.link ?? ""),
-                );
+                try {
+                  await launchUrl(
+                    Uri.parse(munroState.selectedMunro?.link ?? ""),
+                  );
+                } on Exception catch (error, stackTrace) {
+                  Log.error(error.toString(), stackTrace: stackTrace);
+                  showSnackBar(context, 'Copied link. Go to browser to open.');
+                }
               },
           ),
         ],

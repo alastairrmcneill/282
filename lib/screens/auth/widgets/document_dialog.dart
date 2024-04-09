@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:two_eight_two/services/log_service.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Custom error dialog with string input for any message
@@ -28,9 +30,14 @@ showDocumentDialog(BuildContext context, {required String mdFileName}) async {
                     onTapLink: (text, url, title) async {
                       if (url == null) return;
 
-                      await launchUrl(
-                        Uri.parse(url),
-                      );
+                      try {
+                        await launchUrl(
+                          Uri.parse(url),
+                        );
+                      } on Exception catch (error, stackTrace) {
+                        Log.error(error.toString(), stackTrace: stackTrace);
+                        showSnackBar(context, 'Copied link. Go to browser to open.');
+                      }
                     },
                   );
                 }

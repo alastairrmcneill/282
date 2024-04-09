@@ -74,9 +74,14 @@ class SettingsScreen extends StatelessWidget {
                   ? "https://testflight.apple.com/join/CsiMRS87"
                   : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
 
-              await launchUrl(
-                Uri.parse(url),
-              );
+              try {
+                await launchUrl(
+                  Uri.parse(url),
+                );
+              } on Exception catch (error, stackTrace) {
+                Log.error(error.toString(), stackTrace: stackTrace);
+                showSnackBar(context, 'Copied link. Go to browser to open.');
+              }
             },
             title: const Text("Rate 282"),
           ),
