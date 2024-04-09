@@ -13,7 +13,7 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>com.alastairrmcneill.TwoEightTwo</key>
-		<string>TwoEightTwo - Distribution</string>
+		<string>282 Github Actions - Development</string>
 	</dict>
 	<key>signingStyle</key>
 	<string>manual</string>

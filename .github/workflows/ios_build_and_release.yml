@@ -34,6 +34,7 @@ jobs:
           certificate-password: ${{ secrets.IOS_P12_PASSWORD }}
           provisioning-profile-base64: ${{ secrets.IOS_MOBILE_PROVISIONING_BASE_64 }}
           keychain-password: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+          flutterfire: "false"
 
       - name: Archive IPA
         uses: actions/upload-artifact@v2
