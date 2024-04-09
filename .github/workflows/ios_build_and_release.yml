@@ -52,7 +52,7 @@ jobs:
         env:
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.IOS_APP_STORE_CONNECT_KEY_ID }}
         run: |
-          echo "$${{ secrets.IOS_AUTH_KEY_BASE_64 }}" | base64 --decode > private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8
+          echo "${{ secrets.IOS_AUTH_KEY_BASE_64 }}" | base64 --decode > private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8
           echo "Decoded private key saved at private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8"
 
       - name: Upload to TestFlight
