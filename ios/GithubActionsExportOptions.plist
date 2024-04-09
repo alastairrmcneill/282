@@ -10,13 +10,15 @@
 	<true/>
 	<key>method</key>
 	<string>app-store</string>
-	<key>signingStyle</key>
-	<string>manual</string>
 	<key>provisioningProfiles</key>
 	<dict>
-	<key>com.alastairrmcneill.TwoEightTwo</key>
-	<string>TwoEightTwo - Distribution</string>
+		<key>com.alastairrmcneill.TwoEightTwo</key>
+		<string>TwoEightTwo - Distribution</string>
 	</dict>
+	<key>signingCertificate</key>
+	<string>Apple Distribution</string>
+	<key>signingStyle</key>
+	<string>manual</string>
 	<key>stripSwiftSymbols</key>
 	<true/>
 	<key>teamID</key>
