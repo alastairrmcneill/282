@@ -15,8 +15,8 @@ jobs:
       - name: Setup Java to compile the Android project
         uses: actions/setup-java@v2
         with:
-          distribution: "zulu"
-          java-version: 12
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "17"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
