@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -16,12 +17,14 @@ class ExpandedSavedListTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-            title: Text(
-              "${savedList.name} (${savedList.munroIds.length})",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            trailing: const Icon(Icons.keyboard_arrow_down),
-            onTap: onTap),
+          title: Text(
+            "${savedList.name} (${savedList.munroIds.length})",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          leading: const Icon(Icons.keyboard_arrow_down_rounded),
+          trailing: SavedListPopupMenu(savedList: savedList),
+          onTap: onTap,
+        ),
         ...savedList.munroIds.map((munroId) {
           Munro munro = munroState.munroList.where((munro) => munro.id == munroId).first;
           return ListTile(

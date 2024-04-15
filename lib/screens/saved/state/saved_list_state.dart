@@ -25,6 +25,13 @@ class SavedListState extends ChangeNotifier {
     _savedLists = savedLists;
     notifyListeners();
   }
+
+  void removeSavedList(SavedList savedList) {
+    if (_savedLists.contains(savedList)) {
+      _savedLists.remove(savedList);
+      notifyListeners();
+    }
+  }
 }
 
 enum SavedListStatus { initial, loading, loaded, error }

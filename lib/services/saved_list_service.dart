@@ -55,7 +55,16 @@ class SavedListService {
     // Update a saved list
   }
 
-  static Future deleteSavedList(BuildContext context) async {
-    // Delete a saved list
+  static Future deleteSavedList(BuildContext context, {required SavedList savedList}) async {
+    SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+
+    try {
+      savedListState.removeSavedList(savedList);
+
+      SavedListDatabase.deleteFromUid(context, uid: savedList.uid ?? "");
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      savedListState.setError = Error(message: "There was an issue deleting your post. Please try again.");
+    }
   }
 }
