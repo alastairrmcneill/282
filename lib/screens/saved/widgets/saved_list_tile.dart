@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class SavedListTile extends StatefulWidget {
   final SavedList savedList;
@@ -21,19 +17,11 @@ class _SavedListTileState extends State<SavedListTile> {
     return isExpanded
         ? ExpandedSavedListTile(
             savedList: widget.savedList,
-            onTap: () {
-              setState(() {
-                isExpanded = false;
-              });
-            },
+            onTap: () => setState(() => isExpanded = false),
           )
         : CollapsedSavedListTile(
             savedList: widget.savedList,
-            onTap: () {
-              setState(() {
-                isExpanded = true;
-              });
-            },
+            onTap: () => setState(() => isExpanded = true),
           );
   }
 }

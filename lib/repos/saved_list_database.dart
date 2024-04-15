@@ -56,7 +56,7 @@ class SavedListDatabase {
     }
   }
 
-  Future update(BuildContext context, {required SavedList savedList}) async {
+  static Future update(BuildContext context, {required SavedList savedList}) async {
     try {
       DocumentReference ref = _savedListsRef.doc(savedList.uid);
 

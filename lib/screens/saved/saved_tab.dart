@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/saved/widgets/saved_list_tile.dart';
+import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -13,8 +12,15 @@ class SavedTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Saved Lists'),
-        actions: [IconButton(icon: Icon(Icons.add), onPressed: () {})],
+        title: const Text('Your Saved Lists'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              showCreateSavedListDialog(context);
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () => SavedListService.readUserSavedLists(context),

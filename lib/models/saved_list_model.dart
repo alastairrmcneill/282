@@ -5,7 +5,7 @@ class SavedList {
   final List<String> munroIds;
 
   SavedList({
-    required this.uid,
+    this.uid,
     required this.name,
     required this.userId,
     required this.munroIds,

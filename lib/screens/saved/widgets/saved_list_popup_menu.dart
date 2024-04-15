@@ -14,7 +14,9 @@ class SavedListPopupMenu extends StatelessWidget {
       onSelected: (value) async {
         if (value == MenuItems.item1) {
         } else if (value == MenuItems.item2) {
-          SavedListService.deleteSavedList(context, savedList: savedList);
+          if (savedList.uid != null) {
+            SavedListService.deleteSavedList(context, savedList: savedList);
+          }
         }
       },
       itemBuilder: (context) => const [

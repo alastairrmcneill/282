@@ -32,6 +32,19 @@ class SavedListState extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void addSavedList(SavedList savedList) {
+    _savedLists.add(savedList);
+    notifyListeners();
+  }
+
+  void updateSavedList(SavedList savedList) {
+    int index = _savedLists.indexWhere((element) => element.uid == savedList.uid);
+    if (index != -1) {
+      _savedLists[index] = savedList;
+      notifyListeners();
+    }
+  }
 }
 
 enum SavedListStatus { initial, loading, loaded, error }

@@ -6,16 +6,29 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class SavedListService {
-  static Future createSavedList(BuildContext context) async {
+  static Future createSavedList(BuildContext context, {required String name}) async {
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       savedListState.setStatus = SavedListStatus.loading;
+      if (userState.currentUser == null) {
+        savedListState.setError = Error(
+          message: "You must be signed in to create a list",
+          code: "user-not-signed-in",
+        );
+        return;
+      }
 
-      // TODO: Decide how to create list
-      // Build in widget and send through
-      // Build in notifier and open notifier here
+      SavedList savedList = SavedList(
+        name: name,
+        userId: userState.currentUser?.uid ?? "",
+        munroIds: [],
+      );
 
+      await SavedListDatabase.create(context, savedList: savedList);
+
+      savedListState.addSavedList(savedList);
       savedListState.setStatus = SavedListStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -51,8 +64,24 @@ class SavedListService {
     }
   }
 
-  static Future updateSavedListName(BuildContext context) async {
+  static Future updateSavedListName(BuildContext context, {required SavedList savedList}) async {
     // Update a saved list
+    SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+
+    try {
+      savedListState.setStatus = SavedListStatus.loading;
+
+      await SavedListDatabase.update(context, savedList: savedList);
+
+      savedListState.updateSavedList(savedList);
+      savedListState.setStatus = SavedListStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      savedListState.setError = Error(
+        message: "There was an issue updating your list. Please try again",
+        code: error.toString(),
+      );
+    }
   }
 
   static Future deleteSavedList(BuildContext context, {required SavedList savedList}) async {
