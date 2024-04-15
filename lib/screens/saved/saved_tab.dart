@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/models/munro.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/saved/widgets/saved_list_tile.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -12,34 +11,36 @@ class SavedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
     return Scaffold(
-      body: munroState.munroList.where((element) => element.saved).isEmpty
-          ? const Padding(
-              padding: EdgeInsets.all(15),
-              child: CenterText(text: "You haven't saved any munros yet."),
-            )
-          : ListView(
-              children: munroState.munroList
-                  .where((element) => element.saved)
-                  .map(
-                    (Munro munro) => ListTile(
-                      title: Text(munro.name),
-                      subtitle: Text(
-                          "${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
-                      onTap: () {
-                        munroState.setSelectedMunro = munro;
-                        ReviewService.getMunroReviews(context);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const MunroScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
+      appBar: AppBar(
+        title: Text('Your Saved Lists'),
+        actions: [IconButton(icon: Icon(Icons.add), onPressed: () {})],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () => SavedListService.readUserSavedLists(context),
+        child: Consumer<SavedListState>(
+          builder: (context, savedListState, child) {
+            switch (savedListState.status) {
+              case SavedListStatus.loading:
+                return const Center(child: CircularProgressIndicator());
+              case SavedListStatus.error:
+                return CenterText(text: savedListState.error.message);
+              default:
+                return _buildScreen(context, savedListState: savedListState);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScreen(BuildContext context, {required SavedListState savedListState}) {
+    if (savedListState.savedLists.isEmpty) return const CenterText(text: "You don't have any saved lists yet");
+
+    return ListView(
+      children: savedListState.savedLists.map((savedList) {
+        return SavedListTile(savedList: savedList);
+      }).toList(),
     );
   }
 }
