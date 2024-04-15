@@ -10,3 +10,4 @@ export 'notifications_model.dart';
 export 'review_model.dart';
 export 'achievement_model.dart';
 export 'weather_model.dart';
+export 'saved_list_model.dart';

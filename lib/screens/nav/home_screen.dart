@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await UserService.readCurrentUser(context);
     MunroService.loadMunroData(context);
     AchievementService.getUserAchievements(context);
+    SavedListService.readUserSavedLists(context);
   }
 
   @override
@@ -63,10 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildScreen(BuildContext context, UserState userState) {
-    final user = Provider.of<AppUser?>(context);
-    NavigationState navigationState = Provider.of<NavigationState>(context);
-    ProfileState profileState = Provider.of<ProfileState>(context);
-    FollowersState followersState = Provider.of<FollowersState>(context);
+    final user = Provider.of<AppUser?>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
 
     return Scaffold(
       body: _screens[_currentIndex],
