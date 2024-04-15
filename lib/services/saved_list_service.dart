@@ -69,12 +69,9 @@ class SavedListService {
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
 
     try {
-      savedListState.setStatus = SavedListStatus.loading;
-
       await SavedListDatabase.update(context, savedList: savedList);
 
       savedListState.updateSavedList(savedList);
-      savedListState.setStatus = SavedListStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       savedListState.setError = Error(

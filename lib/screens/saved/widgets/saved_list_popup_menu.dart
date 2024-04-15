@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/services/saved_list_service.dart';
 
 class SavedListPopupMenu extends StatelessWidget {
@@ -13,6 +14,9 @@ class SavedListPopupMenu extends StatelessWidget {
       icon: const Icon(Icons.more_vert_rounded),
       onSelected: (value) async {
         if (value == MenuItems.item1) {
+          if (savedList.uid != null) {
+            showCreateSavedListDialog(context, savedList: savedList);
+          }
         } else if (value == MenuItems.item2) {
           if (savedList.uid != null) {
             SavedListService.deleteSavedList(context, savedList: savedList);
