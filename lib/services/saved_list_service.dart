@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/models/saved_list_model.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -91,6 +92,52 @@ class SavedListService {
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       savedListState.setError = Error(message: "There was an issue deleting your post. Please try again.");
+    }
+  }
+
+  static Future addMunroToSavedList(
+    BuildContext context, {
+    required SavedList savedList,
+    required String munroId,
+  }) async {
+    SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+    print("Adding Munro to saved list");
+    try {
+      if (savedList.munroIds.contains(munroId)) return;
+
+      savedList.munroIds.add(munroId);
+      savedListState.updateSavedList(savedList);
+
+      await SavedListDatabase.update(context, savedList: savedList);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      savedListState.setError = Error(
+        message: "There was an issue saving your Munro. Please try again",
+        code: error.toString(),
+      );
+    }
+  }
+
+  static Future removeMunroFromSavedList(
+    BuildContext context, {
+    required SavedList savedList,
+    required String munroId,
+  }) async {
+    SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+    print("Removing Munro from saved list");
+    try {
+      if (!savedList.munroIds.contains(munroId)) return;
+
+      savedList.munroIds.remove(munroId);
+      savedListState.updateSavedList(savedList);
+
+      await SavedListDatabase.update(context, savedList: savedList);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      savedListState.setError = Error(
+        message: "There was an issue removing your Munro. Please try again",
+        code: error.toString(),
+      );
     }
   }
 }

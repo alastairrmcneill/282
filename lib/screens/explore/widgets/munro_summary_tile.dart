@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -130,7 +131,7 @@ class MunroSummaryTile extends StatelessWidget {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
-                            await MunroService.toggleMunroSaved(context, munro: munro);
+                            showSaveMunroDialog(context);
                           }
                         },
                         child: Icon(munro.saved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
