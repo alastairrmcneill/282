@@ -33,19 +33,21 @@ showSaveMunroDialog(BuildContext context) {
                   ...savedListState.savedLists.map(
                     (e) => CheckboxListTile(
                       value: e.munroIds.contains(munroState.selectedMunro?.id),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         if (value == true) {
-                          SavedListService.addMunroToSavedList(
+                          await SavedListService.addMunroToSavedList(
                             context,
                             savedList: e,
                             munroId: munroState.selectedMunro?.id ?? "",
                           );
+                          setState(() {});
                         } else {
-                          SavedListService.removeMunroFromSavedList(
+                          await SavedListService.removeMunroFromSavedList(
                             context,
                             savedList: e,
                             munroId: munroState.selectedMunro?.id ?? "",
                           );
+                          setState(() {});
                         }
                       },
                       title: Text(e.name),
@@ -59,10 +61,8 @@ showSaveMunroDialog(BuildContext context) {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    await submitForm();
-                  },
-                  child: const Text('Save'),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Done'),
                 ),
               )
             ],

@@ -26,6 +26,7 @@ class ExpandedSavedListTile extends StatelessWidget {
           onTap: onTap,
         ),
         ...savedList.munroIds.map((munroId) {
+          print("Munro ID: $munroId");
           Munro munro = munroState.munroList.where((munro) => munro.id == munroId).first;
           return ListTile(
             title: Text(munro.name),

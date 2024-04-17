@@ -131,6 +131,7 @@ class MunroSummaryTile extends StatelessWidget {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
+                            munroState.setSelectedMunro = munro;
                             showSaveMunroDialog(context);
                           }
                         },
