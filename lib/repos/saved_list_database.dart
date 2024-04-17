@@ -10,7 +10,7 @@ class SavedListDatabase {
 
   static Future create(BuildContext context, {required SavedList savedList}) async {
     try {
-      DocumentReference ref = _savedListsRef.doc();
+      DocumentReference ref = _savedListsRef.doc(savedList.uid);
 
       SavedList newSavedList = savedList.copy(uid: ref.id);
 
