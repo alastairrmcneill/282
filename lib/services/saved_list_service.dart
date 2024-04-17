@@ -5,6 +5,7 @@ import 'package:two_eight_two/models/saved_list_model.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:uuid/uuid.dart';
 
 class SavedListService {
   static Future createSavedList(BuildContext context, {required String name}) async {
@@ -22,6 +23,7 @@ class SavedListService {
       }
 
       SavedList savedList = SavedList(
+        uid: const Uuid().v4(),
         name: name,
         userId: userState.currentUser?.uid ?? "",
         munroIds: [],
