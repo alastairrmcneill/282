@@ -15,3 +15,4 @@ export 'achievement_service.dart';
 export 'log_service.dart';
 export 'user_service.dart';
 export 'weather_service.dart';
+export 'saved_list_service.dart';

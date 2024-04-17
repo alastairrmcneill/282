@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/achievements/achievements_screen.dart';
-import 'package:two_eight_two/screens/auth/auth_home_screen.dart';
-import 'package:two_eight_two/screens/nav/home_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -80,6 +77,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<WeatherState>(
           create: (_) => WeatherState(),
+        ),
+        ChangeNotifierProvider<SavedListState>(
+          create: (_) => SavedListState(),
         ),
       ],
       child: MaterialApp(

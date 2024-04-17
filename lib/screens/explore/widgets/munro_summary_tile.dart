@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -22,6 +23,9 @@ class MunroSummaryTile extends StatelessWidget {
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     SettingsState settingsState = Provider.of<SettingsState>(context);
+    SavedListState savedListState = Provider.of<SavedListState>(context);
+
+    bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -130,10 +134,11 @@ class MunroSummaryTile extends StatelessWidget {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
-                            await MunroService.toggleMunroSaved(context, munro: munro);
+                            munroState.setSelectedMunro = munro;
+                            showSaveMunroDialog(context);
                           }
                         },
-                        child: Icon(munro.saved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
+                        child: Icon(munroSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
                       ),
                     ),
                     Padding(
