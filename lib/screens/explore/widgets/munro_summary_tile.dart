@@ -23,6 +23,9 @@ class MunroSummaryTile extends StatelessWidget {
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     SettingsState settingsState = Provider.of<SettingsState>(context);
+    SavedListState savedListState = Provider.of<SavedListState>(context);
+
+    bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -135,7 +138,7 @@ class MunroSummaryTile extends StatelessWidget {
                             showSaveMunroDialog(context);
                           }
                         },
-                        child: Icon(munro.saved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
+                        child: Icon(munroSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
                       ),
                     ),
                     Padding(
