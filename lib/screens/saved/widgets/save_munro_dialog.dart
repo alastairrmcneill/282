@@ -30,29 +30,35 @@ showSaveMunroDialog(BuildContext context) {
                   // Title
                   const Text('Save Munro'),
                   const SizedBox(height: 20),
-                  ...savedListState.savedLists.map(
-                    (e) => CheckboxListTile(
-                      value: e.munroIds.contains(munroState.selectedMunro?.id),
-                      onChanged: (value) async {
-                        if (value == true) {
-                          await SavedListService.addMunroToSavedList(
-                            context,
-                            savedList: e,
-                            munroId: munroState.selectedMunro?.id ?? "",
-                          );
-                          setState(() {});
-                        } else {
-                          await SavedListService.removeMunroFromSavedList(
-                            context,
-                            savedList: e,
-                            munroId: munroState.selectedMunro?.id ?? "",
-                          );
-                          setState(() {});
-                        }
-                      },
-                      title: Text(e.name),
-                    ),
-                  ),
+                  savedListState.savedLists.isEmpty
+                      ? const Text('You have no saved lists')
+                      : Column(
+                          children: savedListState.savedLists
+                              .map(
+                                (e) => CheckboxListTile(
+                                  value: e.munroIds.contains(munroState.selectedMunro?.id),
+                                  onChanged: (value) async {
+                                    if (value == true) {
+                                      await SavedListService.addMunroToSavedList(
+                                        context,
+                                        savedList: e,
+                                        munroId: munroState.selectedMunro?.id ?? "",
+                                      );
+                                      setState(() {});
+                                    } else {
+                                      await SavedListService.removeMunroFromSavedList(
+                                        context,
+                                        savedList: e,
+                                        munroId: munroState.selectedMunro?.id ?? "",
+                                      );
+                                      setState(() {});
+                                    }
+                                  },
+                                  title: Text(e.name),
+                                ),
+                              )
+                              .toList(),
+                        ),
                 ],
               ),
               const SizedBox(height: 20),
