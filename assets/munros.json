@@ -14,7 +14,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-bhuidheanach-bheag",
     "description": "A' Bhuidheanach Bheag is a broad, domed summit on the spacious plateau to the east of the Drumochter Pass. The plateau lacks distinctive landforms but is wild and desolate.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-bhuidheanach-bheag2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.90890,-4.23660/"
+    "startingPointURL": "https://www.google.com/maps/search/56.90890,-4.23660/"
   },
   {
     "id": "2",
@@ -31,7 +31,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-chailleach-monadhliath",
     "description": "A' Chailleach is a familiar sight from the area around Newtonmore. Topped by a big cairn, it is the most ascended and perhaps the finest of the Monadhliath.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-chailleach-monadhliath2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.07050,-4.15760/"
+    "startingPointURL": "https://www.google.com/maps/search/57.07050,-4.15760/"
   },
   {
     "id": "3",
@@ -48,7 +48,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-chailleach",
     "description": "A' Chailleach is the westernmost of the Fannichs and has fine views over the Fisherfield Forest and to An Teallach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-chailleach2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.73740,-5.09000/"
+    "startingPointURL": "https://www.google.com/maps/search/57.73740,-5.09000/"
   },
   {
     "id": "4",
@@ -65,7 +65,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-chralaig",
     "description": "a' Chralaig is a massive mountain and, despite being lesser known than many of its neighbours, is actually the highest summit in Kintail. The ascent from the Cluanie Inn is an unrelenting slog but it leads up to a very fine ridge and superb views.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-chralaig2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.15960,-5.16470/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15960,-5.16470/"
   },
   {
     "id": "5",
@@ -82,7 +82,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-ghlas-bheinn",
     "description": "A' Ghlas-bheinn is a rough and rocky little mountain that is well seen from near Morvich in Kintail. Its ascent can easily be combined with a visit to the famous Falls of Glomach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-ghlas-bheinn2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.23480,-5.38090/"
+    "startingPointURL": "https://www.google.com/maps/search/57.23480,-5.38090/"
   },
   {
     "id": "6",
@@ -99,7 +99,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-mhaighdean",
     "description": "A' Mhaighdean is often regarded as the remotest of the Munros, deep in the heart of the Fisherfield Forest. It is a magnificent castellated mountain with dramatic cliffs, and one of the finest viewpoints in Britain.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-mhaighdean2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.77680,-5.25450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.77680,-5.25450/"
   },
   {
     "id": "7",
@@ -116,7 +116,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/a-mharconaich",
     "description": "A' Mharconaich is the most distinctive of the mountains above the Drumochter Pass, showing a steep nose to the northeast.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/a-mharconaich2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.88350,-4.25360/"
+    "startingPointURL": "https://www.google.com/maps/search/56.88350,-4.25360/"
   },
   {
     "id": "8",
@@ -133,7 +133,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/am-basteir",
     "description": "Am Basteir is a vertically-sided blade of rock whose ascent is only possible for keen scramblers from Bealach a Basteir. Below the summit of the mountain is the remarkable lesser peak of the Basteir Tooth - an imposing fang of rock that can only be reached by rock-climbers.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/am-basteir2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.28910,-6.17690/"
+    "startingPointURL": "https://www.google.com/maps/search/57.28910,-6.17690/"
   },
   {
     "id": "9",
@@ -150,7 +150,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/am-bodach",
     "description": "Am Bodach is a fine, steep and stony mountain on the main ridge of the Mamores between Kinlochleven and Fort William.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/am-bodach2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.77770,-5.00034/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77770,-5.00034/"
   },
   {
     "id": "10",
@@ -167,7 +167,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/am-faochagach",
     "description": "Am Faochagach is a rounded Munro to the north of the Dirrie M\u00f2r (Ullapool) road. The main difficulty is the short approach across the first flat section of moor-  there are bogs and a potentially difficult river crossing to negotiate. The ascent of the peak itself is more straightforward.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/am-faochagach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.72480,-4.89430/"
+    "startingPointURL": "https://www.google.com/maps/search/57.72480,-4.89430/"
   },
   {
     "id": "11",
@@ -184,7 +184,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-caisteal",
     "description": "An Caisteal takes the form of a long ridged mountain to the south of Crianlarich. Its traverse is very enjoyable with interesting features and extensive views over the area.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-caisteal-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.37900,-4.64300/"
+    "startingPointURL": "https://www.google.com/maps/search/56.37900,-4.64300/"
   },
   {
     "id": "12",
@@ -201,7 +201,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-coileachan",
     "description": "An Coileachan is the easternmost of the Fannichs, a steep-sided dome rising to the south of Loch Gorm. Whilst it is only a short distance from the track to Loch Fannich, the usual approach from the north is a long slog across the bogs.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-coileachan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.72480,-4.89430/"
+    "startingPointURL": "https://www.google.com/maps/search/57.72480,-4.89430/"
   },
   {
     "id": "13",
@@ -218,7 +218,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-gearanach",
     "description": "An Gearanach is a magnificent ridge extending north from the main spine of the Mamores. The summit and intervening ridge is a narrow arete reminiscent of that between C\u00e0rn M\u00f2r Dearg and Ben Nevis. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-gearanach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77770,-5.00034/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77770,-5.00034/"
   },
   {
     "id": "14",
@@ -235,7 +235,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-riabhachan",
     "description": "An Riabhachan is a massive ridged mountain to the north of Loch Mullardoch. It can be combined with neighbouring summits to make an epic day, whether tackled from Loch Mullardoch or from upper Glen Strathfarrar to the north.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-riabhachan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.33990,-4.96150/"
+    "startingPointURL": "https://www.google.com/maps/search/57.33990,-4.96150/"
   },
   {
     "id": "15",
@@ -252,7 +252,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-sgarsoch",
     "description": "An Sgarsoch is rounded and unspectacular, but it must rank amongst the remotest in Scotland, lying as it does in the very lonely country linking the Mounth to the Cairngorms. It requires a very long approachs from any direction.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-sgarsoch-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.98940,-3.54350/"
+    "startingPointURL": "https://www.google.com/maps/search/56.98940,-3.54350/"
   },
   {
     "id": "16",
@@ -269,7 +269,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-socach-braemar",
     "description": "An Socach is an undistinguished wedge-shaped mountain which can be climbed quicky from Baddoch in Glen Clunie. In its favour, it is an escape from the ski-developments at the head of the glen.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-socach-braemar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.93130,-3.41700/"
+    "startingPointURL": "https://www.google.com/maps/search/56.93130,-3.41700/"
   },
   {
     "id": "17",
@@ -286,7 +286,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-socach-affric",
     "description": "An Socach is an exceptionally remote Munro at the head of Glen Affric. It is really the eastern termination of the east ridge of Sg\u00f9rr nan Ceathreamhnan and is often climbed with that peak, though it can be ascended on its own as a long day from the road end in Glen Affric.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-socach-affric-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.23220,-5.18340/"
+    "startingPointURL": "https://www.google.com/maps/search/57.23220,-5.18340/"
   },
   {
     "id": "18",
@@ -303,7 +303,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-socach-mullardoch",
     "description": "An Socach is one of three Munros of that name; this one is deep in wild and inaccessible country above the upper part of Loch Mullardoch. It can be reached by following the very rough path along the loch, approached from Glen Strathfarrar to the north or via a very long walk from Killilan in Kintail.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-socach-mullardoch-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.33990,-4.96150/"
+    "startingPointURL": "https://www.google.com/maps/search/57.33990,-4.96150/"
   },
   {
     "id": "19",
@@ -320,7 +320,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/an-stuc",
     "description": "An St\u00f9c was promoted to Munro status in 1997 and is the steepest and sharpest of the Ben Lawers range. When approaching from Meall Garbh the ascent is extremely steep, exposed and loose.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/an-stuc-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.52950,-4.15186/"
+    "startingPointURL": "https://www.google.com/maps/search/56.52950,-4.15186/"
   },
   {
     "id": "20",
@@ -337,7 +337,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/bidein-a-ghlas-thuill-an-teallach",
     "description": "Bidein a' Ghlas Thuill is the highest summit of magnificent An Teallach, and despite being less dramatic than neighbouring Sg\u00f9rr Fiona it is the best viewpoint on the mountain and one of the most dramatic in Britain. Usually tackled as part of a complete ridge traverse, it can equally well be climbed on its own.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/bidein-a-ghlas-thuill-an-teallach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.84000,-5.21500/"
+    "startingPointURL": "https://www.google.com/maps/search/57.84000,-5.21500/"
   },
   {
     "id": "21",
@@ -354,7 +354,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-fiona-an-teallach",
     "description": "Sg\u00f9rr Fiona is the finer of the two Munro summits on the magnificent ridge of An Teallach. It is a perfect pyramid of rock and guards the beginning of the trickiest part of the traverse.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-fiona-an-teallach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.84000,-5.21500/"
+    "startingPointURL": "https://www.google.com/maps/search/57.84000,-5.21500/"
   },
   {
     "id": "22",
@@ -371,7 +371,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/aonach-air-chrith",
     "description": "Aonach Air Chrith is the highest of the seven Munros on the south Glen Shiel ridge. One section of the west ridge is very narrow and there is also a fine spur to the north.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/aonach-air-chrith-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "23",
@@ -388,7 +388,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/aonach-beag-nevis-range",
     "description": "Aonach Beag is second highest summit in the Nevis Range, but is hidden from most views by the lower but more bulky Aonach M\u00f2r. Its domed summit rises above extensive broken crags and corries.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/aonach-beag-nevis-range-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77770,-5.00031/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77770,-5.00031/"
   },
   {
     "id": "24",
@@ -405,7 +405,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/aonach-beag-alder",
     "description": "Aonach Beag is part of the high mountain ridge situated just to the north of Ben Alder. It has a dome-shaped form, with three radiating ridges and steep flanks, making part of a grand ridge walk.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/aonach-beag-alder-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85350,-4.42380/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85350,-4.42380/"
   },
   {
     "id": "25",
@@ -422,7 +422,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-dearg-aonach-eagach",
     "description": "Meall Dearg is the central summit on the celebrated Aonach Eagach ridge. Usually reached as part of the hard scramble along the ridge en route to Sg\u00f2rr nam Fiannaidh, it can be ascended on its own by vertigo sufferers by an approach from the north side.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-dearg-aonach-eagach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66660,-4.98240/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66660,-4.98240/"
   },
   {
     "id": "26",
@@ -439,7 +439,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgorr-nam-fiannaidh-aonach-eagach",
     "description": "Sg\u00f2rr nam Fiannaidh is the western summit of the Aonach Eagach. Usually it is reached as part of the classic, hard scramble along the ridge, taking in Meall Dearg as well, but for non-scramblers it is possible to climb it via the path to the bealach with the Pap of Glencoe.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgorr-nam-fiannaidh-aonach-eagach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66660,-4.98240/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66660,-4.98240/"
   },
   {
     "id": "27",
@@ -456,7 +456,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/aonach-meadhoin",
     "description": "Aonach Meadhoin is a Munro on the Brothers ridge on the north side of Glen Shiel. It is situated between fine Sg\u00f9rr a Bhealach Dheirg and the prominent Top of Sg\u00f9rr an Fhuaraill.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/aonach-meadhoin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.16960,-5.29450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.16960,-5.29450/"
   },
   {
     "id": "28",
@@ -473,7 +473,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/aonach-mor",
     "description": "Although lower than neighbouring Aonach Beag, Aonach M\u00f2r derives the 'M\u00f2r' tag from its greater bulk, hiding its higher neighbour. It is well seen from the Commando Memorial but this side of the mountain is scarred by ski-developments.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/aonach-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77770,-5.00031/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77770,-5.00031/"
   },
   {
     "id": "29",
@@ -490,7 +490,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgorr-dhearg-beinn-a-bheithir",
     "description": "Sg\u00f2rr Dhearg is the highest of the two Munros on Beinn a'Bheithir, and is the termination of a gracefully arched ridge from the Top of Sg\u00f2rr Bhan. It is a tremendous mountain and looks very fine from the north side of Loch Leven.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgorr-dhearg-beinn-a-bheithir-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.67830,-5.12981/"
+    "startingPointURL": "https://www.google.com/maps/search/56.67830,-5.12981/"
   },
   {
     "id": "30",
@@ -507,7 +507,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgorr-dhonuill-beinn-a-bheithir",
     "description": "Sg\u00f2rr Dh\u00f2nuill is the western Munro of Beinn a'Bheithir, a magnificent peak and a superb viewpoint with fine mountains, long lochs and the sea all prominent.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgorr-dhonuill-beinn-a-bheithir-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.67830,-5.12981/"
+    "startingPointURL": "https://www.google.com/maps/search/56.67830,-5.12981/"
   },
   {
     "id": "31",
@@ -524,7 +524,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-bhuird",
     "description": "Beinn a' Bhuird is one of the giants of the Cairngorms, a mountain of immense bulk. Its spacious plateau forms the rim above some magnificent corries,  with the remote Garbh Choire being the finest.  The mountain can be approached either through the pinewoods of Glen Quoich or the moors of Gleann an t-Slugain.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-bhuird-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.00170,-3.45540/"
+    "startingPointURL": "https://www.google.com/maps/search/57.00170,-3.45540/"
   },
   {
     "id": "32",
@@ -541,7 +541,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chaorainn-cairngorms",
     "description": "Beinn a' Chaorainn guards the eastern side of the famous Lairig an Laoigh pass through the Cairngorms. The slopes above the pass are steep, but south of the domed summit is the vast mossy plateau of the Moine Bhealaidh. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chaorainn-cairngorms-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.99000,-3.54430/"
+    "startingPointURL": "https://www.google.com/maps/search/56.99000,-3.54430/"
   },
   {
     "id": "33",
@@ -558,7 +558,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chaorainn-glen-spean",
     "description": "Beinn a' Chaorainn is a straightforward north-south ridge of three summits, rising above the forestry to the north of Loch Laggan. Its eastern flanks are carved into steep corries but the slopes to the west are more featureless. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chaorainn-glen-spean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.89510,-4.66560/"
+    "startingPointURL": "https://www.google.com/maps/search/56.89510,-4.66560/"
   },
   {
     "id": "34",
@@ -575,7 +575,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chlachair",
     "description": "Beinn a' Chlachair is the highest of a group of three Munros in the Ardverikie Forest south of Loch Laggan. Its finest feature is Coire M\u00f2r a' Chlachair, a fine corrie on its northern flanks. The mountain has a spacious plateau but presents a forbidding wall to remote An Lairig to the south, whilst on all other sides it is very steep.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chlachair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.91220,-4.57556/"
+    "startingPointURL": "https://www.google.com/maps/search/56.91220,-4.57556/"
   },
   {
     "id": "35",
@@ -592,7 +592,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chleibh",
     "description": "Beinn a' Chl\u00e8ibh only just makes Munro status and is overshadowed by its far more celebrated neighbour Ben Lui, with which it is usually climbed. It presents forbiddingly steep slopes to Glen Lochay.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chleibh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.40990,-4.85552/"
+    "startingPointURL": "https://www.google.com/maps/search/56.40990,-4.85552/"
   },
   {
     "id": "36",
@@ -609,7 +609,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chochuill",
     "description": "Beinn a' Chochuill is somewhat hidden away behind the more celebrated Ben Cruachan range. It has a long, almost level summit ridge providing good views both of Cruachan, and over Glen Kinglas and Loch Etive to the north.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chochuill-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.41450,-5.02331/"
+    "startingPointURL": "https://www.google.com/maps/search/56.41450,-5.02331/"
   },
   {
     "id": "37",
@@ -626,7 +626,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chreachain",
     "description": "Beinn a' Chreachain is the easternmost of the four Bridge of Orchy Munros. Although not as fine as neighbouring Beinn Achaladair, it has impressive Coire an Lochain on its northern flank, harbouring a lovely lochan, whilst its summit looks out over the immense flatness of Rannoch Moor. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chreachain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.55560,-4.74610/"
+    "startingPointURL": "https://www.google.com/maps/search/56.55560,-4.74610/"
   },
   {
     "id": "38",
@@ -643,7 +643,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-a-chroin",
     "description": "Beinn a' Chr\u00f2in is a surprisingly rocky little mountain to the south of Crianlarich. The location of the true summit has been the subject of controversy; that with the largest cairn was regarded as the top for many years, but the higher, Munro summit is actually that further west along the ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-a-chroin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.37900,-4.64300/"
+    "startingPointURL": "https://www.google.com/maps/search/56.37900,-4.64300/"
   },
   {
     "id": "39",
@@ -660,7 +660,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/braigh-coire-chruinn-bhalgain",
     "description": "The central summit of the Beinn a' Ghl\u00f2 massif, Braigh Coire Chruinn-bhalgain is a complex hill with twisting ridges and steep sides. It enjoys a fine position above beautiful Glen Tilt.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/braigh-coire-chruinn-bhalgain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.78260,-3.79260/"
+    "startingPointURL": "https://www.google.com/maps/search/56.78260,-3.79260/"
   },
   {
     "id": "40",
@@ -677,7 +677,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-liath-beinn-a-ghlo",
     "description": "C\u00e0rn Liath is the lowest of Beinn a' Ghl\u00f2's three summits, but it is also the most accessible - and the most prominent when seen from the main A9 road.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-liath-beinn-a-ghlo-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.78260,-3.79260/"
+    "startingPointURL": "https://www.google.com/maps/search/56.78260,-3.79260/"
   },
   {
     "id": "41",
@@ -694,7 +694,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-nan-gabhar",
     "description": "C\u00e0rn nan Gabhar is the highest and remotest summit of Beinn a' Ghl\u00f2. It offers views across the empty wilderness of the Mounth and makes a fine termination to a grand  ridge-walk.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-nan-gabhar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.78260,-3.79260/"
+    "startingPointURL": "https://www.google.com/maps/search/56.78260,-3.79260/"
   },
   {
     "id": "42",
@@ -711,7 +711,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-achaladair",
     "description": "Beinn Achaladair is perhaps the finest of the four Bridge of Orchy Munros. It presents an impressive north face to the wonderful pinewoods of the Black Wood of Rannoch, and its view over Loch Tulla and Rannoch Moor to the Black Mount and Glencoe is superb.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-achaladair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.55560,-4.74610/"
+    "startingPointURL": "https://www.google.com/maps/search/56.55560,-4.74610/"
   },
   {
     "id": "43",
@@ -728,7 +728,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-mor-beinn-alligin",
     "description": "Sg\u00f9rr M\u00f2r is the very fine main summit of Beinn Alligin, taking the form of a graceful dome. It is a truly spectacular viewpoint, both for Skye across the sea and for the Horns and Liathach inland.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-mor-beinn-alligin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.55890,-5.56391/"
+    "startingPointURL": "https://www.google.com/maps/search/57.55890,-5.56391/"
   },
   {
     "id": "44",
@@ -745,7 +745,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/tom-na-gruagaich-beinn-alligin",
     "description": "Tom na Gruagaich, formerly a Top, was promoted to become the second Munro of Beinn Alligin in 1997. It has sensational views over the sea to Skye and for most walkers is the start of the sensational traverse of the mountain.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/tom-na-gruagaich-beinn-alligin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.55890,-5.56391/"
+    "startingPointURL": "https://www.google.com/maps/search/57.55890,-5.56391/"
   },
   {
     "id": "45",
@@ -762,7 +762,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-an-dothaidh",
     "description": "Although far less known than its neighbour Beinn D\u00f2rain, Beinn an D\u00f2thaidh is the finer viewpoint, the cairn on the edge of the steep northern side having a magnificent aerial panorama over Loch Tulla and Rannoch Moor. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-an-dothaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.51690,-4.76920/"
+    "startingPointURL": "https://www.google.com/maps/search/56.51690,-4.76920/"
   },
   {
     "id": "46",
@@ -779,7 +779,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-bheoil",
     "description": "Almost always climbed with its great parent mountain Ben Alder, remote Bheinn Bheoil is a straightforward ridge running high above Loch Ericht.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-bheoil-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85350,-4.42380/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85350,-4.42380/"
   },
   {
     "id": "47",
@@ -796,7 +796,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-bhreac",
     "description": "Beinn Bhreac is a lowly Munro by Cairngorms standards, rising at the southern end of a vast boggy moorland. It enjoys a fine setting high above beautiful Glen Derry.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-bhreac-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.99000,-3.54430/"
+    "startingPointURL": "https://www.google.com/maps/search/56.99000,-3.54430/"
   },
   {
     "id": "48",
@@ -813,7 +813,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-bhrotain",
     "description": "Beinn Bhrotain is a huge, sprawling mountain rising in an extremely remote location on the west side of Glen Dee. Its northern side falls precipitously down to the great trench of Glen Geusachan.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-bhrotain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.06310,-3.89700/"
+    "startingPointURL": "https://www.google.com/maps/search/57.06310,-3.89700/"
   },
   {
     "id": "49",
@@ -830,7 +830,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-bhuidhe",
     "description": "Beinn Bhuidhe is a neglected Munro, being shyly hidden away between Glens Shira and Fyne at the head of Loch Fyne. Its uppermost ridge is suprisingly steep and rocky and is a tremendous viewpoint.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-bhuidhe-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.27300,-4.91910/"
+    "startingPointURL": "https://www.google.com/maps/search/56.27300,-4.91910/"
   },
   {
     "id": "50",
@@ -847,7 +847,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-chabhair",
     "description": "Beinn Chabhair rises steeply above Inverarnan just to the north of Loch Lomond. This rocky peak is both accessible and popular; the summit is a fine viewpoint, with a good vista down Loch Long.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-chabhair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.32850,-4.72180/"
+    "startingPointURL": "https://www.google.com/maps/search/56.32850,-4.72180/"
   },
   {
     "id": "51",
@@ -864,7 +864,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-challum",
     "description": "Ben Challum is usually climbed from Strath Fillan and is an undistinguished trudge from this direction until the final ridge, though the views are fine. It reserves its best outline for its remoter side above the head of Glen Lochay, from where it appears as a conical peak.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-challum-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.41680,-4.66690/"
+    "startingPointURL": "https://www.google.com/maps/search/56.41680,-4.66690/"
   },
   {
     "id": "52",
@@ -881,7 +881,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-dearg-blair-atholl",
     "description": "Beinn Dearg is a dome of pink granite rising above the surrounding moorlands in the remote area north of Blair Atholl.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-dearg-blair-atholl-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77450,-3.84344/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77450,-3.84344/"
   },
   {
     "id": "53",
@@ -898,7 +898,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-dearg-ullapool",
     "description": "Beinn Dearg is the highest mountain north of the Dirrie M\u00f2r. It is a fine dome-shaped mountain, high above deep and atmospheric corries, and a worthy crowning glory to a fine range.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-dearg-ullapool-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.81980,-5.06250/"
+    "startingPointURL": "https://www.google.com/maps/search/57.81980,-5.06250/"
   },
   {
     "id": "54",
@@ -915,7 +915,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-dorain",
     "description": "Beinn D\u00f2rain is one of the more familiar landmark hills of the Highlands, a graceful, steep grassy pyramid revealed on the drive north from Tyndrum. Outside hillwalking circles it is known for having been celebrated by the great Gaelic poet, Duncan B\u00e0n MacIntyre.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-dorain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.51690,-4.76920/"
+    "startingPointURL": "https://www.google.com/maps/search/56.51690,-4.76920/"
   },
   {
     "id": "55",
@@ -932,7 +932,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-dubhchraig",
     "description": "Beinn Dubhchraig, usually climbed together with its neighbour Ben Oss, is part of the Ben Lui range of mountains. It is usually ascended from Dalrigh between Crianlarich and Tyndrum.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-dubhchraig-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.42500,-4.68680/"
+    "startingPointURL": "https://www.google.com/maps/search/56.42500,-4.68680/"
   },
   {
     "id": "56",
@@ -949,7 +949,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-eibhinn",
     "description": "Beinn \u00c8ibhinn is a steep sided ridge curving round Coire a' Charra Mhoir. Part of the Geal Ch\u00e0rn ridge system north of Ben Alder, it requires a long walk to reach it from any direction.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-eibhinn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85350,-4.42380/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85350,-4.42380/"
   },
   {
     "id": "57",
@@ -966,7 +966,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ruadh-stac-mor-beinn-eighe",
     "description": "Beinn Eighe is one of celebrated Torridon giants. Ruadh Stac-Mh\u00f2r is its highest summit, a steep-sided dome off to the north of the main ridge, high above Coire Mhic Fhearchair, one of the finest corries in the country.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ruadh-stac-mor-beinn-eighe-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.55560,-5.41370/"
+    "startingPointURL": "https://www.google.com/maps/search/57.55560,-5.41370/"
   },
   {
     "id": "58",
@@ -983,7 +983,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/spidean-coire-nan-clach-beinn-eighe",
     "description": "Spidean Coire nan Clach was promoted to Munro status in 1997 to become Beinn Eighe's second Munro. There is a trig point at 972 meters on the ridge but the true summit is a fine rock peak a short distance further northeast, at 992 metres.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/spidean-coire-nan-clach-beinn-eighe-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.55560,-5.41370/"
+    "startingPointURL": "https://www.google.com/maps/search/57.55560,-5.41370/"
   },
   {
     "id": "59",
@@ -1000,7 +1000,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-eunaich",
     "description": "Beinn Eunaich rises above the foot of Glen Strae and its slopes of grass and broken rock are steep and strenuous. It is usually combined with neighbouring Beinn a' Chochuill.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-eunaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.41450,-5.02331/"
+    "startingPointURL": "https://www.google.com/maps/search/56.41450,-5.02331/"
   },
   {
     "id": "60",
@@ -1017,7 +1017,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-fhada",
     "description": "Beinn Fhada has a sprawling summit plateau with steep, craggy sides and several grand corries. It is well seen in the view from Morvich near the head of Loch Duich.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-fhada2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.23480,-5.38090/"
+    "startingPointURL": "https://www.google.com/maps/search/57.23480,-5.38090/"
   },
   {
     "id": "61",
@@ -1034,7 +1034,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-fhionnlaidh",
     "description": "Beinn Fhionnlaidh is a long, broad and undulating ridge running between Glen Etive and Loch Creran. It can be climbed from either direction but the route from Loch Creran avoids the worst of the forestry and gives good views out over the sea.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-fhionnlaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.59040,-5.20007/"
+    "startingPointURL": "https://www.google.com/maps/search/56.59040,-5.20007/"
   },
   {
     "id": "62",
@@ -1051,7 +1051,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-fhionnlaidh-carn-eige",
     "description": "Beinn Fhionnlaidh is a frustrating Munro for baggers, being out on the inaccessible ridge running north from C\u00e0rn Eige. Loch Mullardoch guards the foot of this ridge so most baggers have to climb over C\u00e0rn Eige twice to get out and back from this peak.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-fhionnlaidh-carn-eige-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.27340,-4.96180/"
+    "startingPointURL": "https://www.google.com/maps/search/57.27340,-4.96180/"
   },
   {
     "id": "63",
@@ -1068,7 +1068,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-ghlas",
     "description": "Beinn Ghlas is a little known Munro but one of the most frequently climbed, the reason being that it is visited on the usual path used en-route to Ben Lawers. Almost never climbed in its own right, it supports a wonderful arctic flora and is part of the Ben Lawers National Nature Reserve.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-ghlas-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.51100,-4.26287/"
+    "startingPointURL": "https://www.google.com/maps/search/56.51100,-4.26287/"
   },
   {
     "id": "64",
@@ -1085,7 +1085,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-ime",
     "description": "Beinn \u00ccme is the highest of the Arrochar Alps. Usually ascended by its broad southern slopes from the Bealach a'Mh\u00e0im, the other sides of the mountain are much steeper and more rugged.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-ime-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.20600,-4.75070/"
+    "startingPointURL": "https://www.google.com/maps/search/56.20600,-4.75070/"
   },
   {
     "id": "65",
@@ -1102,7 +1102,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-iutharn-mhor",
     "description": "Beinn Iutharn Mh\u00f2r is a steep sided mountain in the otherwise rolling wild area of the Mounth. It is usually accessed via the long Glen Ey from the north.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-iutharn-mhor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.98510,-3.50030/"
+    "startingPointURL": "https://www.google.com/maps/search/56.98510,-3.50030/"
   },
   {
     "id": "66",
@@ -1119,7 +1119,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-liath-mhor",
     "description": "Beinn Liath Mh\u00f2r is a long, multiple-summited sandstone ridge with steep flanks and a summit sprinkled with white quartzite. It offers interesting views over the Coulin Forest and into Torridon.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-liath-mhor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.48170,-5.32935/"
+    "startingPointURL": "https://www.google.com/maps/search/57.48170,-5.32935/"
   },
   {
     "id": "67",
@@ -1136,7 +1136,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-liath-mhor-fannaich",
     "description": "Beinn Liath Mh\u00f2r Fannaich is a bulky Munro situated just to the north of the main Fannichs ridge. It offers good views both of the neighbouring  and over to the Beinn Dearg range.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-liath-mhor-fannaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.72480,-4.89430/"
+    "startingPointURL": "https://www.google.com/maps/search/57.72480,-4.89430/"
   },
   {
     "id": "68",
@@ -1153,7 +1153,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-mhanach",
     "description": "Beinn Mhanach is an undistinguished Munro, a rounded lump when seen from any direction. It can be approached either up the attractive Auch Glen, or, less obviously, over the bealach Achaladair from Achaladair Farm.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-mhanach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.46070,-4.71466/"
+    "startingPointURL": "https://www.google.com/maps/search/56.46070,-4.71466/"
   },
   {
     "id": "69",
@@ -1170,7 +1170,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-mheadhoin",
     "description": "Beinn Mheadhoin lies at the remote heart of the Cairngorms range, its summit plateau strewn with some spectacular granite tors. It can be approached either from the north across the magnificent Loch Avon basin - involving much reascent on the return - or via the longer approach from the south.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-mheadhoin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.13400,-3.67120/"
+    "startingPointURL": "https://www.google.com/maps/search/57.13400,-3.67120/"
   },
   {
     "id": "70",
@@ -1187,7 +1187,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-na-lap",
     "description": "Beinn na Lap is a rounded hill in the heart of the wild area to the northeast of Rannoch Moor. The West Highland railway passes close to its foot and the ascent from Corrour Station is short and straightforward.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-na-lap-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.76040,-4.69070/"
+    "startingPointURL": "https://www.google.com/maps/search/56.76040,-4.69070/"
   },
   {
     "id": "71",
@@ -1204,7 +1204,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-nan-aighenan",
     "description": "Beinn nan Aighenan is an isolated summit and quite a tricky Munro to reach. The options are a very long approach up Glen Kinglas or a climb over the intervening ridge from Glen Etive.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-nan-aighenan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.57650,-5.03520/"
+    "startingPointURL": "https://www.google.com/maps/search/56.57650,-5.03520/"
   },
   {
     "id": "72",
@@ -1221,7 +1221,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-narnain",
     "description": "One of the Arrochar Alps, Beinn Narnain's location means it is often one of the first Munros to be tackled. It is a very rocky little mountain with some scrambling and several false summits.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-narnain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.20600,-4.75070/"
+    "startingPointURL": "https://www.google.com/maps/search/56.20600,-4.75070/"
   },
   {
     "id": "73",
@@ -1238,7 +1238,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-sgritheall",
     "description": "Beinn Sgritheall has one of the finest situations of any of the Munros, towering above the tiny village of Arnisdale on Loch Huorn. Its ascent is unrelentingly steep but the views from the summit are amongst the finest in Scotland.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-sgritheall-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.13440,-5.56790/"
+    "startingPointURL": "https://www.google.com/maps/search/57.13440,-5.56790/"
   },
   {
     "id": "74",
@@ -1255,7 +1255,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-sgulaird",
     "description": "With its coastal position Beinn Sgulaird has a reputation as a magnificent viewpoint. It is well deserved but the steep slopes and undulating ridge makes for a much more arduous walk than its position close to the road would suggest.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-sgulaird-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.55560,-5.24130/"
+    "startingPointURL": "https://www.google.com/maps/search/56.55560,-5.24130/"
   },
   {
     "id": "75",
@@ -1272,7 +1272,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-heasgarnich",
     "description": "Beinn Heasgarnich is a sprawling mountain. It can be approached by the high private road linking Glen Lochay and Glen Lyon, but it is protected by a moat of peat bogs.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-heasgarnich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.49910,-4.47590/"
+    "startingPointURL": "https://www.google.com/maps/search/56.49910,-4.47590/"
   },
   {
     "id": "76",
@@ -1289,7 +1289,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-tarsuinn",
     "description": "Beinn Tarsuinn is in the heart of the Fisherfield Forest, one of the wildest places in Scotland, and requires an epic walk to ascend, whether climbed with the rest of the Fisherfield Munros from Shenavall to the north, or from Kinlochewe to the south.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-tarsuinn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.77680,-5.25450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.77680,-5.25450/"
   },
   {
     "id": "77",
@@ -1306,7 +1306,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-teallach",
     "description": "Beinn Teallach was once the highest of the Corbetts before being promoted be one of the smallest Munros. It has steep ground on its eastern side but lacks any real distinction.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-teallach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.89510,-4.66560/"
+    "startingPointURL": "https://www.google.com/maps/search/56.89510,-4.66560/"
   },
   {
     "id": "78",
@@ -1323,7 +1323,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-tulaichean",
     "description": "Beinn Tulaichean is really a minor summit on the south ridge of Cruach \u00c0rdrain. It is best seen and most easily climbed from Inverlochlarig in the Braes of Balquhidder, though it is also possible to approach over Cruach \u00c0rdrain from the A82.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-tulaichean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.33300,-4.51570/"
+    "startingPointURL": "https://www.google.com/maps/search/56.33300,-4.51570/"
   },
   {
     "id": "79",
@@ -1340,7 +1340,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/beinn-udlamain",
     "description": "Beinn Udlamain is the highest of the four mountains on the west side of the Drumochter Pass. It offers fine views of the Ben Alder range.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/beinn-udlamain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85150,-4.24440/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85150,-4.24440/"
   },
   {
     "id": "80",
@@ -1357,7 +1357,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-alder",
     "description": "Ben Alder is one of the remotest of the Munros. A spacious plateau surrounded by cliffs and steep slopes, this is a mountain of memorable character and an almost palpable personality. The approach is enlivened by the dramatic Leachas ridges which offer some scrambling.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-alder-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85350,-4.42380/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85350,-4.42380/"
   },
   {
     "id": "81",
@@ -1374,7 +1374,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-avon",
     "description": "Ben Avon is the easternmost of the high Cairngorms. This extraordinary mountain has a vast plateau stretching for miles and dotted with an amazing array of granite tors. One of these forms the summit, requiring a short scramble.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-avon-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.00570,-3.33810/"
+    "startingPointURL": "https://www.google.com/maps/search/57.00570,-3.33810/"
   },
   {
     "id": "82",
@@ -1391,7 +1391,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-chonzie",
     "description": "Ben Chonzie is the highest point of the heathery moorlands to the north of Crieff. Its finest side is to the east above Glen Turret, but it is more frequently and quickly climbed using tracks from the west.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-chonzie-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.42090,-4.03940/"
+    "startingPointURL": "https://www.google.com/maps/search/56.42090,-4.03940/"
   },
   {
     "id": "83",
@@ -1408,7 +1408,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-cruachan",
     "description": "Ben Cruachan is a very popular mountain, the highest summit of a grand range of sharp peaks between Loch Awe and Loch Etive, prominent in many distant views. Beneath the central corrie there is a huge underground hydro-electric power station.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-cruachan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.39370,-5.11198/"
+    "startingPointURL": "https://www.google.com/maps/search/56.39370,-5.11198/"
   },
   {
     "id": "84",
@@ -1425,7 +1425,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-hope",
     "description": "The most northerly of the Munros, Ben Hope is an isolated monolith with a short usual ascent that can be made quickly. The view is of a stunning desolation of lochans and moors. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-hope-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/58.39040,-4.63280/"
+    "startingPointURL": "https://www.google.com/maps/search/58.39040,-4.63280/"
   },
   {
     "id": "85",
@@ -1442,7 +1442,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-klibreck",
     "description": "Ben Klibreck is a giant whale of a Munro isolated in the wilds of East Sutherland. The usual ascent route climbs very steeply to reach the bealach to the south of the hill; the reward is a stunning panorama of Scotland's northern wildernesses.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-klibreck-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/58.20850,-4.49930/"
+    "startingPointURL": "https://www.google.com/maps/search/58.20850,-4.49930/"
   },
   {
     "id": "86",
@@ -1459,7 +1459,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-lawers",
     "description": "Ben Lawers is the highest mountain in the Southern Highlands and one of Scotland's most popular peaks. Rising high above Loch Tay, it is also renowned for its arctic-alpine flora, and is a National Nature Reserve. The mountain is owned by the National Trust for Scotland.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-lawers-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.51100,-4.26287/"
+    "startingPointURL": "https://www.google.com/maps/search/56.51100,-4.26287/"
   },
   {
     "id": "87",
@@ -1476,7 +1476,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-lomond",
     "description": "Ben Lomond is one of the most familiar and popular of the Munros, its fine summit being in clear view from the south end of the Loch at Balloch. Whilst the path is wide and busy up the slopes, the summit is dramatically situated above a steep corrie and the views over the Loch are unsurpassed.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-lomond-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.15250,-4.64310/"
+    "startingPointURL": "https://www.google.com/maps/search/56.15250,-4.64310/"
   },
   {
     "id": "88",
@@ -1493,7 +1493,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-lui",
     "description": "Ben Lui is a graceful peak, considered by many people to be the finest mountain in the Southern Highlands. It offers its best side towards Dalrigh, and approaches from this side can involve a scramble round either rim of its northeastern corrie, but it is more usually climbed from Glen Lochay, a much shorter route.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-lui-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.40990,-4.85552/"
+    "startingPointURL": "https://www.google.com/maps/search/56.40990,-4.85552/"
   },
   {
     "id": "89",
@@ -1510,7 +1510,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-macdui",
     "description": "The second highest mountain in Britain, Ben Macdui is in the centre of the arctic-like Cairngorms plateau - a much wilder place than Ben Nevis. Climbed equally frequently from both Deeside and Speyside, the summit is said to be haunted by the wraith-like Old Grey Man.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-macdui-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.13400,-3.67120/"
+    "startingPointURL": "https://www.google.com/maps/search/57.13400,-3.67120/"
   },
   {
     "id": "90",
@@ -1527,7 +1527,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-more",
     "description": "Ben More is instantly recognisable, a towering pyramid from near Crianlarich and joined by its near neighbour Stob Binnein in more distant views. Its slopes above Benmore Farm are relentlessly steep.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-more-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.40280,-4.56120/"
+    "startingPointURL": "https://www.google.com/maps/search/56.40280,-4.56120/"
   },
   {
     "id": "91",
@@ -1544,7 +1544,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-more-mull",
     "description": "Ben More is the only island Munro outside Skye. It is a grand, rocky mountain and a fantastic viewpoint for scores of islands dotted around the Minches.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-more-mull-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.44920,-6.06790/"
+    "startingPointURL": "https://www.google.com/maps/search/56.44920,-6.06790/"
   },
   {
     "id": "92",
@@ -1561,7 +1561,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-more-assynt",
     "description": "Ben More Assynt is the highest mountain in the extraordinary landscape of Assynt. It is hidden from the roads, however, by the neighbouring summit of Conival. Ben More has huge, scree girt flanks, a fine approach ridge and a view of total desolation.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-more-assynt-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/58.14870,-4.97340/"
+    "startingPointURL": "https://www.google.com/maps/search/58.14870,-4.97340/"
   },
   {
     "id": "93",
@@ -1578,7 +1578,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-nevis",
     "description": "The highest mountain in Britain, Ben Nevis certainly attracts the crowds, with hordes of trippers toiling up the long and punishing stony ascent to the summit in the summer months. The North Face, on the other hand, presents a very different prospect, its towering precipices and narrow gullies making up one of the most celebrated rock and ice climbing arenas in the country.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-nevis-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.81080,-5.07710/"
+    "startingPointURL": "https://www.google.com/maps/search/56.81080,-5.07710/"
   },
   {
     "id": "94",
@@ -1595,7 +1595,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-oss",
     "description": "Ben Oss is a rugged mountain, usually climbed from Dalrigh near Tyndrum. It suffers from the proximity of its near and much grander neighbour, Ben Lui.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-oss-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.42500,-4.68680/"
+    "startingPointURL": "https://www.google.com/maps/search/56.42500,-4.68680/"
   },
   {
     "id": "95",
@@ -1612,7 +1612,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-starav",
     "description": "Ben Starav is an imposing mountain which rears up steeply from the head of Loch Etive. Higher up it has some fine ridges and is a great viewpoint.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-starav-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.57620,-5.03566/"
+    "startingPointURL": "https://www.google.com/maps/search/56.57620,-5.03566/"
   },
   {
     "id": "96",
@@ -1629,7 +1629,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-vane",
     "description": "One of the Arrochar Alps, Ben Vane only just makes Munro status but has great character, with very steep and rocky slopes on all sides. Bealachs with other peaks are very low and Ben Vane is usually climbed on its own.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-vane-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.25160,-4.70884/"
+    "startingPointURL": "https://www.google.com/maps/search/56.25160,-4.70884/"
   },
   {
     "id": "97",
@@ -1646,7 +1646,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-vorlich-loch-earn",
     "description": "Ben Vorlich above Loch Earn is one of the best-known Scottish mountains and is very popular. Close to the Highland boundary, it gives excellent views into the Lowlands.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-vorlich-loch-earn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.38130,-4.21580/"
+    "startingPointURL": "https://www.google.com/maps/search/56.38130,-4.21580/"
   },
   {
     "id": "98",
@@ -1663,7 +1663,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-vorlich-loch-lomond",
     "description": "Ben Vorlich towers above the west side of the head of Loch Lomond; although close to the road its steep sides mean it is still a tough ascent. The Inveruglas hydro-electric power station is on its eastern flanks, with pipelines running through the mountain from Loch Sloy. It is usually climbed by a steep ascent on the Loch Sloy side though a more interesting circuit can be had from Ardlui.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-vorlich-loch-lomond-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.25160,-4.70884/"
+    "startingPointURL": "https://www.google.com/maps/search/56.25160,-4.70884/"
   },
   {
     "id": "99",
@@ -1680,7 +1680,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ben-wyvis",
     "description": "Ben Wyvis is an isolated, huge and bulky Munro, rising like an elephant from the lower moors of Easter Ross. Prominent in many views, Ben Wyvis is a well-known and popular ascent.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ben-wyvis-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.66580,-4.66680/"
+    "startingPointURL": "https://www.google.com/maps/search/57.66580,-4.66680/"
   },
   {
     "id": "100",
@@ -1697,7 +1697,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/bidean-nam-bian",
     "description": "Bidean nam Bian is more a mountain range than a single mountain, a huge and complex mass of dramatic crags, ridges and summits towering on the south side of Glen Coe. The main summit is hidden from the road behind the Three Sisters - three great prows - and the top of Stob Coire nan Lochain.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/bidean-nam-bian-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66770,-4.98650/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66770,-4.98650/"
   },
   {
     "id": "101",
@@ -1714,7 +1714,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/bidein-a-choire-sheasgaich",
     "description": "One of the remotest Munros, Bidein a' Choire Sheasgaich is a magnificent peak hidden away in the wilderness above Loch Monar. Reaching its foot from any direction is arduous, with much ascent and descent.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/bidein-a-choire-sheasgaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.39150,-5.45534/"
+    "startingPointURL": "https://www.google.com/maps/search/57.39150,-5.45534/"
   },
   {
     "id": "102",
@@ -1731,7 +1731,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/binnein-beag",
     "description": "Binnein Beag is an outlier of the Mamores and the most remote peak in the range. Although close by its much higher neighbour Binnein M\u00f2r, Binnein Beag is a steep-sided cone and admits of no inferioty to its higher siblings.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/binnein-beag-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.71680,-4.96280/"
+    "startingPointURL": "https://www.google.com/maps/search/56.71680,-4.96280/"
   },
   {
     "id": "103",
@@ -1748,7 +1748,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/binnein-mor",
     "description": "Binnein M\u00f2r is the highest summit of the magnificent Mamores range, one of the best mountain ranges in Scotland for keen hillwalkers. It is also a fine and graceful mountain in its own right. The views are tremendous, especially across to Ben Nevis and down onto its lower neighbours.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/binnein-mor2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.71690,-4.96308/"
+    "startingPointURL": "https://www.google.com/maps/search/56.71690,-4.96308/"
   },
   {
     "id": "104",
@@ -1765,7 +1765,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/bla-bheinn",
     "description": "Bl\u00e0 Bheinn - sometimes anglicised to Blaven - stands apart from the rest of the Cuillin Ridge on Skye. Towering magnificently above Loch Slapin and with its hidden side even more spectacular, it is one of the finest mountains in Britain as well as one of the best viewpoints imaginable.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/bla-bheinn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.22030,-6.04290/"
+    "startingPointURL": "https://www.google.com/maps/search/57.22030,-6.04290/"
   },
   {
     "id": "105",
@@ -1782,7 +1782,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/braeriach",
     "description": "The third highest mountain in Britain, Braeriach is perhaps the finest of the Cairngorms. Reaching its vast summit plateau requires a long approach walk - this remains a truly wild place - whilst all around the plateau are a vast range of dramatic and beautiful corries.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/braeriach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15610,-3.79430/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15610,-3.79430/"
   },
   {
     "id": "106",
@@ -1799,7 +1799,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/broad-cairn",
     "description": "Broad Cairn is part of the vast, rolling Mounth plateau. Most conveniently climbed from Loch Muick, it is best seen from that direction.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/broad-cairn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95230,-3.13620/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95230,-3.13620/"
   },
   {
     "id": "107",
@@ -1816,7 +1816,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/bruach-na-frithe",
     "description": "Bruach na Frithe is one of the most straightforward of the Cuillin Munros, and often the first to be climbed. It is hidden from Sligachan by Sg\u00f9rr a Bhasteir but has a pointed summit though with fewer spectacular crags than its neighbours. It is a superb viewpoint for the main Ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/bruach-na-frithe2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.28880,-6.18420/"
+    "startingPointURL": "https://www.google.com/maps/search/57.28880,-6.18420/"
   },
   {
     "id": "108",
@@ -1833,7 +1833,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coire-raineach-buachaille-etive-beag",
     "description": "Stob Coire Raineach - the northern summit of Buachaille Etive Beag - became a Munro in its own right in 1997. Its broad summit has great views of the Aonach Eagach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coire-raineach-buachaille-etive-beag-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66270,-4.95820/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66270,-4.95820/"
   },
   {
     "id": "109",
@@ -1850,7 +1850,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-dubh-buachaille-etive-beag",
     "description": "The higher of the two Munros on Buachaille Etive Beag, Stob Dubh is a fine summit on a grand section of ridge, overlooking Loch Etive.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-dubh-buachaille-etive-beag-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66270,-4.95820/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66270,-4.95820/"
   },
   {
     "id": "110",
@@ -1867,7 +1867,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-dearg-buachaille-etive-mor",
     "description": "Stob Dearg is the highest and finest peak of Buachaille Etive M\u00f2r, and one of the most famous sights of the Highlands. The mountain presents a remarkable pyramid of rock to travellers along the A82 across Rannoch Moor.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-dearg-buachaille-etive-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66440,-4.90450/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66440,-4.90450/"
   },
   {
     "id": "111",
@@ -1884,7 +1884,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-na-broige-buachaille-etive-mor",
     "description": "Stob na Br\u00f2ige is the summit at the Glen Etive end of Buachaille Etive M\u00f2r. It was promoted to become a separate Munro in 1997 when means that most baggers now traverse the whole ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-na-broige-buachaille-etive-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66440,-4.90450/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66440,-4.90450/"
   },
   {
     "id": "112",
@@ -1901,7 +1901,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/bynack-more",
     "description": "Bynack More is the cornerstone of the High Cairngorms to the northeast, its pyramidal summit appearing to be the greatest mountain in the range when seen from much of Moray. From the summit the views are correspondingly extensive. Interest is added by the great tors of the Barns of Bynack down the east side of the ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/bynack-more-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15910,-3.68160/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15910,-3.68160/"
   },
   {
     "id": "113",
@@ -1918,7 +1918,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/cairn-bannoch",
     "description": "Cairn Bannoch is a fairly insignificant summit on the Mounth plateau to the south of Lochnagar. The most significant feature nearby is the great cliff of Creag an Dubh Loch to the northeast (but out of sight).",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/cairn-bannoch-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95250,-3.13640/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95250,-3.13640/"
   },
   {
     "id": "114",
@@ -1935,7 +1935,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/cairn-gorm",
     "description": "Cairn Gorm is one of the best known summits in Scotland, and despite not being the highest has lent its name to this whole mountain range. It has heavily developed for ski-ing and by the funicular railway to the Ptarmigan restaurant, detracting greatly from its wildness and the experience of climbing it on foot.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/cairn-gorm-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.13400,-3.67120/"
+    "startingPointURL": "https://www.google.com/maps/search/57.13400,-3.67120/"
   },
   {
     "id": "115",
@@ -1952,7 +1952,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/cairn-of-claise",
     "description": "Cairn of Claise is a fairly insignificant rise on the wide plateau on the east side of the Cairnwell Pass. A large stone wall crosses close by the summit marking the old county boundary.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/cairn-of-claise-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.90330,-3.40080/"
+    "startingPointURL": "https://www.google.com/maps/search/56.90330,-3.40080/"
   },
   {
     "id": "116",
@@ -1969,7 +1969,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/cairn-toul",
     "description": "Cairn Toul is the most shapely of the high Cairngorms, rising as a giant sentinel above the infant River Dee. It is in a very wild and remote position and many walkers will need an overnight trip to climb it, whether from Deeside or Speyside.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/cairn-toul-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.14620,-3.67930/"
+    "startingPointURL": "https://www.google.com/maps/search/57.14620,-3.67930/"
   },
   {
     "id": "117",
@@ -1986,7 +1986,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-a-chlamain",
     "description": "C\u00e0rn a' Chlamain is a stony summit on the edge of a sweeping plateau on the edge of Glen Tilt. The usual approach is up this glen, its great beauty making this a fine walk.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-a-chlamain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77450,-3.84325/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77450,-3.84325/"
   },
   {
     "id": "118",
@@ -2003,7 +2003,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-a-choire-bhoidheach",
     "description": "C\u00e0rn a' Choire Bh\u00f2idheach is in the centre of the extensive White Mounth plateau. The true summit is a featureless swelling but a short distance further north is the more dramatic Stuic, a minor summit on the edge of two dramatic corries.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-a-choire-bhoidheach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95250,-3.13640/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95250,-3.13640/"
   },
   {
     "id": "119",
@@ -2020,7 +2020,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-a-gheoidh",
     "description": "C\u00e0rn a' Gh\u00e8oidh is hidden behind the two more familiar Cairnwell munros. It offers a wild and quiet respite to the ski-developments on its two neighbours.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-a-gheoidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.88680,-3.41490/"
+    "startingPointURL": "https://www.google.com/maps/search/56.88680,-3.41490/"
   },
   {
     "id": "120",
@@ -2037,7 +2037,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-a-mhaim",
     "description": "C\u00e0rn a' Mh\u00e0im guards Lairig Ghru on the approach from Braemar. It is joined to mighty Ben Macdui by perhaps the narrowest section of ridge in the Cairngorms - an enjoyable traverse with a steep ascent to gain Macdui at the end.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-a-mhaim-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.99000,-3.54430/"
+    "startingPointURL": "https://www.google.com/maps/search/56.99000,-3.54430/"
   },
   {
     "id": "121",
@@ -2054,7 +2054,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-an-fhidhleir-carn-ealar",
     "description": "C\u00e0rn an Fh\u00ecdhleir is a domed and unspectacular Munro. However it is in the heart of a vast roadless area, requiring an epic approach from either Glen Feshie, Glen Tilt or, more usually, the Linn of Dee - this latter approach is made easier with a mountain bike.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-an-fhidhleir-carn-ealar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.98940,-3.54350/"
+    "startingPointURL": "https://www.google.com/maps/search/56.98940,-3.54350/"
   },
   {
     "id": "122",
@@ -2071,7 +2071,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-an-righ",
     "description": "C\u00e0rn an R\u00ecgh is a steep-sided mountain in the heart of the Mounth. It is usually climbed via the Spittal of Glenshee to the southeast.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-an-righ-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.81410,-3.46720/"
+    "startingPointURL": "https://www.google.com/maps/search/56.81410,-3.46720/"
   },
   {
     "id": "123",
@@ -2088,7 +2088,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-an-t-sagairt-mor",
     "description": "C\u00e0rn an t-Sagairt M\u00f2r is on the Mounth plateau to the west of Lochnagar; its southern slopes crossed by an old path to the latter summit from Glen Callater. It is a dome-shaped hill with aircraft wreckage to the north of the summit its best known feature.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-an-t-sagairt-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95250,-3.13640/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95250,-3.13640/"
   },
   {
     "id": "124",
@@ -2105,7 +2105,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-an-tuirc",
     "description": "C\u00e0rn an Tuirc is a stony dome, one of four Munros above the east side of the Cairnwell Pass. The summits in this region are arranged on a wide plateau making it possible to devise numerous expeditions taking in multiple peaks.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-an-tuirc-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.90330,-3.40080/"
+    "startingPointURL": "https://www.google.com/maps/search/56.90330,-3.40080/"
   },
   {
     "id": "125",
@@ -2122,7 +2122,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-aosda",
     "description": "C\u00e0rn Aosda is one of the easiest and quickest Munros to climb, but that is its only distinction. The mountain has been heavily developed for ski-ing and pistes, tows and access tracks disfigure its slopes above the Cairnwell pass.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-aosda-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.88680,-3.41490/"
+    "startingPointURL": "https://www.google.com/maps/search/56.88680,-3.41490/"
   },
   {
     "id": "126",
@@ -2139,7 +2139,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-bhac",
     "description": "C\u00e0rn Bhac is a rounded mountain deep in the wilds of the Mounth south of Inverey. One of the less visited Munros it offers a chance for peace, quiet and contemplation.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-bhac-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.98510,-3.50030/"
+    "startingPointURL": "https://www.google.com/maps/search/56.98510,-3.50030/"
   },
   {
     "id": "127",
@@ -2156,7 +2156,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-dearg-loch-pattack",
     "description": "C\u00e0rn Dearg is a wedge-shaped and rather sprawling mountain situated above Culra Bothy in the heart of the Ben Alder forest.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-dearg-loch-pattack-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85350,-4.42380/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85350,-4.42380/"
   },
   {
     "id": "128",
@@ -2173,7 +2173,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-dearg-corrour",
     "description": "C\u00e0rn Dearg is a remote peak between Rannoch Moor and the Ben Alder range, above Loch Ossian. It can be climbed either from either Corrour or Rannoch stations on the West Highland line.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-dearg-corrour-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.76040,-4.69070/"
+    "startingPointURL": "https://www.google.com/maps/search/56.76040,-4.69070/"
   },
   {
     "id": "129",
@@ -2190,7 +2190,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-dearg-monadhliath",
     "description": "C\u00e0rn Dearg is the highest of the Monadhliath, situated on a fairly slender ridge leading south from the main plateau and quite uncharacteristic of the range. It is usually combined with its neighbours further east.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-dearg-monadhliath-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.07050,-4.15760/"
+    "startingPointURL": "https://www.google.com/maps/search/57.07050,-4.15760/"
   },
   {
     "id": "130",
@@ -2207,7 +2207,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-eige",
     "description": "C\u00e0rn Eige is the highest of all the mountains north of the Great Glen, and forms the culminating point of the great range of peaks on the north side of beautiful Glen Affric. It is almost always climbed together with its twin and near neighbour, Mam Sodhail.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-eige-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.27340,-4.96180/"
+    "startingPointURL": "https://www.google.com/maps/search/57.27340,-4.96180/"
   },
   {
     "id": "131",
@@ -2224,7 +2224,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-ghluasaid",
     "description": "C\u00e0rn Ghluasaid is reached by a fine stalkers path from the north side of Loch Cluanie. The other side of the mountain collapses in broken crags down to Coire Sgreumh. The mountain is really quite a minor subsidiary summit of Sg\u00f9rr nan Conbhairean - wth less than 60m of ascent if coming up from the direction of its parent peak.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-ghluasaid-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.14610,-5.06820/"
+    "startingPointURL": "https://www.google.com/maps/search/57.14610,-5.06820/"
   },
   {
     "id": "132",
@@ -2241,7 +2241,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-gorm",
     "description": "C\u00e0rn Gorm is one of a group of four Munros on the north side of Glen Lyon that are usually climbed together. Its summit is a broad dome with little distinction but there are good views of the glen.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-gorm-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.60290,-4.19200/"
+    "startingPointURL": "https://www.google.com/maps/search/56.60290,-4.19200/"
   },
   {
     "id": "133",
@@ -2258,7 +2258,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-liath-creag-meagaidh",
     "description": "C\u00e0rn Liath is an eastern outlier of the Creag Meagaidh range and is a rather sprawling and undistinguished hill.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-liath-creag-meagaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95210,-4.49592/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95210,-4.49592/"
   },
   {
     "id": "134",
@@ -2275,7 +2275,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-mairg",
     "description": "C\u00e0rn Mairg is the highest of a range of four Munros on the north side of Glen Lyon above Invervar. Alone amongst the four its summit has small crags and a distinctive form.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-mairg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.60290,-4.19200/"
+    "startingPointURL": "https://www.google.com/maps/search/56.60290,-4.19200/"
   },
   {
     "id": "135",
@@ -2292,7 +2292,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-mor-dearg",
     "description": "C\u00e0rn M\u00f2r Dearg may be one of the highest mountains in Britain, but it is completely overshadowed by Ben Nevis. It is the perfect viewpoint from which to admire the Ben's magnificent North Face. Its graceful peak crowns a fine ridge - joined to its great neighbour by the celebrated C\u00e0rn M\u00f2r Dearg Ar\u00eate.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-mor-dearg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.84190,-5.04320/"
+    "startingPointURL": "https://www.google.com/maps/search/56.84190,-5.04320/"
   },
   {
     "id": "136",
@@ -2309,7 +2309,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-na-caim",
     "description": "C\u00e0rn na Caim is the more northerly of the two Munros on the wide plateau guarding the east side of the Drumochter Pass. The approach to the summit is boggy but the views are better than might be imagined.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-na-caim2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.90890,-4.23660/"
+    "startingPointURL": "https://www.google.com/maps/search/56.90890,-4.23660/"
   },
   {
     "id": "137",
@@ -2326,7 +2326,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-nan-gobhar-strathfarrar",
     "description": "C\u00e0rn nan Gobhar is a rounded hill on the north Strathfarrar ridge. The generally easy slopes are topped with a summit area covered in awkward angular boulders. There are good views over the Beauly and Cromarty Firths.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-nan-gobhar-strathfarrar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.40560,-4.85910/"
+    "startingPointURL": "https://www.google.com/maps/search/57.40560,-4.85910/"
   },
   {
     "id": "138",
@@ -2343,7 +2343,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-nan-gobhar-loch-mullardoch",
     "description": "One of two Munros of the same name in close proximity, this C\u00e0rn nan Gobhar rises between Loch Mullardoch and Glen Strathfarrar. It is a fairly rounded peak and rather overshadowed by its more dramatic neighbour Sg\u00f9rr na Lapaich.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-nan-gobhar-loch-mullardoch-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.33990,-4.96150/"
+    "startingPointURL": "https://www.google.com/maps/search/57.33990,-4.96150/"
   },
   {
     "id": "139",
@@ -2360,7 +2360,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/carn-sgulain",
     "description": "C\u00e0rn Sgulain is one of the least interesting Munros, a featureless pudding in the Monadhliath and much inferior to neighbouring A' Chailleach. The intervening ground is riven by a steep little grassy gully so even the short walk across to C\u00e0rn Sgulain is a little irritating!",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/carn-sgulain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.07050,-4.15760/"
+    "startingPointURL": "https://www.google.com/maps/search/57.07050,-4.15760/"
   },
   {
     "id": "140",
@@ -2377,7 +2377,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/chno-dearg",
     "description": "Chno Dearg is one of the less distinguished mountains on the south side of Glen Spean, its rounded dome lacking any distinctive features.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/chno-dearg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.86550,-4.70850/"
+    "startingPointURL": "https://www.google.com/maps/search/56.86550,-4.70850/"
   },
   {
     "id": "141",
@@ -2394,7 +2394,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ciste-dhubh",
     "description": "Ciste Dhubh is a dramatically pointed summit set some way back from Cluanie and Glen Shiel. It is a fine and very distinctive peak of great character.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ciste-dhubh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15960,-5.16470/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15960,-5.16470/"
   },
   {
     "id": "142",
@@ -2411,7 +2411,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/cona-mheall",
     "description": "Cona' Mheall is a fine stony ridge to the east of the main bulk of the Beinn Dearg range. It offers tremendous views across the wild and rocky Coire Ghrunnda.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/cona-mheall-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.81980,-5.06250/"
+    "startingPointURL": "https://www.google.com/maps/search/57.81980,-5.06250/"
   },
   {
     "id": "143",
@@ -2428,7 +2428,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/conival",
     "description": "Conival is in view from Inchnadamph but is rather retiring compared to the lower peaks such as Quinag. Composed of Lewissian Gneiss - one of the oldest rocks on the planet - the mountain gives a steep ascent with tricky terrain. The view is of an otherworldly wilderness of lochs and moors, whilst a fine ridge connects with the neighbouring and higher Ben More Assynt.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/conival-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/58.14870,-4.97340/"
+    "startingPointURL": "https://www.google.com/maps/search/58.14870,-4.97340/"
   },
   {
     "id": "144",
@@ -2445,7 +2445,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-a-mhaim",
     "description": "Creag a'Mh\u00e0im is the easternmost of the seven Munros on the South Cluanie ridge, and usually the first to be climbed. It suffers by comparison to its neighbours further along the ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-a-mhaim-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "145",
@@ -2462,7 +2462,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-leacach",
     "description": "Creag Leacach is a stony mountain rising prominently above the Devil's Elbow on the road up the Cairnwell Pass. It is normally ascended as part of the round of the four Munros on the east side of the pass; we also give a more attractive alternative route, starting in Glen Isla.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-leacach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.90330,-3.40080/"
+    "startingPointURL": "https://www.google.com/maps/search/56.90330,-3.40080/"
   },
   {
     "id": "146",
@@ -2479,7 +2479,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-meagaidh",
     "description": "Creag Meagaidh is a vast plateau, and one of the higher mountains of the central Highlands - often recognisable from afar due to the distinctive cleft of the Window. The mountain is chiefly famed for the magnificent Coire \u00c0rdair,  second only to Ben Nevis as mecca for ice-climbers.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-meagaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95210,-4.49592/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95210,-4.49592/"
   },
   {
     "id": "147",
@@ -2496,7 +2496,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-mhor-glen-lochay",
     "description": "Creag Mh\u00f2r is at the head of Glen Lochay and forms a very steep-sided ridge. Access is eased by the hydro track running across the side of the glen. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-mhor-glen-lochay-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.49910,-4.47590/"
+    "startingPointURL": "https://www.google.com/maps/search/56.49910,-4.47590/"
   },
   {
     "id": "148",
@@ -2513,7 +2513,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-nan-damh",
     "description": "Creag nan D\u00e0mh is the final peak on the South Glen Shiel Ridge. It only just qualifies as a Munro and appears insignificant compared to some of its neighbours.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-nan-damh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "149",
@@ -2530,7 +2530,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-pitridh",
     "description": "This diminutive Munro is dwarfed by its higher neighbours Geal Ch\u00e0rn and Beinn a' Chlachair and its inclusion with them requires little extra effort. However its position high above Lochan na h-Earba makes it a fabulous viewpoint.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-pitridh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.91220,-4.57556/"
+    "startingPointURL": "https://www.google.com/maps/search/56.91220,-4.57556/"
   },
   {
     "id": "150",
@@ -2547,7 +2547,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creise",
     "description": "Criese is the mid-point and summit of a fine ridge running from Clach Leathad (formerly regarded as the true summit) and the steep nose of Sron na Creise, the finest feature of the mountain as seen in the photo.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creise-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.63240,-4.82790/"
+    "startingPointURL": "https://www.google.com/maps/search/56.63240,-4.82790/"
   },
   {
     "id": "151",
@@ -2564,7 +2564,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/cruach-ardrain",
     "description": "Cruach \u00c0rdrain is a steep mountain rising to the south of Crianlarich, its distinctive outline being a familiar sight from many surrounding hills. It can also be climbed with its neighbour Beinn Tulaichean from the south.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/cruach-ardrain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.33300,-4.51570/"
+    "startingPointURL": "https://www.google.com/maps/search/56.33300,-4.51570/"
   },
   {
     "id": "152",
@@ -2581,7 +2581,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/derry-cairngorm",
     "description": "Derry Cairngorm is often mistaken for Ben Macdui in views from Deeside, its great summit cone rising above the foothills. It is one of the best viewpoints for Ben Macdui, seen above the grand Coire Uaine.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/derry-cairngorm-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.99000,-3.54430/"
+    "startingPointURL": "https://www.google.com/maps/search/56.99000,-3.54430/"
   },
   {
     "id": "153",
@@ -2598,7 +2598,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/driesh",
     "description": "To residents of Dundee, Driesh is one of the best-known and most climbed Munros. It rises steeply above Glen Doll in the upper part of Glen Clova but the summit area is much more rounded and less dramatic. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/driesh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87040,-3.17584/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87040,-3.17584/"
   },
   {
     "id": "154",
@@ -2615,7 +2615,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/druim-shionnach",
     "description": "Druim Shionnach is the second Munro on the South Glen Shiel Ridge. It is a narrow section of the traverse with a little scrambling on the ascent from the east.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/druim-shionnach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "155",
@@ -2632,7 +2632,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/eididh-nan-clach-geala",
     "description": "Eididh nan Clach Geala rises steeply above Lochan a' Chnapaich; on the other sides its slopes are more gentle. It enjoys stunning views northwest towards the distinctive mountains of Assynt and the Summer Isles.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/eididh-nan-clach-geala-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.81980,-5.06250/"
+    "startingPointURL": "https://www.google.com/maps/search/57.81980,-5.06250/"
   },
   {
     "id": "156",
@@ -2649,7 +2649,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/fionn-bheinn",
     "description": "Technically one of the Fannichs, Fionn Bheinn is isolated from the other peaks and is nearly always climbed from Achnasheen. It is a rounded mountain but offers fine views of the nearby Torridon giants.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/fionn-bheinn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.57930,-5.07340/"
+    "startingPointURL": "https://www.google.com/maps/search/57.57930,-5.07340/"
   },
   {
     "id": "157",
@@ -2666,7 +2666,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/gairich",
     "description": "Gairich is a distinctive solitary Munro on the south side of Loch Quioch. Nearly always climbed from the Loch Quioch Dam, it gives a fine outing.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/gairich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.07190,-5.18770/"
+    "startingPointURL": "https://www.google.com/maps/search/57.07190,-5.18770/"
   },
   {
     "id": "158",
@@ -2683,7 +2683,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/garbh-chioch-mhor",
     "description": "Garbh Chioch Mh\u00f2r is an extremely rough and rocky ridge of immense character on the edge of Knoydart. It is normally traversed en-route to the even grander cone-shaped peak of Sg\u00f9rr na C\u00ecche.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/garbh-chioch-mhor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.97190,-5.31230/"
+    "startingPointURL": "https://www.google.com/maps/search/56.97190,-5.31230/"
   },
   {
     "id": "159",
@@ -2700,7 +2700,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/geal-charn",
     "description": "Geal Ch\u00e0rn is a rather sprawling mountain in the Beinn a' Chlachair group. Its most notable feature is the summit, with a very fine cairn and cylindrical trig point atop a graceful little cone.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/geal-charn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.91220,-4.57556/"
+    "startingPointURL": "https://www.google.com/maps/search/56.91220,-4.57556/"
   },
   {
     "id": "160",
@@ -2717,7 +2717,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/geal-charn-monadhliath",
     "description": "Geal Ch\u00e0rn is separated from the other Monadhliath Munros by several miles of rolling moorland and bogs, and is usually climbed on its own from either Garva Bridge or the Spey dam. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/geal-charn-monadhliath-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.01990,-4.43590/"
+    "startingPointURL": "https://www.google.com/maps/search/57.01990,-4.43590/"
   },
   {
     "id": "161",
@@ -2734,7 +2734,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/geal-charn-alder",
     "description": "This is the highest of several Munros by the name of Geal Ch\u00e0rn. A very remote peak, it is in the centre of a great ridge between Ben Alder and the Loch Laggan area; its finest feature is the Lancet Edge, a dramatic ridge pluging down to Culra.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/geal-charn-alder-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85350,-4.42380/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85350,-4.42380/"
   },
   {
     "id": "162",
@@ -2751,7 +2751,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/geal-charn-drumochter",
     "description": "There are several Geal Ch\u00e0rns; this one is on the north side of the Drumochter Pass. It is a rounded dome which can be quickly reached from Balsporran Cottages, and formerly had a line of very prominent cairns some distance short of its summit.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/geal-charn-drumochter2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.88350,-4.25360/"
+    "startingPointURL": "https://www.google.com/maps/search/56.88350,-4.25360/"
   },
   {
     "id": "163",
@@ -2768,7 +2768,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/glas-bheinn-mhor",
     "description": "Glas Bheinn Mh\u00f2r is a peaked summit to the east of mighty Ben Starav in the range on the south side of Glen Etive.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/glas-bheinn-mhor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.57620,-5.03566/"
+    "startingPointURL": "https://www.google.com/maps/search/56.57620,-5.03566/"
   },
   {
     "id": "164",
@@ -2785,7 +2785,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/glas-maol",
     "description": "Glas Maol is the highest of a group of four Munros to the east of the Cairnwell Pass, and has been developed for skiing. The road gives a high-level starting point and eases the ascent of these rounded domes, though the alternative route given from Glen Isla via Monega Hill gives a much finer walk.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/glas-maol-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.90330,-3.40080/"
+    "startingPointURL": "https://www.google.com/maps/search/56.90330,-3.40080/"
   },
   {
     "id": "165",
@@ -2802,7 +2802,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/glas-tulaichean",
     "description": "Glas Tulaichean is a big dome-shaped mountain usually climbed from the Spittal of Glenshee. A landrover track leads almost all the way to the summit, whilst the lower slopes were once accessed by a private railway.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/glas-tulaichean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.81410,-3.46720/"
+    "startingPointURL": "https://www.google.com/maps/search/56.81410,-3.46720/"
   },
   {
     "id": "166",
@@ -2819,7 +2819,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/gleouraich",
     "description": "Gleouraich is a very fine mountain on the north side of Loch Quioch. It has grand corries and is part of an excellent ridgewalk, but perhaps the most interesting feature is the amazing stalkers path up the southwest ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/gleouraich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.07570,-5.25320/"
+    "startingPointURL": "https://www.google.com/maps/search/57.07570,-5.25320/"
   },
   {
     "id": "167",
@@ -2836,7 +2836,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/gulvain",
     "description": "Gulvain is a fine, remote peak with two summits, the highest mountain in the wild area between Loch Eil and Loch Arkaig. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/gulvain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85970,-5.34900/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85970,-5.34900/"
   },
   {
     "id": "168",
@@ -2853,7 +2853,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ladhar-bheinn",
     "description": "Deep in the wild Knoydart peninsula, Ladhar Bheinn usually requires an overnight stay. It is a truly magnificent mountain with a perfect position right on one of the most dramatic parts of the West Highlands seaboard. Dramatic ridges, multiple summits and an awesome corrie.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ladhar-bheinn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.03860,-5.68540/"
+    "startingPointURL": "https://www.google.com/maps/search/57.03860,-5.68540/"
   },
   {
     "id": "169",
@@ -2870,7 +2870,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mullach-an-rathain-liathach",
     "description": "Mullach an Rathain is the westernmost of the two Munros on the ridge of Liathach, one of the very finest in the Highlands. It offers tremendous views down Loch Torridon and the sea as a reward for the tackling of its extremely steep slopes.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mullach-an-rathain-liathach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.55270,-5.45160/"
+    "startingPointURL": "https://www.google.com/maps/search/57.55270,-5.45160/"
   },
   {
     "id": "170",
@@ -2887,7 +2887,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/spidean-a-choire-leith-liathach",
     "description": "Spidean a' Choire L\u00e8ith is the highest summit of mighty Liathach. The mountain is exceptionally well defended by cliffs and buttresses and there are very few possible routes of ascent - and even these are steep and scrambly. The ridge on both sides of the summit is nothing short of magnificent.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/spidean-a-choire-leith-liathach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.55270,-5.45160/"
+    "startingPointURL": "https://www.google.com/maps/search/57.55270,-5.45160/"
   },
   {
     "id": "171",
@@ -2904,7 +2904,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/lochnagar",
     "description": "Lochnagar is one of the most celebrated of the Munros, a pointed summit rising high above one of Scotland's most beautiful corries. It was also featured in a poem by Lord Byron, ending with the following lines:England thy beauties are tame and domesticTo one who has roved on the mountains afarOh! For the crags that are wild and magesticThe steep frowning glories of dark Lochnagar.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/lochnagar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95250,-3.13640/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95250,-3.13640/"
   },
   {
     "id": "172",
@@ -2921,7 +2921,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/luinne-bheinn",
     "description": "Luinne Bheinn (known to some Gaelic pronunciation-challenged walkers as Loony Bin) is a very rocky and rough mountain in the heart of the Knoydart peninsula, and a superb viewpoint.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/luinne-bheinn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.03860,-5.68540/"
+    "startingPointURL": "https://www.google.com/maps/search/57.03860,-5.68540/"
   },
   {
     "id": "173",
@@ -2938,7 +2938,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/lurg-mhor",
     "description": "Lurg Mh\u00f2r is one of the remotest of all Munros. It lacks the grandeur of neighbouring Bidean a' Choire Sheasgaich but nonetheless enjoys a wild atmosphere, and looks grand when seen from the east.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/lurg-mhor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.39150,-5.45534/"
+    "startingPointURL": "https://www.google.com/maps/search/57.39150,-5.45534/"
   },
   {
     "id": "174",
@@ -2955,7 +2955,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mam-sodhail",
     "description": "M\u00e0m Sodhail is a twin to the neighbouring C\u00e0rn Eige, the two highest peaks north of the great glen. It is supported by fine ridges high above the shores of beautiful Loch Affric.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mam-sodhail-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.27340,-4.96180/"
+    "startingPointURL": "https://www.google.com/maps/search/57.27340,-4.96180/"
   },
   {
     "id": "175",
@@ -2972,7 +2972,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/maoile-lunndaidh",
     "description": "Maoile Lunndaidh is a very remote mountain at the head of Loch Monar, though it is usually ascended from Glencarron. It takes the form of a spacious plateau with several steep corries. Creag Toll a' Choin has recently been resurveyed as being the highest summit, but the Walkhighlands' route goes over both.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/maoile-lunndaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.49140,-5.27220/"
+    "startingPointURL": "https://www.google.com/maps/search/57.49140,-5.27220/"
   },
   {
     "id": "176",
@@ -2989,7 +2989,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/maol-chean-dearg",
     "description": "Maol Chean-dearg is a dramatic, steep sided dome of Torridonian sandstone in the wonderful Coulin Forest between Torridon and Strathcarron. On the north side it plunges in crags down to a lochan and has an awe-inspiring outlook over the Torridon peaks.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/maol-chean-dearg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.44980,-5.40744/"
+    "startingPointURL": "https://www.google.com/maps/search/57.44980,-5.40744/"
   },
   {
     "id": "177",
@@ -3006,7 +3006,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/maol-chinn-dearg",
     "description": "Maol chinn-dearg is one of the seven Munros on the South Cluanie Ridge. The long ridge to the northeast offers an escape to the glen.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/maol-chinn-dearg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "178",
@@ -3023,7 +3023,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mayar",
     "description": "Mayar is a bump-like summit on the southern part of the Angus / Mounth plateau. It is usually ascended with its near neighbour, Driesh.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mayar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87040,-3.17584/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87040,-3.17584/"
   },
   {
     "id": "179",
@@ -3040,7 +3040,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-a-bhuiridh",
     "description": "Meall a' Bh\u00f9iridh is the highest of the Black Mount and has a good position on the edge of Rannoch Moor, making it a grand viewpoint. The sense of wildness on the ascent is rather lessened by ski-tows almost to the summit.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-a-bhuiridh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.63240,-4.82790/"
+    "startingPointURL": "https://www.google.com/maps/search/56.63240,-4.82790/"
   },
   {
     "id": "180",
@@ -3057,7 +3057,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-a-choire-leith",
     "description": "Meall a' Choire L\u00e8ith is an outlier of the Ben Lawers group. A vast, flat-topped dome, it is not the most distinctive of the group.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-a-choire-leith-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.54530,-4.28936/"
+    "startingPointURL": "https://www.google.com/maps/search/56.54530,-4.28936/"
   },
   {
     "id": "181",
@@ -3074,7 +3074,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-a-chrasgaidh",
     "description": "Meall a' Chrasgaidh is a minor, rounded summit just off the ridge between Sg\u00f9rr M\u00f2r and Sg\u00f9rr nan Clach Geala. It lacks any distinguishing features and is very much overshadowed by its more illustrious neighbours.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-a-chrasgaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.73730,-5.09000/"
+    "startingPointURL": "https://www.google.com/maps/search/57.73730,-5.09000/"
   },
   {
     "id": "182",
@@ -3091,7 +3091,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-buidhe-glen-lyon",
     "description": "Meall Buidhe is a north-south ridge in an area of wide moorlands, though the Glas Choire on its eastern side does add some character. It is one of the easiest and quickest Munros to climb from Loch an D\u00e0mh.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-buidhe-glen-lyon-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.58580,-4.42486/"
+    "startingPointURL": "https://www.google.com/maps/search/56.58580,-4.42486/"
   },
   {
     "id": "183",
@@ -3108,7 +3108,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-buidhe-knoydart",
     "description": "Meall Buidhe is an incredibly rough and rocky mountain, one of the three magnificent Munros on the Knoydart peninsula. Whichever route is chosen, the ascent requires considerable effort.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-buidhe-knoydart-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.03860,-5.68540/"
+    "startingPointURL": "https://www.google.com/maps/search/57.03860,-5.68540/"
   },
   {
     "id": "184",
@@ -3125,7 +3125,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-chuaich",
     "description": "This undistinguished hill hidden up a glen near Dalwhinnie offers one of the shorter and more straightforward ascents amongst the Munros. The usual approach follows some hydro-electric scheme works before an ascent up a broad dome. The position gives it great views over Badenoch, however.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-chuaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95120,-4.21480/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95120,-4.21480/"
   },
   {
     "id": "185",
@@ -3142,7 +3142,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-corranaich",
     "description": "Meall Corranaich is part of the Ben Lawers range, and is well seen from the Lawers visitor centre. It can be climbed from there up a steep ridge but is more usually ascended from the northwest, starting from the summit of the pass.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-corranaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.54530,-4.28936/"
+    "startingPointURL": "https://www.google.com/maps/search/56.54530,-4.28936/"
   },
   {
     "id": "186",
@@ -3159,7 +3159,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-garbh-carn-mairg",
     "description": "Meall Garbh is one of the group of four rounded Munros on the north side of Glen Lyon, usually climbed with its neighbours. It lacks any distinctive form.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-garbh-carn-mairg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.60290,-4.19200/"
+    "startingPointURL": "https://www.google.com/maps/search/56.60290,-4.19200/"
   },
   {
     "id": "187",
@@ -3176,7 +3176,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-garbh-ben-lawers",
     "description": "Meall Garbh is one of the Ben Lawers range, exactly the same height as neighbouring An St\u00f9c. It is part of the fine round of the corrie containing Lochan nan Cat.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-garbh-ben-lawers-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.52950,-4.15186/"
+    "startingPointURL": "https://www.google.com/maps/search/56.52950,-4.15186/"
   },
   {
     "id": "188",
@@ -3193,7 +3193,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-ghaordaidh",
     "description": "Meall Ghaordaidh is not a particularly distinguished peak. The usual ascent from Glen Lochay reveals it is a featureless lump.  It does look finer from Glen Lyon to the north, supported by two buttresses.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-ghaordaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.49610,-4.39556/"
+    "startingPointURL": "https://www.google.com/maps/search/56.49610,-4.39556/"
   },
   {
     "id": "189",
@@ -3210,7 +3210,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-glas",
     "description": "Meall Glas is a fairly undistinguished Munro between Glen Dochart and Glen Lochay. The ascent is possible from either glen.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-glas-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.41480,-4.51720/"
+    "startingPointURL": "https://www.google.com/maps/search/56.41480,-4.51720/"
   },
   {
     "id": "190",
@@ -3227,7 +3227,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-gorm",
     "description": "Meall Gorm is on the Fannichs ridge. It occupies a fine position, with four fine corries along its northeastern side each holding its own lochan. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-gorm-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.72480,-4.89430/"
+    "startingPointURL": "https://www.google.com/maps/search/57.72480,-4.89430/"
   },
   {
     "id": "191",
@@ -3244,7 +3244,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-greigh",
     "description": "The easternmost of the Lawers range, Meall Greigh is fairly shapeless and sprawling, usually traversed en-route to Meall Garbh. With no higher peaks through the eastern ark it does enjoy extensive views.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-greigh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.52950,-4.15186/"
+    "startingPointURL": "https://www.google.com/maps/search/56.52950,-4.15186/"
   },
   {
     "id": "192",
@@ -3261,7 +3261,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/creag-mhor-meall-na-aighean",
     "description": "Meall na Aighean (named Creag Mh\u00f2r on older maps) is one of a group of four rounded Munros on the north side of Glen Lyon.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/creag-mhor-meall-na-aighean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.60290,-4.19200/"
+    "startingPointURL": "https://www.google.com/maps/search/56.60290,-4.19200/"
   },
   {
     "id": "193",
@@ -3278,7 +3278,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-na-teanga",
     "description": "Meall na Teanga is a steep dome, one of the two Loch Lochy Munros, rising above the forestry as seen from the A82 on the opposite side of the loch. Its rounded summit has several satellite peaks, divided by scooped coires.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-na-teanga-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.02130,-4.83917/"
+    "startingPointURL": "https://www.google.com/maps/search/57.02130,-4.83917/"
   },
   {
     "id": "194",
@@ -3295,7 +3295,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-nan-ceapraichean",
     "description": "Meall nan Ceapraichean is a stony summit to the north of Beinn Dearg. It is usually traversed together with its neighbours and has particularly good views to the northwest.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-nan-ceapraichean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.81980,-5.06250/"
+    "startingPointURL": "https://www.google.com/maps/search/57.81980,-5.06250/"
   },
   {
     "id": "195",
@@ -3312,7 +3312,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-nan-eun",
     "description": "Meall nan Eun is a dome-like Munro with a very rounded summit but extremely steep sides. The plateau-like top of the mountain unfortunately robs the views of any depth.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-nan-eun-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.57620,-5.03566/"
+    "startingPointURL": "https://www.google.com/maps/search/56.57620,-5.03566/"
   },
   {
     "id": "196",
@@ -3329,7 +3329,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/meall-nan-tarmachan",
     "description": "Meall nan Tarmachan is the only Munro summit on the Tarmachan ridge. It can be climbed quickly from Lochain na Lairige but is usually enjoyed as part of a very enjoyable and rocky scramble along the whole ridge. The ridge is very prominent from Killin.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/meall-nan-tarmachan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.51080,-4.26280/"
+    "startingPointURL": "https://www.google.com/maps/search/56.51080,-4.26280/"
   },
   {
     "id": "197",
@@ -3346,7 +3346,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/monadh-mor",
     "description": "Monadh M\u00f2r is a vast plateau in the very heart of the wild Cairngorms. Its ascent - usually combined with Beinn Bhrotain - requires a great deal of effort, whether approached across the vast plateaux from Glen Feshie or via the more obvious route past White Bridge and the Linn of Dee, or up Glen Geusachan.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/monadh-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.06310,-3.89700/"
+    "startingPointURL": "https://www.google.com/maps/search/57.06310,-3.89700/"
   },
   {
     "id": "198",
@@ -3363,7 +3363,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/moruisg",
     "description": "Moruisg is a very prominent mountain rising like a beached whale above upper Glen Carron. Unfortunately the usual ascent route is up a wide and soggy slope with few features to break the effort.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/moruisg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.51760,-5.20773/"
+    "startingPointURL": "https://www.google.com/maps/search/57.51760,-5.20773/"
   },
   {
     "id": "199",
@@ -3380,7 +3380,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mount-keen",
     "description": "Mount Keen is the most easterly of the Munros, a cone-shaped summit rearing above the great sea of the Mounth plateau. It can be climbed quickly from Glen Esk, or more scenically via Glen Tanar.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mount-keen-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.91150,-2.91052/"
+    "startingPointURL": "https://www.google.com/maps/search/56.91150,-2.91052/"
   },
   {
     "id": "200",
@@ -3397,7 +3397,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mullach-clach-a-bhlair",
     "description": "Mullach Clach a' Bhl\u00e0ir has an insignificant summit towards the southern end of the great plateau that stretches northwards to Sg\u00f2r Gaoith and eastwards to Cairn Toul. Its finest features are seen on the approach from beautifully-wooded Glen Feshie, with Coire Garbhlach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mullach-clach-a-bhlair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.06310,-3.89700/"
+    "startingPointURL": "https://www.google.com/maps/search/57.06310,-3.89700/"
   },
   {
     "id": "201",
@@ -3414,7 +3414,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mullach-coire-mhic-fhearchair",
     "description": "Mullach Coire Mhic Fhearchair is an extremely remote Munro in the Fisherfield Forest or Great Wilderness. Added to the length of the approach from any direction is the difficulty of walking along the ridge, which is covered in angular quartzite boulders.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mullach-coire-mhic-fhearchair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.77680,-5.25450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.77680,-5.25450/"
   },
   {
     "id": "202",
@@ -3431,7 +3431,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mullach-fraoch-choire",
     "description": "Mullach Fraoch-Choire may be hidden from Cluanie but it is one of the finest mountains of the region. Approached from a' Chralaig, the final ridge is riven into a series of exposed pinnacles , and the summit views over Glen Affric are superb.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mullach-fraoch-choire-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15960,-5.16470/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15960,-5.16470/"
   },
   {
     "id": "203",
@@ -3448,7 +3448,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mullach-nan-dheiragain",
     "description": "Mullach na Dheiragain is one of the more awkward Munros to reach. It is situated on a very long ridge extending north from the much higher mountain of Sg\u00f9rr nan Ceathreamhnan; usually after visiting it steps are retraced over the parent mountain.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mullach-nan-dheiragain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.23220,-5.18340/"
+    "startingPointURL": "https://www.google.com/maps/search/57.23220,-5.18340/"
   },
   {
     "id": "204",
@@ -3465,7 +3465,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/mullach-nan-coirean",
     "description": "Mullach nan Coirean is the westernmost of the Mamores. It is a fine grassy ridge but lacks the distinctive pointed summit of many of the other peaks in the range.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/mullach-nan-coirean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.76950,-5.03720/"
+    "startingPointURL": "https://www.google.com/maps/search/56.76950,-5.03720/"
   },
   {
     "id": "205",
@@ -3482,7 +3482,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/na-gruagaichean",
     "description": "Na Gruagaichean is a fine peak on the main ridge of the Mamores, with views down over Kinlochleven. The mountain has a pair of summits, separated by a steep little bealach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/na-gruagaichean2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.71690,-4.96308/"
+    "startingPointURL": "https://www.google.com/maps/search/56.71690,-4.96308/"
   },
   {
     "id": "206",
@@ -3499,7 +3499,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/ruadh-stac-mor",
     "description": "Ruadh Stac M\u00f2r, together with neighbouring A' Mhaighdean, is perhaps the remotest Munro in Britain. It is in the heart of the Fisherfield Forest and is a truly stunning viewpoint - steep mountains rise abruptly from the surrounding lochs and bogs whilst a huge sweep of the sea is over to the west.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/ruadh-stac-mor2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.77680,-5.25450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.77680,-5.25450/"
   },
   {
     "id": "207",
@@ -3516,7 +3516,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sail-chaorainn",
     "description": "S\u00e0il Chaorainn is a rather forgotten peak amongst the Kintail Munros, being situated out of sight behind Sg\u00f9rr nan Conbhairean. It's position on the ridge extending north from that peak makes it fairly remote.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sail-chaorainn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.14610,-5.06820/"
+    "startingPointURL": "https://www.google.com/maps/search/57.14610,-5.06820/"
   },
   {
     "id": "208",
@@ -3533,7 +3533,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/saileag",
     "description": "S\u00e0ileag is a rather insiginificant summit on the North Kintail Ridge, between the Five Sisters and the Brothers. It is suprising that it has managed to attain a place as a mountain on the Munro list.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/saileag-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.16960,-5.29450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.16960,-5.29450/"
   },
   {
     "id": "209",
@@ -3550,7 +3550,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/schiehallion",
     "description": "Schiehallion is one of the most familiar and best known mountains in Scotland. A whaleback ridge from most viewpoints, it appears as a perfect cone when seen from across Loch Rannoch. Contour lines were invented on the mountain as part of an experiment to determine the mass of the earth. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/schiehallion-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.67580,-4.03603/"
+    "startingPointURL": "https://www.google.com/maps/search/56.67580,-4.03603/"
   },
   {
     "id": "210",
@@ -3567,7 +3567,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/seana-bhraigh",
     "description": "One of the more remote Munros, Seana Bhr\u00e0igh is situated on the very edge of an undulating plateau, dramatically poised above the stunning Luchd Choire.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/seana-bhraigh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.82030,-5.06260/"
+    "startingPointURL": "https://www.google.com/maps/search/57.82030,-5.06260/"
   },
   {
     "id": "211",
@@ -3584,7 +3584,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgairneach-mhor",
     "description": "Sg\u00e0irneach Mh\u00f2r is a very rounded mountain on the west side of the Drumochter Pass. Coire Creagach below its summit is its main feature. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgairneach-mhor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.85150,-4.24440/"
+    "startingPointURL": "https://www.google.com/maps/search/56.85150,-4.24440/"
   },
   {
     "id": "212",
@@ -3601,7 +3601,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgiath-chuil",
     "description": "Sgiath Ch\u00f9il is an unspectacular mountain between Glen Dochart and Glen Lochay, its summit atop a small crag when seen from the south. It can be climbed from either, usually in combination with neighbouring Meall Glas but the bealach between is low and steep-sided.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgiath-chuil-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.41480,-4.51720/"
+    "startingPointURL": "https://www.google.com/maps/search/56.41480,-4.51720/"
   },
   {
     "id": "213",
@@ -3618,7 +3618,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgor-an-lochain-uaine",
     "description": "Sg\u00f2r an Lochain Uaine (also known as Angel's Peak) was promoted to full Munro status in 1997. It is an extremely remote mountain at the heart of the Cairngorms. The fine summit, a twin to Cairn Toul, overlooks the magnificent Garbh Choire.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgor-an-lochain-uaine-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.14620,-3.67930/"
+    "startingPointURL": "https://www.google.com/maps/search/57.14620,-3.67930/"
   },
   {
     "id": "214",
@@ -3635,7 +3635,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgor-gaibhre",
     "description": "Sg\u00f2r Gaibhre is a remote Munro above Loch Ossian in the heart of the Highlands. It is usually climbed either from Rannoch or Corrour stations on the West Highland railway line.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgor-gaibhre-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.76040,-4.69070/"
+    "startingPointURL": "https://www.google.com/maps/search/56.76040,-4.69070/"
   },
   {
     "id": "215",
@@ -3652,7 +3652,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgor-gaoith",
     "description": "Sg\u00f2r Gaoith is a distinctive peaked summit on the eastern edge of an area of vast, rolling plateaux. It has an amazingly dramatic location right on the edge of a huge wall of broken crags which collapse down to Loch Einich, and makes for one of the finest shorter hillwalks in the Cairngorms.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgor-gaoith-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.08790,-3.89510/"
+    "startingPointURL": "https://www.google.com/maps/search/57.08790,-3.89510/"
   },
   {
     "id": "216",
@@ -3669,7 +3669,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgorr-ruadh",
     "description": "Sg\u00f2rr Ruadh is one of the fine sandstone monoliths of the Couilin Forest. It has a magnificent face above Coire Lair but the south and west sides are much less impressive. The mountain is often climbed on its own via its steep but soggy southern slopes, or more interestingly from the bealach linking with Beinn Liath Mh\u00f2r.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgorr-ruadh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.48180,-5.32920/"
+    "startingPointURL": "https://www.google.com/maps/search/57.48180,-5.32920/"
   },
   {
     "id": "217",
@@ -3686,7 +3686,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-bhealaich-dheirg",
     "description": "Sg\u00f9rr a' Bhealaich Dheirg is the highest and finest mountain on the Brothers Ridge - the eastward extension of the Five Sisters of Kintail. The true summit is on a narrow spur to the north of the ridge and is marked by a well-built cairn.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-bhealaich-dheirg-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.16960,-5.29450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.16960,-5.29450/"
   },
   {
     "id": "218",
@@ -3703,7 +3703,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-chaorachain",
     "description": "Sg\u00f9rr a' Chaorachain is usually climbed together with neighbouring Sg\u00f9rr Ch\u00f2innich. Both mountains are tucked away up the glen of the Allt a' Chonais from the main route through Glen Carron.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-chaorachain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.49130,-5.27236/"
+    "startingPointURL": "https://www.google.com/maps/search/57.49130,-5.27236/"
   },
   {
     "id": "219",
@@ -3720,7 +3720,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-choire-ghlais",
     "description": "The highest of the Glen Strathfarrar Munros, Sg\u00f9rr a' Choire Ghlais is a grand peak at the centre of the range, topped with two fine cairns.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-choire-ghlais-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.40560,-4.85910/"
+    "startingPointURL": "https://www.google.com/maps/search/57.40560,-4.85910/"
   },
   {
     "id": "220",
@@ -3737,7 +3737,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-ghreadaidh",
     "description": "Sg\u00f9rr a' Ghreadaidh is the highest point on the central part of the Cuillin ridge. It has two summits, separated by the narrowest arete in the British Isles - sharp as a razor. The true top is the northerly one, usually reached via a hard scramble up An Dorus, though an alternative is given in our description.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-ghreadaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.21980,-6.29290/"
+    "startingPointURL": "https://www.google.com/maps/search/57.21980,-6.29290/"
   },
   {
     "id": "221",
@@ -3754,7 +3754,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-mhadaidh",
     "description": "Sg\u00f9rr a' Mhadaidh has four summits on one of the trickier sections of the Cuillin Ridge - the highest one, which is the only Munro, is the only one that can be ascended without rock-climbing. The usual ascent is via An Dorus but there is an easier option which leaves the gully before reaching the bealach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-mhadaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.21980,-6.29290/"
+    "startingPointURL": "https://www.google.com/maps/search/57.21980,-6.29290/"
   },
   {
     "id": "222",
@@ -3771,7 +3771,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-mhaim",
     "description": "Sg\u00f9rr a' Mh\u00e0im is on a projecting spur to the north of the main Mamores ridge. The summit is covered in quartzite sometimes mistaken for snow from Glen Nevis. The link to the Mamores is along the airy 'Devil's Ridge'.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-mhaim-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77770,-5.00034/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77770,-5.00034/"
   },
   {
     "id": "223",
@@ -3788,7 +3788,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-a-mhaoraich",
     "description": "Sg\u00f9rr a' Mhaoraich is a solitary Munro on the north side of Loch Quoich between Kintail and Knoydart. It is a fine viewpoint, particularly looking down Loch Huorn.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-a-mhaoraich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.08480,-5.27810/"
+    "startingPointURL": "https://www.google.com/maps/search/57.08480,-5.27810/"
   },
   {
     "id": "224",
@@ -3805,7 +3805,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-alasdair",
     "description": "Sg\u00f9rr Alasdair is the highest mountain in Britain outwith the mainland. It has perhaps the smallest summit of any of the Skye Cuillin and is an amazing viewpoint with the sweeping Cuillin Ridge, tremedous cliffs, lochs, the sea and scattered islands in all directions.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-alasdair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.20300,-6.29140/"
+    "startingPointURL": "https://www.google.com/maps/search/57.20300,-6.29140/"
   },
   {
     "id": "225",
@@ -3822,7 +3822,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-an-doire-leathain",
     "description": "Sg\u00f9rr an Doire Leathain is one of the seven Munros on the South Cluanie ridge; the summit is actually a short distance north of the ridge on a projecting spur.Photo \u00a9 Russel Wills from Geograph under CCSA licence.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-an-doire-leathain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "226",
@@ -3839,7 +3839,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-an-lochain",
     "description": "Sg\u00f9rr an Lochain is perhaps the finest of the seven Munros on the south Glen Shiel Ridge. Its fine peaked summit rises above the craggy corrie which holds the lochan giving the mountain its name.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-an-lochain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.15600,-5.17815/"
+    "startingPointURL": "https://www.google.com/maps/search/57.15600,-5.17815/"
   },
   {
     "id": "227",
@@ -3856,7 +3856,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-ban",
     "description": "Sg\u00f9rr B\u00e0n is an extremely remote Munro in the Fisherfield Forest region. It can be reached during an epic walk from Kinlochewe, or approached via Loch a'Bhraoin, but is more usually ascended from Shenavall bothy.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-ban-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.77680,-5.25450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.77680,-5.25450/"
   },
   {
     "id": "228",
@@ -3873,7 +3873,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-breac",
     "description": "Together with its neighbour A' Chailleach, Sg\u00f9rr Breac is one of the western Fannichs, and it shows a very steep face to the north. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-breac2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.73740,-5.09000/"
+    "startingPointURL": "https://www.google.com/maps/search/57.73740,-5.09000/"
   },
   {
     "id": "229",
@@ -3890,7 +3890,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-choinnich",
     "description": "Sg\u00f9rr Ch\u00f2innich is nearly always ascended together with its higher neighbour Sg\u00f9rr a' Chaorachain. Sg\u00f9rr Ch\u00f2innich may be lower but it is the finer peak of the pair, with plenty of crags buttressing its elegant summit ridge.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-choinnich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.49130,-5.27236/"
+    "startingPointURL": "https://www.google.com/maps/search/57.49130,-5.27236/"
   },
   {
     "id": "230",
@@ -3907,7 +3907,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-choinnich-mor",
     "description": "A fine pyramidal peak, Sg\u00f9rr Ch\u00f2innich M\u00f2r is the westernmost of the Grey Corries; its fine arete requires a long approach from any direction.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-choinnich-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87270,-4.86820/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87270,-4.86820/"
   },
   {
     "id": "231",
@@ -3924,7 +3924,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/inaccessible-pinnacle",
     "description": "The Inaccessible Pinnacle (often abbreviated to the In Pinn) is the second highest summit in the Skye Cuillin. It is notorious as the most difficult of the Munros, requiring a rock-climb and an abseil (and suitable experience or help from an expert) to complete the ascent. It rises from the summit of Sg\u00f9rr Dearg.Photo: Ian Jeffrey",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/inaccessible-pinnacle-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.21200,-6.28840/"
+    "startingPointURL": "https://www.google.com/maps/search/57.21200,-6.28840/"
   },
   {
     "id": "232",
@@ -3941,7 +3941,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-dubh-mor",
     "description": "Sg\u00f9rr Dubh M\u00f2r is a dramatic rock peak situated just off the main Cuillin Ridge and usually reached by baggers via tricky and hard to find scramble from the rest of the range. On the other side the Dubhs Ridge leads directly from Loch Coruisk to the summit - this is the longest rock-climb in Britain and a total classic for those with the skills.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-dubh-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.20300,-6.29140/"
+    "startingPointURL": "https://www.google.com/maps/search/57.20300,-6.29140/"
   },
   {
     "id": "233",
@@ -3958,7 +3958,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-eilde-mor",
     "description": "Sg\u00f9rr \u00c8ilde M\u00f2r is an eastern outlier of the Mamores, a steep cone of scree and rock giving an unforgiving ascent above Coire an Lochain. Its steep sides permit views of great depth.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-eilde-mor2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/56.71680,-4.96280/"
+    "startingPointURL": "https://www.google.com/maps/search/56.71680,-4.96280/"
   },
   {
     "id": "234",
@@ -3975,7 +3975,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-fhuar-thuill",
     "description": "Sg\u00f9rr Fhuar-thuill is a slender, grassy ridge with some dramatic corries. To the northeast is Fhuar-thuill M\u00f2r with a fine lochan, whilst to the south is Loch Toll a'Mhuic nestled beneath the slabby crags of Sg\u00f9rr na Muice, an outlying summit of the mountain.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-fhuar-thuill-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.40560,-4.85910/"
+    "startingPointURL": "https://www.google.com/maps/search/57.40560,-4.85910/"
   },
   {
     "id": "235",
@@ -3992,7 +3992,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-fhuaran",
     "description": "Sg\u00f9rr Fhuaran is the central and highest peak of the renowned Five Sisters of Kintail. A perfect cone, its west ridge is perhaps the longest continuous ascent route in Scotland - but usually Sg\u00f9rr Fhuaran is approached over its neighbours.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-fhuaran-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.16940,-5.29450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.16940,-5.29450/"
   },
   {
     "id": "236",
@@ -4009,7 +4009,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-mhic-choinnich",
     "description": "Sg\u00f9rr Mhic Ch\u00f2innich is a wedge-shaped ridge of rock above the back of Coire Lagan. For non-climbers it is probably one of the more difficult Cuillin Munros, the ridge from the bealach having one particularly exposed climb up. The mountain is named after the early local climbing guide, John Mackenzie.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-mhic-choinnich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.20300,-6.29140/"
+    "startingPointURL": "https://www.google.com/maps/search/57.20300,-6.29140/"
   },
   {
     "id": "237",
@@ -4026,7 +4026,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-mor-loch-quoich",
     "description": "Sg\u00f9rr M\u00f2r is big, steep and rocky mountain and is amongst the most remote Munros to reach, rising between Loch Quoich and lonely Glen Kingie. It is most usually climbed from Strathan at the head of Loch Arkaig, a route involving a climb over an intervening pass on both the way out and back. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-mor-loch-quoich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.97190,-5.31230/"
+    "startingPointURL": "https://www.google.com/maps/search/56.97190,-5.31230/"
   },
   {
     "id": "238",
@@ -4043,7 +4043,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-mor",
     "description": "Sg\u00f9rr M\u00f2r is the highest of the Fannichs and easily recognised from afar due to its perfect and improbable cone-like shape. It is a wonderful viewpoint for the northwest Highlands and the highlight of any ridgewalk in the Fannichs.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-mor-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.72480,-4.89430/"
+    "startingPointURL": "https://www.google.com/maps/search/57.72480,-4.89430/"
   },
   {
     "id": "239",
@@ -4060,7 +4060,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-banachdich",
     "description": "Sg\u00f9rr na Banachdich is one of the easiest Munros in the Skye Cuillin, if climbed via Coir nan Eich. Nonetheless it has a fine pointed summit and magnificent views, lying at the meeting point of three great scramblers' ridges.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-banachdich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.21980,-6.29290/"
+    "startingPointURL": "https://www.google.com/maps/search/57.21980,-6.29290/"
   },
   {
     "id": "240",
@@ -4077,7 +4077,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-carnach",
     "description": "Sg\u00f9rr na C\u00e0rnach is one of the Five Sisters of Kintail, and became a separate Munro in the 1997 revision to Munro's tables. It is a steep rocky cone.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-carnach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.16940,-5.29450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.16940,-5.29450/"
   },
   {
     "id": "241",
@@ -4094,7 +4094,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-ciche",
     "description": "Sg\u00f9rr na C\u00ecche is one of the most shapely mountains in the Highlands, seen as a fine cone from most directions. It is set in remote, wild country on the edge of Knoydart and commands a wonderful view down the length of Loch Nevis.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-ciche-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.97190,-5.31230/"
+    "startingPointURL": "https://www.google.com/maps/search/56.97190,-5.31230/"
   },
   {
     "id": "242",
@@ -4111,7 +4111,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-ciste-duibhe",
     "description": "Sg\u00f9rr na Ciste Duibhe is southernmost of the Five Sisters of Kintail and offers magnificent views down Loch Duich. Its finest feature is the elegant eastern ridge over the Top of Sg\u00f9rr nan Spainteach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-ciste-duibhe-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.16940,-5.29450/"
+    "startingPointURL": "https://www.google.com/maps/search/57.16940,-5.29450/"
   },
   {
     "id": "243",
@@ -4128,7 +4128,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgor-na-h-ulaidh",
     "description": "The forgotten mountain of Glen Coe, Sg\u00f2r na h-Ulaidh is hidden from view and sees far fewer ascents than other peaks in the glen. It is exceptionally steep but the view is an unfamiliar aspect to the better known peaks around it.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgor-na-h-ulaidh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66110,-5.06878/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66110,-5.06878/"
   },
   {
     "id": "244",
@@ -4145,7 +4145,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-lapaich",
     "description": "Sg\u00f9rr na Lapaich is the highest of the huge and very remote range of mountains on the north side of Loch Mullardoch. On fine days it is prominent in views from the Kessock Bridge and Inverness.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-lapaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.33990,-4.96150/"
+    "startingPointURL": "https://www.google.com/maps/search/57.33990,-4.96150/"
   },
   {
     "id": "245",
@@ -4162,7 +4162,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-ruaidhe",
     "description": "One of the four Glen Strathfarrar Munros, Sg\u00f9rr na Ruaidhe is a fairly featureless pudding-shaped hill of spongy mosses. Its redeeming feature is the view east over to the Cromarty and Beauly Firths.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-ruaidhe-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.40560,-4.85910/"
+    "startingPointURL": "https://www.google.com/maps/search/57.40560,-4.85910/"
   },
   {
     "id": "246",
@@ -4179,7 +4179,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-na-sgine",
     "description": "Sg\u00f9rr na Sg\u00ecne may not rival the grandeur of its neighbour The Saddle, but it is a fine peak nonetheless and its top Faochag (the whelk) looks improbably steep and cone-like from higher up Glen Shiel.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-na-sgine-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.17620,-5.36459/"
+    "startingPointURL": "https://www.google.com/maps/search/57.17620,-5.36459/"
   },
   {
     "id": "247",
@@ -4196,7 +4196,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-ceathreamhnan",
     "description": "Sg\u00f9rr nan Ceathreamhnan is a magnificent mountain, the culminating point of a series of fine ridges. It is at the very heart of the wild area at the head of Glen Affric - making it one of the remotest peaks in Scotland - and most walkers will need an overnight stay to make the ascent.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-ceathreamhnan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.23220,-5.18340/"
+    "startingPointURL": "https://www.google.com/maps/search/57.23220,-5.18340/"
   },
   {
     "id": "248",
@@ -4213,7 +4213,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-clach-geala",
     "description": "Sg\u00f9rr nan Clach Geala is a magnificent mountain, a fine north-south ridge with a stunning east face, a long wall of broken crags. The approach is normally made via the foot of Loch a'Bhraoin.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-clach-geala-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.73730,-5.09000/"
+    "startingPointURL": "https://www.google.com/maps/search/57.73730,-5.09000/"
   },
   {
     "id": "249",
@@ -4230,7 +4230,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-coireachan-glen-dessary",
     "description": "Sg\u00f9rr nan Coireachan is a steep mixture of grassy and rocky slopes, giving a tough ascent from Glen Dessary. If the ridge is followed to its termination on Sg\u00f9rr na C\u00ecche, however, it is merely the warm-up for the exertions to follow.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-coireachan-glen-dessary-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.97190,-5.31230/"
+    "startingPointURL": "https://www.google.com/maps/search/56.97190,-5.31230/"
   },
   {
     "id": "250",
@@ -4247,7 +4247,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-coireachan-glenfinnan",
     "description": "Sg\u00f9rr nan Coireachan is one of a pair of Munros (the other being Sg\u00f9rr Thuilm at the head of Glen Finnan. Both are fine, rocky peaks with great views and some of the character of neighbouring Knoydart.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-coireachan-glenfinnan-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87110,-5.43640/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87110,-5.43640/"
   },
   {
     "id": "251",
@@ -4264,7 +4264,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-conbhairean",
     "description": "Sg\u00f9rr nan Conbhairean is a shy, dome shaped mountain above Loch Cluanie but set back too far to be seen from the road. It is the highest of a group of three Munros that make an enjoyable round.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-conbhairean-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.14610,-5.06820/"
+    "startingPointURL": "https://www.google.com/maps/search/57.14610,-5.06820/"
   },
   {
     "id": "252",
@@ -4281,7 +4281,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-each",
     "description": "Sg\u00f9rr nan Each is a Munro on the south ridge of Sg\u00f9rr nan Clach Geala. It takes the form of an elegant 's'-shaped ridge with steep flanks.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-each-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.73730,-5.09000/"
+    "startingPointURL": "https://www.google.com/maps/search/57.73730,-5.09000/"
   },
   {
     "id": "253",
@@ -4298,7 +4298,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-eag",
     "description": "The southernmost peak in the Cuillin, Sg\u00f9rr nan Eag is on one of the more straightforward sections of ridge though it does still require scrambling skills. This section of the ridge continues out to the terminal peak of Gars-bheinn and its position above the sea gives it stupendous views.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-eag-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.20300,-6.29140/"
+    "startingPointURL": "https://www.google.com/maps/search/57.20300,-6.29140/"
   },
   {
     "id": "254",
@@ -4315,7 +4315,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-nan-gillean",
     "description": "Sg\u00f9rr nan Gillean is commonly regarded as the finest of the Skye Cuillin. A magnificent pyramidal peak, it has three main ridges. The easiest is open to keen scramblers only whilst the other two ridges are graded rock-climbs.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-nan-gillean2.jpg",
-    "starting_point_link": "https://www.google.com/maps/search/57.28940,-6.17600/"
+    "startingPointURL": "https://www.google.com/maps/search/57.28940,-6.17600/"
   },
   {
     "id": "255",
@@ -4332,7 +4332,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sgurr-thuilm",
     "description": "Sg\u00f9rr Thuilm is one of the two Glenfinnan Munros. A fine rocky peak of great character, the views are magnificent with lochs and steep mountains in all directions.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sgurr-thuilm-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87110,-5.43640/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87110,-5.43640/"
   },
   {
     "id": "256",
@@ -4349,7 +4349,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/slioch",
     "description": "Slioch is one of the most familiar mountains in the Highlands, with the view of the mountain across Loch Maree adorning countless calendars and brochures. It is also a fine viewpoint over the Fisherfield Forest to the north.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/slioch-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.60850,-5.28660/"
+    "startingPointURL": "https://www.google.com/maps/search/57.60850,-5.28660/"
   },
   {
     "id": "257",
@@ -4366,7 +4366,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/spidean-mialach",
     "description": "Spidean Mialach is one of a pair of Munros (the other being Gleouraich) on the north side of Loch Quoich. They make an excellent walk with fine stalkers paths on their lower slopes.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/spidean-mialach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.07570,-5.25320/"
+    "startingPointURL": "https://www.google.com/maps/search/57.07570,-5.25320/"
   },
   {
     "id": "258",
@@ -4383,7 +4383,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/sron-a-choire-ghairbh",
     "description": "Sr\u00f2n a' Choire Ghairbh is the higher of the two Munros on the north side of Loch Lochy, rising above the forestry as seen from the A82 on the south side of the loch. Its rounded summit has steep flanks and corries; a massive hydro-scheme is planned for the largest, which currently cradles tiny Loch a' Choire Ghlais.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/sron-a-choire-ghairbh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.02130,-4.83917/"
+    "startingPointURL": "https://www.google.com/maps/search/57.02130,-4.83917/"
   },
   {
     "id": "259",
@@ -4400,7 +4400,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-a-choire-mheadhoin",
     "description": "A twin to neighbouring Stob Coire Easain, Stob a' Choire Mheadhoin is part of a huge north-south ridge. It looks a fine pyramid when seen from around Moy its central position and height makes it a good viewpoint.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-a-choire-mheadhoin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.86540,-4.70840/"
+    "startingPointURL": "https://www.google.com/maps/search/56.86540,-4.70840/"
   },
   {
     "id": "260",
@@ -4417,7 +4417,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-a-choire-odhair",
     "description": "Stob a' Choire Odhair may not be well-known by name, but it is a familiar sight as the dome-shaped mountain rising behind the lochs in the frequently-photographed view across Rannoch Moor. It is a fine viewpoint for looking out over the vast, wild emptyness of the moor.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-a-choire-odhair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.53720,-4.81407/"
+    "startingPointURL": "https://www.google.com/maps/search/56.53720,-4.81407/"
   },
   {
     "id": "261",
@@ -4434,7 +4434,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-ban-mamores",
     "description": "Stob B\u00e0n is a very steep and sharply peaked Munro, one of the finest peaks in the Mamores. It is well seen from many points in lower Glen Nevis.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-ban-mamores-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.76950,-5.03720/"
+    "startingPointURL": "https://www.google.com/maps/search/56.76950,-5.03720/"
   },
   {
     "id": "262",
@@ -4451,7 +4451,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-ban-grey-corries",
     "description": "Stob B\u00e0n is a fine cone-shaped mountain almost hidden behind the much higher Grey Corries range.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-ban-grey-corries-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.86830,-4.86370/"
+    "startingPointURL": "https://www.google.com/maps/search/56.86830,-4.86370/"
   },
   {
     "id": "263",
@@ -4468,7 +4468,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-binnein",
     "description": "Stob Binnein is joined to its slightly higher twin Ben More and seldom thought of on its own; however it is actually the finer of the two summits. It can be approached separately from the south as well as the more usual combination from the north.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-binnein-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.40280,-4.56120/"
+    "startingPointURL": "https://www.google.com/maps/search/56.40280,-4.56120/"
   },
   {
     "id": "264",
@@ -4485,7 +4485,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-choire-claurigh",
     "description": "The highest of the Grey Corries, this fine peak appears covered in scree in distant views.  The range actually makes for a classic ridgewalk, almost always including at least the neighbouring Stob Coire an Laoigh.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-choire-claurigh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87270,-4.86820/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87270,-4.86820/"
   },
   {
     "id": "265",
@@ -4502,7 +4502,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coir-an-albannaich",
     "description": "Stob Coir' an Albannaich is one of the fine range of mountains on the south side of Glen Etive. It has a very fine summit right on the edge of a steep crag and it gives an enjoyable traverse.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coir-an-albannaich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.57620,-5.03566/"
+    "startingPointURL": "https://www.google.com/maps/search/56.57620,-5.03566/"
   },
   {
     "id": "266",
@@ -4519,7 +4519,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coire-a-chairn",
     "description": "Stob Coire a' Ch\u00e0irn has a fine situation where the airy An Gearanach ridge meets the main spine of the Mamores. This area has some of the best ridgewalking in Scotland.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coire-a-chairn-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.77770,-5.00034/"
+    "startingPointURL": "https://www.google.com/maps/search/56.77770,-5.00034/"
   },
   {
     "id": "267",
@@ -4536,7 +4536,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coire-an-laoigh",
     "description": "Stob Coire an Laoigh is the second of the Grey Corries peaks, set on a magnificent ridgewalk. The approaches to this peak are long and the Grey Corries traverse is not to be taken lightly.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coire-an-laoigh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.87270,-4.86820/"
+    "startingPointURL": "https://www.google.com/maps/search/56.87270,-4.86820/"
   },
   {
     "id": "268",
@@ -4553,7 +4553,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coire-easain",
     "description": "A twin to neighbouring Stob a' Choire Mheadhoin, Stob Coire Easain shows a steep face to the northeast. This lengthy ridge lies between the deep trench of Loch Treig - traversed by the West Highland railway line - and the Lairig Leacach pass.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coire-easain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.86540,-4.70840/"
+    "startingPointURL": "https://www.google.com/maps/search/56.86540,-4.70840/"
   },
   {
     "id": "269",
@@ -4570,7 +4570,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coire-sgreamhach",
     "description": "Stob Coire Sgreamhach is really part of the Bidean nam Bian massif but become a Munro in its own right in 1997. This fine summit is situated where the Beinn Fhada ridge joins the main ridge across the back of Bidean. Beinn Fhada is tricky terrain - particularly in descent - and the Lost Valley is the route usually used, involving a steep and eroded climb up scree.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coire-sgreamhach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.66770,-4.98650/"
+    "startingPointURL": "https://www.google.com/maps/search/56.66770,-4.98650/"
   },
   {
     "id": "270",
@@ -4587,7 +4587,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-coire-sgriodain",
     "description": "Stob Coire Sgriodain is a steep sided ridge high above the glacial trench of Loch Treig. It is usually climbed in combination with neighbouring Chno Dearg.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-coire-sgriodain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.86550,-4.70850/"
+    "startingPointURL": "https://www.google.com/maps/search/56.86550,-4.70850/"
   },
   {
     "id": "271",
@@ -4604,7 +4604,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-diamh",
     "description": "Stob Daimh (misspelt Diamh on some OS maps) is a fine peak, but is normally ascended as part of a circuit around Coire Cruachan with its majestic neighbour, Ben Cruachan. Another popular route is the Dalmally horseshoe, making an alternative circuit of the mountains eastern ridges.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-diamh-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.39370,-5.11198/"
+    "startingPointURL": "https://www.google.com/maps/search/56.39370,-5.11198/"
   },
   {
     "id": "272",
@@ -4621,7 +4621,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-ghabhar",
     "description": "Stob Ghabhar is the finest peak of the Black Mount range, with narrow rocky ridges, steep cliffs and deep corries. It is a familiar sight seen across the lochans of Rannoch Moor from the A82.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-ghabhar-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.53720,-4.81407/"
+    "startingPointURL": "https://www.google.com/maps/search/56.53720,-4.81407/"
   },
   {
     "id": "273",
@@ -4638,7 +4638,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stob-poite-coire-ardair",
     "description": "Stob Poite Coire \u00c0rdair is a ridge on the opposite side of the Window from Creag Meagaidh. It offers fine views across the spectacular cliffs of Coire \u00c0rdair, and has steep broken crags on its southern flanks.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stob-poite-coire-ardair-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.95210,-4.49592/"
+    "startingPointURL": "https://www.google.com/maps/search/56.95210,-4.49592/"
   },
   {
     "id": "274",
@@ -4655,7 +4655,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stuc-a-chroin",
     "description": "St\u00f9c a' Chr\u00f2in is a steep and rocky peak, involving a scramble when ascended (as is common) from neighbouring Ben Vorlich.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stuc-a-chroin-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.38130,-4.21580/"
+    "startingPointURL": "https://www.google.com/maps/search/56.38130,-4.21580/"
   },
   {
     "id": "275",
@@ -4672,7 +4672,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/stuchd-an-lochain",
     "description": "St\u00f9cd an Lochain is an enjoyable mountain with a fine northern corrie enclosing the almost circular Lochan nan Cat. It is usually climbed via a very short route from Loch an D\u00e0imh to the north but can also be approached from Pubil in upper Glen Lyon.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/stuchd-an-lochain-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.58560,-4.42609/"
+    "startingPointURL": "https://www.google.com/maps/search/56.58560,-4.42609/"
   },
   {
     "id": "276",
@@ -4689,7 +4689,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/the-cairnwell",
     "description": "The Cairnwell is a prominent cone-shaped mountain when seen from the south on the drive up the Cairnwell Pass. It is a great viewpoint, but the summit has been ruined by the construction of communications masts whilst its slopes are scattered with ski-ing impedimentia.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/the-cairnwell-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.88680,-3.41490/"
+    "startingPointURL": "https://www.google.com/maps/search/56.88680,-3.41490/"
   },
   {
     "id": "277",
@@ -4706,7 +4706,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/the-devils-point",
     "description": "The Devil's Point - or Bod an Deamhain (Penis of the Demon) to give its original Gaelic name - is a bare pyramid of rock which guards the entrance to the Lairig Ghru from the south. From other directions its true nature as the southern termination of Cairn Toul is more apparent.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/the-devils-point-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.14620,-3.67930/"
+    "startingPointURL": "https://www.google.com/maps/search/57.14620,-3.67930/"
   },
   {
     "id": "278",
@@ -4723,7 +4723,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/the-saddle",
     "description": "The Saddle (An Diollaid in Gaelic) is the finest mountain in Kintail. Its fine summit has a whole batch of magnificent ridges, the pick of them all being the celebrated Forcan Ridge, one of the airiest scrambles in the Highlands.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/the-saddle-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.17620,-5.36459/"
+    "startingPointURL": "https://www.google.com/maps/search/57.17620,-5.36459/"
   },
   {
     "id": "279",
@@ -4740,7 +4740,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/toll-creagach",
     "description": "Toll Creagach is an undistinguished dome-like summit between Glen Affric and Loch Mullardoch, with shallow corries on its flanks. ",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/toll-creagach-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.27440,-4.95870/"
+    "startingPointURL": "https://www.google.com/maps/search/57.27440,-4.95870/"
   },
   {
     "id": "280",
@@ -4757,7 +4757,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/tolmount",
     "description": "Tolmount looks a fine cone-like peak when seen from Loch Callater; otherwise it is a twin to its close neighbour Tom Buidhe - a simple rounded dome-like upthrust on the wide Mounth plateau.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/tolmount-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.97740,-3.39000/"
+    "startingPointURL": "https://www.google.com/maps/search/56.97740,-3.39000/"
   },
   {
     "id": "281",
@@ -4774,7 +4774,7 @@
     "link": "https://www.walkhighlands.co.uk/munros/tom-a-choinich",
     "description": "Tom a' Ch\u00f2inich is an eastward extension of the C\u00e0rn Eige range, an 'e'-shaped junction of three ridges above Glen Affric. It is a far finer peak than its lumpy neighbour Toll Creagach.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/tom-a-choinich-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/57.27440,-4.95870/"
+    "startingPointURL": "https://www.google.com/maps/search/57.27440,-4.95870/"
   },
   {
     "id": "282",
@@ -4791,6 +4791,6 @@
     "link": "https://www.walkhighlands.co.uk/munros/tom-buidhe",
     "description": "Tom Buidhe is a featureless dome-like upswelling on the vast Mounth plateau, looking nothing like a mountain from any direction. It is nearly always climbed with its neighbour Tolmount, and can be ascended from Glen Callater, Glen Doll or from the Cairnwell Pass.",
     "pictureURL": "https://d3teiib5p3f439.cloudfront.net/munros/tom-buidhe-1.JPG",
-    "starting_point_link": "https://www.google.com/maps/search/56.97740,-3.39000/"
+    "startingPointURL": "https://www.google.com/maps/search/56.97740,-3.39000/"
   }
 ]
