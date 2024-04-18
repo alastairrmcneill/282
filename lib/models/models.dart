@@ -1,4 +1,4 @@
-export 'munro.dart';
+export 'munro_model.dart';
 export 'app_user.dart';
 export 'registration_data.dart';
 export 'following_relationship.dart';
