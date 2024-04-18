@@ -6,6 +6,7 @@ import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/stat_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MunroScreen extends StatefulWidget {
   const MunroScreen({super.key});
@@ -60,6 +61,14 @@ class _MunroScreenState extends State<MunroScreen> {
                     const MunroDescription(),
                     const SizedBox(height: 20),
                     const MunroSummitedButton(),
+                    TextButton(
+                      onPressed: () async {
+                        await launchUrl(
+                          Uri.parse(munroState.selectedMunro?.startingPointURL ?? ""),
+                        );
+                      },
+                      child: const Text("Starting Location"),
+                    ),
                     const SizedBox(height: 20),
                     const MunroPictureGallery(),
                     const SizedBox(height: 20),
