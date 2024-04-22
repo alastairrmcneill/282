@@ -155,6 +155,14 @@ class AchievementService {
             achievementsState: achievementsState,
           );
           break;
+        case AchievementTypes.areaGoal:
+          _checkAreaGoal(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
+          break;
         default:
           break;
       }
@@ -409,6 +417,50 @@ class AchievementService {
 
     // Add to regular notifier
     achievementsState.updateAchievement = achievement.copy(
+      completed: completed,
+    );
+  }
+
+  // Area goal
+  static _checkAreaGoal(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    // Create a new list that combines personalMunroData and munroList
+    List<Map<String, dynamic>> combinedList = userState.currentUser?.personalMunroData?.map((personalMunro) {
+          // Find the matching munro in munroList
+          var matchingMunro = munroState.munroList.firstWhere((munro) => munro.id == personalMunro['id']);
+
+          // Combine the personalMunro and matchingMunro into a new map
+          return {...personalMunro, ...matchingMunro.toJSON()};
+        }).toList() ??
+        [];
+
+    // Get total completed
+    int totalCompletedInArea = combinedList
+        .where((element) => element[MunroFields.summited] as bool)
+        .where(
+            (element) => (element[MunroFields.area] as String) == (achievement.criteria[CriteriaFields.area] as String))
+        .length;
+
+    // Compare to goal
+    bool completed = totalCompletedInArea >= achievement.criteria[CriteriaFields.count];
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: totalCompletedInArea,
+        completed: true,
+      );
+    }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: totalCompletedInArea,
       completed: completed,
     );
   }
