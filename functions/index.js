@@ -808,26 +808,43 @@ exports.onAchievementDeleted = functions.firestore
   });
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
-  // Update users
-  const usersRef = admin.firestore().collection("users");
-  const usersSnapshot = await usersRef.get();
+  const areaNames = [
+    "Angus",
+    "Argyll",
+    "Cairngorms",
+    "Fort William",
+    "Islands",
+    "Kintail",
+    "Loch Lomond",
+    "Loch Ness",
+    "Perthshire",
+    "Sutherland",
+    "Torridon",
+    "Ullapool",
+  ];
 
-  const usersBatch = admin.firestore().batch();
+  // Update achievments
+  const achievementsRef = admin.firestore().collection("achievements");
 
-  console.log("Starting User Migration");
+  for (const areaName of areaNames) {
+    const achievementId = "areaComplete" + areaName.replace(" ", "");
+    const type = "areaGoal";
+    const name = "Completed " + areaName;
+    const description = "Complete all Munros in " + areaName;
+    const critera = { area: areaName };
 
-  usersSnapshot.forEach((doc) => {
-    console.log(`User: ${doc.id}`);
+    const achievementData = {
+      uid: achievementId,
+      type: type,
+      name: name,
+      description: description,
+      criteria: critera,
+    };
 
-    if (!doc.data().hasOwnProperty("munroChallenges")) {
-      let docRef = usersRef.doc(doc.id);
-      usersBatch.set(docRef, { munroChallenges: [] }, { merge: true });
-    }
-  });
-
-  console.log("Finsihsed User Migration");
-
-  await usersBatch.commit();
+    const docRef = achievementsRef.doc(achievementId);
+    await docRef.set(achievementData);
+    console.log(`Achievement ${achievementId} created`);
+  }
 
   res.send("Migration completed successfully");
 });
