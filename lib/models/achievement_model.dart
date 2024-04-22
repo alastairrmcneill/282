@@ -90,12 +90,14 @@ class AchievementTypes {
   static const String lowestMunros = "lowestMunros";
   static const String monthlyMunro = "monthlyMunro";
   static const String multiMunroDay = "multiMunroDay";
+  static const String areaGoal = "areaGoal";
 }
 
 class CriteriaFields {
   static const String count = "count";
   static const String status = "status";
   static const String year = "year";
+  static const String area = "area";
 }
 
 class AnnualGoalStatus {

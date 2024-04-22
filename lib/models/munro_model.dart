@@ -14,6 +14,7 @@ class Munro {
   final String link;
   final String description;
   final String pictureURL;
+  final String startingPointURL;
   bool summited;
   DateTime? summitedDate;
   bool saved;
@@ -34,6 +35,7 @@ class Munro {
     required this.link,
     required this.description,
     required this.pictureURL,
+    required this.startingPointURL,
     required this.summited,
     this.summitedDate,
     this.saved = false,
@@ -56,6 +58,7 @@ class Munro {
       MunroFields.link: link,
       MunroFields.description: description,
       MunroFields.pictureURL: pictureURL,
+      MunroFields.startingPointURL: startingPointURL,
       MunroFields.summited: summited,
       MunroFields.summitedDate: summitedDate,
       MunroFields.saved: saved,
@@ -79,13 +82,13 @@ class Munro {
       link: json[MunroFields.link] as String,
       description: json[MunroFields.description] as String,
       pictureURL: json[MunroFields.pictureURL] as String,
+      startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
       summited: (json[MunroFields.summited] as bool),
       summitedDate:
           json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating:
           json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
-      // averageRating: json[MunroFields.averageRating] as double?,
       reviewCount: json[MunroFields.reviewCount] as int?,
     );
   }
@@ -104,6 +107,7 @@ class Munro {
     String? link,
     String? description,
     String? pictureURL,
+    String? startingPointURL,
     bool? summited,
     DateTime? summitedDate,
     bool? saved,
@@ -124,6 +128,7 @@ class Munro {
       link: link ?? this.link,
       description: description ?? this.description,
       pictureURL: pictureURL ?? this.pictureURL,
+      startingPointURL: startingPointURL ?? this.startingPointURL,
       summited: summited ?? this.summited,
       summitedDate: summitedDate ?? this.summitedDate,
       saved: saved ?? this.saved,
@@ -147,6 +152,7 @@ class MunroFields {
   static String link = "link";
   static String description = "description";
   static String pictureURL = "pictureURL";
+  static String startingPointURL = "startingPointURL";
   static String summited = "summited";
   static String summitedDate = "summitedDate";
   static String saved = "saved";
