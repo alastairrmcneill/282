@@ -26,8 +26,14 @@ class MunroService {
         for (var munro in munroList) {
           var correspondingDict = dictMap[munro.id];
           if (correspondingDict != null) {
+            List<dynamic> summitedDatesRaw = correspondingDict[MunroFields.summitedDates] ?? [];
+            List<DateTime> summitedDates = [];
+            for (var date in summitedDatesRaw) {
+              summitedDates.add((date as Timestamp).toDate());
+            }
             munro.summited = correspondingDict[MunroFields.summited];
             munro.summitedDate = (correspondingDict[MunroFields.summitedDate] as Timestamp?)?.toDate();
+            munro.summitedDates = summitedDates;
             munro.saved = correspondingDict[MunroFields.saved];
           }
         }
@@ -89,6 +95,12 @@ class MunroService {
       newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = true;
       newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDate] =
           Timestamp.fromDate(DateTime.now().toUtc());
+      List<dynamic> summitedDatesRaw =
+          newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] ?? [];
+      summitedDatesRaw.add(Timestamp.fromDate(DateTime.now().toUtc()));
+
+      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] = summitedDatesRaw;
+
       // Update munro notifier
       munroState.updateMunro(
         munroId: munro.id,
