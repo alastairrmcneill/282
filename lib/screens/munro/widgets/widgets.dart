@@ -3,3 +3,4 @@ export 'munro_description.dart';
 export 'munro_summited_button.dart';
 export 'munro_picture_gallery.dart';
 export 'average_munro_rating.dart';
+export 'munro_completion_widget.dart';

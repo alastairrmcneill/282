@@ -26,8 +26,14 @@ class MunroService {
         for (var munro in munroList) {
           var correspondingDict = dictMap[munro.id];
           if (correspondingDict != null) {
+            List<dynamic> summitedDatesRaw = correspondingDict[MunroFields.summitedDates] ?? [];
+            List<DateTime> summitedDates = [];
+            for (var date in summitedDatesRaw) {
+              summitedDates.add((date as Timestamp).toDate());
+            }
             munro.summited = correspondingDict[MunroFields.summited];
             munro.summitedDate = (correspondingDict[MunroFields.summitedDate] as Timestamp?)?.toDate();
+            munro.summitedDates = summitedDates;
             munro.saved = correspondingDict[MunroFields.saved];
           }
         }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 import 'package:intl/intl.dart';
@@ -16,9 +17,14 @@ class MunroSummitedButton extends StatelessWidget {
     NavigationState navigationState = Provider.of<NavigationState>(context);
 
     return munroState.selectedMunro?.summited ?? false
-        ? Text("Summited: ${DateFormat('dd/MM/yyyy').format(
-            munroState.selectedMunro?.summitedDate ?? DateTime.now(),
-          )}")
+        ? Column(
+            children: [
+              ...munroState.selectedMunro!.summitedDates!.map(
+                (e) =>
+                    MunroCompletionWidget(index: munroState.selectedMunro!.summitedDates!.indexOf(e) + 1, dateTime: e),
+              ),
+            ],
+          )
         : SizedBox(
             height: 44,
             width: double.infinity,

@@ -17,6 +17,7 @@ class Munro {
   final String startingPointURL;
   bool summited;
   DateTime? summitedDate;
+  List<DateTime>? summitedDates;
   bool saved;
   double? averageRating;
   int? reviewCount;
@@ -38,6 +39,7 @@ class Munro {
     required this.startingPointURL,
     required this.summited,
     this.summitedDate,
+    this.summitedDates,
     this.saved = false,
     this.averageRating,
     this.reviewCount,
@@ -61,6 +63,7 @@ class Munro {
       MunroFields.startingPointURL: startingPointURL,
       MunroFields.summited: summited,
       MunroFields.summitedDate: summitedDate,
+      MunroFields.summitedDates: summitedDates,
       MunroFields.saved: saved,
       MunroFields.averageRating: averageRating,
       MunroFields.reviewCount: reviewCount,
@@ -68,6 +71,12 @@ class Munro {
   }
 
   static Munro fromJSON(Map<String, dynamic> json) {
+    List<dynamic> summitedDatesRaw = json[MunroFields.summitedDates] ?? [];
+    List<DateTime> summitedDates = [];
+    for (var date in summitedDatesRaw) {
+      summitedDates.add((date as Timestamp).toDate());
+    }
+
     return Munro(
       id: json[MunroFields.id] as String,
       name: json[MunroFields.name] as String,
@@ -86,6 +95,7 @@ class Munro {
       summited: (json[MunroFields.summited] as bool),
       summitedDate:
           json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
+      summitedDates: summitedDates,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating:
           json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
@@ -110,6 +120,7 @@ class Munro {
     String? startingPointURL,
     bool? summited,
     DateTime? summitedDate,
+    List<DateTime>? summitedDates,
     bool? saved,
     double? averageRating,
     int? reviewCount,
@@ -131,6 +142,7 @@ class Munro {
       startingPointURL: startingPointURL ?? this.startingPointURL,
       summited: summited ?? this.summited,
       summitedDate: summitedDate ?? this.summitedDate,
+      summitedDates: summitedDates ?? this.summitedDates,
       saved: saved ?? this.saved,
       averageRating: averageRating ?? this.averageRating,
       reviewCount: reviewCount ?? this.reviewCount,
@@ -155,6 +167,7 @@ class MunroFields {
   static String startingPointURL = "startingPointURL";
   static String summited = "summited";
   static String summitedDate = "summitedDate";
+  static String summitedDates = "summitedDates";
   static String saved = "saved";
   static String averageRating = "averageRating";
   static String reviewCount = "reviewCount";
