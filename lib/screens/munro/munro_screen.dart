@@ -60,6 +60,14 @@ class _MunroScreenState extends State<MunroScreen> {
                     const SizedBox(height: 20),
                     const MunroDescription(),
                     const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        ...munroState.selectedMunro!.summitedDates!.map(
+                          (e) => MunroCompletionWidget(
+                              index: munroState.selectedMunro!.summitedDates!.indexOf(e) + 1, dateTime: e),
+                        ),
+                      ],
+                    ),
                     const MunroSummitedButton(),
                     TextButton(
                       onPressed: () async {

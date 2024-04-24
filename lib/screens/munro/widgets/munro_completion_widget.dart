@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/models/models.dart';
 
 class MunroCompletionWidget extends StatelessWidget {
   final int index;

@@ -16,38 +16,29 @@ class MunroSummitedButton extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
 
-    return munroState.selectedMunro?.summited ?? false
-        ? Column(
-            children: [
-              ...munroState.selectedMunro!.summitedDates!.map(
-                (e) =>
-                    MunroCompletionWidget(index: munroState.selectedMunro!.summitedDates!.indexOf(e) + 1, dateTime: e),
-              ),
-            ],
-          )
-        : SizedBox(
-            height: 44,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                if (userState.currentUser == null) {
-                  navigationState.setNavigateToRoute = HomeScreen.route;
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
-                } else {
-                  createPostState.reset();
-                  if (munroState.selectedMunro != null) {
-                    createPostState.addMunro(munroState.selectedMunro!);
-                    navigationState.setNavigateToRoute = HomeScreen.route;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CreatePostScreen(),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: const Text("Mark as summited"),
-            ),
-          );
+    return SizedBox(
+      height: 44,
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          if (userState.currentUser == null) {
+            navigationState.setNavigateToRoute = HomeScreen.route;
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+          } else {
+            createPostState.reset();
+            if (munroState.selectedMunro != null) {
+              createPostState.addMunro(munroState.selectedMunro!);
+              navigationState.setNavigateToRoute = HomeScreen.route;
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CreatePostScreen(),
+                ),
+              );
+            }
+          }
+        },
+        child: Text(munroState.selectedMunro?.summited ?? false ? "Log another summit" : "Mark as summited"),
+      ),
+    );
   }
 }
