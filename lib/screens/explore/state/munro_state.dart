@@ -60,6 +60,16 @@ class MunroState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeMunroCompletion({
+    required String munroId,
+    required DateTime dateTime,
+  }) {
+    int munroIdInt = int.parse(munroId);
+    _munroList[munroIdInt - 1].summitedDates!.remove(dateTime);
+    _munroList[munroIdInt - 1].summited = _munroList[munroIdInt - 1].summitedDates!.isNotEmpty;
+    notifyListeners();
+  }
+
   set setFilterString(String filterString) {
     _filterString = filterString;
     _filter();
