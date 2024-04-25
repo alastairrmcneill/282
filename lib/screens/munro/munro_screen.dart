@@ -64,7 +64,7 @@ class _MunroScreenState extends State<MunroScreen> {
                       children: [
                         ...munroState.selectedMunro!.summitedDates!.map(
                           (e) => MunroCompletionWidget(
-                              index: munroState.selectedMunro!.summitedDates!.indexOf(e) + 1, dateTime: e),
+                              index: munroState.selectedMunro!.summitedDates!.indexOf(e), dateTime: e),
                         ),
                       ],
                     ),

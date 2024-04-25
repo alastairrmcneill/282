@@ -42,12 +42,13 @@ class PostService {
         title = createPostState.title!;
       }
 
+      DateTime summitDatetime = DateTime.now().toUtc();
       // Create post object
       Post post = Post(
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: DateTime.now().toUtc(),
+        dateTime: summitDatetime,
         likes: 0,
         title: title,
         description: createPostState.description,
@@ -61,7 +62,11 @@ class PostService {
       await PostsDatabase.create(context, post: post);
 
       // Complete munros
-      await MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
+      await MunroService.markMunrosAsDone(
+        context,
+        munros: createPostState.selectedMunros,
+        summitDateTime: summitDatetime,
+      );
 
       // Check for achievements
       print("Checking achievements");
@@ -103,7 +108,11 @@ class PostService {
       await PostsDatabase.update(context, post: newPost);
 
       // Complete munros
-      MunroService.markMunrosAsDone(context, munros: createPostState.selectedMunros);
+      MunroService.markMunrosAsDone(
+        context,
+        munros: createPostState.selectedMunros,
+        summitDateTime: newPost.dateTime,
+      );
 
       // Update state
       profileState.updatePost(newPost);

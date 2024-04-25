@@ -32,6 +32,11 @@ class UserState extends ChangeNotifier {
     _currentUser = null;
     notifyListeners();
   }
+
+  void setCurrentUserWithNotify(AppUser newAppUser, {required bool notify}) {
+    _currentUser = newAppUser;
+    if (notify) notifyListeners();
+  }
 }
 
 enum UserStatus { initial, loading, loaded, error }

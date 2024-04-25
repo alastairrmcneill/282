@@ -72,14 +72,31 @@ class AchievementService {
     try {
       achievementsState.setStatus = AchievementsStatus.loading;
 
-      // Check if achievement is already completed
-      int totalCompleted =
-          userState.currentUser?.personalMunroData?.where((element) => element[MunroFields.summited] as bool).length ??
-              0;
-      bool completed = totalCompleted >= achievement.criteria[CriteriaFields.count];
+      // Get total completed this year
+      int completedThisYear = 0;
+      List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
+      for (var element in personalMunroData) {
+        bool summited = element[MunroFields.summited] as bool;
+        if (!summited) continue;
+
+        int achievementYear = achievement.criteria[CriteriaFields.year] as int;
+        List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
+        for (var date in summitedDates) {
+          if (date is Timestamp) {
+            date = date.toDate();
+          }
+          int summitedYear = date.year;
+
+          if (summitedYear == achievementYear) {
+            completedThisYear++;
+          }
+          continue;
+        }
+      }
+      bool completed = completedThisYear >= achievement.criteria[CriteriaFields.count];
 
       Achievement newAchievement = achievement.copy(
-        progress: totalCompleted,
+        progress: completedThisYear,
         completed: completed,
       );
 
@@ -212,22 +229,26 @@ class AchievementService {
     if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) return;
 
     // Get total completed this year
-    List munrosCompletedThisYear = userState.currentUser?.personalMunroData?.where((element) {
-          bool summited = element[MunroFields.summited] as bool;
-          if (!summited) return false;
-          int achievementYear = achievement.criteria[CriteriaFields.year] as int;
-          var summitedDate = element[MunroFields.summitedDate];
-          if (summitedDate == null) return false;
+    int completedThisYear = 0;
+    List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
+    for (var element in personalMunroData) {
+      bool summited = element[MunroFields.summited] as bool;
+      if (!summited) continue;
 
-          if (summitedDate is Timestamp) {
-            summitedDate = summitedDate.toDate();
-          }
-          int summitedYear = summitedDate.year;
+      int achievementYear = achievement.criteria[CriteriaFields.year] as int;
+      List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
+      for (var date in summitedDates) {
+        if (date is Timestamp) {
+          date = date.toDate();
+        }
+        int summitedYear = date.year;
 
-          return summited && summitedYear == achievementYear;
-        }).toList() ??
-        [];
-    int completedThisYear = munrosCompletedThisYear.length;
+        if (summitedYear == achievementYear) {
+          completedThisYear++;
+        }
+        continue;
+      }
+    }
 
     // Compare to goal
     bool completed = completedThisYear >= achievement.criteria[CriteriaFields.count];
@@ -349,11 +370,12 @@ class AchievementService {
     };
 
     userState.currentUser?.personalMunroData?.forEach((munroData) {
-      Timestamp? summitedDate = munroData[MunroFields.summitedDate] as Timestamp?;
-
-      if (summitedDate != null) {
-        // Increment the count for the month of the summited date
-        int month = summitedDate.toDate().month;
+      List<dynamic> munroList = munroData[MunroFields.summitedDates] as List<dynamic>;
+      for (var date in munroList) {
+        if (date is Timestamp) {
+          date = date.toDate();
+        }
+        int month = date.month;
         monthCounts[month] = (monthCounts[month] ?? 0) + 1;
       }
     });
@@ -389,17 +411,21 @@ class AchievementService {
     // Get multi munro days
     Map<DateTime, int> dateCounts = {};
 
-    userState.currentUser?.personalMunroData?.forEach((munro) {
-      Timestamp? summitedDate = munro[MunroFields.summitedDate] as Timestamp?;
+    List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
+    for (var element in personalMunroData) {
+      bool summited = element[MunroFields.summited] as bool;
+      if (!summited) continue;
 
-      if (summitedDate != null) {
-        // Increment the count for the month of the summited date
-        DateTime dateTime = summitedDate.toDate();
+      List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
+      for (var dateTime in summitedDates) {
+        if (dateTime is Timestamp) {
+          dateTime = dateTime.toDate();
+        }
         DateTime date = DateTime(dateTime.year, dateTime.month, dateTime.day);
 
         dateCounts[date] = (dateCounts[date] ?? 0) + 1;
       }
-    });
+    }
 
     int daysWithCorrectCount =
         dateCounts.values.where((int count) => count == achievement.criteria[CriteriaFields.count]).length;
