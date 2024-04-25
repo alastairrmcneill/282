@@ -126,7 +126,7 @@ class MunroService {
 
     List<dynamic> summitedDatesRaw =
         newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] ?? [];
-    summitedDatesRaw.remove(dateTime);
+    summitedDatesRaw.remove(Timestamp.fromDate(dateTime));
 
     newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] = summitedDatesRaw;
     newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = summitedDatesRaw.isNotEmpty;
@@ -137,7 +137,10 @@ class MunroService {
       dateTime: dateTime,
     );
 
-    UserService.updateUser(context, appUser: newAppUser);
+    userState.setCurrentUserWithNotify(newAppUser, notify: false);
+
+    await AchievementService.checkAchievements(context);
+    await UserService.updateUser(context, appUser: newAppUser);
   }
 
   static Future<void> toggleMunroSaved(
