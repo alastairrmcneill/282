@@ -50,6 +50,23 @@ class MunroState extends ChangeNotifier {
     _munroList[munroIdInt - 1].summitedDate = summitedDate ?? _munroList[munroIdInt - 1].summitedDate;
     _munroList[munroIdInt - 1].saved = saved ?? _munroList[munroIdInt - 1].saved;
 
+    if (summitedDate != null) {
+      if (_munroList[munroIdInt - 1].summitedDates == null) {
+        _munroList[munroIdInt - 1].summitedDates = [summitedDate];
+      }
+      _munroList[munroIdInt - 1].summitedDates!.add(summitedDate);
+    }
+
+    notifyListeners();
+  }
+
+  void removeMunroCompletion({
+    required String munroId,
+    required DateTime dateTime,
+  }) {
+    int munroIdInt = int.parse(munroId);
+    _munroList[munroIdInt - 1].summitedDates!.remove(dateTime);
+    _munroList[munroIdInt - 1].summited = _munroList[munroIdInt - 1].summitedDates!.isNotEmpty;
     notifyListeners();
   }
 

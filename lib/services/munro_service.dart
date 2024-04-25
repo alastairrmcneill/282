@@ -26,8 +26,14 @@ class MunroService {
         for (var munro in munroList) {
           var correspondingDict = dictMap[munro.id];
           if (correspondingDict != null) {
+            List<dynamic> summitedDatesRaw = correspondingDict[MunroFields.summitedDates] ?? [];
+            List<DateTime> summitedDates = [];
+            for (var date in summitedDatesRaw) {
+              summitedDates.add((date as Timestamp).toDate());
+            }
             munro.summited = correspondingDict[MunroFields.summited];
             munro.summitedDate = (correspondingDict[MunroFields.summitedDate] as Timestamp?)?.toDate();
+            munro.summitedDates = summitedDates;
             munro.saved = correspondingDict[MunroFields.saved];
           }
         }
@@ -76,6 +82,7 @@ class MunroService {
   static Future<void> markMunrosAsDone(
     BuildContext context, {
     required List<Munro> munros,
+    required DateTime summitDateTime,
   }) async {
     // State management
     UserState userState = Provider.of<UserState>(context, listen: false);
@@ -87,17 +94,53 @@ class MunroService {
 
     for (Munro munro in munros) {
       newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = true;
-      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDate] =
-          Timestamp.fromDate(DateTime.now().toUtc());
+      List<dynamic> summitedDatesRaw =
+          newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] ?? [];
+      summitedDatesRaw.add(Timestamp.fromDate(summitDateTime));
+
+      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] = summitedDatesRaw;
+
       // Update munro notifier
       munroState.updateMunro(
         munroId: munro.id,
         summited: true,
-        summitedDate: DateTime.now().toUtc(),
+        summitedDate: summitDateTime,
       );
     }
 
     UserService.updateUser(context, appUser: newAppUser);
+  }
+
+  static Future<void> removeMunroCompletion(
+    BuildContext context, {
+    required Munro munro,
+    required DateTime dateTime,
+  }) async {
+// State management
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+    // Update user data with new personal munro data
+    AppUser newAppUser = userState.currentUser!;
+
+    List<dynamic> summitedDatesRaw =
+        newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] ?? [];
+    summitedDatesRaw.remove(Timestamp.fromDate(dateTime));
+
+    newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] = summitedDatesRaw;
+    newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = summitedDatesRaw.isNotEmpty;
+
+    // Update munro notifier
+    munroState.removeMunroCompletion(
+      munroId: munro.id,
+      dateTime: dateTime,
+    );
+
+    userState.setCurrentUserWithNotify(newAppUser, notify: false);
+
+    await AchievementService.checkAchievements(context);
+    await UserService.updateUser(context, appUser: newAppUser);
   }
 
   static Future<void> toggleMunroSaved(

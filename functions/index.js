@@ -808,43 +808,31 @@ exports.onAchievementDeleted = functions.firestore
   });
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
-  const areaNames = [
-    "Angus",
-    "Argyll",
-    "Cairngorms",
-    "Fort William",
-    "Islands",
-    "Kintail",
-    "Loch Lomond",
-    "Loch Ness",
-    "Perthshire",
-    "Sutherland",
-    "Torridon",
-    "Ullapool",
-  ];
+  try {
+    const achievementsRef = admin.firestore().collection("users");
+    const usersSnapshot = await achievementsRef.get();
+    let batch = admin.firestore().batch();
 
-  // Update achievments
-  const achievementsRef = admin.firestore().collection("achievements");
+    usersSnapshot.forEach((userDoc) => {
+      console.log(`User: ${userDoc.id}`);
+      let userRef = achievementsRef.doc(userDoc.id);
+      let personalMunroData = userDoc.data().personalMunroData;
 
-  for (const areaName of areaNames) {
-    const achievementId = "areaComplete" + areaName.replace(" ", "");
-    const type = "areaGoal";
-    const name = "Completed " + areaName;
-    const description = "Complete all Munros in " + areaName;
-    const critera = { area: areaName };
+      let updatedMunroData = personalMunroData.map((munro) => {
+        if (munro.summitedDate === null) {
+          return { ...munro, summitedDates: [] };
+        } else {
+          return { ...munro, summitedDates: [munro.summitedDate] };
+        }
+      });
 
-    const achievementData = {
-      uid: achievementId,
-      type: type,
-      name: name,
-      description: description,
-      criteria: critera,
-    };
+      batch.update(userRef, { personalMunroData: updatedMunroData });
+    });
 
-    const docRef = achievementsRef.doc(achievementId);
-    await docRef.set(achievementData);
-    console.log(`Achievement ${achievementId} created`);
+    await batch.commit();
+    res.send("Migration completed successfully");
+  } catch (error) {
+    console.error("Error in migration: ", error);
+    res.status(500).send("Failed to complete migration");
   }
-
-  res.send("Migration completed successfully");
 });
