@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -82,6 +83,22 @@ class SettingsScreen extends StatelessWidget {
               }
             },
             title: const Text("Email us"),
+          ),
+          ListTile(
+            onTap: () {
+              BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
+              UserState userState = Provider.of<UserState>(context, listen: false);
+              MunroState munroState = Provider.of<MunroState>(context, listen: false);
+
+              bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+              munroState.setBulkMunroUpdateFilterString = "";
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const BulkMunroUpdateScreen()),
+              );
+            },
+            title: Text('Bulk Munro Update'),
           ),
           ListTile(
             onTap: () async {

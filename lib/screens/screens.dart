@@ -23,3 +23,4 @@ export 'achievements/achievements_screen.dart';
 export 'achievements/achievements_list_screen.dart';
 export 'achievements/achievement_details_screen.dart';
 export 'weather/weather_screen.dart';
+export 'bulk_munro_updates/bulk_munro_update_screen.dart';

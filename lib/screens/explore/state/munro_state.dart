@@ -10,6 +10,8 @@ class MunroState extends ChangeNotifier {
   String _filterString = '';
   List<Munro> _createPostFilteredMunroList = [];
   String _createPostFilterString = '';
+  List<Munro> _bulkMunroUpdateList = [];
+  String _bulkMunroUpdateFilterString = '';
 
   MunroStatus get status => _status;
   Error get error => _error;
@@ -17,6 +19,7 @@ class MunroState extends ChangeNotifier {
   List<Munro> get filteredMunroList => _filteredMunroList;
   Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
+  List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;
 
   set setStatus(MunroStatus searchStatus) {
     _status = searchStatus;
@@ -116,6 +119,29 @@ class MunroState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setBulkMunroUpdateFilterString(String filterString) {
+    _bulkMunroUpdateFilterString = filterString;
+    _bulkMunroUpdateFilter();
+  }
+
+  _bulkMunroUpdateFilter() {
+    List<Munro> runningList = _munroList;
+    if (_bulkMunroUpdateFilterString != "") {
+      runningList = _munroList.where(
+        (munro) {
+          if (munro.name.toLowerCase().contains(_bulkMunroUpdateFilterString.toLowerCase())) return true;
+          if (munro.area.toLowerCase().contains(_bulkMunroUpdateFilterString.toLowerCase())) return true;
+          if (munro.extra != null) {
+            if (munro.extra!.toLowerCase().contains(_bulkMunroUpdateFilterString.toLowerCase())) return true;
+          }
+          return false;
+        },
+      ).toList();
+    }
+    _bulkMunroUpdateList = runningList;
+    notifyListeners();
+  }
+
   reset() {
     _status = MunroStatus.initial;
     _error = Error();
@@ -125,8 +151,11 @@ class MunroState extends ChangeNotifier {
     _filterString = '';
     _createPostFilteredMunroList = [];
     _createPostFilterString = '';
+    _bulkMunroUpdateList = [];
+    _bulkMunroUpdateFilterString = '';
     _filter();
     _createPostFilter();
+    _bulkMunroUpdateFilter();
   }
 }
 
