@@ -88,8 +88,10 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {
               BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
               UserState userState = Provider.of<UserState>(context, listen: false);
+              MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
               bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+              munroState.setBulkMunroUpdateFilterString = "";
 
               Navigator.push(
                 context,
