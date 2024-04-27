@@ -29,11 +29,22 @@ class MunroService {
             List<dynamic> summitedDatesRaw = correspondingDict[MunroFields.summitedDates] ?? [];
             List<DateTime> summitedDates = [];
             for (var date in summitedDatesRaw) {
-              summitedDates.add((date as Timestamp).toDate());
+              if (date is Timestamp) {
+                summitedDates.add((date).toDate());
+              } else if (date is DateTime) {
+                summitedDates.add(date);
+              }
+            }
+            var summitDateRaw = correspondingDict[MunroFields.summitedDate];
+            DateTime summitedDate = DateTime.now();
+            if (summitDateRaw is Timestamp) {
+              summitedDate = (summitDateRaw).toDate();
+            } else if (summitDateRaw is DateTime) {
+              summitedDate = summitDateRaw;
             }
             munro.summited = correspondingDict[MunroFields.summited];
-            munro.summitedDate = (correspondingDict[MunroFields.summitedDate] as Timestamp?)?.toDate();
             munro.summitedDates = summitedDates;
+            munro.summitedDate = summitedDate;
             munro.saved = correspondingDict[MunroFields.saved];
           }
         }
@@ -109,6 +120,21 @@ class MunroService {
     }
 
     UserService.updateUser(context, appUser: newAppUser);
+  }
+
+  static Future<void> bulkUpdateMunros(
+    BuildContext context,
+  ) async {
+    // State management
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+    // Update user data with new personal munro data
+    AppUser newAppUser = userState.currentUser!.copyWith(personalMunroData: bulkMunroUpdateState.bulkMunroUpdateList);
+
+    UserService.updateUser(context, appUser: newAppUser);
+    loadMunroData(context);
   }
 
   static Future<void> removeMunroCompletion(
