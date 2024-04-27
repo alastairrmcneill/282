@@ -7,9 +7,20 @@ import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
-class BulkMunroUpdateScreen extends StatelessWidget {
+class BulkMunroUpdateScreen extends StatefulWidget {
   static const String routeName = '/bulk_munro_update';
   const BulkMunroUpdateScreen({super.key});
+
+  @override
+  State<BulkMunroUpdateScreen> createState() => _BulkMunroUpdateScreenState();
+}
+
+class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferencesService.setShowBulkMunroDialog(false);
+  }
 
   @override
   Widget build(BuildContext context) {
