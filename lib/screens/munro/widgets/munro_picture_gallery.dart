@@ -10,8 +10,9 @@ class MunroPictureGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
+    print("MunroDetailState: ${munroDetailState.galleryPosts.length}");
     List<String> imageURLs = munroDetailState.galleryPosts
-        .expand((Post post) => post.imageURLs)
+        .expand((Post post) => post.imageUrlsMap.values.expand((element) => element).toList())
         .toList();
 
     if (imageURLs.isEmpty) {

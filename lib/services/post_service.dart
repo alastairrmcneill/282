@@ -18,12 +18,27 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      List<String> imageURLs = createPostState.imagesURLs;
+      Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
 
-      for (File image in createPostState.images) {
-        String imageURL = await StorageService.uploadPostImage(image);
-        imageURLs.add(imageURL);
+      for (String munroId in createPostState.images.keys) {
+        for (File image in createPostState.images[munroId]!) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (imageURLsMap[munroId] == null) {
+            imageURLsMap[munroId] = [];
+          }
+          imageURLsMap[munroId]!.add(imageURL);
+        }
       }
+
+      // createPostState.images.forEach((String munroId, List<File> images) async {
+      //   for (File image in images) {
+      //     String imageURL = await StorageService.uploadPostImage(image);
+      //     if (imageURLsMap[munroId] == null) {
+      //       imageURLsMap[munroId] = [];
+      //     }
+      //     imageURLsMap[munroId]!.add(imageURL);
+      //   }
+      // });
 
       // Get title
       String title = "";
@@ -54,7 +69,7 @@ class PostService {
         description: createPostState.description,
         includedMunros: createPostState.selectedMunros,
         includedMunroIds: createPostState.selectedMunros.map((Munro munro) => munro.id).toList(),
-        imageURLs: imageURLs,
+        imageUrlsMap: imageURLsMap,
         public: true,
       );
 
@@ -89,11 +104,17 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      List<String> imageURLs = createPostState.imagesURLs;
-      for (File image in createPostState.images) {
-        String imageURL = await StorageService.uploadPostImage(image);
-        imageURLs.add(imageURL);
-      }
+      Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
+
+      createPostState.images.forEach((String munroId, List<File> images) async {
+        for (File image in images) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (imageURLsMap[munroId] == null) {
+            imageURLsMap[munroId] = [];
+          }
+          imageURLsMap[munroId]!.add(imageURL);
+        }
+      });
 
       // Create post object
       Post post = createPostState.editingPost!;
@@ -101,7 +122,7 @@ class PostService {
       Post newPost = post.copyWith(
         title: createPostState.title,
         description: createPostState.description,
-        imageURLs: imageURLs,
+        imageUrlsMap: imageURLsMap,
       );
 
       // Send to database

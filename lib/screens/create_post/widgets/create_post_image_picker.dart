@@ -10,13 +10,14 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/log_service.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
-  const CreatePostImagePicker({super.key});
+  final String munroId;
+  const CreatePostImagePicker({super.key, required this.munroId});
 
   Future pickImage(CreatePostState createPostState) async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
-      createPostState.addImage(File(image.path));
+      createPostState.addImage(munroId: munroId, image: File(image.path));
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       createPostState.setError = Error(code: error.toString(), message: "There was an issue selecting your image.");
@@ -28,7 +29,7 @@ class CreatePostImagePicker extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     double height = 150;
 
-    if (createPostState.images.isEmpty && createPostState.imagesURLs.isEmpty) {
+    if ((createPostState.images[munroId]?.isEmpty ?? true) && (createPostState.imagesURLs[munroId]?.isEmpty ?? true)) {
       return SizedBox(
         height: height,
         width: double.infinity,
@@ -67,36 +68,38 @@ class CreatePostImagePicker extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: [
-            ...createPostState.imagesURLs.map((imageURL) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: CachedNetworkImage(
-                    imageUrl: imageURL,
-                    progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
-                      child: LinearProgressIndicator(
-                        value: downloadProgress.progress,
+            ...createPostState.imagesURLs[munroId]?.map((imageURL) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: imageURL,
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                          child: LinearProgressIndicator(
+                            value: downloadProgress.progress,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) {
+                          return const Icon(Icons.photo_rounded);
+                        },
                       ),
                     ),
-                    errorWidget: (context, url, error) {
-                      return const Icon(Icons.photo_rounded);
-                    },
-                  ),
-                ),
-              );
-            }),
-            ...createPostState.images.map((image) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.file(image),
-                ),
-              );
-            }),
-            createPostState.images.length + createPostState.imagesURLs.length > 10
+                  );
+                }) ??
+                [],
+            ...createPostState.images[munroId]?.map((image) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.file(image),
+                    ),
+                  );
+                }) ??
+                [],
+            (createPostState.images[munroId]?.length ?? 0) + (createPostState.imagesURLs[munroId]?.length ?? 0) > 10
                 ? const SizedBox()
                 : InkWell(
                     onTap: () async {

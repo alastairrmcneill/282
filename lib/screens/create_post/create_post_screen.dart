@@ -124,8 +124,8 @@ class CreatePostScreen extends StatelessWidget {
                         createPostState.setDescription = newValue?.trim();
                       },
                     ),
-                    const SizedBox(height: 15),
-                    const CreatePostImagePicker(),
+                    // const SizedBox(height: 15),
+                    // const CreatePostImagePicker(),
                     const SizedBox(height: 15),
                     const MunroSelector(),
                     const SizedBox(height: 10),

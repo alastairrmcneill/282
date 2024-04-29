@@ -17,16 +17,13 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
   @override
   void initState() {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    MunroDetailState munroDetailState =
-        Provider.of<MunroDetailState>(context, listen: false);
+    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
     _scrollController = ScrollController();
     _scrollController.addListener(() {
-      if (_scrollController.offset >=
-              _scrollController.position.maxScrollExtent &&
+      if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           munroDetailState.galleryStatus != MunroDetailStatus.paginating) {
-        PostService.paginateMunroPosts(context,
-            munro: munroState.selectedMunro!);
+        PostService.paginateMunroPosts(context, munro: munroState.selectedMunro!);
       }
     });
     super.initState();
@@ -43,7 +40,7 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
     MunroState munroState = Provider.of<MunroState>(context);
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
     List<String> imageURLs = munroDetailState.galleryPosts
-        .expand((Post post) => post.imageURLs)
+        .expand((Post post) => post.imageUrlsMap.values.expand((element) => element).toList())
         .toList();
     return Scaffold(
       appBar: AppBar(
@@ -69,10 +66,9 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
             ),
           ),
           SizedBox(
-            child:
-                munroDetailState.galleryStatus == MunroDetailStatus.paginating
-                    ? const CircularProgressIndicator()
-                    : null,
+            child: munroDetailState.galleryStatus == MunroDetailStatus.paginating
+                ? const CircularProgressIndicator()
+                : null,
           ),
         ],
       ),
