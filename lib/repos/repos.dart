@@ -7,3 +7,4 @@ export 'like_database.dart';
 export 'notifications_database.dart';
 export 'review_database.dart';
 export 'saved_list_database.dart';
+export 'munro_pictures_database.dart';

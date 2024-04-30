@@ -411,6 +411,7 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
   console.log("Creating munro pictures");
   const munroPicturesRef = admin.firestore().collection("munroPictures");
   const imageUrlsMap = snapshot.get("imageUrlsMap");
+  const postDate = snapshot.get("dateTime");
 
   console.log("Map: ", imageUrlsMap);
   for (var key in imageUrlsMap) {
@@ -424,6 +425,7 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
         postId: postId,
         munroId: key,
         imageUrl: url,
+        dateTime: postDate,
       });
     }
   }
@@ -485,6 +487,7 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
   // Create new munro pictures
   console.log("Creating munro pictures");
   const imageUrlsMap = snapshot.after.get("imageUrlsMap");
+  const postDate = snapshot.after.get("dateTime");
 
   console.log("Map: ", imageUrlsMap);
   for (var key in imageUrlsMap) {
@@ -498,6 +501,7 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
         postId: postId,
         munroId: key,
         imageUrl: url,
+        dateTime: postDate,
       });
     }
   }

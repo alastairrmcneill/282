@@ -23,7 +23,7 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           munroDetailState.galleryStatus != MunroDetailStatus.paginating) {
-        PostService.paginateMunroPosts(context, munro: munroState.selectedMunro!);
+        MunroPictureService.paginateMunroPictures(context, munroId: munroState.selectedMunro!.id);
       }
     });
     super.initState();
@@ -39,9 +39,7 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
-    List<String> imageURLs = munroDetailState.galleryPosts
-        .expand((Post post) => post.imageUrlsMap.values.expand((element) => element).toList())
-        .toList();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Photos from ${munroState.selectedMunro?.name}"),
@@ -57,10 +55,11 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
               ),
-              itemCount: imageURLs.length,
+              itemCount: munroDetailState.munroPictures.length,
               itemBuilder: (BuildContext context, int index) {
+                MunroPicture munroPicture = munroDetailState.munroPictures[index];
                 return ClickableImage(
-                  imageURL: imageURLs[index],
+                  imageURL: munroPicture.imageUrl,
                 );
               },
             ),
