@@ -30,16 +30,6 @@ class PostService {
         }
       }
 
-      // createPostState.images.forEach((String munroId, List<File> images) async {
-      //   for (File image in images) {
-      //     String imageURL = await StorageService.uploadPostImage(image);
-      //     if (imageURLsMap[munroId] == null) {
-      //       imageURLsMap[munroId] = [];
-      //     }
-      //     imageURLsMap[munroId]!.add(imageURL);
-      //   }
-      // });
-
       // Get title
       String title = "";
       if (createPostState.title == null) {
@@ -106,15 +96,15 @@ class PostService {
       // Upload picture and get url
       Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
 
-      createPostState.images.forEach((String munroId, List<File> images) async {
-        for (File image in images) {
+      for (String munroId in createPostState.images.keys) {
+        for (File image in createPostState.images[munroId]!) {
           String imageURL = await StorageService.uploadPostImage(image);
           if (imageURLsMap[munroId] == null) {
             imageURLsMap[munroId] = [];
           }
           imageURLsMap[munroId]!.add(imageURL);
         }
-      });
+      }
 
       // Create post object
       Post post = createPostState.editingPost!;
