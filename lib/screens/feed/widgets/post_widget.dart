@@ -140,7 +140,9 @@ class PostWidget extends StatelessWidget {
               ),
             ],
           ),
-          post.imageURLs.isEmpty ? const SizedBox() : PostImagesCarousel(post: post),
+          post.imageUrlsMap.values.expand((element) => element).isEmpty
+              ? const SizedBox()
+              : PostImagesCarousel(post: post),
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,

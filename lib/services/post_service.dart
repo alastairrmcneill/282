@@ -18,11 +18,16 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      List<String> imageURLs = createPostState.imagesURLs;
+      Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
 
-      for (File image in createPostState.images) {
-        String imageURL = await StorageService.uploadPostImage(image);
-        imageURLs.add(imageURL);
+      for (String munroId in createPostState.images.keys) {
+        for (File image in createPostState.images[munroId]!) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (imageURLsMap[munroId] == null) {
+            imageURLsMap[munroId] = [];
+          }
+          imageURLsMap[munroId]!.add(imageURL);
+        }
       }
 
       // Get title
@@ -54,7 +59,7 @@ class PostService {
         description: createPostState.description,
         includedMunros: createPostState.selectedMunros,
         includedMunroIds: createPostState.selectedMunros.map((Munro munro) => munro.id).toList(),
-        imageURLs: imageURLs,
+        imageUrlsMap: imageURLsMap,
         public: true,
       );
 
@@ -89,10 +94,16 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      List<String> imageURLs = createPostState.imagesURLs;
-      for (File image in createPostState.images) {
-        String imageURL = await StorageService.uploadPostImage(image);
-        imageURLs.add(imageURL);
+      Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
+
+      for (String munroId in createPostState.images.keys) {
+        for (File image in createPostState.images[munroId]!) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (imageURLsMap[munroId] == null) {
+            imageURLsMap[munroId] = [];
+          }
+          imageURLsMap[munroId]!.add(imageURL);
+        }
       }
 
       // Create post object
@@ -101,7 +112,7 @@ class PostService {
       Post newPost = post.copyWith(
         title: createPostState.title,
         description: createPostState.description,
-        imageURLs: imageURLs,
+        imageUrlsMap: imageURLsMap,
       );
 
       // Send to database
@@ -254,55 +265,6 @@ class PostService {
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue deleting your post. Please try again.");
-    }
-  }
-
-  static Future getMunroPosts(BuildContext context, {required Munro munro, int count = 50}) async {
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
-
-    try {
-      munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
-      List<Post> posts = await PostsDatabase.getPostsFromMunro(
-        context,
-        munroId: munro.id,
-        lastPostId: null,
-        count: count,
-      );
-
-      munroDetailState.setGalleryPosts = posts;
-      munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
-    } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      munroDetailState.setError =
-          Error(message: "There was an issue loading pictures for this munro. Please try again.");
-    }
-  }
-
-  static Future paginateMunroPosts(BuildContext context, {required Munro munro}) async {
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
-
-    try {
-      munroDetailState.setGalleryStatus = MunroDetailStatus.paginating;
-
-      // Find last user ID
-      String? lastPostId;
-      if (munroDetailState.galleryPosts.isNotEmpty) {
-        lastPostId = munroDetailState.galleryPosts.last.uid!;
-      }
-
-      // Add posts from database
-      List<Post> newPosts = await PostsDatabase.getPostsFromMunro(
-        context,
-        munroId: munro.id,
-        lastPostId: lastPostId,
-      );
-
-      munroDetailState.addGalleryPosts = newPosts;
-      munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
-    } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      munroDetailState.setError =
-          Error(message: "There was an issue loading pictures for this munro. Please try again.");
     }
   }
 }

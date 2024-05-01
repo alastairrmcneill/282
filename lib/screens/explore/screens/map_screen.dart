@@ -200,7 +200,7 @@ class _MapScreenState extends State<MapScreen> {
                                 border: Border.all(width: 0.3, color: Colors.black54),
                                 color: Colors.white,
                                 shape: BoxShape.circle),
-                            child: showTerrain ? Icon(Icons.layers) : Icon(Icons.layers_outlined),
+                            child: showTerrain ? const Icon(Icons.layers_outlined) : const Icon(Icons.layers),
                           ),
                         )
                       ],

@@ -33,7 +33,9 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                 height: 300,
                 onPageChanged: (index, reason) => setState(() => _selectedIndex = index),
               ),
-              items: widget.post.imageURLs
+              items: widget.post.imageUrlsMap.values
+                  .expand((element) => element)
+                  .toList()
                   .map(
                     (url) => Container(
                       margin: EdgeInsets.zero,
@@ -69,7 +71,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                   )
                   .toList(),
             ),
-            widget.post.imageURLs.length < 2
+            widget.post.imageUrlsMap.values.expand((element) => element).toList().length < 2
                 ? const SizedBox()
                 : SizedBox(
                     height: 300,
@@ -79,7 +81,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: AnimatedSmoothIndicator(
                           activeIndex: _selectedIndex,
-                          count: widget.post.imageURLs.length,
+                          count: widget.post.imageUrlsMap.values.expand((element) => element).toList().length,
                           effect: const WormEffect(
                             dotWidth: 8,
                             dotHeight: 8,

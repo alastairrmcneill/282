@@ -8,8 +8,8 @@ class CreatePostState extends ChangeNotifier {
   Error _error = Error();
   String? _title;
   String? _description;
-  List<File> _images = [];
-  List<String> _imageURLs = [];
+  Map<String, List<File>> _images = {};
+  Map<String, List<String>> _imageURLs = {};
   List<Munro> _selectedMunros = [];
   Post? _editingPost;
 
@@ -17,8 +17,8 @@ class CreatePostState extends ChangeNotifier {
   Error get error => _error;
   String? get title => _title;
   String? get description => _description;
-  List<File> get images => _images;
-  List<String> get imagesURLs => _imageURLs;
+  Map<String, List<File>> get images => _images;
+  Map<String, List<String>> get imagesURLs => _imageURLs;
   List<Munro> get selectedMunros => _selectedMunros;
   Post? get editingPost => _editingPost;
 
@@ -43,8 +43,10 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setImageURLs(List<String> imageURLs) {
-    _imageURLs = imageURLs;
+  setImageURLs({required String munroId, required List<String> imageURLs}) {
+    if (_imageURLs[munroId] == null) _imageURLs[munroId] = [];
+
+    _imageURLs[munroId] = imageURLs;
     notifyListeners();
   }
 
@@ -52,7 +54,7 @@ class CreatePostState extends ChangeNotifier {
     _editingPost = post;
     _title = post.title;
     _description = post.description;
-    _imageURLs = post.imageURLs;
+    _imageURLs = post.imageUrlsMap;
     _selectedMunros = post.includedMunros;
     notifyListeners();
   }
@@ -71,19 +73,25 @@ class CreatePostState extends ChangeNotifier {
     }
   }
 
-  addImage(File image) {
-    _images.add(image);
+  addImage({required String munroId, required File image}) {
+    if (_images[munroId] == null) _images[munroId] = [];
+
+    _images[munroId]!.add(image);
+
     notifyListeners();
   }
 
-  removeImage(int index) {
-    _images.removeAt(index);
+  removeImage({required String munroId, required int index}) {
+    if (_images[munroId] == null) return;
+
+    _images[munroId]!.removeAt(index);
     notifyListeners();
   }
 
-  removeImageURL(String url) {
-    if (_imageURLs.contains(url)) {
-      _imageURLs.remove(url);
+  removeImageURL({required String munroId, required String url}) {
+    if (_imageURLs[munroId] == null) return;
+    if (_imageURLs[munroId]!.contains(url)) {
+      _imageURLs[munroId]!.remove(url);
     }
     notifyListeners();
   }
@@ -92,8 +100,8 @@ class CreatePostState extends ChangeNotifier {
     _title = null;
     _description = null;
     _editingPost = null;
-    _imageURLs = [];
-    _images = [];
+    _imageURLs = {};
+    _images = {};
     _selectedMunros = [];
     _error = Error();
     _status = CreatePostStatus.initial;

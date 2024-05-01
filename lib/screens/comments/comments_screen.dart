@@ -94,13 +94,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
-                    commentsState.post.imageURLs.isEmpty
+                    commentsState.post.imageUrlsMap.values.expand((element) => element).toList().isEmpty
                         ? const SizedBox()
                         : SizedBox(
                             height: 150,
                             width: double.infinity,
                             child: CachedNetworkImage(
-                              imageUrl: commentsState.post.imageURLs[0],
+                              imageUrl: commentsState.post.imageUrlsMap.values.expand((element) => element).toList()[0],
                               fit: BoxFit.cover,
                               progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
