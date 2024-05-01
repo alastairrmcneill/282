@@ -15,9 +15,10 @@ class CreatePostImagePicker extends StatelessWidget {
 
   Future pickImage(CreatePostState createPostState) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
-      createPostState.addImage(munroId: munroId, image: File(image.path));
+      final images = await ImagePicker().pickMultiImage();
+      for (var image in images) {
+        createPostState.addImage(munroId: munroId, image: File(image.path));
+      }
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       createPostState.setError = Error(code: error.toString(), message: "There was an issue selecting your image.");
