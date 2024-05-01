@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -70,64 +71,111 @@ class CreatePostImagePicker extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           children: [
             ...createPostState.imagesURLs[munroId]?.map((imageURL) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: imageURL,
-                        progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
-                          child: LinearProgressIndicator(
-                            value: downloadProgress.progress,
+                  return Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: CachedNetworkImage(
+                            imageUrl: imageURL,
+                            height: height, // Set a fixed height
+                            width: height, // Set a fixed width
+                            fit: BoxFit.cover, // Determine how the image should be displayed
+                            progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                              child: LinearProgressIndicator(
+                                value: downloadProgress.progress,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) {
+                              return const Icon(Icons.photo_rounded);
+                            },
                           ),
                         ),
-                        errorWidget: (context, url, error) {
-                          return const Icon(Icons.photo_rounded);
-                        },
                       ),
-                    ),
+                      InkWell(
+                        onTap: () {
+                          createPostState.removeImageURL(munroId: munroId, url: imageURL);
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            FontAwesomeIcons.minusCircle,
+                            color: Colors.red,
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 }) ??
                 [],
             ...createPostState.images[munroId]?.map((image) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(image),
-                    ),
+                  int index = createPostState.images[munroId]?.indexOf(image) ?? 0;
+                  return Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(image),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          createPostState.removeImage(munroId: munroId, index: index);
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            FontAwesomeIcons.minusCircle,
+                            color: Colors.red,
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 }) ??
                 [],
             (createPostState.images[munroId]?.length ?? 0) + (createPostState.imagesURLs[munroId]?.length ?? 0) > 10
                 ? const SizedBox()
-                : InkWell(
-                    onTap: () async {
-                      await pickImage(createPostState);
-                    },
-                    child: DottedBorder(
-                      borderType: BorderType.RRect,
-                      radius: const Radius.circular(10),
-                      dashPattern: const [5, 5],
-                      color: Colors.green,
-                      strokeWidth: 1,
-                      child: SizedBox(
-                        width: height,
-                        height: height,
-                        child: const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_a_photo_rounded,
-                                color: Colors.green,
-                              ),
-                              Text(
-                                'Add a photo',
-                                style: TextStyle(color: Colors.green, fontSize: 12),
-                              )
-                            ],
+                : Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: InkWell(
+                      onTap: () async {
+                        await pickImage(createPostState);
+                      },
+                      child: DottedBorder(
+                        borderType: BorderType.RRect,
+                        radius: const Radius.circular(10),
+                        dashPattern: const [5, 5],
+                        color: Colors.green,
+                        strokeWidth: 1,
+                        child: SizedBox(
+                          width: height,
+                          height: height,
+                          child: const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_rounded,
+                                  color: Colors.green,
+                                ),
+                                Text(
+                                  'Add a photo',
+                                  style: TextStyle(color: Colors.green, fontSize: 12),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
