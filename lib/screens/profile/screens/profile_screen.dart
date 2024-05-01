@@ -100,6 +100,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildScreen(BuildContext context, ProfileState profileState) {
     FlavorState flavorState = Provider.of<FlavorState>(context);
+
+    if (profileState.isCurrentUser) showGoToBulkMunroDialog(context);
+
     return WillPopScope(
       onWillPop: () async {
         profileState.navigateBack();

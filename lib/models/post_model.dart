@@ -9,7 +9,7 @@ class Post {
   final DateTime dateTime;
   final String title;
   final String? description;
-  final List<String> imageURLs;
+  final Map<String, List<String>> imageUrlsMap;
   final List<Munro> includedMunros;
   final List<String> includedMunroIds;
   final int likes;
@@ -21,7 +21,7 @@ class Post {
     required this.authorDisplayName,
     required this.authorProfilePictureURL,
     required this.dateTime,
-    required this.imageURLs,
+    required this.imageUrlsMap,
     required this.title,
     this.description,
     required this.includedMunros,
@@ -45,7 +45,7 @@ class Post {
       PostFields.authorDisplayName: authorDisplayName,
       PostFields.authorProfilePictureURL: authorProfilePictureURL,
       PostFields.dateTime: dateTime,
-      PostFields.imageURLs: imageURLs,
+      PostFields.imageUrlsMap: imageUrlsMap,
       PostFields.title: title,
       PostFields.description: description,
       PostFields.includedMunros: includedMunrosMaps,
@@ -57,9 +57,6 @@ class Post {
 
   // From JSON
   static Post fromJSON(Map<String, dynamic> json) {
-    List<dynamic> imageURLs = json[PostFields.imageURLs];
-    List<String> newImageURLs = List<String>.from(imageURLs);
-
     List<dynamic> includedMunrosMaps = json[PostFields.includedMunros];
 
     List<Munro> inlcudedMunrosList = [];
@@ -76,13 +73,29 @@ class Post {
       newIncludedMunroIds = inlcudedMunrosList.map((Munro munro) => munro.id).toList();
     }
 
+    Map<String, List<String>> newImageURLsMap = {};
+    if (json.containsKey(PostFields.imageUrlsMap)) {
+      Map<String, dynamic> imageUrlsMap = json[PostFields.imageUrlsMap];
+      for (String key in imageUrlsMap.keys) {
+        List<dynamic> imageURLs = imageUrlsMap[key];
+        List<String> newImageURLs = List<String>.from(imageURLs);
+
+        newImageURLsMap[key] = newImageURLs;
+      }
+    } else {
+      List<dynamic> imageURLs = json[PostFields.imageURLs];
+      List<String> newImageURLs = List<String>.from(imageURLs);
+
+      newImageURLsMap[newIncludedMunroIds[0]] = newImageURLs;
+    }
+
     return Post(
       uid: json[PostFields.uid] as String?,
       authorId: json[PostFields.authorId] as String,
       authorDisplayName: json[PostFields.authorDisplayName] as String,
       authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
       dateTime: (json[PostFields.dateTime] as Timestamp).toDate(),
-      imageURLs: newImageURLs,
+      imageUrlsMap: newImageURLsMap,
       title: json[PostFields.title] as String,
       description: json[PostFields.description] as String?,
       includedMunros: inlcudedMunrosList,
@@ -99,7 +112,7 @@ class Post {
     String? authorDisplayName,
     String? authorProfilePictureURL,
     DateTime? dateTime,
-    List<String>? imageURLs,
+    Map<String, List<String>>? imageUrlsMap,
     String? title,
     String? description,
     List<Munro>? includedMunros,
@@ -113,7 +126,7 @@ class Post {
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
       authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
       dateTime: dateTime ?? this.dateTime,
-      imageURLs: imageURLs ?? this.imageURLs,
+      imageUrlsMap: imageUrlsMap ?? this.imageUrlsMap,
       title: title ?? this.title,
       description: description ?? this.description,
       includedMunros: includedMunros ?? this.includedMunros,
@@ -131,6 +144,7 @@ class PostFields {
   static String authorProfilePictureURL = "authorProfilePictureURL";
   static String dateTime = "dateTime";
   static String imageURLs = "imageURLs";
+  static String imageUrlsMap = "imageUrlsMap";
   static String title = "title";
   static String description = "description";
   static String includedMunros = "includedMunros";

@@ -10,6 +10,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -28,6 +29,7 @@ class _MapScreenState extends State<MapScreen> {
   String? _selectedMunroID;
   PersistentBottomSheetController? _bottomSheetController;
   final FocusNode _searchFocusNode = FocusNode();
+  bool showTerrain = false;
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void loadData() async {
+    showTerrain = await SharedPreferencesService.getMapTerrain();
     await MunroDatabase.loadBasicMunroData(context).then(
       (value) => setState(() => loading = false),
     );
@@ -147,7 +150,7 @@ class _MapScreenState extends State<MapScreen> {
       mapToolbarEnabled: false,
       compassEnabled: true,
       zoomControlsEnabled: false,
-      mapType: MapType.terrain,
+      mapType: showTerrain ? MapType.terrain : MapType.hybrid,
       padding: const EdgeInsets.all(20),
       markers: getMarkers(munroState: munroState),
       myLocationButtonEnabled: false,
@@ -168,14 +171,39 @@ class _MapScreenState extends State<MapScreen> {
                 SafeArea(
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: MunroSearchBar(
-                      focusNode: _searchFocusNode,
-                      onSelected: (Munro munro) {
-                        setState(() {
-                          _selectedMunroID = munro.id;
-                          markerTapped(munro);
-                        });
-                      },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: MunroSearchBar(
+                            focusNode: _searchFocusNode,
+                            onSelected: (Munro munro) {
+                              setState(() {
+                                _selectedMunroID = munro.id;
+                                markerTapped(munro);
+                              });
+                            },
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              showTerrain = !showTerrain;
+                              SharedPreferencesService.setMapTerrain(showTerrain);
+                            });
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 10, left: 0, top: 5),
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 0.3, color: Colors.black54),
+                                color: Colors.white,
+                                shape: BoxShape.circle),
+                            child: showTerrain ? const Icon(Icons.layers_outlined) : const Icon(Icons.layers),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),

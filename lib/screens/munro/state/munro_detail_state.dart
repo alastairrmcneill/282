@@ -3,11 +3,11 @@ import 'package:two_eight_two/models/models.dart';
 
 class MunroDetailState extends ChangeNotifier {
   MunroDetailStatus _galleryStatus = MunroDetailStatus.initial;
-  List<Post> _galleryPost = [];
+  List<MunroPicture> _munroPictures = [];
   Error _error = Error();
 
   MunroDetailStatus get galleryStatus => _galleryStatus;
-  List<Post> get galleryPosts => _galleryPost;
+  List<MunroPicture> get munroPictures => _munroPictures;
   Error get error => _error;
 
   set setGalleryStatus(MunroDetailStatus galleryStatus) {
@@ -15,13 +15,13 @@ class MunroDetailState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setGalleryPosts(List<Post> posts) {
-    _galleryPost = posts;
+  set setMunroPictures(List<MunroPicture> munroPictures) {
+    _munroPictures = munroPictures;
     notifyListeners();
   }
 
-  set addGalleryPosts(List<Post> posts) {
-    _galleryPost.addAll(posts);
+  set addMunroPictures(List<MunroPicture> munroPictures) {
+    _munroPictures.addAll(munroPictures);
     notifyListeners();
   }
 

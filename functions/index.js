@@ -406,6 +406,31 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
   admin.firestore().collection("feeds").doc(authorId).collection("userFeed").doc(postId).set(snapshot.data());
 
   console.log("Post added to feeds successfully");
+
+  // Create munro picture documents
+  console.log("Creating munro pictures");
+  const munroPicturesRef = admin.firestore().collection("munroPictures");
+  const imageUrlsMap = snapshot.get("imageUrlsMap");
+  const postDate = snapshot.get("dateTime");
+
+  console.log("Map: ", imageUrlsMap);
+  for (var key in imageUrlsMap) {
+    console.log("Key: ", key);
+    console.log("Value: ", imageUrlsMap[key]);
+    for (var url of imageUrlsMap[key]) {
+      console.log("URL: ", url);
+      const munroPictureRef = munroPicturesRef.doc();
+      await munroPictureRef.set({
+        id: munroPictureRef.id,
+        postId: postId,
+        munroId: key,
+        imageUrl: url,
+        dateTime: postDate,
+      });
+    }
+  }
+
+  console.log("Munro pictures created successfully");
 });
 
 exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate(async (snapshot, context) => {
@@ -446,6 +471,42 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
   }
 
   console.log("Post updated in feeds successfully");
+
+  // Update munro pictures
+  console.log("Updating munro pictures");
+
+  // Delete old munro pictures
+  const munroPicturesRef = admin.firestore().collection("munroPictures");
+  const munroPicturesSnapshot = await munroPicturesRef.where("postId", "==", postId).get();
+
+  for (var doc of munroPicturesSnapshot.docs) {
+    console.log(`Deleting munro picture: ${doc.id}`);
+    await doc.ref.delete();
+  }
+
+  // Create new munro pictures
+  console.log("Creating munro pictures");
+  const imageUrlsMap = snapshot.after.get("imageUrlsMap");
+  const postDate = snapshot.after.get("dateTime");
+
+  console.log("Map: ", imageUrlsMap);
+  for (var key in imageUrlsMap) {
+    console.log("Key: ", key);
+    console.log("Value: ", imageUrlsMap[key]);
+    for (var url of imageUrlsMap[key]) {
+      console.log("URL: ", url);
+      const munroPictureRef = munroPicturesRef.doc();
+      await munroPictureRef.set({
+        id: munroPictureRef.id,
+        postId: postId,
+        munroId: key,
+        imageUrl: url,
+        dateTime: postDate,
+      });
+    }
+  }
+
+  console.log("Munro pictures created successfully");
 });
 
 exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete(async (snapshot, context) => {
@@ -484,6 +545,18 @@ exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete
   }
 
   console.log("Post deleted from feeds successfully");
+
+  // Delete munro pictures
+  console.log("Deleting munro pictures");
+  const munroPicturesRef = admin.firestore().collection("munroPictures");
+  const munroPicturesSnapshot = await munroPicturesRef.where("postId", "==", postId).get();
+
+  munroPicturesSnapshot.forEach((doc) => {
+    console.log(`Deleting munro picture: ${doc.id}`);
+    doc.ref.delete();
+  });
+
+  console.log("Munro pictures deleted successfully");
 });
 
 exports.onLikeCreated = functions.firestore.document("/likes/{likeId}").onCreate(async (snapshot, context) => {

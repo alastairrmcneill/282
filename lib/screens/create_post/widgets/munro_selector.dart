@@ -100,11 +100,16 @@ class _MunroSelectorState extends State<MunroSelector> {
               ],
             ),
             ...createPostState.selectedMunros.map(
-              (Munro munro) => ListTile(
-                contentPadding: const EdgeInsets.only(left: 0),
-                title: Text(munro.name),
-                subtitle:
-                    Text("${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
+              (Munro munro) => Column(
+                children: [
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(left: 0),
+                    title: Text(munro.name),
+                    subtitle:
+                        Text("${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
+                  ),
+                  CreatePostImagePicker(munroId: munro.id),
+                ],
               ),
             ),
             if (formState.hasError)
