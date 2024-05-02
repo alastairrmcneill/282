@@ -38,13 +38,40 @@ exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(
   // Create user feed
   console.log(`Creating feed for user: ${userId}`);
   const userFeedRef = admin.firestore().collection("feeds").doc(userId);
-  userFeedRef.set({});
+  await userFeedRef.set({});
   console.log(`Feed created for user: ${userId}`);
+
+  // Create user achievements
+  console.log("Create user achievements");
+  const achievementsRef = admin.firestore().collection("achievements");
+  const achievementsSnapshot = await achievementsRef.get();
+  const userRef = admin.firestore().collection("users").doc(userId);
+
+  let batch = admin.firestore().batch();
+
+  let achievementData = {};
+
+  achievementsSnapshot.forEach((doc) => {
+    console.log(`Achievement: ${doc.id}`);
+    let achievementId = doc.id;
+    achievementData = {
+      ...achievementData,
+      [achievementId]: {
+        ...doc.data(),
+        completed: false,
+        progress: 0,
+      },
+    };
+  });
+  batch.update(userRef, { achievements: achievementData });
+
+  await batch.commit();
+  console.log("User achievements created");
 
   // Get my profile
   console.log("Getting my profile");
-  const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3"); // Dev
-  // const myProfileRef = admin.firestore().collection("users").doc("v3qXEVdb6BYhB4wdyCeIfjSukbE2"); // Prod
+  // const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3"); // Dev
+  const myProfileRef = admin.firestore().collection("users").doc("v3qXEVdb6BYhB4wdyCeIfjSukbE2"); // Prod
   const myProfile = await myProfileRef.get();
   console.log("Got my profile");
 
@@ -77,32 +104,6 @@ exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(
   });
   console.log("Following relationship created between me and the new user");
 
-  // Create user achievements
-  console.log("Create user achievements");
-  const achievementsRef = admin.firestore().collection("achievements");
-  const achievementsSnapshot = await achievementsRef.get();
-  const userRef = admin.firestore().collection("users").doc(userId);
-
-  let batch = admin.firestore().batch();
-
-  let achievementData = {};
-
-  achievementsSnapshot.forEach((doc) => {
-    console.log(`Achievement: ${doc.id}`);
-    let achievementId = doc.id;
-    achievementData = {
-      ...achievementData,
-      [achievementId]: {
-        ...doc.data(),
-        completed: false,
-        progress: 0,
-      },
-    };
-  });
-  batch.update(userRef, { achievements: achievementData });
-
-  await batch.commit();
-  console.log("User achievements created");
   console.log("User created successfully");
 });
 
