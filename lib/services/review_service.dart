@@ -31,7 +31,7 @@ class ReviewService {
       createReviewState.setCurrentMunroRating = 0;
       createReviewState.setCurrentMunroReview = "";
 
-      MunroService.loadAdditionalMunroData(context);
+      MunroService.loadAllAdditionalMunrosData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -61,7 +61,7 @@ class ReviewService {
       await ReviewDatabase.update(context, review: newReview);
 
       reviewsState.replaceReview = newReview;
-      MunroService.loadAdditionalMunroData(context);
+      MunroService.loadAllAdditionalMunrosData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
