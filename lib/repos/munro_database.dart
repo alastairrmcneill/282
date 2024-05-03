@@ -41,6 +41,9 @@ class MunroDatabase {
     DocumentSnapshot querySnapshot = await _munroRef.doc(munroId).get();
 
     // Convert to map
+    if (!querySnapshot.exists) {
+      return {};
+    }
     Map<String, dynamic> munroData = querySnapshot.data() as Map<String, dynamic>;
 
     // Return the data as a list of maps

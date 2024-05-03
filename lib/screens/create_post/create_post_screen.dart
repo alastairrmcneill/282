@@ -37,10 +37,13 @@ class CreatePostScreen extends StatelessWidget {
                   CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
                   createReviewState.reset();
                   createReviewState.setMunrosToReview = createPostState.selectedMunros;
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateReviewScreen()));
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    HomeScreen.route,
+                    (Route<dynamic> route) => false,
+                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => CreateReviewsScreen()));
                 } else {
-                  // Navigate back to where we were
-                  print("navigating back");
                   Navigator.of(context).pop();
                 }
               });

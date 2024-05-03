@@ -100,6 +100,7 @@ class MunroService {
       munroId: munroState.selectedMunro?.id ?? "",
     );
 
+    if (munroData.isEmpty) return;
     List<Munro> tempMunroList = munroState.munroList;
 
     String munroId = munroData[MunroFields.id];

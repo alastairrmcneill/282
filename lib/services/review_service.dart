@@ -14,22 +14,20 @@ class ReviewService {
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
 
-      Review review = Review(
-        authorId: userState.currentUser?.uid ?? "",
-        authorDisplayName: userState.currentUser?.displayName ?? "",
-        authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: DateTime.now().toUtc(),
-        rating: createReviewState.currentMunroRating,
-        text: createReviewState.currentMunroReview,
-        munroId: createReviewState.munrosToReview[createReviewState.currentIndex].id,
-      );
+      for (var key in createReviewState.reviews.keys) {
+        Review review = Review(
+          authorId: userState.currentUser?.uid ?? "",
+          authorDisplayName: userState.currentUser?.displayName ?? "",
+          authorProfilePictureURL: userState.currentUser?.profilePictureURL,
+          dateTime: DateTime.now().toUtc(),
+          rating: createReviewState.reviews[key]![ReviewFields.rating] ?? 0,
+          text: createReviewState.reviews[key]!["review"] ?? "",
+          munroId: key,
+        );
 
-      // Upload to database
-      await ReviewDatabase.create(context, review: review);
-
-      // Reset state
-      createReviewState.setCurrentMunroRating = 0;
-      createReviewState.setCurrentMunroReview = "";
+        // Upload to database
+        await ReviewDatabase.create(context, review: review);
+      }
 
       MunroService.loadAllAdditionalMunrosData(context);
       createReviewState.setStatus = CreateReviewStatus.loaded;
