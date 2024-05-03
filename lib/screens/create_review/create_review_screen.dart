@@ -72,32 +72,19 @@ class CreateReviewsScreen extends StatelessWidget {
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(FontAwesomeIcons.multiply),
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(
-              context,
-              HomeScreen.route, // The name of the route you want to navigate to
-              (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-            ),
+            onPressed: () => createReviewState.setStatus = CreateReviewStatus.loaded,
           ),
           title: const Text("Review Munros"),
           actions: [
             IconButton(
               icon: Icon(FontAwesomeIcons.check),
               onPressed: () {
-                print("Save reviews");
                 if (!_formKey.currentState!.validate()) {
                   return;
                 }
                 _formKey.currentState!.save();
 
-                if (createReviewState.status == CreateReviewStatus.initial) {
-                  print(createReviewState.reviews);
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    HomeScreen.route, // The name of the route you want to navigate to
-                    (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-                  );
-                  ReviewService.createReview(context);
-                }
+                ReviewService.createReview(context);
               },
             ),
           ],
