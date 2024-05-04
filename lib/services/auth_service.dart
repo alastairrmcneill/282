@@ -194,6 +194,16 @@ class AuthService {
 
       if (_auth.currentUser == null) return;
 
+      List<String> names = _auth.currentUser!.displayName?.split(" ") ?? [];
+      String firstName = "";
+      String lastName = "";
+      if (names.length > 1) {
+        firstName = names[0];
+        lastName = names.sublist(1).join(" ");
+      } else if (names.length == 1) {
+        firstName = names[0];
+      }
+
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
         displayName: _auth.currentUser!.displayName,
@@ -236,9 +246,21 @@ class AuthService {
 
       if (_auth.currentUser == null) return;
 
+      List<String> names = googleUser.displayName?.split(" ") ?? [];
+      String firstName = "";
+      String lastName = "";
+      if (names.length > 1) {
+        firstName = names[0];
+        lastName = names.sublist(1).join(" ");
+      } else if (names.length == 1) {
+        firstName = names[0];
+      }
+
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
         displayName: _auth.currentUser!.displayName,
+        firstName: firstName,
+        lastName: lastName,
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
         profilePictureURL: _auth.currentUser!.photoURL,
       );
