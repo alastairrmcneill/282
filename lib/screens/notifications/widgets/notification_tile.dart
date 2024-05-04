@@ -52,9 +52,6 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context);
-    if (!notification.read) {
-      NotificationsService.markNotificationAsRead(context, notification: notification);
-    }
     return ListTile(
       tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.08),
       leading: CircularProfilePicture(
@@ -64,6 +61,7 @@ class NotificationTile extends StatelessWidget {
       title: _buildText(notification),
       onTap: () {
         notification.read = true;
+        NotificationsService.markNotificationAsRead(context, notification: notification);
         if (notification.type == "like" || notification.type == "comment") {
           // Navigate to the comments page of the post
           // Load in post
