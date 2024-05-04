@@ -128,12 +128,13 @@ class MunroService {
     AppUser newAppUser = userState.currentUser!;
 
     for (Munro munro in munros) {
-      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = true;
-      List<dynamic> summitedDatesRaw =
-          newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] ?? [];
+      int munroIndex = newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id] == munro.id);
+
+      newAppUser.personalMunroData![munroIndex][MunroFields.summited] = true;
+      List<dynamic> summitedDatesRaw = newAppUser.personalMunroData![munroIndex][MunroFields.summitedDates] ?? [];
       summitedDatesRaw.add(Timestamp.fromDate(summitDateTime));
 
-      newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] = summitedDatesRaw;
+      newAppUser.personalMunroData![munroIndex][MunroFields.summitedDates] = summitedDatesRaw;
 
       // Update munro notifier
       munroState.updateMunro(
@@ -174,12 +175,13 @@ class MunroService {
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
 
-    List<dynamic> summitedDatesRaw =
-        newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] ?? [];
+    int munroIndex = newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id] == munro.id);
+
+    List<dynamic> summitedDatesRaw = newAppUser.personalMunroData![munroIndex][MunroFields.summitedDates] ?? [];
     summitedDatesRaw.remove(Timestamp.fromDate(dateTime));
 
-    newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summitedDates] = summitedDatesRaw;
-    newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.summited] = summitedDatesRaw.isNotEmpty;
+    newAppUser.personalMunroData![munroIndex][MunroFields.summitedDates] = summitedDatesRaw;
+    newAppUser.personalMunroData![munroIndex][MunroFields.summited] = summitedDatesRaw.isNotEmpty;
 
     // Update munro notifier
     munroState.removeMunroCompletion(
@@ -205,15 +207,18 @@ class MunroService {
 
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
-    newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved] =
-        !newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved];
+
+    int munroIndex = newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id] == munro.id);
+
+    newAppUser.personalMunroData![munroIndex][MunroFields.saved] =
+        !newAppUser.personalMunroData![munroIndex][MunroFields.saved];
 
     UserService.updateUser(context, appUser: newAppUser);
 
     // Update munro notifier
     munroState.updateMunro(
       munroId: munro.id,
-      saved: newAppUser.personalMunroData![int.parse(munro.id) - 1][MunroFields.saved],
+      saved: newAppUser.personalMunroData![munroIndex][MunroFields.saved],
     );
   }
 }
