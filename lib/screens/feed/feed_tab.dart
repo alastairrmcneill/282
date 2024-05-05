@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
@@ -25,6 +26,21 @@ class _FeedTabState extends State<FeedTab> {
           !_scrollController.position.outOfRange &&
           feedState.status != FeedStatus.paginating) {
         PostService.paginateFeed(context);
+      }
+    });
+
+    RateMyApp rateMyApp = RateMyApp(
+      preferencesPrefix: 'rateMyApp_',
+      minDays: 7,
+      minLaunches: 7,
+      remindDays: 7,
+      remindLaunches: 7,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await rateMyApp.init();
+      if (mounted && rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(context);
       }
     });
     super.initState();
