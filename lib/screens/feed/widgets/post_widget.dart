@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/enums/enums.dart';
-import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
@@ -99,7 +96,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             likesState.reset();
-                            likesState.setPostId = commentsState.postId;
+                            likesState.setPostId = post.uid!;
                             LikeService.getPostLikes(context);
                             Navigator.push(
                               context,

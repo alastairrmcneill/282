@@ -7,7 +7,6 @@ class MyTheme {
       colorScheme: const ColorScheme.light().copyWith(
         primary: const Color.fromARGB(255, 43, 128, 46),
       ),
-      scaffoldBackgroundColor: Colors.grey[100],
       appBarTheme: const AppBarTheme(centerTitle: false),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
