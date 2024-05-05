@@ -82,12 +82,13 @@ class CreatePostImagePicker extends StatelessWidget {
                             height: height, // Set a fixed height
                             width: height, // Set a fixed width
                             fit: BoxFit.cover, // Determine how the image should be displayed
-                            progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
-                              child: LinearProgressIndicator(
-                                value: downloadProgress.progress,
-                              ),
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/post_image_placeholder.png',
+                              fit: BoxFit.cover,
+                              width: MediaQuery.of(context).size.width,
+                              height: 300,
                             ),
+                            fadeInDuration: Duration.zero,
                             errorWidget: (context, url, error) {
                               return const Icon(Icons.photo_rounded);
                             },

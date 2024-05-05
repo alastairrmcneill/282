@@ -21,8 +21,7 @@ class ClickableImage extends StatelessWidget {
                   onDoubleTap: () {},
                   child: PhotoView(
                     imageProvider: CachedNetworkImageProvider(imageURL),
-                    scaleStateCycle: (scaleState) =>
-                        PhotoViewScaleState.zoomedIn,
+                    scaleStateCycle: (scaleState) => PhotoViewScaleState.zoomedIn,
                     enableRotation: false,
                     minScale: PhotoViewComputedScale.contained,
                     maxScale: PhotoViewComputedScale.covered * 2.5,
