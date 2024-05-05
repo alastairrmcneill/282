@@ -27,7 +27,6 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
   String? _selectedMunroID;
-  PersistentBottomSheetController? _bottomSheetController;
   final FocusNode _searchFocusNode = FocusNode();
   bool showTerrain = false;
 
@@ -78,7 +77,7 @@ class _MapScreenState extends State<MapScreen> {
 
   markerTapped(Munro munro) {
     final offsetLatLng = LatLng(
-      munro.lat - 0.1,
+      munro.lat,
       munro.lng,
     );
     _searchFocusNode.unfocus();
@@ -136,10 +135,7 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onTap: (argument) {
         _searchFocusNode.unfocus();
-        _selectedMunroID = null;
-        if (_bottomSheetController != null) {
-          _bottomSheetController!.close();
-        }
+        setState(() => _selectedMunroID = null);
       },
       minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
       buildingsEnabled: false,
