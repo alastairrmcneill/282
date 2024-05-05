@@ -20,7 +20,7 @@ class MunroDatabase {
     // Check if user logged in
   }
 
-  static Future<List<Map<String, dynamic>>> getAdditionalMunroData(BuildContext context) async {
+  static Future<List<Map<String, dynamic>>> getAllAdditionalMunrosData(BuildContext context) async {
     // Get additional data from firestore
     QuerySnapshot querySnapshot = await _munroRef.get();
 
@@ -35,8 +35,18 @@ class MunroDatabase {
     // Return the data as a list of maps
     return munroData;
   }
-}
 
-// Currently remaining - £5094.54 @ £165.00 per month
-// If paying off currently - £4611.86
-// If paying off £300 per month - ??
+  static Future<Map<String, dynamic>> getAdditionalMunroData(BuildContext context, {required String munroId}) async {
+    // Get additional data from firestore
+    DocumentSnapshot querySnapshot = await _munroRef.doc(munroId).get();
+
+    // Convert to map
+    if (!querySnapshot.exists) {
+      return {};
+    }
+    Map<String, dynamic> munroData = querySnapshot.data() as Map<String, dynamic>;
+
+    // Return the data as a list of maps
+    return munroData;
+  }
+}
