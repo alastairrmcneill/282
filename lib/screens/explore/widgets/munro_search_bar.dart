@@ -27,7 +27,7 @@ class _MunroSearchBarState extends State<MunroSearchBar> {
             focusNode: widget.focusNode,
             autocorrect: false,
             backgroundColor: Colors.grey[100],
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: BorderRadius.circular(11),
             onChanged: (value) {
               munroState.setFilterString = value;
             },

@@ -25,7 +25,7 @@ class MunroFilterListTile extends StatelessWidget {
         height: 40,
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(10),
           color: Colors.grey[100],
         ),
         child: Column(

@@ -135,6 +135,7 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onTap: (argument) {
         _searchFocusNode.unfocus();
+        munroState.setFilterString = "";
         setState(() => _selectedMunroID = null);
       },
       minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
@@ -192,9 +193,10 @@ class _MapScreenState extends State<MapScreen> {
                             margin: const EdgeInsets.only(right: 10, left: 0, top: 5),
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                                border: Border.all(width: 0.3, color: Colors.black54),
-                                color: Colors.white,
-                                shape: BoxShape.circle),
+                              border: Border.all(width: 0.3, color: Colors.black54),
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: showTerrain ? const Icon(Icons.layers_outlined) : const Icon(Icons.layers),
                           ),
                         )
