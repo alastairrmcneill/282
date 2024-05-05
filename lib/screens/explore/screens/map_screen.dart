@@ -105,11 +105,13 @@ class _MapScreenState extends State<MapScreen> {
       (_currentZoom * 7).round(),
     );
 
-    setState(() {
-      _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
-      _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
-      _selectedIcon = BitmapDescriptor.fromBytes(selectedMarkerIcon);
-    });
+    if (mounted) {
+      setState(() {
+        _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
+        _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
+        _selectedIcon = BitmapDescriptor.fromBytes(selectedMarkerIcon);
+      });
+    }
   }
 
   Widget _buildGoogleMap(MunroState munroState) {
@@ -121,10 +123,8 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onCameraMove: (position) {
         if (_currentZoom < position.zoom - 1 || _currentZoom > position.zoom + 1) {
-          setState(() {
-            _currentZoom = position.zoom;
-            addCustomIcon();
-          });
+          _currentZoom = position.zoom;
+          addCustomIcon();
         }
       },
       cameraTargetBounds: CameraTargetBounds(
@@ -157,7 +157,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: true);
-    // showGoToMunroReviewDialog(context);
     return Scaffold(
       body: loading
           ? const Center(child: CircularProgressIndicator())
