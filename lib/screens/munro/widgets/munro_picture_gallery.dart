@@ -13,7 +13,6 @@ class MunroPictureGallery extends StatelessWidget {
   Widget build(BuildContext context) {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
     MunroState munroState = Provider.of<MunroState>(context);
-    print("MunroDetailState: ${munroDetailState.munroPictures.length}");
 
     if (munroDetailState.munroPictures.isEmpty) {
       return const Center(

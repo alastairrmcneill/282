@@ -52,7 +52,7 @@ class ReviewListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
-    CreateReviewState createReviewState = Provider.of<CreateReviewState>(context);
+    CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
 
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),

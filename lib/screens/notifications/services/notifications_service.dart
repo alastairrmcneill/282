@@ -80,4 +80,25 @@ class NotificationsService {
       );
     }
   }
+
+  static Future markAllNotificationsAsRead(BuildContext context) async {
+    NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
+
+    try {
+      for (Notif notification in notificationsState.notifications) {
+        if (notification.read) {
+          continue;
+        }
+        Notif newNotification = notification.copyWith(read: true);
+        await NotificationsDatabase.updateNotif(context, notification: newNotification);
+        notificationsState.markNotificationAsRead(notification);
+      }
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      notificationsState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue marking your notifications as done. Please try again.",
+      );
+    }
+  }
 }

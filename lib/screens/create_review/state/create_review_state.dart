@@ -5,6 +5,7 @@ class CreateReviewState extends ChangeNotifier {
   CreateReviewStatus _status = CreateReviewStatus.initial;
   Error _error = Error();
   List<Munro> _munrosToReview = [];
+  Map<String, Map<String, dynamic>> _reviews = {};
   int _currentIndex = 0;
   int _currentMunroRating = 0;
   String _currentMunroReview = "";
@@ -13,6 +14,7 @@ class CreateReviewState extends ChangeNotifier {
   CreateReviewStatus get status => _status;
   Error get error => _error;
   List<Munro> get munrosToReview => _munrosToReview;
+  Map<String, Map<String, dynamic>> get reviews => _reviews;
   int get currentIndex => _currentIndex;
   int get currentMunroRating => _currentMunroRating;
   String get currentMunroReview => _currentMunroReview;
@@ -31,6 +33,10 @@ class CreateReviewState extends ChangeNotifier {
 
   set setMunrosToReview(List<Munro> munros) {
     _munrosToReview = munros;
+    _reviews = {};
+    for (Munro munro in munros) {
+      _reviews[munro.id] = {"rating": 0, "review": ""};
+    }
     notifyListeners();
   }
 
@@ -41,6 +47,24 @@ class CreateReviewState extends ChangeNotifier {
 
   set setCurrentMunroRating(int rating) {
     _currentMunroRating = rating;
+    notifyListeners();
+  }
+
+  setMunroRating(String munroId, int rating) {
+    if (_reviews.containsKey(munroId)) {
+      _reviews[munroId]!["rating"] = rating;
+    } else {
+      _reviews[munroId] = {"rating": rating, "review": ""};
+    }
+    notifyListeners();
+  }
+
+  setMunroReview(String munroId, String review) {
+    if (_reviews.containsKey(munroId)) {
+      _reviews[munroId]!["review"] = review;
+    } else {
+      _reviews[munroId] = {"rating": 0, "review": review};
+    }
     notifyListeners();
   }
 

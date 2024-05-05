@@ -66,25 +66,30 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, NotificationsState notificationsState) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          NotificationsService.getUserNotifications(context);
-        },
-        child: notificationsState.notifications.isEmpty
-            ? const Padding(
-                padding: EdgeInsets.all(15),
-                child: CenterText(text: "You have no notifications at the moment"),
-              )
-            : ListView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: notificationsState.notifications
-                    .map(
-                      (Notif notification) => NotificationTile(notification: notification),
-                    )
-                    .toList()),
+    return PopScope(
+      onPopInvoked: (didPop) {
+        NotificationsService.markAllNotificationsAsRead(context);
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            NotificationsService.getUserNotifications(context);
+          },
+          child: notificationsState.notifications.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.all(15),
+                  child: CenterText(text: "You have no notifications at the moment"),
+                )
+              : ListView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: notificationsState.notifications
+                      .map(
+                        (Notif notification) => NotificationTile(notification: notification),
+                      )
+                      .toList()),
+        ),
       ),
     );
   }
