@@ -928,6 +928,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  rate_my_app:
+    dependency: "direct main"
+    description:
+      name: rate_my_app
+      sha256: "201681ce28d2a5dc7bcfbdd394f08a64b1e2c24daca793ee1f069034757ae6f0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   rxdart:
     dependency: transitive
     description:
