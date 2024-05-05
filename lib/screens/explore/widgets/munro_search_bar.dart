@@ -31,6 +31,7 @@ class _MunroSearchBarState extends State<MunroSearchBar> {
             onChanged: (value) {
               munroState.setFilterString = value;
             },
+            itemSize: 22,
           ),
           const SizedBox(height: 2),
           munroState.filteredMunroList.isNotEmpty

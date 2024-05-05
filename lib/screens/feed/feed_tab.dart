@@ -197,7 +197,6 @@ class _FeedTabState extends State<FeedTab> {
           )
         ],
       ),
-      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: () async {
           PostService.getFeed(context);
