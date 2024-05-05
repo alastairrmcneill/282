@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -99,6 +100,14 @@ class SettingsScreen extends StatelessWidget {
               );
             },
             title: Text('Bulk Munro Update'),
+          ),
+          ListTile(
+            onTap: () async {
+              FirebaseMessaging _messaging = FirebaseMessaging.instance;
+              String? token = await _messaging.getToken();
+              print(token);
+            },
+            title: const Text("FCM"),
           ),
           ListTile(
             onTap: () async {
