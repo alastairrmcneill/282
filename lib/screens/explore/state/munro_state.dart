@@ -48,16 +48,16 @@ class MunroState extends ChangeNotifier {
     DateTime? summitedDate,
     bool? saved,
   }) {
-    int munroIdInt = int.parse(munroId);
-    _munroList[munroIdInt - 1].summited = summited ?? _munroList[munroIdInt - 1].summited;
-    _munroList[munroIdInt - 1].summitedDate = summitedDate ?? _munroList[munroIdInt - 1].summitedDate;
-    _munroList[munroIdInt - 1].saved = saved ?? _munroList[munroIdInt - 1].saved;
+    int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);
+    _munroList[munroIndex].summited = summited ?? _munroList[munroIndex].summited;
+    _munroList[munroIndex].summitedDate = summitedDate ?? _munroList[munroIndex].summitedDate;
+    _munroList[munroIndex].saved = saved ?? _munroList[munroIndex].saved;
 
     if (summitedDate != null) {
-      if (_munroList[munroIdInt - 1].summitedDates == null) {
-        _munroList[munroIdInt - 1].summitedDates = [summitedDate];
+      if (_munroList[munroIndex].summitedDates == null) {
+        _munroList[munroIndex].summitedDates = [summitedDate];
       }
-      _munroList[munroIdInt - 1].summitedDates!.add(summitedDate);
+      _munroList[munroIndex].summitedDates!.add(summitedDate);
     }
 
     notifyListeners();
@@ -67,9 +67,10 @@ class MunroState extends ChangeNotifier {
     required String munroId,
     required DateTime dateTime,
   }) {
-    int munroIdInt = int.parse(munroId);
-    _munroList[munroIdInt - 1].summitedDates!.remove(dateTime);
-    _munroList[munroIdInt - 1].summited = _munroList[munroIdInt - 1].summitedDates!.isNotEmpty;
+    int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);
+
+    _munroList[munroIndex].summitedDates!.remove(dateTime);
+    _munroList[munroIndex].summited = _munroList[munroIndex].summitedDates!.isNotEmpty;
     notifyListeners();
   }
 

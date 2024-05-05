@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AppUser?>(context);
+    FlavorState flavorState = Provider.of<FlavorState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -100,6 +102,16 @@ class SettingsScreen extends StatelessWidget {
             },
             title: Text('Bulk Munro Update'),
           ),
+          flavorState.flavor == "Development"
+              ? ListTile(
+                  onTap: () async {
+                    FirebaseMessaging _messaging = FirebaseMessaging.instance;
+                    String? token = await _messaging.getToken();
+                    print(token);
+                  },
+                  title: const Text("FCM"),
+                )
+              : const SizedBox(),
           ListTile(
             onTap: () async {
               String url = Platform.isIOS

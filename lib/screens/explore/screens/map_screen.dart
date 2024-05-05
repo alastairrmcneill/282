@@ -27,7 +27,6 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
   String? _selectedMunroID;
-  PersistentBottomSheetController? _bottomSheetController;
   final FocusNode _searchFocusNode = FocusNode();
   bool showTerrain = false;
 
@@ -78,7 +77,7 @@ class _MapScreenState extends State<MapScreen> {
 
   markerTapped(Munro munro) {
     final offsetLatLng = LatLng(
-      munro.lat - 0.1,
+      munro.lat,
       munro.lng,
     );
     _searchFocusNode.unfocus();
@@ -106,11 +105,13 @@ class _MapScreenState extends State<MapScreen> {
       (_currentZoom * 7).round(),
     );
 
-    setState(() {
-      _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
-      _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
-      _selectedIcon = BitmapDescriptor.fromBytes(selectedMarkerIcon);
-    });
+    if (mounted) {
+      setState(() {
+        _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
+        _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
+        _selectedIcon = BitmapDescriptor.fromBytes(selectedMarkerIcon);
+      });
+    }
   }
 
   Widget _buildGoogleMap(MunroState munroState) {
@@ -122,10 +123,8 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onCameraMove: (position) {
         if (_currentZoom < position.zoom - 1 || _currentZoom > position.zoom + 1) {
-          setState(() {
-            _currentZoom = position.zoom;
-            addCustomIcon();
-          });
+          _currentZoom = position.zoom;
+          addCustomIcon();
         }
       },
       cameraTargetBounds: CameraTargetBounds(
@@ -136,10 +135,7 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onTap: (argument) {
         _searchFocusNode.unfocus();
-        _selectedMunroID = null;
-        if (_bottomSheetController != null) {
-          _bottomSheetController!.close();
-        }
+        setState(() => _selectedMunroID = null);
       },
       minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
       buildingsEnabled: false,
@@ -161,7 +157,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: true);
-
     return Scaffold(
       body: loading
           ? const Center(child: CircularProgressIndicator())

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/stat_text.dart';
@@ -85,6 +86,14 @@ class _MunroScreenState extends State<MunroScreen> {
                     const ReviewsListWidget(),
                     const MunroWeatherWidget(),
                     const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () {
+                        CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+                        createReviewState.setMunrosToReview = [munroState.selectedMunro!];
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => CreateReviewsScreen()));
+                      },
+                      child: Text('review'),
+                    ),
                   ],
                 ),
               ),

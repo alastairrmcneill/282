@@ -58,7 +58,7 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           }
 
           TextEditingController _dateController =
-              TextEditingController(text: DateFormat('dd/MM/yyyy').format(firstSummitedDate));
+              TextEditingController(text: DateFormat('dd/MM/yy').format(firstSummitedDate));
 
           DateTime? _pickedStartDate;
           return ListTile(
