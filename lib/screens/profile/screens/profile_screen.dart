@@ -193,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ? const SizedBox()
                           : Column(
                               children: [
-                                const MunroChallengeWidget(),
+                                profileState.isCurrentUser ? const MunroChallengeWidget() : const SizedBox(),
                                 profileState.posts.isEmpty
                                     ? const Padding(
                                         padding: EdgeInsets.symmetric(vertical: 20),
