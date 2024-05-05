@@ -56,7 +56,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   Widget _buildLoadingScreen() {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
       body: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 30,
@@ -71,7 +73,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         NotificationsService.markAllNotificationsAsRead(context);
       },
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: const Text('Notifications'),
+        ),
         body: RefreshIndicator(
           onRefresh: () async {
             NotificationsService.getUserNotifications(context);
