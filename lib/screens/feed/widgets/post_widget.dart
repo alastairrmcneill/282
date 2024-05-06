@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
@@ -89,8 +90,8 @@ class PostWidget extends StatelessWidget {
                             }
                           },
                           child: userLikeState.likedPosts.contains(post.uid!)
-                              ? const Icon(FontAwesomeIcons.solidHeart, size: 22)
-                              : const Icon(FontAwesomeIcons.heart, size: 22),
+                              ? const Icon(CupertinoIcons.heart_fill, size: 22)
+                              : const Icon(CupertinoIcons.heart, size: 22),
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(
@@ -115,7 +116,7 @@ class PostWidget extends StatelessWidget {
                             CommentsService.getPostComments(context);
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
                           },
-                          child: const Icon(FontAwesomeIcons.comment, size: 22),
+                          child: const Icon(CupertinoIcons.chat_bubble, size: 22),
                         ),
                       ],
                     ),

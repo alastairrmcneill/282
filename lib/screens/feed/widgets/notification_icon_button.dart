@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -23,7 +24,7 @@ class NotificationIconButton extends StatelessWidget {
       },
       icon: Stack(
         children: [
-          const Icon(FontAwesomeIcons.bell, size: 22),
+          const Icon(CupertinoIcons.bell, size: 22),
           notificationsState.notifications.where((element) => !element.read).isEmpty
               ? const SizedBox()
               : Positioned(

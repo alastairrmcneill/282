@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
@@ -39,7 +40,7 @@ class MunroPictureGallery extends StatelessWidget {
                   ),
                 ),
                 const Icon(
-                  FontAwesomeIcons.chevronRight,
+                  CupertinoIcons.forward,
                   size: 16,
                 )
               ],

@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/models/app_user.dart';
@@ -56,7 +56,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
               border: InputBorder.none,
               hintText: 'Search 282',
               suffixIcon: IconButton(
-                icon: const Icon(FontAwesomeIcons.xmark, size: 22),
+                icon: const Icon(CupertinoIcons.xmark, size: 22),
                 onPressed: () {
                   _searchController.clear();
                   SearchService.clearSearch(context);

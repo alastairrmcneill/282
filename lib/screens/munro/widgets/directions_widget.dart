@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -18,12 +19,12 @@ class DirectionsWidget extends StatelessWidget {
         );
       },
       leading: const Icon(
-        FontAwesomeIcons.locationDot,
+        CupertinoIcons.location_solid,
         size: 22,
       ),
       title: const Text("To Starting point"),
       trailing: const Icon(
-        FontAwesomeIcons.chevronRight,
+        CupertinoIcons.forward,
         size: 22,
       ),
       dense: false,

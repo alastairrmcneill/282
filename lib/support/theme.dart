@@ -34,7 +34,7 @@ class MyTheme {
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
       ),
-      fontFamily: "NotoSans",
+      fontFamily: "Poppins",
     );
   }
 }

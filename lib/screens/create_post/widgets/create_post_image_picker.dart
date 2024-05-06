@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -105,7 +106,7 @@ class CreatePostImagePicker extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
-                            FontAwesomeIcons.minusCircle,
+                            CupertinoIcons.minus_circle,
                             color: Colors.red,
                             size: 22,
                           ),
@@ -136,7 +137,7 @@ class CreatePostImagePicker extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
-                            FontAwesomeIcons.minusCircle,
+                            CupertinoIcons.minus_circle,
                             color: Colors.red,
                             size: 22,
                           ),
