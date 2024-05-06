@@ -35,7 +35,7 @@ class MunroSummaryTile extends StatelessWidget {
         child: InkWell(
           onTap: () {
             munroState.setSelectedMunro = munro;
-            MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 9);
+            MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
             ReviewService.getMunroReviews(context);
             Navigator.of(context).push(
               MaterialPageRoute(

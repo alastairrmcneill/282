@@ -15,15 +15,20 @@ class MunroDescription extends StatelessWidget {
     MunroState munroState = Provider.of<MunroState>(context);
     return RichText(
       text: TextSpan(
-        text: "${munroState.selectedMunro?.description ?? ""} ",
-        style: const TextStyle(color: Colors.black, fontFamily: "NotoSans"),
+        text: "Description\n",
+        style: Theme.of(context).textTheme.headlineSmall,
         children: <TextSpan>[
           TextSpan(
+            text: "${munroState.selectedMunro?.description ?? ""} ",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          TextSpan(
             text: 'Read more.',
-            style: const TextStyle(
-              color: Colors.blue,
-              decoration: TextDecoration.underline,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.blue,
+                ),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
                 try {

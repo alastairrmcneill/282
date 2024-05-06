@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
@@ -14,43 +15,62 @@ class MunroPictureGallery extends StatelessWidget {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
     MunroState munroState = Provider.of<MunroState>(context);
 
-    if (munroDetailState.munroPictures.isEmpty) {
-      return const Center(
-        child: Text("No picutres available"),
-      );
-    }
-
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        children: [
-          Wrap(
-            spacing: 5, // gap between adjacent chips
-            runSpacing: 5, // gap between lines
-            children: munroDetailState.munroPictures.take(9).map((MunroPicture munroPicture) {
-              return Container(
-                width: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
-                height: (MediaQuery.of(context).size.width - 10) / 3 - 5 * 2,
-                color: Colors.blue,
-                child: ClickableImage(imageURL: munroPicture.imageUrl),
-              );
-            }).toList(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                MunroPictureService.getMunroPictures(context, munroId: munroState.selectedMunro!.id);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const MunroPhotoGallery()),
-                );
-              },
-              child: const Text("View All Photos"),
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            MunroPictureService.getMunroPictures(context, munroId: munroState.selectedMunro!.id);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MunroPhotoGallery()),
+            );
+          },
+          child: Container(
+            color: Colors.transparent,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.ideographic,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    "Photos",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                const Icon(
+                  FontAwesomeIcons.chevronRight,
+                  size: 16,
+                )
+              ],
             ),
-          )
-        ],
-      ),
+          ),
+        ),
+        SizedBox(
+          height: (MediaQuery.of(context).size.width - 60) / 4,
+          child: munroDetailState.munroPictures.isEmpty
+              ? const Center(
+                  child: Text("No picutres available"),
+                )
+              : SizedBox(
+                  width: double.infinity,
+                  child: Wrap(
+                    runAlignment: WrapAlignment.start,
+                    spacing: 5,
+                    children: munroDetailState.munroPictures.take(4).map((MunroPicture munroPicture) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          width: (MediaQuery.of(context).size.width - 60) / 4,
+                          height: (MediaQuery.of(context).size.width - 60) / 4,
+                          child: ClickableImage(imageURL: munroPicture.imageUrl),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+        ),
+      ],
     );
   }
 }

@@ -32,6 +32,7 @@ class _MunroScreenState extends State<MunroScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
         onRefresh: () => MunroService.loadAdditionalMunroData(context),
         child: CustomScrollView(
@@ -45,55 +46,26 @@ class _MunroScreenState extends State<MunroScreen> {
                   children: [
                     munroState.selectedMunro?.extra == null || munroState.selectedMunro?.extra == ""
                         ? const SizedBox()
-                        : SizedBox(width: double.infinity, child: Text("(${munroState.selectedMunro?.extra})")),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        StatText(
-                            text: "Height",
-                            stat: settingsState.metricHeight
-                                ? "${munroState.selectedMunro?.meters}m"
-                                : "${munroState.selectedMunro?.feet}ft"),
-                        StatText(text: "Area", stat: munroState.selectedMunro?.area ?? ""),
-                      ],
-                    ),
+                        : SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "(${munroState.selectedMunro?.extra})",
+                              style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w300),
+                            ),
+                          ),
+                    const SizedBox(height: 15),
+                    const MunroStatsRow(),
                     const SizedBox(height: 20),
                     const MunroDescription(),
                     const SizedBox(height: 20),
-                    Column(
-                      children: [
-                        ...munroState.selectedMunro!.summitedDates!.map(
-                          (e) => MunroCompletionWidget(
-                              index: munroState.selectedMunro!.summitedDates!.indexOf(e), dateTime: e),
-                        ),
-                      ],
-                    ),
-                    const MunroSummitedButton(),
-                    TextButton(
-                      onPressed: () async {
-                        await launchUrl(
-                          Uri.parse(munroState.selectedMunro?.startingPointURL ?? ""),
-                        );
-                      },
-                      child: const Text("Starting Location"),
-                    ),
+                    const DirectionsWidget(),
                     const SizedBox(height: 20),
                     const MunroPictureGallery(),
                     const SizedBox(height: 20),
-                    const Text('Reviews'),
-                    const AverageMunroRating(),
-                    const ReviewsListWidget(),
                     const MunroWeatherWidget(),
-                    const SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: () {
-                        CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
-                        createReviewState.setMunrosToReview = [munroState.selectedMunro!];
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => CreateReviewsScreen()));
-                      },
-                      child: Text('review'),
-                    ),
+                    const SizedBox(height: 20),
+                    const MunroReviewsWidget(),
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),

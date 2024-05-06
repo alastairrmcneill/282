@@ -11,15 +11,14 @@ class MunroSummitedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    UserState userState = Provider.of<UserState>(context);
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
-    NavigationState navigationState = Provider.of<NavigationState>(context);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
 
     return SizedBox(
-      height: 44,
-      width: double.infinity,
-      child: ElevatedButton(
+      width: 150,
+      child: FloatingActionButton(
         onPressed: () {
           if (userState.currentUser == null) {
             navigationState.setNavigateToRoute = HomeScreen.route;
@@ -37,7 +36,23 @@ class MunroSummitedButton extends StatelessWidget {
             }
           }
         },
-        child: Text(munroState.selectedMunro?.summited ?? false ? "Log another summit" : "Mark as summited"),
+        backgroundColor: Colors.orange, // Set the background color to orange
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(15), // Set the border radius to make the button rounded
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some padding to make the button wider
+          child: Text(
+            "Bag Munro",
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ), // Set the text color to white
+          ),
+        ),
       ),
     );
   }
