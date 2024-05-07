@@ -4,30 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DirectionsWidget extends StatelessWidget {
-  const DirectionsWidget({super.key});
+class MunroDirectionsWidget extends StatelessWidget {
+  const MunroDirectionsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     return ListTile(
+      visualDensity: VisualDensity.compact,
       onTap: () async {
         await launchUrl(
           Uri.parse(munroState.selectedMunro?.startingPointURL ?? ""),
         );
       },
       leading: const Icon(
-        CupertinoIcons.location_solid,
-        size: 22,
+        CupertinoIcons.map,
+        color: MyColors.accentColor,
       ),
-      title: const Text("To Starting point"),
+      title: Text(
+        "To Starting point",
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       trailing: const Icon(
         CupertinoIcons.forward,
-        size: 22,
+        color: MyColors.accentColor,
       ),
-      dense: false,
+      dense: true,
     );
   }
 }

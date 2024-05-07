@@ -35,7 +35,7 @@ class MunroReviewsWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Text(
                     "Reviews",
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 const Icon(
@@ -48,7 +48,7 @@ class MunroReviewsWidget extends StatelessWidget {
         ),
         reviewsState.reviews.isEmpty
             ? const Center(
-                child: Text("No picutres available"),
+                child: Text("No reviews available"),
               )
             : SizedBox(
                 width: double.infinity,

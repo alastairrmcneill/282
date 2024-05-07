@@ -9,6 +9,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/weather/weather_screen.dart';
 import 'package:two_eight_two/services/weather_service.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 
@@ -60,7 +61,7 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
         children: [
           Text(
             "Weather Prediction",
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           Text(
             DateFormat('EEE, d MMMM yyyy').format(weather.date),
@@ -69,14 +70,7 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
           Container(
             width: double.infinity,
             height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                colors: [Color.fromRGBO(231, 240, 226, 1), Color.fromRGBO(250, 255, 249, 1)],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: MyColors.linearGradient),
             padding: const EdgeInsets.all(15),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

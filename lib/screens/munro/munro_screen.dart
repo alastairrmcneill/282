@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/munro/widgets/munro_directions_widget.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/widgets/stat_text.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroScreen extends StatefulWidget {
   const MunroScreen({super.key});
@@ -32,40 +29,35 @@ class _MunroScreenState extends State<MunroScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: const MunroSummitedButton(),
+      floatingActionButton: MunroSummitedButton(),
       body: RefreshIndicator(
         onRefresh: () => MunroService.loadAdditionalMunroData(context),
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+        child: const CustomScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
           slivers: [
-            const MunroSliverAppBar(),
+            MunroSliverAppBar(),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: EdgeInsets.symmetric(horizontal: 15),
                 child: Column(
                   children: [
-                    munroState.selectedMunro?.extra == null || munroState.selectedMunro?.extra == ""
-                        ? const SizedBox()
-                        : SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              "(${munroState.selectedMunro?.extra})",
-                              style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w300),
-                            ),
-                          ),
-                    const SizedBox(height: 15),
-                    const MunroStatsRow(),
-                    const SizedBox(height: 20),
-                    const MunroDescription(),
-                    const SizedBox(height: 20),
-                    const DirectionsWidget(),
-                    const SizedBox(height: 20),
-                    const MunroPictureGallery(),
-                    const SizedBox(height: 20),
-                    const MunroWeatherWidget(),
-                    const SizedBox(height: 20),
-                    const MunroReviewsWidget(),
-                    const SizedBox(height: 80),
+                    SizedBox(height: 15),
+                    MunroTitle(),
+                    SizedBox(height: 25),
+                    MunroStatsRow(),
+                    SizedBox(height: 20),
+                    MunroSummitedWidget(),
+                    PaddedDivider(),
+                    MunroDescription(),
+                    PaddedDivider(top: 15, bottom: 5),
+                    MunroDirectionsWidget(),
+                    PaddedDivider(top: 5, bottom: 20),
+                    MunroPictureGallery(),
+                    SizedBox(height: 20),
+                    MunroWeatherWidget(),
+                    SizedBox(height: 20),
+                    MunroReviewsWidget(),
+                    SizedBox(height: 80),
                   ],
                 ),
               ),
