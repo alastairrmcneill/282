@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MunroFilterListTile extends StatelessWidget {
   final Munro munro;
@@ -26,7 +27,7 @@ class MunroFilterListTile extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.grey[100],
+          color: MyColors.backgroundColor,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

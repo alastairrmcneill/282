@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,11 +24,11 @@ class MunroDirectionsWidget extends StatelessWidget {
       ),
       title: Text(
         "To Starting point",
-        style: Theme.of(context).textTheme.titleLarge,
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400, fontSize: 18),
       ),
       trailing: const Icon(
         CupertinoIcons.forward,
-        color: MyColors.accentColor,
+        color: MyColors.textColor,
       ),
       dense: true,
     );

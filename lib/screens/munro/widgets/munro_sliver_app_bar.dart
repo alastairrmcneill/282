@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MunroSliverAppBar extends StatelessWidget {
   const MunroSliverAppBar({super.key});
@@ -15,7 +14,7 @@ class MunroSliverAppBar extends StatelessWidget {
     Munro munro = munroState.selectedMunro!;
 
     return SliverAppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: MyColors.backgroundColor,
       expandedHeight: 300.0,
       floating: false,
       pinned: true,

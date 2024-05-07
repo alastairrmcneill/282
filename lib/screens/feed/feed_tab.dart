@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -100,7 +98,7 @@ class _FeedTabState extends State<FeedTab> {
           FindFriendsIconButton(),
         ],
       ),
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[50],
       body: RefreshIndicator(
         onRefresh: () async {
           PostService.getFeed(context);

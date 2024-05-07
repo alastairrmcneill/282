@@ -2,6 +2,7 @@
 
 import 'dart:ui' as ui;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,6 +12,7 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -194,10 +196,12 @@ class _MapScreenState extends State<MapScreen> {
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               border: Border.all(width: 0.3, color: Colors.black54),
-                              color: Colors.grey[100],
+                              color: MyColors.backgroundColor,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: showTerrain ? const Icon(Icons.layers_outlined) : const Icon(Icons.layers),
+                            child: showTerrain
+                                ? const Icon(CupertinoIcons.layers)
+                                : const Icon(CupertinoIcons.layers_fill),
                           ),
                         )
                       ],

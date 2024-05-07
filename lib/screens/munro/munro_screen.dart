@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/munro/widgets/munro_directions_widget.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -24,12 +21,9 @@ class _MunroScreenState extends State<MunroScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    SettingsState settingsState = Provider.of<SettingsState>(context);
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      floatingActionButton: MunroSummitedButton(),
+      // backgroundColor: Colors.white,
+      floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
         onRefresh: () => MunroService.loadAdditionalMunroData(context),
         child: const CustomScrollView(
@@ -53,9 +47,9 @@ class _MunroScreenState extends State<MunroScreen> {
                     MunroDirectionsWidget(),
                     PaddedDivider(top: 5, bottom: 20),
                     MunroPictureGallery(),
-                    SizedBox(height: 20),
+                    PaddedDivider(),
                     MunroWeatherWidget(),
-                    SizedBox(height: 20),
+                    PaddedDivider(),
                     MunroReviewsWidget(),
                     SizedBox(height: 80),
                   ],

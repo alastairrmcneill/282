@@ -107,38 +107,5 @@ class MunroCompletionWidget extends StatelessWidget {
         ),
       ),
     );
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Summit #${index + 1}'),
-              Text('Date: $dateTime'),
-            ],
-          ),
-          PopupMenuButton(
-            icon: const Icon(Icons.more_vert_rounded),
-            onSelected: (value) async {
-              if (value == MenuItems.item1) {
-                // Remove
-                MunroService.removeMunroCompletion(
-                  context,
-                  munro: munroState.selectedMunro!,
-                  dateTime: dateTime,
-                );
-              }
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: MenuItems.item1,
-                child: Text('Remove'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }

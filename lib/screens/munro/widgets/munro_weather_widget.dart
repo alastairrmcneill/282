@@ -1,17 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/weather/weather_screen.dart';
 import 'package:two_eight_two/services/weather_service.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 
 class MunroWeatherWidget extends StatefulWidget {
   const MunroWeatherWidget({super.key});
@@ -59,18 +54,32 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Weather Prediction",
-            style: Theme.of(context).textTheme.titleLarge,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.ideographic,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Text(
+                  "Weather Prediction",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              const Icon(
+                CupertinoIcons.forward,
+                size: 16,
+              )
+            ],
           ),
           Text(
             DateFormat('EEE, d MMMM yyyy').format(weather.date),
             style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w300),
           ),
+          const SizedBox(height: 8),
           Container(
             width: double.infinity,
             height: 120,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: MyColors.linearGradient),
+            // decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: MyColors.linearGradient),
             padding: const EdgeInsets.all(15),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

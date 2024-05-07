@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MunroSearchBar extends StatefulWidget {
   final FocusNode focusNode;
@@ -26,7 +27,7 @@ class _MunroSearchBarState extends State<MunroSearchBar> {
           CupertinoSearchTextField(
             focusNode: widget.focusNode,
             autocorrect: false,
-            backgroundColor: Colors.grey[100],
+            backgroundColor: MyColors.backgroundColor,
             borderRadius: BorderRadius.circular(11),
             onChanged: (value) {
               munroState.setFilterString = value;

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -46,6 +45,7 @@ class MunroReviewsWidget extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 8),
         reviewsState.reviews.isEmpty
             ? const Center(
                 child: Text("No reviews available"),
@@ -60,19 +60,22 @@ class MunroReviewsWidget extends StatelessWidget {
                       children: [
                         Text(
                           munroState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 20),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(width: 5),
                         const Icon(
                           CupertinoIcons.star_fill,
-                          size: 20,
+                          size: 15,
                           color: Colors.amber,
                         ),
                         const SizedBox(width: 5),
                         Text(
                           '/ ${munroState.selectedMunro?.reviewCount == 1 ? "1 rating" : "${munroState.selectedMunro?.reviewCount} ratings"}',
-                          style: TextStyle(fontWeight: FontWeight.w200, color: Colors.grey[800]),
-                        )
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w300,
+                              ),
+                        ),
                       ],
                     ),
                     ...reviewsState.reviews.take(4).map(

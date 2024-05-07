@@ -47,6 +47,7 @@ class MunroPictureGallery extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 15),
         SizedBox(
           height: (MediaQuery.of(context).size.width - 60) / 4,
           child: munroDetailState.munroPictures.isEmpty
