@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class ExpandableText extends StatelessWidget {
   final String text;
@@ -15,6 +16,7 @@ class ExpandableText extends StatelessWidget {
       colorClickableText: Colors.black45,
       trimCollapsedText: ' more',
       trimExpandedText: ' ...less',
+      style: const TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w300, height: 1.5),
     );
   }
 }

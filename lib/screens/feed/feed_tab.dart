@@ -5,6 +5,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FeedTab extends StatefulWidget {
@@ -98,7 +99,7 @@ class _FeedTabState extends State<FeedTab> {
           FindFriendsIconButton(),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 254, 254, 254),
+      backgroundColor: const Color.fromARGB(255, 236, 240, 233),
       body: RefreshIndicator(
         onRefresh: () async {
           PostService.getFeed(context);

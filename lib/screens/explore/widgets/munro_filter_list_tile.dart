@@ -37,11 +37,7 @@ class MunroFilterListTile extends StatelessWidget {
               children: [
                 Text(
                   munro.name,
-                  style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 1.2),
                 ),
                 Expanded(
                   flex: 1,
@@ -50,19 +46,11 @@ class MunroFilterListTile extends StatelessWidget {
                     children: [
                       Text(
                         munro.area,
-                        style: const TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w800,
-                          fontSize: 10,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                       Text(
                         settingsState.metricHeight ? '${munro.meters}m' : '${munro.feet}ft',
-                        style: const TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w800,
-                          fontSize: 10,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),

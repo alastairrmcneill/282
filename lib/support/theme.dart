@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class MyTheme {
@@ -61,14 +62,16 @@ class MyTheme {
         headlineMedium: TextStyle(color: MyColors.textColor, fontSize: 24, fontWeight: FontWeight.w700),
         headlineSmall: TextStyle(color: MyColors.textColor, fontSize: 13, fontWeight: FontWeight.w300),
         titleLarge: TextStyle(color: MyColors.textColor, fontSize: 20, fontWeight: FontWeight.w500),
+        titleMedium: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w600, height: 1.5),
         bodyMedium: TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w300, height: 1.8),
+        bodySmall: TextStyle(color: MyColors.textColor, fontSize: 12, fontWeight: FontWeight.w300, height: 1.1),
       ),
     );
   }
 }
 
 class MyColors {
-  static const Color textColor = Color.fromRGBO(25, 40, 5, 1);
+  static const Color textColor = Color.fromRGBO(20, 35, 1, 1);
   static const Color accentColor = Color.fromRGBO(55, 84, 41, 1);
   // static const Color accentColor = Color.fromRGBO(94, 131, 75, 1);
   static const Color backgroundColor = Color.fromARGB(255, 252, 255, 250); //Color.fromARGB(255, 245, 250, 242);

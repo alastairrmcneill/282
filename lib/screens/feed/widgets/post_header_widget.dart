@@ -70,16 +70,11 @@ class PostHeader extends StatelessWidget {
                 children: [
                   Text(
                     post.authorDisplayName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   Text(
                     post.dateTime.timeAgoLong(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 12,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

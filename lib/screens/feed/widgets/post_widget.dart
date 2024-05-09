@@ -15,23 +15,19 @@ class PostWidget extends StatelessWidget {
   final Post post;
   const PostWidget({super.key, required this.post});
 
-  Widget _buildIncludedMunroText() {
+  Widget _buildIncludedMunroText(BuildContext context) {
     if (post.includedMunros.isEmpty) return const SizedBox();
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
         post.includedMunros.map((munro) => munro.name).join(', '),
-        style: const TextStyle(
-          fontSize: 12,
-          height: 0.95,
-          fontWeight: FontWeight.w200,
-        ),
+        style: Theme.of(context).textTheme.bodySmall,
         maxLines: 2,
       ),
     );
   }
 
-  Widget _buildDescription() {
+  Widget _buildDescription(BuildContext context) {
     if (post.description == null || post.description == "") return const SizedBox();
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -49,7 +45,7 @@ class PostWidget extends StatelessWidget {
     LikesState likesState = Provider.of<LikesState>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Container(
         color: MyColors.backgroundColor,
         child: Column(
@@ -69,14 +65,11 @@ class PostWidget extends StatelessWidget {
                       post.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
-                  _buildIncludedMunroText(),
-                  _buildDescription(),
+                  _buildIncludedMunroText(context),
+                  _buildDescription(context),
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child: Row(
@@ -107,7 +100,10 @@ class PostWidget extends StatelessWidget {
                               ),
                             );
                           },
-                          child: Text(post.likes == 1 ? "1 like" : "${post.likes} likes"),
+                          child: Text(
+                            post.likes == 1 ? "1 like" : "${post.likes} likes",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         ),
                         const SizedBox(width: 20),
                         GestureDetector(
