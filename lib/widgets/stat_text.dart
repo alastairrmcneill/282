@@ -47,6 +47,7 @@ class StatText extends StatelessWidget {
               text,
               style: const TextStyle(
                 fontSize: 14,
+                fontWeight: FontWeight.w500,
                 color: MyColors.accentColor,
               ),
             ),

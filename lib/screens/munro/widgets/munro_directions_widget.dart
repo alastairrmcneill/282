@@ -23,7 +23,7 @@ class MunroDirectionsWidget extends StatelessWidget {
         color: MyColors.accentColor,
       ),
       title: Text(
-        "To Starting point",
+        "Get Directions",
         style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400, fontSize: 18),
       ),
       trailing: const Icon(

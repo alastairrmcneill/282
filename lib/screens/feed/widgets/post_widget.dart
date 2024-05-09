@@ -8,6 +8,7 @@ import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostWidget extends StatelessWidget {
@@ -50,7 +51,7 @@ class PostWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
-        color: Colors.white,
+        color: MyColors.backgroundColor,
         child: Column(
           children: [
             PostHeader(post: post),

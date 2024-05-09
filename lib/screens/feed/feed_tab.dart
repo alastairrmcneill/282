@@ -98,7 +98,7 @@ class _FeedTabState extends State<FeedTab> {
           FindFriendsIconButton(),
         ],
       ),
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color.fromARGB(255, 254, 254, 254),
       body: RefreshIndicator(
         onRefresh: () async {
           PostService.getFeed(context);

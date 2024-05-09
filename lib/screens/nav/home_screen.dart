@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -114,22 +115,18 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         currentIndex: _currentIndex,
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black26,
-        selectedItemColor: Colors.black87,
-        type: BottomNavigationBarType.fixed,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         selectedFontSize: 13,
         unselectedFontSize: 13,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
+            icon: Icon(CupertinoIcons.map),
+            activeIcon: Icon(CupertinoIcons.map_fill),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people_outline_rounded),
-            activeIcon: Icon(Icons.people_rounded),
+            icon: Icon(CupertinoIcons.news),
+            activeIcon: Icon(CupertinoIcons.news_solid),
             label: 'Feed',
           ),
           // BottomNavigationBarItem(
@@ -138,13 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
           //   label: 'Record',
           // ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border_rounded),
-            activeIcon: Icon(Icons.bookmark_rounded),
+            icon: Icon(CupertinoIcons.bookmark),
+            activeIcon: Icon(CupertinoIcons.bookmark_fill),
             label: 'Saved',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            activeIcon: Icon(Icons.person_rounded),
+            icon: Icon(CupertinoIcons.person),
+            activeIcon: Icon(CupertinoIcons.person_fill),
             label: 'Profile',
           ),
         ],

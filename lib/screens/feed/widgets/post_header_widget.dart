@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -20,7 +21,7 @@ class PostHeader extends StatelessWidget {
   }) {
     if (post.authorId == userState.currentUser?.uid) {
       return PopupMenuButton(
-        icon: const Icon(Icons.more_vert_rounded),
+        icon: const Icon(CupertinoIcons.ellipsis_vertical),
         onSelected: (value) async {
           if (value == MenuItems.item1) {
             createPostState.reset();

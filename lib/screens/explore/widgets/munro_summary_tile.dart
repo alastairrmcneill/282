@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -82,41 +83,49 @@ class MunroSummaryTile extends StatelessWidget {
                         Text(
                           munro.name,
                           maxLines: 2,
-                          style: const TextStyle(fontWeight: FontWeight.w800),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontWeight: FontWeight.w800, height: 1.1, fontSize: 16),
                         ),
                         munro.extra == null || munro.extra == ""
                             ? const SizedBox()
                             : Text(
                                 "(${munro.extra})",
-                                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                               ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 6),
                         Text(
                           settingsState.metricHeight
                               ? "${munro.meters}m - ${munro.area}"
                               : "${munro.feet}ft - ${munro.area}",
-                          style: TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          textBaseline: TextBaseline.alphabetic,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
                           children: [
-                            RatingBar(
-                              itemSize: 15,
-                              ratingWidget: RatingWidget(
-                                full: const Icon(Icons.star, color: Colors.amber),
-                                half: const Icon(Icons.star_half, color: Colors.amber),
-                                empty: const Icon(Icons.star_border, color: Colors.amber),
-                              ),
-                              onRatingUpdate: (rating) {},
-                              initialRating: munro.averageRating ?? 0.0,
-                              allowHalfRating: true,
-                              ignoreGestures: true,
+                            Text(
+                              munro.averageRating?.toStringAsFixed(1) ?? "0",
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                            ),
+                            const SizedBox(width: 5),
+                            const Icon(
+                              CupertinoIcons.star_fill,
+                              size: 12,
+                              color: Colors.amber,
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              "(${munro.reviewCount ?? 0})",
-                              style: const TextStyle(fontSize: 8),
+                              '/ ${munro.reviewCount == 1 ? "1 rating" : "${munro.reviewCount ?? 0} ratings"}',
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontSize: 10,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                             ),
                           ],
                         ),

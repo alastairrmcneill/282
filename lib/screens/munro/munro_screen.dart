@@ -22,7 +22,6 @@ class _MunroScreenState extends State<MunroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
         onRefresh: () => MunroService.loadAdditionalMunroData(context),

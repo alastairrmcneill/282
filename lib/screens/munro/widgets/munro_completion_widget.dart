@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +85,7 @@ class MunroCompletionWidget extends StatelessWidget {
                 ),
               ),
               PopupMenuButton(
-                icon: const Icon(Icons.more_vert_rounded),
+                icon: const Icon(CupertinoIcons.ellipsis_vertical),
                 onSelected: (value) async {
                   if (value == MenuItems.item1) {
                     // Remove

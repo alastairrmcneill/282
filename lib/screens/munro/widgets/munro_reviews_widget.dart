@@ -6,6 +6,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroReviewsWidget extends StatelessWidget {
   const MunroReviewsWidget({super.key});
@@ -47,8 +48,9 @@ class MunroReviewsWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         reviewsState.reviews.isEmpty
-            ? const Center(
-                child: Text("No reviews available"),
+            ? const Padding(
+                padding: EdgeInsets.all(15),
+                child: CenterText(text: "No reviews yet."),
               )
             : SizedBox(
                 width: double.infinity,
