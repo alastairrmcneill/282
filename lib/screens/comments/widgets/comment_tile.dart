@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -18,7 +19,7 @@ class CommentTile extends StatelessWidget {
   }) {
     if (comment.authorId == userState.currentUser?.uid) {
       return PopupMenuButton(
-        icon: Icon(Icons.more_vert_rounded),
+        icon: Icon(CupertinoIcons.ellipsis_vertical),
         onSelected: (value) async {
           if (value == MenuItems.item1) {
             // Delete

@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -82,12 +83,13 @@ class CreatePostImagePicker extends StatelessWidget {
                             height: height, // Set a fixed height
                             width: height, // Set a fixed width
                             fit: BoxFit.cover, // Determine how the image should be displayed
-                            progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
-                              child: LinearProgressIndicator(
-                                value: downloadProgress.progress,
-                              ),
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/post_image_placeholder.png',
+                              fit: BoxFit.cover,
+                              width: MediaQuery.of(context).size.width,
+                              height: 300,
                             ),
+                            fadeInDuration: Duration.zero,
                             errorWidget: (context, url, error) {
                               return const Icon(Icons.photo_rounded);
                             },
@@ -104,7 +106,7 @@ class CreatePostImagePicker extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
-                            FontAwesomeIcons.minusCircle,
+                            CupertinoIcons.minus_circle,
                             color: Colors.red,
                             size: 22,
                           ),
@@ -135,7 +137,7 @@ class CreatePostImagePicker extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
-                            FontAwesomeIcons.minusCircle,
+                            CupertinoIcons.minus_circle,
                             color: Colors.red,
                             size: 22,
                           ),

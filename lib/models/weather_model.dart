@@ -2,6 +2,8 @@ import 'package:two_eight_two/extensions/extensions.dart';
 
 class Weather {
   final DateTime date;
+  final DateTime sunrise;
+  final DateTime sunset;
   final String summary;
   final double temperature;
   final double windSpeed;
@@ -12,6 +14,8 @@ class Weather {
 
   Weather({
     required this.date,
+    required this.sunrise,
+    required this.sunset,
     required this.summary,
     required this.temperature,
     required this.windSpeed,
@@ -24,6 +28,10 @@ class Weather {
   static Weather fromJsonDay(Map<String, dynamic> json) {
     int dt = json[WeatherFields.dt];
     DateTime date = DateTime.fromMillisecondsSinceEpoch(dt * 1000);
+    int sunriseRaw = json[WeatherFields.sunrise];
+    DateTime sunrise = DateTime.fromMillisecondsSinceEpoch(sunriseRaw * 1000);
+    int sunsetRaw = json[WeatherFields.sunset];
+    DateTime sunset = DateTime.fromMillisecondsSinceEpoch(sunsetRaw * 1000);
     String summary = json[WeatherFields.summary];
     String icon = json[WeatherFields.weather][0][WeatherFields.icon];
     num temperature = json[WeatherFields.temp][WeatherFields.day];
@@ -34,6 +42,8 @@ class Weather {
 
     return Weather(
       date: date,
+      sunrise: sunrise,
+      sunset: sunset,
       summary: summary,
       temperature: temperature.toDouble(),
       windSpeed: windGust.toDouble(),
@@ -48,6 +58,8 @@ class Weather {
   String toString() {
     return """Weather:
               ${WeatherFields.dt}: $date,
+              ${WeatherFields.sunrise}: $sunrise,
+              ${WeatherFields.sunset}: $sunset,
               ${WeatherFields.summary}: $summary, 
               ${WeatherFields.temp}: $temperature, 
               ${WeatherFields.windGust}: $windSpeed, 
@@ -61,6 +73,8 @@ class Weather {
 
 class WeatherFields {
   static const String dt = 'dt';
+  static const String sunrise = 'sunrise';
+  static const String sunset = 'sunset';
   static const String summary = 'summary';
   static const String daily = 'daily';
   static const String temp = 'temp';

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -11,7 +12,7 @@ class SavedListPopupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      icon: const Icon(Icons.more_vert_rounded),
+      icon: const Icon(CupertinoIcons.ellipsis_vertical),
       onSelected: (value) async {
         if (value == MenuItems.item1) {
           if (savedList.uid != null) {

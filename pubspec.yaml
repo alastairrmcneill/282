@@ -45,6 +45,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   package_info_plus: ^6.0.0
   rate_my_app: ^2.1.0
+  readmore: ^3.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_review/widgets/widgets.dart';
@@ -64,20 +65,18 @@ class CreateReviewsScreen extends StatelessWidget {
   }
 
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
-    print('Building screen');
-    print('State: ${createReviewState.status}');
     return PopScope(
       canPop: false,
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(FontAwesomeIcons.multiply),
+            icon: const Icon(CupertinoIcons.back),
             onPressed: () => createReviewState.setStatus = CreateReviewStatus.loaded,
           ),
           title: const Text("Review Munros"),
           actions: [
             IconButton(
-              icon: Icon(FontAwesomeIcons.check),
+              icon: const Icon(CupertinoIcons.checkmark_alt),
               onPressed: () {
                 if (!_formKey.currentState!.validate()) {
                   return;
