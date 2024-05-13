@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/saved_list_service.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 // Show dialog to add historical entry to an account
 showCreateSavedListDialog(BuildContext context, {SavedList? savedList}) {
@@ -46,12 +47,10 @@ showCreateSavedListDialog(BuildContext context, {SavedList? savedList}) {
                     // Title
                     Text(savedList == null ? 'Create new list' : 'Edit list'),
                     const SizedBox(height: 20),
-                    TextFormField(
+                    TextFormFieldBase(
                       controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
-                        border: OutlineInputBorder(),
-                      ),
+                      labelText: 'Name',
+                      border: const OutlineInputBorder(),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Required';

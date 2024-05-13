@@ -115,18 +115,13 @@ class CreateReviewsScreen extends StatelessWidget {
                             onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
                           ),
                           const SizedBox(height: 5),
-                          TextFormField(
+                          TextFormFieldBase(
                             initialValue: createReviewState.reviews[munro.id]!["review"],
                             onSaved: (value) {
                               createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
                             },
                             maxLines: 5,
-                            textAlignVertical: TextAlignVertical.top, // Add this line
-                            decoration: const InputDecoration(
-                              hintText: "Comment",
-                              contentPadding: EdgeInsets.all(10),
-                            ),
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),
+                            hintText: "Comment",
                           ),
                         ],
                       ),

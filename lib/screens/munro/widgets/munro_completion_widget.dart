@@ -7,6 +7,7 @@ import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroCompletionWidget extends StatelessWidget {
   final int index;
@@ -17,6 +18,18 @@ class MunroCompletionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     Munro munro = munroState.selectedMunro!;
+    List<MenuItem> menuItems = [
+      MenuItem(
+        text: 'Remove',
+        onTap: () {
+          MunroService.removeMunroCompletion(
+            context,
+            munro: munroState.selectedMunro!,
+            dateTime: dateTime,
+          );
+        },
+      ),
+    ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -91,25 +104,7 @@ class MunroCompletionWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              PopupMenuButton(
-                icon: const Icon(CupertinoIcons.ellipsis_vertical),
-                onSelected: (value) async {
-                  if (value == MenuItems.item1) {
-                    // Remove
-                    MunroService.removeMunroCompletion(
-                      context,
-                      munro: munroState.selectedMunro!,
-                      dateTime: dateTime,
-                    );
-                  }
-                },
-                itemBuilder: (context) => const [
-                  PopupMenuItem(
-                    value: MenuItems.item1,
-                    child: Text('Remove'),
-                  ),
-                ],
-              ),
+              PopupMenuBase(items: menuItems),
             ],
           ),
         ),

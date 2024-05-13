@@ -6,6 +6,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class BulkMunroUpdateScreen extends StatefulWidget {
   static const String routeName = '/bulk_munro_update';
@@ -68,7 +69,7 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
             trailing: e[MunroFields.summited]
                 ? SizedBox(
                     width: 100,
-                    child: TextFormField(
+                    child: TextFormFieldBase(
                       controller: _dateController,
                       readOnly: true,
                       onTap: () async {

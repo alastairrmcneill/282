@@ -10,12 +10,15 @@ class PopupMenuBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
-      icon: Icon(CupertinoIcons.ellipsis_vertical),
+      icon: const Icon(CupertinoIcons.ellipsis_vertical),
       onSelected: (value) => items[value].onTap(),
       itemBuilder: (context) => items.map((item) {
         return PopupMenuItem<int>(
           value: items.indexOf(item),
-          child: Text(item.text),
+          child: Text(
+            item.text,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         );
       }).toList(),
     );

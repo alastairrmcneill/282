@@ -41,14 +41,11 @@ class CommentInputField extends StatelessWidget {
                     controller: _scrollController,
                     child: Form(
                       key: _formKey,
-                      child: TextFormField(
+                      child: TextFormFieldBase(
                         scrollController: _scrollController,
                         initialValue: commentsState.commentText,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Add a comment...",
-                        ),
-                        minLines: 1,
+                        hintText: "Add a comment...",
+                        border: InputBorder.none,
                         maxLines: 3,
                         keyboardType: TextInputType.multiline,
                         textCapitalization: TextCapitalization.sentences,

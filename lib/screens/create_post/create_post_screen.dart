@@ -100,10 +100,8 @@ class CreatePostScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    TextFormField(
+                    TextFormFieldBase(
                       initialValue: createPostState.title,
-                      decoration: const InputDecoration(hintText: "Title your hike"),
-                      textCapitalization: TextCapitalization.sentences,
                       onSaved: (newValue) {
                         if ((newValue == null || newValue.trim() == "")) {
                           createPostState.setTitle = null;
@@ -111,15 +109,12 @@ class CreatePostScreen extends StatelessWidget {
                           createPostState.setTitle = newValue.trim();
                         }
                       },
+                      hintText: "Title your hike",
                     ),
                     const SizedBox(height: 15),
-                    TextFormField(
+                    TextFormFieldBase(
                       initialValue: createPostState.description,
-                      decoration: const InputDecoration(
-                        hintText: "How was it? Tell us about your hike.",
-                        alignLabelWithHint: true,
-                        contentPadding: EdgeInsets.all(15),
-                      ),
+                      hintText: "How was it? Tell us about your hike.",
                       maxLines: 4,
                       textCapitalization: TextCapitalization.sentences,
                       keyboardType: TextInputType.text,
@@ -127,8 +122,6 @@ class CreatePostScreen extends StatelessWidget {
                         createPostState.setDescription = newValue?.trim();
                       },
                     ),
-                    // const SizedBox(height: 15),
-                    // const CreatePostImagePicker(),
                     const SizedBox(height: 15),
                     const MunroSelector(),
                     const SizedBox(height: 10),

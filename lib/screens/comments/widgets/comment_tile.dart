@@ -18,21 +18,15 @@ class CommentTile extends StatelessWidget {
     required UserState userState,
   }) {
     if (comment.authorId == userState.currentUser?.uid) {
-      return PopupMenuButton(
-        icon: Icon(CupertinoIcons.ellipsis_vertical),
-        onSelected: (value) async {
-          if (value == MenuItems.item1) {
-            // Delete
+      List<MenuItem> menuItems = [
+        MenuItem(
+          text: 'Delete',
+          onTap: () {
             CommentsService.deleteComment(context, comment: comment);
-          }
-        },
-        itemBuilder: (context) => const [
-          PopupMenuItem(
-            value: MenuItems.item1,
-            child: Text('Delete'),
-          ),
-        ],
-      );
+          },
+        ),
+      ];
+      return PopupMenuBase(items: menuItems);
     } else {
       return const SizedBox(width: 48);
     }

@@ -20,28 +20,23 @@ class PostHeader extends StatelessWidget {
     required CreatePostState createPostState,
   }) {
     if (post.authorId == userState.currentUser?.uid) {
-      return PopupMenuButton(
-        icon: const Icon(CupertinoIcons.ellipsis_vertical),
-        onSelected: (value) async {
-          if (value == MenuItems.item1) {
+      List<MenuItem> menuItems = [
+        MenuItem(
+          text: 'Edit',
+          onTap: () {
             createPostState.reset();
             createPostState.loadPost = post;
             Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePostScreen()));
-          } else if (value == MenuItems.item2) {
+          },
+        ),
+        MenuItem(
+          text: 'Delete',
+          onTap: () {
             PostService.deletePost(context, post: post);
-          }
-        },
-        itemBuilder: (context) => const [
-          PopupMenuItem(
-            value: MenuItems.item1,
-            child: Text('Edit'),
-          ),
-          PopupMenuItem(
-            value: MenuItems.item2,
-            child: Text('Delete'),
-          ),
-        ],
-      );
+          },
+        ),
+      ];
+      return PopupMenuBase(items: menuItems);
     } else {
       return const SizedBox();
     }

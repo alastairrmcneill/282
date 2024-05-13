@@ -64,28 +64,23 @@ class EditReviewScreen extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               StarRatingFormField(
-                initialValue: createReviewState.reviews[munro.id]!["rating"],
+                initialValue: createReviewState.currentMunroRating,
                 validator: (rating) {
                   if (rating == null || rating < 1) {
                     return 'Please select at least one star';
                   }
                   return null;
                 },
-                onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
+                onSaved: (newValue) => createReviewState.setCurrentMunroRating = newValue!,
               ),
               const SizedBox(height: 5),
-              TextFormField(
-                initialValue: createReviewState.reviews[munro.id]!["review"],
+              TextFormFieldBase(
+                initialValue: createReviewState.currentMunroReview,
                 onSaved: (value) {
-                  createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
+                  createReviewState.setCurrentMunroReview = value?.trim() ?? "";
                 },
                 maxLines: 5,
-                textAlignVertical: TextAlignVertical.top, // Add this line
-                decoration: const InputDecoration(
-                  hintText: "Comment",
-                  contentPadding: EdgeInsets.all(10),
-                ),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),
+                hintText: "Comment",
               ),
               const SizedBox(height: 20),
               SizedBox(
