@@ -77,39 +77,24 @@ class _MunroSelectorState extends State<MunroSelector> {
       builder: (FormFieldState formState) {
         return Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Munros on this hike",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    munroState.setCreatePostFilterString = "";
-                    _showModalSheet(munroState, createPostState, formState);
-                  },
-                  child: const Icon(
-                    Icons.add_rounded,
-                  ),
-                ),
-              ],
-            ),
             ...createPostState.selectedMunros.map(
-              (Munro munro) => Column(
-                children: [
-                  ListTile(
-                    contentPadding: const EdgeInsets.only(left: 0),
-                    title: Text(munro.name),
-                    subtitle:
-                        Text("${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}"),
-                  ),
-                  CreatePostImagePicker(munroId: munro.id),
-                ],
+              (Munro munro) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      munro.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Text(
+                      "${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}",
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 16),
+                    ),
+                    const SizedBox(height: 5),
+                    CreatePostImagePicker(munroId: munro.id),
+                  ],
+                ),
               ),
             ),
             if (formState.hasError)
@@ -117,6 +102,21 @@ class _MunroSelectorState extends State<MunroSelector> {
                 'Select at least one munro',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 44,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  munroState.setCreatePostFilterString = "";
+                  _showModalSheet(munroState, createPostState, formState);
+                },
+                child: const Text(
+                  "Add Munro",
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
           ],
         );
       },

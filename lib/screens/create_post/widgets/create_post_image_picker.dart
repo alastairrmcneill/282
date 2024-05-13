@@ -30,7 +30,7 @@ class CreatePostImagePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
-    double height = 150;
+    double height = 100;
 
     if ((createPostState.images[munroId]?.isEmpty ?? true) && (createPostState.imagesURLs[munroId]?.isEmpty ?? true)) {
       return SizedBox(
@@ -52,7 +52,7 @@ class CreatePostImagePicker extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.add_a_photo_rounded,
+                    CupertinoIcons.camera_viewfinder,
                     color: Colors.green,
                   ),
                   Text(
@@ -91,7 +91,7 @@ class CreatePostImagePicker extends StatelessWidget {
                             ),
                             fadeInDuration: Duration.zero,
                             errorWidget: (context, url, error) {
-                              return const Icon(Icons.photo_rounded);
+                              return const Icon(CupertinoIcons.camera_viewfinder);
                             },
                           ),
                         ),
@@ -169,7 +169,7 @@ class CreatePostImagePicker extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.add_a_photo_rounded,
+                                  CupertinoIcons.camera_viewfinder,
                                   color: Colors.green,
                                 ),
                                 Text(

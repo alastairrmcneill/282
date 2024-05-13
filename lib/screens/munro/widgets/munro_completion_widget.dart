@@ -87,18 +87,10 @@ class MunroCompletionWidget extends StatelessWidget {
                               "(${munro.extra})",
                               style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                             ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 10),
                       Text(
-                        'Summit #${index + 1}',
+                        'Summit #${index + 1} - ${DateFormat("dd/MM/yyyy").format(dateTime)}',
                         style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Date: ${DateFormat('dd/MM/yyyy').format(dateTime)}',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                            ),
                       ),
                     ],
                   ),
