@@ -13,32 +13,43 @@ class MunroDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
-    return RichText(
-      text: TextSpan(
-        text: "${munroState.selectedMunro?.description ?? ""} ",
-        style: const TextStyle(color: Colors.black, fontFamily: "NotoSans"),
-        children: <TextSpan>[
-          TextSpan(
-            text: 'Read more.',
-            style: const TextStyle(
-              color: Colors.blue,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () async {
-                try {
-                  await launchUrl(
-                    Uri.parse(munroState.selectedMunro?.link ?? ""),
-                  );
-                } on Exception catch (error, stackTrace) {
-                  Log.error(error.toString(), stackTrace: stackTrace);
-                  Clipboard.setData(ClipboardData(text: munroState.selectedMunro?.link ?? ""));
-                  showSnackBar(context, 'Copied link. Go to browser to open.');
-                }
-              },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Description",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        RichText(
+          text: TextSpan(
+            text: "${munroState.selectedMunro?.description ?? ""} ",
+            style: Theme.of(context).textTheme.bodyMedium,
+            children: <TextSpan>[
+              TextSpan(
+                text: 'Read more.',
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.blue,
+                    ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    try {
+                      await launchUrl(
+                        Uri.parse(munroState.selectedMunro?.link ?? ""),
+                      );
+                    } on Exception catch (error, stackTrace) {
+                      Log.error(error.toString(), stackTrace: stackTrace);
+                      Clipboard.setData(ClipboardData(text: munroState.selectedMunro?.link ?? ""));
+                      showSnackBar(context, 'Copied link. Go to browser to open.');
+                    }
+                  },
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

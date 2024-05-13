@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.20+20 # Update this version number when you release a new version
+version: 1.0.21+21 # Update this version number when you release a new version
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
@@ -44,6 +44,8 @@ dependencies:
   http: ^1.2.1
   flutter_dotenv: ^5.1.0
   package_info_plus: ^6.0.0
+  rate_my_app: ^2.1.0
+  readmore: ^3.0.0
 
 dev_dependencies:
   flutter_test:

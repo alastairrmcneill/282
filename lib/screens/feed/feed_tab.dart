@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FeedTab extends StatefulWidget {
@@ -25,6 +26,21 @@ class _FeedTabState extends State<FeedTab> {
           !_scrollController.position.outOfRange &&
           feedState.status != FeedStatus.paginating) {
         PostService.paginateFeed(context);
+      }
+    });
+
+    RateMyApp rateMyApp = RateMyApp(
+      preferencesPrefix: 'rateMyApp_',
+      minDays: 7,
+      minLaunches: 7,
+      remindDays: 7,
+      remindLaunches: 7,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await rateMyApp.init();
+      if (mounted && rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(context);
       }
     });
     super.initState();
@@ -57,64 +73,15 @@ class _FeedTabState extends State<FeedTab> {
   }
 
   Widget _buildLoadingScreen(BuildContext context, FeedState feedState) {
-    NotificationsState notificationsState = Provider.of<NotificationsState>(context);
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              NotificationsService.getUserNotifications(context);
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const NotificationsScreen(),
-                ),
-              );
-            },
-            icon: Stack(
-              children: [
-                const Icon(Icons.notifications),
-                notificationsState.notifications.where((element) => !element.read).isEmpty
-                    ? const SizedBox()
-                    : Positioned(
-                        right: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 12,
-                            minHeight: 12,
-                          ),
-                          child: Text(
-                            notificationsState.notifications.where((element) => !element.read).length.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      )
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const UserSearchScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.search),
-          )
+        title: const Text('282'),
+        actions: const [
+          NotificationIconButton(),
+          FindFriendsIconButton(),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[100],
       body: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 3,
@@ -124,64 +91,15 @@ class _FeedTabState extends State<FeedTab> {
   }
 
   Widget _buildScreen(BuildContext context, FeedState feedState) {
-    NotificationsState notificationsState = Provider.of<NotificationsState>(context);
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              NotificationsService.getUserNotifications(context);
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const NotificationsScreen(),
-                ),
-              );
-            },
-            icon: Stack(
-              children: [
-                const Icon(Icons.notifications),
-                notificationsState.notifications.where((element) => !element.read).isEmpty
-                    ? const SizedBox()
-                    : Positioned(
-                        right: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 12,
-                            minHeight: 12,
-                          ),
-                          child: Text(
-                            notificationsState.notifications.where((element) => !element.read).length.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      )
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const UserSearchScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.search),
-          )
+        title: const Text('282'),
+        actions: const [
+          NotificationIconButton(),
+          FindFriendsIconButton(),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 236, 240, 233),
       body: RefreshIndicator(
         onRefresh: () async {
           PostService.getFeed(context);

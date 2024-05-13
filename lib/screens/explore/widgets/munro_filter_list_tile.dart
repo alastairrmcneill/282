@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MunroFilterListTile extends StatelessWidget {
   final Munro munro;
@@ -25,8 +26,8 @@ class MunroFilterListTile extends StatelessWidget {
         height: 40,
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(10),
+          color: MyColors.backgroundColor,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,11 +37,7 @@ class MunroFilterListTile extends StatelessWidget {
               children: [
                 Text(
                   munro.name,
-                  style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 1.2),
                 ),
                 Expanded(
                   flex: 1,
@@ -49,19 +46,11 @@ class MunroFilterListTile extends StatelessWidget {
                     children: [
                       Text(
                         munro.area,
-                        style: const TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w800,
-                          fontSize: 10,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                       Text(
                         settingsState.metricHeight ? '${munro.meters}m' : '${munro.feet}ft',
-                        style: const TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w800,
-                          fontSize: 10,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),

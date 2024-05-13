@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ class ReviewListTile extends StatelessWidget {
   }) {
     if (review.authorId == userState.currentUser?.uid) {
       return PopupMenuButton(
-        icon: Icon(Icons.more_vert_rounded),
+        icon: Icon(CupertinoIcons.ellipsis_vertical),
         onSelected: (value) async {
           if (value == MenuItems.item1) {
             // Edit

@@ -11,3 +11,5 @@ export 'shimmer_box.dart';
 export 'shimmer_list_tile.dart';
 export 'shimmer_post_tile.dart';
 export 'clickable_image.dart';
+export 'expandable_text.dart';
+export 'padded_divider.dart';

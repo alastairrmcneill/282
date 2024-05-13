@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
@@ -42,38 +43,37 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
     UserState userState = Provider.of<UserState>(context);
     String currentUserId = userState.currentUser?.uid ?? "";
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (value) {
         SearchService.clearSearch(context);
-        return true;
       },
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              border: InputBorder.none,
+              hintText: 'Search 282',
+              suffixIcon: IconButton(
+                icon: const Icon(CupertinoIcons.xmark, size: 22),
+                onPressed: () {
+                  _searchController.clear();
+                  SearchService.clearSearch(context);
+                },
+              ),
+              filled: true,
+            ),
+            textInputAction: TextInputAction.search,
+            onChanged: (value) {
+              if (value.trim().length >= 3) {
+                SearchService.search(context, query: value.trim());
+              }
+            },
+          ),
+        ),
         body: Column(
           children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(vertical: 15),
-                border: InputBorder.none,
-                hintText: 'Search',
-                prefixIcon: const Icon(Icons.search, size: 30),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                    SearchService.clearSearch(context);
-                  },
-                ),
-                filled: true,
-              ),
-              textInputAction: TextInputAction.search,
-              onChanged: (value) {
-                if (value.trim().length >= 3) {
-                  SearchService.search(context, query: value.trim());
-                }
-              },
-            ),
             Expanded(
               flex: 1,
               child: Consumer<UserSearchState>(
