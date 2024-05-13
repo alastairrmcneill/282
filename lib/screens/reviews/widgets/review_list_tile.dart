@@ -21,30 +21,24 @@ class ReviewListTile extends StatelessWidget {
     required CreateReviewState createReviewState,
   }) {
     if (review.authorId == userState.currentUser?.uid) {
-      return PopupMenuButton(
-        icon: Icon(CupertinoIcons.ellipsis_vertical),
-        onSelected: (value) async {
-          if (value == MenuItems.item1) {
-            // Edit
+      List<MenuItem> menuItems = [
+        MenuItem(
+          text: 'Edit',
+          onTap: () {
             createReviewState.reset();
             createReviewState.loadReview = review;
             Navigator.push(context, MaterialPageRoute(builder: (_) => const EditReviewScreen()));
-          } else if (value == MenuItems.item2) {
-            // Delete
+          },
+        ),
+        MenuItem(
+          text: 'Delete',
+          onTap: () {
             ReviewService.deleteReview(context, review: review);
-          }
-        },
-        itemBuilder: (context) => const [
-          PopupMenuItem(
-            value: MenuItems.item1,
-            child: Text('Edit'),
-          ),
-          PopupMenuItem(
-            value: MenuItems.item2,
-            child: Text('Delete'),
-          ),
-        ],
-      );
+          },
+        ),
+      ];
+
+      return PopupMenuBase(items: menuItems);
     } else {
       return const SizedBox(width: 48);
     }
@@ -56,7 +50,7 @@ class ReviewListTile extends StatelessWidget {
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
+      padding: const EdgeInsets.only(top: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

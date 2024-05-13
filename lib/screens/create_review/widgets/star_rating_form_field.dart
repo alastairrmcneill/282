@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -12,7 +13,7 @@ class StarRatingFormField extends FormField<int> {
           autovalidateMode: autovalidateMode,
           builder: (FormFieldState<int> state) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 RatingBar(
                   initialRating: initialValue.toDouble(),
@@ -22,9 +23,9 @@ class StarRatingFormField extends FormField<int> {
                     state.didChange(rating.toInt());
                   },
                   ratingWidget: RatingWidget(
-                    full: const Icon(Icons.star, color: Colors.amber),
-                    half: const Icon(Icons.star_half, color: Colors.amber),
-                    empty: const Icon(Icons.star_border, color: Colors.amber),
+                    full: const Icon(CupertinoIcons.star_fill, color: Colors.amber),
+                    half: const Icon(Icons.star, color: Colors.grey),
+                    empty: Icon(CupertinoIcons.star_fill, color: Colors.grey[200]),
                   ),
                   allowHalfRating: false,
                 ),

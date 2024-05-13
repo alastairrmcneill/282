@@ -67,62 +67,90 @@ class CreateReviewsScreen extends StatelessWidget {
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
     return PopScope(
       canPop: false,
+      onPopInvoked: (didPop) => createReviewState.setStatus = CreateReviewStatus.loaded,
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(CupertinoIcons.back),
-            onPressed: () => createReviewState.setStatus = CreateReviewStatus.loaded,
-          ),
-          title: const Text("Review Munros"),
-          actions: [
-            IconButton(
-              icon: const Icon(CupertinoIcons.checkmark_alt),
-              onPressed: () {
-                if (!_formKey.currentState!.validate()) {
-                  return;
-                }
-                _formKey.currentState!.save();
+          title: const Text("How was your hike?"),
+          // actions: [
+          //   IconButton(
+          //     icon: const Icon(CupertinoIcons.checkmark_alt),
+          //     onPressed: () {
+          //       if (!_formKey.currentState!.validate()) {
+          //         return;
+          //       }
+          //       _formKey.currentState!.save();
 
-                ReviewService.createReview(context);
-              },
-            ),
-          ],
+          //       ReviewService.createReview(context);
+          //     },
+          //   ),
+          // ],
         ),
         body: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: createReviewState.munrosToReview.map((Munro munro) {
-                return Column(
-                  children: [
-                    CenterText(text: munro.name),
-                    StarRatingFormField(
-                      initialValue: createReviewState.reviews[munro.id]!["rating"],
-                      validator: (rating) {
-                        if (rating == null || rating < 1) {
-                          return 'Please select at least one star';
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
-                    ),
-                    RepaintBoundary(
-                      child: TextFormField(
-                        initialValue: createReviewState.reviews[munro.id]!["review"],
-                        onSaved: (value) {
-                          createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
-                        },
-                        maxLines: 5,
-                        textAlignVertical: TextAlignVertical.top, // Add this line
-                        decoration: const InputDecoration(
-                          hintText: "Write a review (optional)",
-                          contentPadding: EdgeInsets.all(10),
-                        ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...createReviewState.munrosToReview.map((Munro munro) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            munro.name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 5),
+                          StarRatingFormField(
+                            initialValue: createReviewState.reviews[munro.id]!["rating"],
+                            validator: (rating) {
+                              if (rating == null || rating < 1) {
+                                return 'Please select at least one star';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
+                          ),
+                          const SizedBox(height: 5),
+                          TextFormField(
+                            initialValue: createReviewState.reviews[munro.id]!["review"],
+                            onSaved: (value) {
+                              createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
+                            },
+                            maxLines: 5,
+                            textAlignVertical: TextAlignVertical.top, // Add this line
+                            decoration: const InputDecoration(
+                              hintText: "Comment",
+                              contentPadding: EdgeInsets.all(10),
+                            ),
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),
+                          ),
+                        ],
                       ),
+                    );
+                  }),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 44,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        _formKey.currentState!.save();
+
+                        ReviewService.createReview(context);
+                      },
+                      child: const Text("Submit"),
                     ),
-                  ],
-                );
-              }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
