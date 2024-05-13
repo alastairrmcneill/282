@@ -40,7 +40,7 @@ class CreateReviewsScreen extends StatelessWidget {
               if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AchievementsScreen.route, // The name of the route you want to navigate to
+                  AchievementsCompletedScreen.route, // The name of the route you want to navigate to
                   (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                 );
               } else {
