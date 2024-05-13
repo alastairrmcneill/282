@@ -63,22 +63,29 @@ class MunroCompletionWidget extends StatelessWidget {
                       Text(
                         munro.name,
                         maxLines: 2,
-                        style: const TextStyle(fontWeight: FontWeight.w800),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(fontWeight: FontWeight.w800, height: 1.1, fontSize: 16),
                       ),
                       munro.extra == null || munro.extra == ""
                           ? const SizedBox()
                           : Text(
                               "(${munro.extra})",
-                              style: TextStyle(fontWeight: FontWeight.w200, fontSize: 14),
+                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                             ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 6),
                       Text(
                         'Summit #${index + 1}',
-                        style: TextStyle(fontSize: 12),
+                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                       ),
+                      const SizedBox(height: 6),
                       Text(
                         'Date: ${DateFormat('dd/MM/yyyy').format(dateTime)}',
-                        style: TextStyle(fontSize: 12),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                            ),
                       ),
                     ],
                   ),

@@ -66,6 +66,9 @@ class MyTheme {
         bodyMedium: TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w300, height: 1.8),
         bodySmall: TextStyle(color: MyColors.textColor, fontSize: 12, fontWeight: FontWeight.w300, height: 1.1),
       ),
+      listTileTheme: const ListTileThemeData(
+        titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
+      ),
     );
   }
 }

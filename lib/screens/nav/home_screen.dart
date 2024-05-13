@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
             } else {
               // Navigate to saved
-              MunroService.loadMunroData(context);
+              SavedListService.readUserSavedLists(context);
               setState(() => _currentIndex = value);
             }
           }
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
               navigationState.setNavigateToRoute = HomeScreen.profileTabRoute;
               Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
             } else {
-              // Navigate to saved
+              // Navigate to profile
               ProfileService.loadUserFromUid(context, userId: user.uid!);
               setState(() => _currentIndex = value);
             }
