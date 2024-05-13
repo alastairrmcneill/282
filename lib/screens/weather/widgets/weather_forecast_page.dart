@@ -12,7 +12,6 @@ class WeatherForecastPage extends StatelessWidget {
   const WeatherForecastPage({super.key, required this.weather});
 
   Widget _buildTemperature(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
     return RichText(
       textHeightBehavior: const TextHeightBehavior(applyHeightToFirstAscent: false),
       text: TextSpan(

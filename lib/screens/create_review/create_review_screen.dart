@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_review/widgets/widgets.dart';
@@ -12,7 +9,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreateReviewsScreen extends StatelessWidget {
   CreateReviewsScreen({super.key});
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +37,6 @@ class CreateReviewsScreen extends StatelessWidget {
           case CreateReviewStatus.loaded:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
-              print("recentlyCompletedAchievements: ${achievementsState.recentlyCompletedAchievements.length}");
               if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
@@ -71,19 +67,6 @@ class CreateReviewsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("How was your hike?"),
-          // actions: [
-          //   IconButton(
-          //     icon: const Icon(CupertinoIcons.checkmark_alt),
-          //     onPressed: () {
-          //       if (!_formKey.currentState!.validate()) {
-          //         return;
-          //       }
-          //       _formKey.currentState!.save();
-
-          //       ReviewService.createReview(context);
-          //     },
-          //   ),
-          // ],
         ),
         body: Form(
           key: _formKey,
