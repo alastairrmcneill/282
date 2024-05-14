@@ -57,7 +57,7 @@ class MyTheme {
         unselectedItemColor: Colors.black45,
         type: BottomNavigationBarType.fixed,
       ),
-      fontFamily: "Poppins",
+      fontFamily: "NotoSans",
       textTheme: const TextTheme(
         headlineMedium: TextStyle(color: MyColors.textColor, fontSize: 24, fontWeight: FontWeight.w700),
         headlineSmall: TextStyle(color: MyColors.textColor, fontSize: 13, fontWeight: FontWeight.w300),
