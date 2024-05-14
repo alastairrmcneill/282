@@ -44,7 +44,7 @@ class MyTheme {
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
       ),
-      cardColor: Color.fromARGB(255, 250, 255, 248),
+      cardColor: const Color.fromARGB(255, 250, 255, 248),
       cardTheme: const CardTheme(
         elevation: 1.5,
         shape: RoundedRectangleBorder(
@@ -69,6 +69,26 @@ class MyTheme {
       ),
       listTileTheme: const ListTileThemeData(
         titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor; // On color
+          }
+          return Colors.grey; // Off color
+        }),
+        trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor.withOpacity(0.5); // On color
+          }
+          return Colors.grey.withOpacity(0.5); // Off color
+        }),
+        overlayColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor.withOpacity(0.2); // On color
+          }
+          return Colors.grey.withOpacity(0.2); // Off color
+        }),
       ),
     );
   }

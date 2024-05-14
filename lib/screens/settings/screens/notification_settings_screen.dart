@@ -34,12 +34,11 @@ class NotificationSettingsScreen extends StatelessWidget {
           ),
           const Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 30,
+              horizontal: 15,
               vertical: 10,
             ),
             child: Text(
               'Push notifications are only used to update you on activities to your profile such as follows, likes and comments.',
-              style: TextStyle(fontWeight: FontWeight.w200),
             ),
           )
         ],
