@@ -44,44 +44,53 @@ class CreateMunroChallengeScreen extends StatelessWidget {
             centerTitle: false,
           ),
           body: SafeArea(
-            child: Column(
-              children: [
-                Text(
-                    'Challenge yourself by setting a goal for how many munros you want to climb in ${DateTime.now().year}.'),
-                const SizedBox(height: 20),
-                Form(
-                  key: _formKey,
-                  child: TextFormFieldBase(
-                    initialValue:
-                        achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
-                    labelText: "Number of Munros",
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          int.tryParse(value) == null ||
-                          int.parse(value) < 1 ||
-                          int.parse(value) > 282) {
-                        return 'Please enter a number between 1 and 282.';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      achievementsState.currentAchievement?.criteria[CriteriaFields.count] = int.parse(value!);
-                    },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                      'Challenge yourself by setting a goal for how many munros you want to climb in ${DateTime.now().year}.'),
+                  const SizedBox(height: 30),
+                  Form(
+                    key: _formKey,
+                    child: TextFormFieldBase(
+                      initialValue:
+                          achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
+                      labelText: "Number of Munros",
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null ||
+                            int.parse(value) < 1 ||
+                            int.parse(value) > 282) {
+                          return 'Please enter a number between 1 and 282.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        achievementsState.currentAchievement?.criteria[CriteriaFields.count] = int.parse(value!);
+                      },
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (!_formKey.currentState!.validate()) {
-                      return;
-                    }
-                    _formKey.currentState!.save();
-                    AchievementService.setMunroChallenge(context);
-                  },
-                  child: const Text('Create Munro Challenge'),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 44,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        _formKey.currentState!.save();
+                        AchievementService.setMunroChallenge(context);
+                      },
+                      child: const Text('Create Munro Challenge'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
