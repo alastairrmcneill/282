@@ -24,7 +24,7 @@ class ProfileService {
       profileState.setIsCurrentUser = userState.currentUser?.uid == userId;
 
       // Check if current user is following this user
-      profileState.setIsFollowing = await _isFollowingUser(
+      profileState.setIsFollowing = await isFollowingUser(
         context,
         currentUserId: userState.currentUser?.uid ?? "",
         profileUserId: userId,
@@ -46,7 +46,7 @@ class ProfileService {
     }
   }
 
-  static Future<bool> _isFollowingUser(
+  static Future<bool> isFollowingUser(
     BuildContext context, {
     required String currentUserId,
     required String profileUserId,

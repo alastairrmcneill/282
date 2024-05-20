@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -226,6 +227,11 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                                     : null,
                               ),
                               title: Text(followingRelationship.sourceDisplayName),
+                              trailing: UserTrailingButton(
+                                profileUserId: followingRelationship.sourceId,
+                                profileUserDisplayName: followingRelationship.sourceDisplayName,
+                                profileUserPictureURL: followingRelationship.sourceProfilePictureURL ?? "",
+                              ),
                               onTap: () {
                                 ProfileService.loadUserFromUid(context, userId: followingRelationship.sourceId);
                                 Navigator.push(

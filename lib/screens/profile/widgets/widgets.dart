@@ -7,3 +7,4 @@ export 'profile_munro_challenge_widget.dart';
 export 'profile_munros_completed_widget.dart';
 export 'profile_photos_widget.dart';
 export 'profile_stat.dart';
+export 'user_trailing_button.dart';
