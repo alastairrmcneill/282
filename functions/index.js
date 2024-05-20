@@ -427,6 +427,7 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
         munroId: key,
         imageUrl: url,
         dateTime: postDate,
+        authorId: authorId,
       });
     }
   }
@@ -503,6 +504,7 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
         munroId: key,
         imageUrl: url,
         dateTime: postDate,
+        authorId: authorId,
       });
     }
   }

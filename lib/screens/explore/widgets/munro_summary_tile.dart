@@ -93,7 +93,7 @@ class MunroSummaryTile extends StatelessWidget {
                                 "(${munro.extra})",
                                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                               ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         Text(
                           settingsState.metricHeight
                               ? "${munro.meters}m - ${munro.area}"

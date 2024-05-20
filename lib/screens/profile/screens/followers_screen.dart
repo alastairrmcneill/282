@@ -131,7 +131,6 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
             title: const Text(""),
             centerTitle: false,
             bottom: const TabBar(
-              indicatorColor: Colors.white,
               tabs: [
                 Tab(text: "Following"),
                 Tab(text: "Followers"),

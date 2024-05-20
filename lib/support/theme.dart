@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 class MyTheme {
   static ThemeData get lightTheme {
@@ -21,18 +19,45 @@ class MyTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: MyColors.accentColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(8),
           ),
           textStyle: const TextStyle(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
+          elevation: 1,
         ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: MyColors.accentColor,
+          backgroundColor: MyColors.backgroundColor,
+          side: const BorderSide(color: MyColors.accentColor, width: 2), // Border color and width
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          padding: const EdgeInsets.all(0),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: MyColors.contrastColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      tabBarTheme: const TabBarTheme(
+        labelColor: MyColors.accentColor,
+        indicatorColor: MyColors.accentColor,
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: Colors.black,
+          foregroundColor: MyColors.textColor,
           textStyle: const TextStyle(
             fontWeight: FontWeight.w500,
             decoration: TextDecoration.underline,
@@ -115,4 +140,5 @@ class MyColors {
     begin: Alignment.bottomCenter,
     end: Alignment.topCenter,
   );
+  static const contrastColor = Color.fromRGBO(231, 141, 8, 1);
 }

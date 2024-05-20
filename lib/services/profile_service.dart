@@ -32,6 +32,9 @@ class ProfileService {
 
       profileState.setPosts = await PostService.getProfilePosts(context);
 
+      // Load profile pictures
+      MunroPictureService.getProfilePictures(context, profileId: userId);
+
       // Set loading status?
       profileState.setStatus = ProfileStatus.loaded;
     } catch (error, stackTrace) {
