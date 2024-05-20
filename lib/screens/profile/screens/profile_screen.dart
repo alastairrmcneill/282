@@ -1,8 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/munro_challenge/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
@@ -99,117 +98,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildScreen(BuildContext context, ProfileState profileState) {
-    FlavorState flavorState = Provider.of<FlavorState>(context);
-
     if (profileState.isCurrentUser) showGoToBulkMunroDialog(context);
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (value) {
         profileState.navigateBack();
-        return true;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        appBar: AppBar(
+          toolbarHeight: 35,
+          elevation: 0,
+          actions: [
+            profileState.isCurrentUser
+                ? IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.settings_rounded),
+                  )
+                : const SizedBox(),
+          ],
+        ),
         body: RefreshIndicator(
           onRefresh: () async {
             ProfileService.loadUserFromUid(context, userId: profileState.user?.uid ?? "");
           },
-          child: CustomScrollView(
-            controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              const ProfileSliverHeader(),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      profileState.user?.bio != null ? Text(profileState.user!.bio!) : const SizedBox(),
-                      profileState.isCurrentUser
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (_) => const EditProfileScreen()),
-                                      );
-                                    },
-                                    child: Text('Edit profile'),
-                                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const ProfileHeader(),
+                const PaddedDivider(left: 15, right: 15),
+                !(profileState.isCurrentUser || profileState.isFollowing)
+                    ? const SizedBox(
+                        width: double.infinity,
+                        height: 100,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(CupertinoIcons.lock),
+                              Text('You are not following this user'),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          const ProfileMunroStats(),
+                          const PaddedDivider(left: 15, right: 15),
+                          const ProfilePhotosWidget(),
+                          const PaddedDivider(
+                            top: 20,
+                            left: 15,
+                            right: 15,
+                            bottom: 5,
+                          ),
+                          profileState.posts.isEmpty
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20),
+                                  child: CenterText(text: "No posts"),
+                                )
+                              : Column(
+                                  children: profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
                                 ),
-                                flavorState.flavor == "Production" ? const SizedBox() : const SizedBox(width: 15),
-                                flavorState.flavor == "Production"
-                                    ? const SizedBox()
-                                    : Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            try {
-                                              print('Share');
-                                              // await FirebaseMessaging.instance.requestPermission();
-                                              // final token = await FirebaseMessaging.instance.getToken();
-                                            } catch (error, stackTrace) {
-                                              Log.error(error.toString(), stackTrace: stackTrace);
-                                            }
-                                          },
-                                          child: Text('Share profile'),
-                                        ),
-                                      ),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: FollowingButton(
-                                    isFollowing: profileState.isFollowing,
-                                    user: profileState.user,
-                                  ),
-                                ),
-                                flavorState.flavor == "Production" ? const SizedBox() : const SizedBox(width: 15),
-                                flavorState.flavor == "Production"
-                                    ? const SizedBox()
-                                    : Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            try {
-                                              print('Share');
-                                              // await FirebaseMessaging.instance.requestPermission();
-                                              // final token = await FirebaseMessaging.instance.getToken();
-                                            } on Exception catch (error, stackTrace) {
-                                              Log.error(error.toString(), stackTrace: stackTrace);
-                                            }
-                                          },
-                                          child: Text('Share profile'),
-                                        ),
-                                      ),
-                              ],
-                            ),
-                      const SizedBox(height: 20),
-                      !(profileState.isCurrentUser || profileState.isFollowing)
-                          ? const SizedBox()
-                          : Column(
-                              children: [
-                                profileState.isCurrentUser ? const MunroChallengeWidget() : const SizedBox(),
-                                profileState.posts.isEmpty
-                                    ? const Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 20),
-                                        child: CenterText(text: "No posts"),
-                                      )
-                                    : Column(
-                                        children:
-                                            profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
-                                      ),
-                              ],
-                            ),
-                    ],
-                  ),
-                ),
-              )
-            ],
+                        ],
+                      ),
+              ],
+            ),
           ),
         ),
       ),

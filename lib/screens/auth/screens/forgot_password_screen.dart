@@ -19,11 +19,11 @@ class ForgotPasswordScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 35),
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: Text(
                   'To reset your password, please enter your email address below.',
                   textAlign: TextAlign.center,
@@ -39,9 +39,10 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
+                height: 44,
                 child: ElevatedButton(
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) {

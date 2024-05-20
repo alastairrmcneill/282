@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 class MyTheme {
   static ThemeData get lightTheme {
@@ -19,17 +17,47 @@ class MyTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          backgroundColor: MyColors.accentColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(8),
           ),
           textStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
+          elevation: 1,
         ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: MyColors.accentColor,
+          backgroundColor: MyColors.backgroundColor,
+          side: const BorderSide(color: MyColors.accentColor, width: 2), // Border color and width
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          padding: const EdgeInsets.all(0),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: MyColors.contrastColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      tabBarTheme: const TabBarTheme(
+        labelColor: MyColors.accentColor,
+        indicatorColor: MyColors.accentColor,
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: Colors.black,
+          foregroundColor: MyColors.textColor,
           textStyle: const TextStyle(
             fontWeight: FontWeight.w500,
             decoration: TextDecoration.underline,
@@ -44,7 +72,7 @@ class MyTheme {
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
       ),
-      cardColor: Color.fromARGB(255, 250, 255, 248),
+      cardColor: const Color.fromARGB(255, 250, 255, 248),
       cardTheme: const CardTheme(
         elevation: 1.5,
         shape: RoundedRectangleBorder(
@@ -57,17 +85,46 @@ class MyTheme {
         unselectedItemColor: Colors.black45,
         type: BottomNavigationBarType.fixed,
       ),
-      fontFamily: "Poppins",
+      fontFamily: "NotoSans",
       textTheme: const TextTheme(
         headlineMedium: TextStyle(color: MyColors.textColor, fontSize: 24, fontWeight: FontWeight.w700),
         headlineSmall: TextStyle(color: MyColors.textColor, fontSize: 13, fontWeight: FontWeight.w300),
         titleLarge: TextStyle(color: MyColors.textColor, fontSize: 20, fontWeight: FontWeight.w500),
         titleMedium: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w600, height: 1.5),
+        bodyLarge: TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w500, height: 1.8),
         bodyMedium: TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w300, height: 1.8),
         bodySmall: TextStyle(color: MyColors.textColor, fontSize: 12, fontWeight: FontWeight.w300, height: 1.1),
       ),
       listTileTheme: const ListTileThemeData(
         titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor; // On color
+          }
+          return Colors.grey; // Off color
+        }),
+        trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor.withOpacity(0.5); // On color
+          }
+          return Colors.grey.withOpacity(0.5); // Off color
+        }),
+        overlayColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor.withOpacity(0.2); // On color
+          }
+          return Colors.grey.withOpacity(0.2); // Off color
+        }),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor; // On color
+          }
+          return Colors.white; // Off color
+        }),
       ),
     );
   }
@@ -83,4 +140,5 @@ class MyColors {
     begin: Alignment.bottomCenter,
     end: Alignment.topCenter,
   );
+  static const contrastColor = Color.fromRGBO(231, 141, 8, 1);
 }

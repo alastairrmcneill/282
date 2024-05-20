@@ -5,32 +5,24 @@ class LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.green,
-          child: Text('282'),
-          // child: Image.asset(
-          //   "assets/icons/logo.png",
-          // ),
+          // child: Text('282'),
+          child: Image.asset(
+            "assets/icons/app_icon.png",
+          ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           'Welcome back!',
-          style: TextStyle(
-            fontFamily: "NotoSans",
-            fontSize: 30,
-            fontWeight: FontWeight.w400,
-          ),
+          style: Theme.of(context).textTheme.headlineLarge,
         ),
         Text(
           'Time to get out into the munros!',
-          style: TextStyle(
-            fontFamily: "NotoSans",
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-          ),
+          style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 20),
         ),
       ],
     );

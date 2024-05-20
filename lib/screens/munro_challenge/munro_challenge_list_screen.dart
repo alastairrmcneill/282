@@ -15,30 +15,39 @@ class MunroChallengeListScreen extends StatelessWidget {
         title: const Text('Munro Challenge'),
       ),
       body: Center(
-        child: ListView(
-          children: [
-            ...achievementsState.achievements
+        child: ListView.separated(
+          itemCount: achievementsState.achievements
+              .where((Achievement achievement) => achievement.type == AchievementTypes.annualGoal)
+              .toList()
+              .length,
+          itemBuilder: (context, index) {
+            List<Achievement> sortedAchievements = achievementsState.achievements
                 .where((Achievement achievement) => achievement.type == AchievementTypes.annualGoal)
-                .map(
-                  (Achievement achievement) => ListTile(
-                    title: Text(achievement.name),
-                    subtitle: Text(achievement.description),
-                    trailing: achievement.completed ? const Icon(Icons.check) : null,
-                    onTap: achievement.criteria[CriteriaFields.year] == DateTime.now().year
-                        ? () {
-                            achievementsState.reset();
-                            achievementsState.setCurrentAchievement = achievement;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CreateMunroChallengeScreen(),
-                              ),
-                            );
-                          }
-                        : null,
-                  ),
-                ),
-          ],
+                .toList();
+
+            sortedAchievements.sort((a, b) => b.uid.compareTo(a.uid));
+
+            Achievement achievement = sortedAchievements[index];
+
+            return ListTile(
+              title: Text(achievement.name),
+              subtitle: Text(achievement.description),
+              trailing: achievement.completed ? const Icon(Icons.check) : null,
+              onTap: achievement.criteria[CriteriaFields.year] == DateTime.now().year
+                  ? () {
+                      achievementsState.reset();
+                      achievementsState.setCurrentAchievement = achievement;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MunroChallengeDetailScreen(),
+                        ),
+                      );
+                    }
+                  : null,
+            );
+          },
+          separatorBuilder: (context, index) => Divider(),
         ),
       ),
     );

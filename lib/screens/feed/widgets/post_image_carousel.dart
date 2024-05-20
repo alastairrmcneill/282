@@ -16,6 +16,12 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    List<String> imageUrls = widget.post.imageUrlsMap.values.expand((element) => element).toList();
+
+    if (imageUrls.isEmpty) {
+      imageUrls = widget.post.includedMunros.map((munro) => munro.pictureURL).toList();
+    }
+
     return Stack(
       children: [
         CarouselSlider(
@@ -29,9 +35,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
             height: 300,
             onPageChanged: (index, reason) => setState(() => _selectedIndex = index),
           ),
-          items: widget.post.imageUrlsMap.values
-              .expand((element) => element)
-              .toList()
+          items: imageUrls
               .map(
                 (url) => Container(
                   margin: EdgeInsets.zero,
@@ -68,7 +72,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
               )
               .toList(),
         ),
-        widget.post.imageUrlsMap.values.expand((element) => element).toList().length < 2
+        imageUrls.length < 2
             ? const SizedBox()
             : SizedBox(
                 height: 300,
@@ -78,7 +82,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: AnimatedSmoothIndicator(
                       activeIndex: _selectedIndex,
-                      count: widget.post.imageUrlsMap.values.expand((element) => element).toList().length,
+                      count: imageUrls.length,
                       effect: const WormEffect(
                         dotWidth: 8,
                         dotHeight: 8,

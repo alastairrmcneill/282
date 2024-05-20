@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class ConfirmPasswordFormField extends StatefulWidget {
   final TextEditingController confirmPassword_TextEditingController;
@@ -19,23 +20,16 @@ class _PasswordFormFieldState extends State<ConfirmPasswordFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: 'Confirm Password',
-        // floatingLabelBehavior: FloatingLabelBehavior.never,
-        // prefixIcon: const Icon(Icons.lock_outline),
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
-          icon: _obscureText
-              ? const Icon(Icons.visibility_off_rounded)
-              : const Icon(Icons.visibility_rounded),
-        ),
+    return TextFormFieldBase(
+      labelText: 'Confirm Password',
+      suffixIcon: IconButton(
+        onPressed: () {
+          setState(() {
+            _obscureText = !_obscureText;
+          });
+        },
+        icon: _obscureText ? const Icon(Icons.visibility_off_rounded) : const Icon(Icons.visibility_rounded),
       ),
-      maxLines: 1,
       keyboardType: TextInputType.visiblePassword,
       obscureText: _obscureText,
       onChanged: (value) {
