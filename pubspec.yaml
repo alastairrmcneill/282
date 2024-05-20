@@ -62,12 +62,26 @@ flutter_native_splash:
   android: true
   ios: true
 
-flutter_icons:
+flutter_launcher_icons:
   ios: true
   android: true
   remove_alpha_ios: true
-  image_path: "assets/icons/icon.png"
-
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  flavors:
+    prod:
+      android: true
+      ios: true
+      image_path: "assets/icons/app_icon.png"
+      adaptive_icon_background: "#ffffff"
+      adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+    dev:
+      android: true
+      ios: true
+      image_path: "assets/icons/app_icon.png"
+      adaptive_icon_background: "#ffffff"
+      adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
 flutter:
   uses-material-design: true
 

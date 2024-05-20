@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
@@ -122,7 +125,14 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                showDocumentDialog(context, mdFileName: 'assets/documents/terms_and_conditions.md');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const DocumentScreen(
+                                      title: "Terms & Conditions",
+                                      mdFileName: "assets/documents/terms_and_conditions.md",
+                                    ),
+                                  ),
+                                );
                               },
                           ),
                           const TextSpan(text: " and "),
@@ -134,7 +144,14 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                showDocumentDialog(context, mdFileName: 'assets/documents/privacy_policy.md');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const DocumentScreen(
+                                      title: "Privacy Policy",
+                                      mdFileName: "assets/documents/privacy_policy.md",
+                                    ),
+                                  ),
+                                );
                               },
                           ),
                           const TextSpan(text: "."),
