@@ -24,13 +24,16 @@ class ProfileService {
       profileState.setIsCurrentUser = userState.currentUser?.uid == userId;
 
       // Check if current user is following this user
-      profileState.setIsFollowing = await _isFollowingUser(
+      profileState.setIsFollowing = await isFollowingUser(
         context,
         currentUserId: userState.currentUser?.uid ?? "",
         profileUserId: userId,
       );
 
       profileState.setPosts = await PostService.getProfilePosts(context);
+
+      // Load profile pictures
+      MunroPictureService.getProfilePictures(context, profileId: userId);
 
       // Set loading status?
       profileState.setStatus = ProfileStatus.loaded;
@@ -43,7 +46,7 @@ class ProfileService {
     }
   }
 
-  static Future<bool> _isFollowingUser(
+  static Future<bool> isFollowingUser(
     BuildContext context, {
     required String currentUserId,
     required String profileUserId,

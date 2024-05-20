@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class EmailFormField extends StatelessWidget {
   final TextEditingController textEditingController;
@@ -6,13 +7,10 @@ class EmailFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final RegExp emailRegex =
-        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
+    final RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
 
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Email',
-      ),
+    return TextFormFieldBase(
+      labelText: "Email",
       textInputAction: TextInputAction.next,
       maxLines: 1,
       autocorrect: false,

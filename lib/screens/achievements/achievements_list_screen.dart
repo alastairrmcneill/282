@@ -15,24 +15,32 @@ class AchievementListScreen extends StatelessWidget {
         title: const Text('Achievements'),
       ),
       body: Center(
-        child: ListView(
-          children: [
-            ...achievementsState.achievements
+        child: ListView.separated(
+          itemCount: achievementsState.achievements
+              .where((Achievement achievement) => achievement.type != AchievementTypes.annualGoal)
+              .length,
+          itemBuilder: (context, index) {
+            List<Achievement> sortedAchievements = achievementsState.achievements
                 .where((Achievement achievement) => achievement.type != AchievementTypes.annualGoal)
-                .map(
-                  (Achievement achievement) => ListTile(
-                    title: Text(achievement.name),
-                    subtitle: Text(achievement.description),
-                    trailing: achievement.completed ? const Icon(Icons.check) : null,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => AchievementDetailScreen(achievement: achievement),
-                      ),
-                    ),
-                  ),
+                .toList();
+
+            sortedAchievements.sort((a, b) => a.uid.compareTo(b.uid));
+
+            Achievement achievement = sortedAchievements[index];
+
+            return ListTile(
+              title: Text(achievement.name),
+              subtitle: Text(achievement.description),
+              trailing: achievement.completed ? const Icon(Icons.check) : null,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AchievementDetailScreen(achievement: achievement),
                 ),
-          ],
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => const Divider(),
         ),
       ),
     );

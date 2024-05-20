@@ -50,4 +50,47 @@ class MunroPicturesDatabase {
       return munroPictures;
     }
   }
+
+  static Future<List<MunroPicture>> readProfilePictures(
+    BuildContext context, {
+    required String profileId,
+    required String? lastPictureId,
+    int count = 18,
+  }) async {
+    List<MunroPicture> munroPictures = [];
+    QuerySnapshot querySnapshot;
+
+    try {
+      if (lastPictureId == null) {
+        // Load first bathc
+        querySnapshot = await _munroPicturesRef
+            .where(MunroPictureFields.authorId, isEqualTo: profileId)
+            .orderBy(PostFields.dateTime, descending: true)
+            .limit(count)
+            .get();
+      } else {
+        final lastPictureDoc = await _munroPicturesRef.doc(lastPictureId).get();
+
+        if (!lastPictureDoc.exists) return [];
+
+        querySnapshot = await _munroPicturesRef
+            .where(MunroPictureFields.authorId, isEqualTo: profileId)
+            .orderBy(PostFields.dateTime, descending: true)
+            .startAfterDocument(lastPictureDoc)
+            .limit(count)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        MunroPicture munroPicture = MunroPicture.fromJSON(doc.data() as Map<String, dynamic>);
+
+        munroPictures.add(munroPicture);
+      }
+      return munroPictures;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error fetching munro pictures.");
+      return munroPictures;
+    }
+  }
 }

@@ -30,10 +30,14 @@ class CommentInputField extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircularProfilePicture(
-                  radius: 15,
-                  profilePictureURL: userState.currentUser?.profilePictureURL,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CircularProfilePicture(
+                    radius: 15,
+                    profilePictureURL: userState.currentUser?.profilePictureURL,
+                  ),
                 ),
                 Expanded(
                   flex: 1,
@@ -41,14 +45,12 @@ class CommentInputField extends StatelessWidget {
                     controller: _scrollController,
                     child: Form(
                       key: _formKey,
-                      child: TextFormField(
+                      child: TextFormFieldBase(
                         scrollController: _scrollController,
                         initialValue: commentsState.commentText,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Add a comment...",
-                        ),
-                        minLines: 1,
+                        hintText: "Add a comment...",
+                        border: InputBorder.none,
+                        minLines: 2,
                         maxLines: 3,
                         keyboardType: TextInputType.multiline,
                         textCapitalization: TextCapitalization.sentences,

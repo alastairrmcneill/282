@@ -79,31 +79,21 @@ class CreatePostScreen extends StatelessWidget {
                     }
                   }
                 },
-                child: const Text(
-                  "Save",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.green,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
+                child: const Text("Save"),
               ),
             ],
           ),
           body: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    TextFormField(
+                    TextFormFieldBase(
                       initialValue: createPostState.title,
-                      decoration: const InputDecoration(hintText: "Title your hike"),
-                      textCapitalization: TextCapitalization.sentences,
                       onSaved: (newValue) {
                         if ((newValue == null || newValue.trim() == "")) {
                           createPostState.setTitle = null;
@@ -111,15 +101,12 @@ class CreatePostScreen extends StatelessWidget {
                           createPostState.setTitle = newValue.trim();
                         }
                       },
+                      hintText: "Title your hike",
                     ),
                     const SizedBox(height: 15),
-                    TextFormField(
+                    TextFormFieldBase(
                       initialValue: createPostState.description,
-                      decoration: const InputDecoration(
-                        hintText: "How was it? Tell us about your hike.",
-                        alignLabelWithHint: true,
-                        contentPadding: EdgeInsets.all(15),
-                      ),
+                      hintText: "How was it? Tell us about your hike.",
                       maxLines: 4,
                       textCapitalization: TextCapitalization.sentences,
                       keyboardType: TextInputType.text,
@@ -127,9 +114,7 @@ class CreatePostScreen extends StatelessWidget {
                         createPostState.setDescription = newValue?.trim();
                       },
                     ),
-                    // const SizedBox(height: 15),
-                    // const CreatePostImagePicker(),
-                    const SizedBox(height: 15),
+                    const PaddedDivider(top: 35, bottom: 10),
                     const MunroSelector(),
                     const SizedBox(height: 10),
                   ],

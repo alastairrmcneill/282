@@ -33,12 +33,6 @@ class MunroSummitedButton extends StatelessWidget {
             }
           }
         },
-        backgroundColor: Color.fromRGBO(231, 141, 8, 1), // Set the background color to orange
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15), // Set the border radius to make the button rounded
-          ),
-        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some padding to make the button wider
           child: Text(

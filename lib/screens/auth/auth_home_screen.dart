@@ -1,7 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
@@ -52,7 +56,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                                 Navigator.of(context).pop();
                               },
                               icon: const Icon(
-                                Icons.close,
+                                CupertinoIcons.xmark,
                                 size: 18,
                               ),
                             ),
@@ -86,7 +90,6 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         text: "Already have an account? ",
-                        style: const TextStyle(fontFamily: "NotoSans"),
                         children: [
                           TextSpan(
                             text: "Log in",
@@ -112,32 +115,43 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         text: "By continuing to use 282, you agree to our ",
-                        style: TextStyle(
-                            fontFamily: "NotoSans", fontWeight: FontWeight.w400, color: Colors.grey[500], fontSize: 12),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
                         children: [
                           TextSpan(
                             text: "Terms & Conditions",
                             style: const TextStyle(
-                              fontFamily: "NotoSans",
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                showDocumentDialog(context, mdFileName: 'assets/documents/terms_and_conditions.md');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const DocumentScreen(
+                                      title: "Terms & Conditions",
+                                      mdFileName: "assets/documents/terms_and_conditions.md",
+                                    ),
+                                  ),
+                                );
                               },
                           ),
                           const TextSpan(text: " and "),
                           TextSpan(
                             text: "Privacy Policy",
                             style: const TextStyle(
-                              fontFamily: "NotoSans",
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                showDocumentDialog(context, mdFileName: 'assets/documents/privacy_policy.md');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const DocumentScreen(
+                                      title: "Privacy Policy",
+                                      mdFileName: "assets/documents/privacy_policy.md",
+                                    ),
+                                  ),
+                                );
                               },
                           ),
                           const TextSpan(text: "."),

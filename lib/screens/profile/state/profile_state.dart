@@ -3,23 +3,32 @@ import 'package:two_eight_two/models/models.dart';
 
 class ProfileState extends ChangeNotifier {
   ProfileStatus _status = ProfileStatus.initial;
+  ProfilePhotoStatus _photoStatus = ProfilePhotoStatus.initial;
   AppUser? _user;
   List<AppUser> _profileHistory = [];
   bool _isFollowing = false;
   bool _isCurrentUser = false;
   List<Post> _posts = [];
+  List<MunroPicture> _profilePhotos = [];
   List<List<Post>> _postsHisotry = [];
   Error _error = Error();
 
   AppUser? get user => _user;
   ProfileStatus get status => _status;
+  ProfilePhotoStatus get photoStatus => _photoStatus;
   bool get isFollowing => _isFollowing;
   bool get isCurrentUser => _isCurrentUser;
   List<Post> get posts => _posts;
+  List<MunroPicture> get profilePhotos => _profilePhotos;
   Error get error => _error;
 
   set setStatus(ProfileStatus profileStatus) {
     _status = profileStatus;
+    notifyListeners();
+  }
+
+  set setPhotoStatus(ProfilePhotoStatus photoStatus) {
+    _photoStatus = photoStatus;
     notifyListeners();
   }
 
@@ -95,6 +104,16 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setProfilePhotos(List<MunroPicture> profilePhotos) {
+    _profilePhotos = profilePhotos;
+    notifyListeners();
+  }
+
+  set addProfilePhotos(List<MunroPicture> profilePhotos) {
+    _profilePhotos.addAll(profilePhotos);
+    notifyListeners();
+  }
+
   set setError(Error error) {
     _status = ProfileStatus.error;
     _error = error;
@@ -103,6 +122,7 @@ class ProfileState extends ChangeNotifier {
 
   reset() {
     _status = ProfileStatus.initial;
+    _photoStatus = ProfilePhotoStatus.initial;
     _user = null;
     _profileHistory = [];
     _isFollowing = false;
@@ -114,3 +134,5 @@ class ProfileState extends ChangeNotifier {
 }
 
 enum ProfileStatus { initial, loading, loaded, paginating, error }
+
+enum ProfilePhotoStatus { initial, loading, loaded, paginating, error }

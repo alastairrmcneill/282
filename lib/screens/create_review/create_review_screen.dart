@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_review/widgets/widgets.dart';
@@ -12,7 +9,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreateReviewsScreen extends StatelessWidget {
   CreateReviewsScreen({super.key});
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +37,10 @@ class CreateReviewsScreen extends StatelessWidget {
           case CreateReviewStatus.loaded:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
-              print("recentlyCompletedAchievements: ${achievementsState.recentlyCompletedAchievements.length}");
               if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AchievementsScreen.route, // The name of the route you want to navigate to
+                  AchievementsCompletedScreen.route, // The name of the route you want to navigate to
                   (Route<dynamic> route) => false, // This predicate ensures all routes are removed
                 );
               } else {
@@ -67,62 +63,72 @@ class CreateReviewsScreen extends StatelessWidget {
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
     return PopScope(
       canPop: false,
+      onPopInvoked: (didPop) => createReviewState.setStatus = CreateReviewStatus.loaded,
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(CupertinoIcons.back),
-            onPressed: () => createReviewState.setStatus = CreateReviewStatus.loaded,
-          ),
-          title: const Text("Review Munros"),
-          actions: [
-            IconButton(
-              icon: const Icon(CupertinoIcons.checkmark_alt),
-              onPressed: () {
-                if (!_formKey.currentState!.validate()) {
-                  return;
-                }
-                _formKey.currentState!.save();
-
-                ReviewService.createReview(context);
-              },
-            ),
-          ],
+          title: const Text("How was your hike?"),
         ),
         body: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: createReviewState.munrosToReview.map((Munro munro) {
-                return Column(
-                  children: [
-                    CenterText(text: munro.name),
-                    StarRatingFormField(
-                      initialValue: createReviewState.reviews[munro.id]!["rating"],
-                      validator: (rating) {
-                        if (rating == null || rating < 1) {
-                          return 'Please select at least one star';
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
-                    ),
-                    RepaintBoundary(
-                      child: TextFormField(
-                        initialValue: createReviewState.reviews[munro.id]!["review"],
-                        onSaved: (value) {
-                          createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
-                        },
-                        maxLines: 5,
-                        textAlignVertical: TextAlignVertical.top, // Add this line
-                        decoration: const InputDecoration(
-                          hintText: "Write a review (optional)",
-                          contentPadding: EdgeInsets.all(10),
-                        ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...createReviewState.munrosToReview.map((Munro munro) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            munro.name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 5),
+                          StarRatingFormField(
+                            initialValue: createReviewState.reviews[munro.id]!["rating"],
+                            validator: (rating) {
+                              if (rating == null || rating < 1) {
+                                return 'Please select at least one star';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
+                          ),
+                          const SizedBox(height: 5),
+                          TextFormFieldBase(
+                            initialValue: createReviewState.reviews[munro.id]!["review"],
+                            onSaved: (value) {
+                              createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
+                            },
+                            maxLines: 5,
+                            hintText: "Comment",
+                          ),
+                        ],
                       ),
+                    );
+                  }),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 44,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        _formKey.currentState!.save();
+
+                        ReviewService.createReview(context);
+                      },
+                      child: const Text("Submit"),
                     ),
-                  ],
-                );
-              }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),

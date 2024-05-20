@@ -51,9 +51,7 @@ class PostWidget extends StatelessWidget {
         child: Column(
           children: [
             PostHeader(post: post),
-            post.imageUrlsMap.values.expand((element) => element).isEmpty
-                ? const SizedBox()
-                : PostImagesCarousel(post: post),
+            PostImagesCarousel(post: post),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
@@ -46,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(
-                          Icons.close,
+                          CupertinoIcons.xmark,
                           size: 18,
                         ),
                       ),
@@ -77,6 +78,7 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 15),
                     SizedBox(
                       width: double.infinity,
+                      height: 44,
                       child: ElevatedButton(
                         onPressed: () async {
                           if (!_formKey.currentState!.validate()) {

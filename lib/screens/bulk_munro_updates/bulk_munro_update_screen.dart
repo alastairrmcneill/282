@@ -6,6 +6,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class BulkMunroUpdateScreen extends StatefulWidget {
   static const String routeName = '/bulk_munro_update';
@@ -51,16 +52,16 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           var firstSummitedDate = summitedDates.isEmpty ? null : summitedDates[0];
           if (firstSummitedDate != null) {
             if (firstSummitedDate is Timestamp) {
-              firstSummitedDate = (firstSummitedDate as Timestamp).toDate();
+              firstSummitedDate = (firstSummitedDate).toDate();
             }
           } else {
             firstSummitedDate = DateTime.now();
           }
 
-          TextEditingController _dateController =
+          TextEditingController dateController =
               TextEditingController(text: DateFormat('dd/MM/yy').format(firstSummitedDate));
 
-          DateTime? _pickedStartDate;
+          DateTime? pickedStartDate;
           return ListTile(
             title: Text(munro.name),
             subtitle: munro.extra != null ? Text(munro.extra!) : null,
@@ -68,19 +69,19 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
             trailing: e[MunroFields.summited]
                 ? SizedBox(
                     width: 100,
-                    child: TextFormField(
-                      controller: _dateController,
+                    child: TextFormFieldBase(
+                      controller: dateController,
                       readOnly: true,
                       onTap: () async {
-                        _pickedStartDate = await showDatePicker(
+                        pickedStartDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime.now(),
                         );
 
-                        if (_pickedStartDate != null) {
-                          DateTime date = _pickedStartDate!.add(const Duration(hours: 12));
+                        if (pickedStartDate != null) {
+                          DateTime date = pickedStartDate!.add(const Duration(hours: 12));
                           if (munro.summitedDates!.isEmpty) {
                             munro.summitedDates!.add(date);
                           } else {
@@ -96,6 +97,7 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
                         if (value == null || value.trim().isEmpty) {
                           return 'Required';
                         }
+                        return null;
                       },
                     ),
                   )
@@ -120,41 +122,8 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
               }
             },
           );
-        }).toList(),
+        }),
       ]),
-      // body: ListView(
-      //   children: bulkMunroUpdateState.bulkMunroUpdateList.map(
-      //     (e) {
-      //       UserState userState = Provider.of<UserState>(context, listen: false);
-      //       List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
-
-      //       Munro munro = munroState.munroList.firstWhere((element) => element.id == e[MunroFields.id]);
-
-      //       return ListTile(
-      //         title: Text(munro.name),
-      //         subtitle: munro.extra != null ? Text(munro.extra!) : null,
-      //         leading: e[MunroFields.summited] ? const Icon(Icons.check) : const SizedBox(),
-      //         onTap: () {
-      //           if (e[MunroFields.summited]) {
-      //             bulkMunroUpdateState.setMunro = {
-      //               MunroFields.id: munro.id,
-      //               MunroFields.summited: !e[MunroFields.summited],
-      //               MunroFields.summitedDate: null,
-      //               MunroFields.summitedDates: []
-      //             };
-      //           } else {
-      //             bulkMunroUpdateState.setMunro = {
-      //               MunroFields.id: munro.id,
-      //               MunroFields.summited: !e[MunroFields.summited],
-      //               MunroFields.summitedDate: DateTime.now(),
-      //               MunroFields.summitedDates: munro.summitedDates!.isEmpty ? [DateTime.now()] : munro.summitedDates!
-      //             };
-      //           }
-      //         },
-      //       );
-      //     },
-      //   ).toList(),
-      // ),
     );
   }
 }

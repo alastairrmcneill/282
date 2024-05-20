@@ -49,6 +49,7 @@ class AchievementsState extends ChangeNotifier {
 
   set updateAchievement(Achievement achievement) {
     _achievements = _achievements.map((e) => e.uid == achievement.uid ? achievement : e).toList();
+    _currentAchievement = achievement;
     notifyListeners();
   }
 

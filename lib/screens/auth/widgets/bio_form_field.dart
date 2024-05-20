@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class BioFormField extends StatelessWidget {
   final String? hintText;
@@ -7,13 +8,10 @@ class BioFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextFormFieldBase(
       controller: textEditingController,
-      decoration: InputDecoration(
-        labelText: hintText ?? "Bio",
-        alignLabelWithHint: true,
-        contentPadding: const EdgeInsets.all(15),
-      ),
+      hintText: "Bio",
+      minLines: 4,
       maxLines: 4,
       textCapitalization: TextCapitalization.sentences,
       keyboardType: TextInputType.text,

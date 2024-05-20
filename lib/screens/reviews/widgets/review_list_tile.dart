@@ -21,30 +21,24 @@ class ReviewListTile extends StatelessWidget {
     required CreateReviewState createReviewState,
   }) {
     if (review.authorId == userState.currentUser?.uid) {
-      return PopupMenuButton(
-        icon: Icon(CupertinoIcons.ellipsis_vertical),
-        onSelected: (value) async {
-          if (value == MenuItems.item1) {
-            // Edit
+      List<MenuItem> menuItems = [
+        MenuItem(
+          text: 'Edit',
+          onTap: () {
             createReviewState.reset();
             createReviewState.loadReview = review;
             Navigator.push(context, MaterialPageRoute(builder: (_) => const EditReviewScreen()));
-          } else if (value == MenuItems.item2) {
-            // Delete
+          },
+        ),
+        MenuItem(
+          text: 'Delete',
+          onTap: () {
             ReviewService.deleteReview(context, review: review);
-          }
-        },
-        itemBuilder: (context) => const [
-          PopupMenuItem(
-            value: MenuItems.item1,
-            child: Text('Edit'),
-          ),
-          PopupMenuItem(
-            value: MenuItems.item2,
-            child: Text('Delete'),
-          ),
-        ],
-      );
+          },
+        ),
+      ];
+
+      return PopupMenuBase(items: menuItems);
     } else {
       return const SizedBox(width: 48);
     }
@@ -56,40 +50,42 @@ class ReviewListTile extends StatelessWidget {
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircularProfilePicture(
-            radius: 20,
+            radius: 15,
             profilePictureURL: review.authorProfilePictureURL,
           ),
           const SizedBox(width: 10),
           Expanded(
             flex: 1,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "${review.authorDisplayName} - ${review.dateTime.timeAgoShort()}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w200,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.2),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 RatingBar(
                   initialRating: review.rating.toDouble(),
                   ignoreGestures: true,
                   onRatingUpdate: (rating) {},
                   ratingWidget: RatingWidget(
-                    full: const Icon(Icons.star, color: Colors.amber),
-                    half: const Icon(Icons.star_half, color: Colors.amber),
-                    empty: const Icon(Icons.star_border, color: Colors.amber),
+                    full: const Icon(CupertinoIcons.star_fill, color: Colors.amber),
+                    half: const Icon(CupertinoIcons.star_fill, color: Colors.amber),
+                    empty: Icon(CupertinoIcons.star_fill, color: Colors.grey[200]),
                   ),
                   itemSize: 20,
                   allowHalfRating: false,
                 ),
-                Text(review.text),
+                Text(
+                  review.text,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ],
             ),
           ),
