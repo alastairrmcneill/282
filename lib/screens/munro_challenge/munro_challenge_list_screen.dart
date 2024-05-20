@@ -40,7 +40,7 @@ class MunroChallengeListScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CreateMunroChallengeScreen(),
+                          builder: (_) => MunroChallengeDetailScreen(),
                         ),
                       );
                     }
