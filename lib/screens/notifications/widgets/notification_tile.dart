@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/state/comments_state.dart';
-import 'package:two_eight_two/screens/profile/screens/screens.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -57,6 +56,7 @@ class NotificationTile extends StatelessWidget {
       leading: CircularProfilePicture(
         radius: 15,
         profilePictureURL: notification.sourceProfilePictureURL,
+        profileUid: notification.sourceId,
       ),
       title: _buildText(notification),
       onTap: () {

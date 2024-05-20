@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -7,6 +6,8 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
+
+import '../../screens.dart';
 
 class CommentTile extends StatelessWidget {
   final Comment comment;
@@ -42,8 +43,9 @@ class CommentTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircularProfilePicture(
-            radius: 20,
+            radius: 15,
             profilePictureURL: comment.authorProfilePictureURL,
+            profileUid: comment.authorId,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -51,14 +53,25 @@ class CommentTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "${comment.authorDisplayName} - ${comment.dateTime.timeAgoShort()}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w200,
+                GestureDetector(
+                  onTap: () {
+                    ProfileService.loadUserFromUid(context, userId: comment.authorId);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProfileScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "${comment.authorDisplayName} - ${comment.dateTime.timeAgoShort()}",
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.2),
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(comment.commentText),
+                Text(
+                  comment.commentText,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ],
             ),
           ),

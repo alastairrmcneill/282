@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -134,6 +135,11 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
               profilePictureURL: user.profilePictureURL,
             ),
             title: Text(user.displayName ?? ""),
+            trailing: UserTrailingButton(
+              profileUserId: user.uid!,
+              profileUserDisplayName: user.displayName ?? "",
+              profileUserPictureURL: user.profilePictureURL ?? "",
+            ),
             onTap: () {
               ProfileService.loadUserFromUid(context, userId: user.uid!);
               Navigator.push(

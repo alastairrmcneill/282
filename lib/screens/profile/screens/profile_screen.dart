@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       );
                     },
-                    icon: const Icon(CupertinoIcons.line_horizontal_3),
+                    icon: const Icon(Icons.settings_rounded),
                   )
                 : const SizedBox(),
           ],

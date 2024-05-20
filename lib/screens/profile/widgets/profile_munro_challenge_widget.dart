@@ -24,7 +24,7 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
         description: "",
         type: AchievementTypes.totalCount,
         completed: false,
-        criteria: {},
+        criteria: {"count": 0, "year": DateTime.now().year} as Map<String, dynamic>,
         progress: 0,
       ),
     );
