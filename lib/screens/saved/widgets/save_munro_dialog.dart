@@ -64,6 +64,7 @@ showSaveMunroDialog(BuildContext context) {
 
               // Submit form button
               SizedBox(
+                height: 44,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),

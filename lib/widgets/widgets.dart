@@ -15,3 +15,4 @@ export 'clickable_image.dart';
 export 'expandable_text.dart';
 export 'padded_divider.dart';
 export 'text_form_field_base.dart';
+export 'button.dart';

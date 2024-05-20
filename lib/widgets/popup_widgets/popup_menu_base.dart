@@ -17,7 +17,7 @@ class PopupMenuBase extends StatelessWidget {
           value: items.indexOf(item),
           child: Text(
             item.text,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w400),
           ),
         );
       }).toList(),

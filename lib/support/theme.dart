@@ -19,11 +19,14 @@ class MyTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          backgroundColor: MyColors.accentColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
           textStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
@@ -88,6 +91,14 @@ class MyTheme {
             return MyColors.accentColor.withOpacity(0.2); // On color
           }
           return Colors.grey.withOpacity(0.2); // Off color
+        }),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return MyColors.accentColor; // On color
+          }
+          return Colors.white; // Off color
         }),
       ),
     );

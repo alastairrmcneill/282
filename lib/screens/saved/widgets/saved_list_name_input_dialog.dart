@@ -68,6 +68,7 @@ showCreateSavedListDialog(BuildContext context, {SavedList? savedList}) {
 
               // Submit form button
               SizedBox(
+                height: 44,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
