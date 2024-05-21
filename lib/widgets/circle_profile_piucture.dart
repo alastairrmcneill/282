@@ -18,6 +18,7 @@ class CircularProfilePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Profile Picture URL: $profilePictureURL");
     return GestureDetector(
       onTap: () {
         if (profileUid == null) return;
@@ -35,7 +36,7 @@ class CircularProfilePicture extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.grey[350],
-          image: profilePictureURL == null
+          image: profilePictureURL == null || profilePictureURL == ''
               ? null
               : DecorationImage(
                   fit: BoxFit.cover,
@@ -44,7 +45,7 @@ class CircularProfilePicture extends StatelessWidget {
                   ),
                 ),
         ),
-        child: profilePictureURL == null
+        child: profilePictureURL == null || profilePictureURL == ''
             ? ClipOval(
                 child: Icon(
                   Icons.person_rounded,

@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
@@ -150,30 +149,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                       children: followersState.following
                           .map(
                             (followingRelationship) => ListTile(
-                              leading: Container(
-                                width: 40.0,
-                                height: 40.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey[350],
-                                  image: followingRelationship.targetProfilePictureURL == null
-                                      ? null
-                                      : DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
-                                            followingRelationship.targetProfilePictureURL!,
-                                          ),
-                                        ),
-                                ),
-                                child: followingRelationship.targetProfilePictureURL == null
-                                    ? ClipOval(
-                                        child: Icon(
-                                          Icons.person_rounded,
-                                          color: Colors.grey[600],
-                                          size: 28,
-                                        ),
-                                      )
-                                    : null,
+                              leading: CircularProfilePicture(
+                                radius: 20,
+                                profilePictureURL: followingRelationship.targetProfilePictureURL,
+                                profileUid: followingRelationship.targetId,
                               ),
                               title: Text(
                                 followingRelationship.targetDisplayName,
@@ -201,30 +180,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                       children: followersState.followers
                           .map(
                             (followingRelationship) => ListTile(
-                              leading: Container(
-                                width: 40.0,
-                                height: 40.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey[350],
-                                  image: followingRelationship.sourceProfilePictureURL == null
-                                      ? null
-                                      : DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
-                                            followingRelationship.sourceProfilePictureURL!,
-                                          ),
-                                        ),
-                                ),
-                                child: followingRelationship.sourceProfilePictureURL == null
-                                    ? ClipOval(
-                                        child: Icon(
-                                          Icons.person_rounded,
-                                          color: Colors.grey[600],
-                                          size: 28,
-                                        ),
-                                      )
-                                    : null,
+                              leading: CircularProfilePicture(
+                                radius: 20,
+                                profilePictureURL: followingRelationship.sourceProfilePictureURL,
+                                profileUid: followingRelationship.sourceId,
                               ),
                               title: Text(followingRelationship.sourceDisplayName),
                               trailing: UserTrailingButton(
