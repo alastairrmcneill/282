@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
@@ -13,7 +12,8 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostWidget extends StatelessWidget {
   final Post post;
-  const PostWidget({super.key, required this.post});
+  final bool inFeed;
+  const PostWidget({super.key, required this.post, this.inFeed = true});
 
   Widget _buildIncludedMunroText(BuildContext context) {
     if (post.includedMunros.isEmpty) return const SizedBox();
@@ -41,8 +41,8 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
-    UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
-    LikesState likesState = Provider.of<LikesState>(context, listen: false);
+    UserLikeState userLikeState = Provider.of<UserLikeState>(context);
+    LikesState likesState = Provider.of<LikesState>(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -76,14 +76,14 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             if (userLikeState.likedPosts.contains(post.uid!)) {
-                              LikeService.unLikePost(context, post: post);
+                              LikeService.unLikePost(context, post: post, inFeed: inFeed);
                             } else {
-                              LikeService.likePost(context, post: post);
+                              LikeService.likePost(context, post: post, inFeed: inFeed);
                             }
                           },
                           child: userLikeState.likedPosts.contains(post.uid!)
-                              ? const Icon(CupertinoIcons.heart_fill, size: 22)
-                              : const Icon(CupertinoIcons.heart, size: 22),
+                              ? const Icon(CupertinoIcons.heart_fill)
+                              : const Icon(CupertinoIcons.heart),
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(

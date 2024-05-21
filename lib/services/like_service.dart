@@ -6,9 +6,11 @@ import 'package:two_eight_two/screens/notifiers.dart';
 
 class LikeService {
   // Like Post
-  static Future likePost(BuildContext context, {required Post post}) async {
+  static Future likePost(BuildContext context, {required Post post, required bool inFeed}) async {
     UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     Like like = Like(
       postId: post.uid ?? "",
@@ -19,15 +21,31 @@ class LikeService {
     LikeDatabase.create(context, like: like);
     userLikeState.addRecentlyLikedPost = post.uid!;
     userLikeState.addLikedPosts = {post.uid!};
+
+    Post newPost = post.copyWith(likes: post.likes + 1);
+    if (inFeed) {
+      feedState.updatePost(newPost);
+    } else {
+      profileState.updatePost(newPost);
+    }
   }
 
   // Unlike Post
-  static Future unLikePost(BuildContext context, {required Post post}) async {
+  static Future unLikePost(BuildContext context, {required Post post, required bool inFeed}) async {
     UserLikeState userLikeState = Provider.of<UserLikeState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     LikeDatabase.delete(context, postId: post.uid ?? "", userId: userState.currentUser?.uid ?? "");
     userLikeState.removePost(post.uid!);
+
+    Post newPost = post.copyWith(likes: post.likes - 1);
+    if (inFeed) {
+      feedState.updatePost(newPost);
+    } else {
+      profileState.updatePost(newPost);
+    }
   }
 
   // Get liked posts

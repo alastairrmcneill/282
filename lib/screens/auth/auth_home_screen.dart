@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
