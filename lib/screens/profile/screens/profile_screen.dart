@@ -163,7 +163,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: CenterText(text: "No posts"),
                                 )
                               : Column(
-                                  children: profileState.posts.map((Post post) => PostWidget(post: post)).toList(),
+                                  children: profileState.posts
+                                      .map(
+                                        (Post post) => PostWidget(
+                                          post: post,
+                                          inFeed: false,
+                                        ),
+                                      )
+                                      .toList(),
                                 ),
                         ],
                       ),

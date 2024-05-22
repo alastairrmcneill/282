@@ -91,7 +91,7 @@ class NotificationsService {
         }
         Notif newNotification = notification.copyWith(read: true);
         await NotificationsDatabase.updateNotif(context, notification: newNotification);
-        notificationsState.markNotificationAsRead(notification);
+        notificationsState.markNotificationAsRead(newNotification);
       }
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

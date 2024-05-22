@@ -33,7 +33,7 @@ class NotificationsState extends ChangeNotifier {
 
   markNotificationAsRead(Notif notification) {
     int index = _notifications.indexWhere((element) => notification.uid == element.uid);
-    _notifications[index] = notification;
+    _notifications[index] = notification.copyWith(read: true);
     notifyListeners();
   }
 

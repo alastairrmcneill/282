@@ -123,7 +123,10 @@ class _FeedTabState extends State<FeedTab> {
                       Column(
                         children: feedState.posts
                             .map(
-                              (Post post) => PostWidget(post: post),
+                              (Post post) => PostWidget(
+                                post: post,
+                                inFeed: true,
+                              ),
                             )
                             .toList(),
                       ),

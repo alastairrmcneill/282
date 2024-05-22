@@ -52,7 +52,7 @@ class NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context);
     return ListTile(
-      tileColor: !notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
+      tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
       leading: CircularProfilePicture(
         radius: 15,
         profilePictureURL: notification.sourceProfilePictureURL,

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -57,6 +58,7 @@ class ReviewListTile extends StatelessWidget {
           CircularProfilePicture(
             radius: 15,
             profilePictureURL: review.authorProfilePictureURL,
+            profileUid: review.authorId,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -65,9 +67,15 @@ class ReviewListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "${review.authorDisplayName} - ${review.dateTime.timeAgoShort()}",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.2),
+                GestureDetector(
+                  onTap: () {
+                    ProfileService.loadUserFromUid(context, userId: review.authorId);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                  },
+                  child: Text(
+                    "${review.authorDisplayName} - ${review.dateTime.timeAgoShort()}",
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.2),
+                  ),
                 ),
                 const SizedBox(height: 5),
                 RatingBar(
