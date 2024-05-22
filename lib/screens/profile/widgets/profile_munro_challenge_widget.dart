@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/achievement_model.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
@@ -14,20 +15,13 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     ProfileState profileState = Provider.of<ProfileState>(context);
     AchievementsState achievementsState = Provider.of<AchievementsState>(context);
-    Achievement achievement = achievementsState.achievements.firstWhere(
-      (Achievement achievement) =>
-          achievement.type == AchievementTypes.annualGoal &&
-          achievement.criteria[CriteriaFields.year] == DateTime.now().year,
-      orElse: () => Achievement(
-        uid: "",
-        name: "",
-        description: "",
-        type: AchievementTypes.totalCount,
-        completed: false,
-        criteria: {"count": 0, "year": DateTime.now().year} as Map<String, dynamic>,
-        progress: 0,
-      ),
-    );
+    var munroChallenge = profileState.user?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
+
+    if (munroChallenge == null) {
+      return const SizedBox();
+    }
+
+    Achievement achievement = Achievement.fromJSON(munroChallenge);
 
     int year = achievement.criteria[CriteriaFields.year];
     int count = achievement.criteria[CriteriaFields.count];
