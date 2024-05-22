@@ -24,8 +24,8 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
           MaterialPageRoute(builder: (_) => const MunrosCompletedScreen()),
         );
       },
-      count: count.toString(),
       progress: progress.toString(),
+      count: " / $count",
       subtitle: "Completed",
     );
   }

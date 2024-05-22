@@ -33,6 +33,7 @@ class ClickableStatBox extends StatelessWidget {
                 flex: 1,
                 child: Center(
                   child: RichText(
+                    textAlign: TextAlign.center,
                     text: TextSpan(
                       text: progress,
                       style: Theme.of(context)
@@ -41,7 +42,7 @@ class ClickableStatBox extends StatelessWidget {
                           .copyWith(fontSize: 50, fontWeight: FontWeight.w400),
                       children: <TextSpan>[
                         TextSpan(
-                          text: " / $count",
+                          text: count,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],

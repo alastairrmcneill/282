@@ -21,18 +21,18 @@ showGoToBulkMunroDialog(BuildContext context) async {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             "Have you already completed a Munro?",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 5),
-          Text("You can bulk update your Munros to save marking them individually."),
+          const Text("You can bulk update your Munros to save marking them individually."),
           const SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
-                Navigator.of(context, rootNavigator: true).pop();
+                Navigator.of(context).pop();
                 BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
                 UserState userState = Provider.of<UserState>(context, listen: false);
                 MunroState munroState = Provider.of<MunroState>(context, listen: false);
