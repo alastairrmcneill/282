@@ -30,19 +30,35 @@ class MunroChallengeDetailScreen extends StatelessWidget {
         ],
       );
     } else {
-      return Column(
-        children: [
-          const SizedBox(height: 20),
-          const Text('🏔️', style: TextStyle(fontSize: 60)),
-          Text(
-            'You still have a few to go before you`ll reach your goal for the year.',
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.w300,
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
+      if (achievement.criteria[CriteriaFields.count] == 0) {
+        return Column(
+          children: [
+            const SizedBox(height: 20),
+            const Text('🏔️', style: TextStyle(fontSize: 60)),
+            Text(
+              'You haven\'t set a goal for the year yet.',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontWeight: FontWeight.w300,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        );
+      } else {
+        return Column(
+          children: [
+            const SizedBox(height: 20),
+            const Text('🏔️', style: TextStyle(fontSize: 60)),
+            Text(
+              'You still have a few to go before you`ll reach your goal for the year.',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontWeight: FontWeight.w300,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        );
+      }
     }
   }
 

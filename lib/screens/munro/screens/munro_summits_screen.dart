@@ -9,7 +9,7 @@ class MunroSummitsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context);
     int summitCount = munroState.selectedMunro!.summitedDates?.length ?? 0;
     return Scaffold(
       appBar: AppBar(

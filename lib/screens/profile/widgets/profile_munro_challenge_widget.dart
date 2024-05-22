@@ -40,8 +40,8 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
           );
         }
       },
-      count: count.toString(),
-      progress: progress.toString(),
+      progress: count == 0 ? "" : progress.toString(),
+      count: count == 0 ? "Click to set a goal for the year!" : " / $count",
       subtitle: "$year Challenge",
     );
   }

@@ -51,8 +51,8 @@ class MunroSummitedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context);
+    MunroState munroState = Provider.of<MunroState>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     int count = munroState.selectedMunro?.summitedDates?.length ?? 0;
 
