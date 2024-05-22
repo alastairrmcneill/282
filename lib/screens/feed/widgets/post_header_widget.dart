@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
@@ -58,14 +59,26 @@ class PostHeader extends StatelessWidget {
               CircularProfilePicture(
                 radius: 18,
                 profilePictureURL: post.authorProfilePictureURL,
+                profileUid: post.authorId,
               ),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    post.authorDisplayName,
-                    style: Theme.of(context).textTheme.titleMedium,
+                  GestureDetector(
+                    onTap: () {
+                      ProfileService.loadUserFromUid(context, userId: post.authorId);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      post.authorDisplayName,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
                   Text(
                     post.dateTime.timeAgoLong(),

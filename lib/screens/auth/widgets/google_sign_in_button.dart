@@ -16,7 +16,7 @@ class GoogleSignInButton extends StatelessWidget {
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),

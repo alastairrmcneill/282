@@ -7,10 +7,13 @@ class ProfileState extends ChangeNotifier {
   AppUser? _user;
   List<AppUser> _profileHistory = [];
   bool _isFollowing = false;
+  List<bool> _isFollowingHistory = [];
   bool _isCurrentUser = false;
+  List<bool> _isCurrentUserHistory = [];
   List<Post> _posts = [];
-  List<MunroPicture> _profilePhotos = [];
   List<List<Post>> _postsHisotry = [];
+  List<MunroPicture> _profilePhotos = [];
+  List<List<MunroPicture>> _profilePhotosHistory = [];
   Error _error = Error();
 
   AppUser? get user => _user;
@@ -41,15 +44,28 @@ class ProfileState extends ChangeNotifier {
   }
 
   void navigateBack() {
-    if (_profileHistory.isNotEmpty && _postsHisotry.isNotEmpty) {
+    if (_profileHistory.isNotEmpty &&
+        _postsHisotry.isNotEmpty &&
+        _profilePhotosHistory.isNotEmpty &&
+        _isFollowingHistory.isNotEmpty &&
+        _isCurrentUserHistory.isNotEmpty) {
       _profileHistory.removeAt(0);
       _postsHisotry.removeAt(0);
+      _profilePhotosHistory.removeAt(0);
+      _isFollowingHistory.removeAt(0);
+      _isCurrentUserHistory.removeAt(0);
       if (_profileHistory.isNotEmpty && _postsHisotry.isNotEmpty) {
         _user = _profileHistory[0];
         _posts = _postsHisotry[0];
+        _profilePhotos = _profilePhotosHistory[0];
+        _isFollowing = _isFollowingHistory[0];
+        _isCurrentUser = _isCurrentUserHistory[0];
       } else {
         _user = null;
         _posts = [];
+        _profilePhotos = [];
+        _isFollowing = false;
+        _isCurrentUser = false;
       }
 
       notifyListeners();
@@ -59,14 +75,24 @@ class ProfileState extends ChangeNotifier {
   void clear() {
     _profileHistory = [];
     _user = null;
+    _posts = [];
+    _postsHisotry = [];
+    _profilePhotos = [];
+    _profilePhotosHistory = [];
+    _isFollowing = false;
+    _isFollowingHistory = [];
+    _isCurrentUser = false;
+    _isCurrentUserHistory = [];
   }
 
   set setIsFollowing(bool isFollowing) {
+    _isFollowingHistory.insert(0, isFollowing);
     _isFollowing = isFollowing;
     notifyListeners();
   }
 
   set setIsCurrentUser(bool isCurrentUser) {
+    _isCurrentUserHistory.insert(0, isCurrentUser);
     _isCurrentUser = isCurrentUser;
     notifyListeners();
   }
@@ -105,6 +131,7 @@ class ProfileState extends ChangeNotifier {
   }
 
   set setProfilePhotos(List<MunroPicture> profilePhotos) {
+    _profilePhotosHistory.insert(0, profilePhotos);
     _profilePhotos = profilePhotos;
     notifyListeners();
   }

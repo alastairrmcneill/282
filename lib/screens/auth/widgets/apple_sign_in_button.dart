@@ -17,7 +17,7 @@ class AppleSignInButton extends StatelessWidget {
         onPressed: () async {
           await AuthService.signInWithApple(context);
         },
-        borderRadius: const BorderRadius.all(Radius.circular(25)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       );
     } else {
       // If not then return nothing

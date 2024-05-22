@@ -20,6 +20,7 @@ class UserTrailingButton extends StatefulWidget {
 
 class _UserTrailingButtonState extends State<UserTrailingButton> {
   bool following = true;
+  bool isCurrentUser = true;
 
   @override
   void initState() {
@@ -34,12 +35,14 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
       currentUserId: user.uid!,
       profileUserId: widget.profileUserId,
     );
+
+    isCurrentUser = user.uid == widget.profileUserId;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return following
+    return following || isCurrentUser
         ? const SizedBox()
         : ElevatedButton(
             onPressed: () async {
