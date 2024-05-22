@@ -157,6 +157,11 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                               title: Text(
                                 followingRelationship.targetDisplayName,
                               ),
+                              trailing: UserTrailingButton(
+                                profileUserId: followingRelationship.targetId,
+                                profileUserDisplayName: followingRelationship.targetDisplayName,
+                                profileUserPictureURL: followingRelationship.targetProfilePictureURL ?? "",
+                              ),
                               onTap: () {
                                 ProfileService.loadUserFromUid(context, userId: followingRelationship.targetId);
                                 Navigator.push(

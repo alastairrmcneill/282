@@ -18,7 +18,6 @@ class CircularProfilePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Profile Picture URL: $profilePictureURL");
     return GestureDetector(
       onTap: () {
         if (profileUid == null) return;
