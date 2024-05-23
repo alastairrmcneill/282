@@ -912,3 +912,34 @@ exports.databaseMigration = functions.https.onRequest(async (req, res) => {
     res.status(500).send("Failed to complete migration");
   }
 });
+
+exports.setMunroIdToString = functions.https.onRequest(async (req, res) => {
+  try {
+    // Update users
+    const usersRef = admin.firestore().collection("users");
+    const usersSnapshot = await usersRef.get();
+
+    const usersBatch = admin.firestore().batch();
+
+    console.log("Starting User Migration");
+    usersSnapshot.docs.forEach((doc) => {
+      const user = doc.data();
+      console.log(`User: ${user.uid}`);
+      if (user.personalMunroData && Array.isArray(user.personalMunroData)) {
+        const personalMunroData = user.personalMunroData.map((munro) => {
+          return { ...munro, id: munro.id.toString() };
+        });
+        usersBatch.update(doc.ref, { personalMunroData: personalMunroData });
+      }
+    });
+
+    console.log("Finsihsed User Migration");
+
+    await usersBatch.commit();
+
+    res.send("Migration completed successfully");
+  } catch (error) {
+    console.error("Error in migration: ", error);
+    res.status(500).send("Failed to complete migration");
+  }
+});

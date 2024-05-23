@@ -49,6 +49,7 @@ class MunroState extends ChangeNotifier {
     bool? saved,
   }) {
     int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);
+    if (munroIndex == -1) return;
     _munroList[munroIndex].summited = summited ?? _munroList[munroIndex].summited;
     _munroList[munroIndex].summitedDate = summitedDate ?? _munroList[munroIndex].summitedDate;
     _munroList[munroIndex].saved = saved ?? _munroList[munroIndex].saved;
@@ -68,7 +69,7 @@ class MunroState extends ChangeNotifier {
     required DateTime dateTime,
   }) {
     int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);
-
+    if (munroIndex == -1) return;
     _munroList[munroIndex].summitedDates!.remove(dateTime);
     _munroList[munroIndex].summited = _munroList[munroIndex].summitedDates!.isNotEmpty;
     notifyListeners();
