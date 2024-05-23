@@ -200,8 +200,17 @@ class AchievementService {
     int totalCompleted =
         userState.currentUser?.personalMunroData?.where((element) => element[MunroFields.summited] as bool).length ?? 0;
 
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
+
     // Compare to goal
-    bool completed = totalCompleted >= achievement.criteria[CriteriaFields.count];
+    bool completed = totalCompleted >= count;
 
     // Update notifiers
     if (completed && !achievement.completed) {
@@ -250,8 +259,17 @@ class AchievementService {
       }
     }
 
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
+
     // Compare to goal
-    bool completed = completedThisYear >= achievement.criteria[CriteriaFields.count];
+    bool completed = completedThisYear >= count;
 
     // Update notifiers
     if (completed && !achievement.completed) {
@@ -281,7 +299,14 @@ class AchievementService {
     List<Munro> munros = munroState.munroList;
     munros.sort((a, b) => b.feet - a.feet);
 
-    int count = achievement.criteria[CriteriaFields.count] as int;
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
 
     List<Munro> highestMunros = munros.sublist(0, count);
 
@@ -325,7 +350,14 @@ class AchievementService {
     List<Munro> munros = munroState.munroList;
     munros.sort((a, b) => a.feet - b.feet);
 
-    int count = achievement.criteria[CriteriaFields.count] as int;
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
 
     List<Munro> lowestMunros = munros.sublist(0, count);
 
@@ -427,8 +459,16 @@ class AchievementService {
       }
     }
 
-    int daysWithCorrectCount =
-        dateCounts.values.where((int count) => count == achievement.criteria[CriteriaFields.count]).length;
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
+
+    int daysWithCorrectCount = dateCounts.values.where((int dateCount) => dateCount == count).length;
 
     // Compare to goal
     bool completed = daysWithCorrectCount > 0;
@@ -472,8 +512,17 @@ class AchievementService {
             (element) => (element[MunroFields.area] as String) == (achievement.criteria[CriteriaFields.area] as String))
         .length;
 
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
+
     // Compare to goal
-    bool completed = totalCompletedInArea >= achievement.criteria[CriteriaFields.count];
+    bool completed = totalCompletedInArea >= count;
 
     // Update notifiers
     if (completed && !achievement.completed) {
