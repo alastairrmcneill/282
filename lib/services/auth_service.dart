@@ -48,6 +48,7 @@ class AuthService {
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
       );
+
       await UserService.createUser(context, appUser: appUser);
 
       stopCircularProgressOverlay(context);
