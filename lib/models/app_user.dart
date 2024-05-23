@@ -30,6 +30,16 @@ class AppUser {
     this.achievements,
   });
 
+  List<Map<String, dynamic>>? get personalMunroDataAsString {
+    return personalMunroData?.map((munroData) {
+      if (munroData['id'] is int) {
+        // Convert id to string if it's an int
+        return {...munroData, 'id': munroData['id'].toString()};
+      }
+      return munroData;
+    }).toList();
+  }
+
   Map<String, dynamic> toJSON() {
     return <String, dynamic>{
       AppUserFields.uid: uid,
@@ -42,7 +52,7 @@ class AppUser {
       AppUserFields.followingCount: followingCount,
       AppUserFields.bio: bio,
       AppUserFields.fcmToken: fcmToken,
-      AppUserFields.personalMunroData: personalMunroData,
+      AppUserFields.personalMunroData: personalMunroDataAsString,
       AppUserFields.achievements: achievements,
     };
   }
@@ -50,6 +60,14 @@ class AppUser {
   static AppUser fromJSON(Map<String, dynamic> json) {
     List<dynamic> personalMunroData = json[AppUserFields.personalMunroData];
     List<Map<String, dynamic>> listPersonalMunroData = List<Map<String, dynamic>>.from(personalMunroData);
+
+    List<Map<String, dynamic>> listPersonalMunroDataWithString = listPersonalMunroData.map((munroData) {
+      if (munroData['id'] is int) {
+        return {...munroData, 'id': munroData['id'].toString()};
+      }
+      return munroData;
+    }).toList();
+
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
       displayName: json[AppUserFields.displayName] as String?,
@@ -61,7 +79,7 @@ class AppUser {
       followingCount: json[AppUserFields.followingCount] as int? ?? 0,
       bio: json[AppUserFields.bio] as String?,
       fcmToken: json[AppUserFields.fcmToken] as String?,
-      personalMunroData: listPersonalMunroData,
+      personalMunroData: listPersonalMunroDataWithString,
       achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
     );
   }
@@ -137,8 +155,8 @@ class AppUserFields {
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [
-  {"id": "2", "summited": false, "summitedDate": null, "saved": false, "summitedDates": []},
   {"id": "1", "summited": false, "summitedDate": null, "saved": false, "summitedDates": []},
+  {"id": "2", "summited": false, "summitedDate": null, "saved": false, "summitedDates": []},
   {"id": "3", "summited": false, "summitedDate": null, "saved": false, "summitedDates": []},
   {"id": "4", "summited": false, "summitedDate": null, "saved": false, "summitedDates": []},
   {"id": "5", "summited": false, "summitedDate": null, "saved": false, "summitedDates": []},
