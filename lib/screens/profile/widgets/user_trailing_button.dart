@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class UserTrailingButton extends StatefulWidget {
@@ -29,32 +31,40 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
   }
 
   Future loadData(BuildContext context) async {
-    AppUser user = Provider.of<AppUser>(context, listen: false);
+    AppUser? user = Provider.of<AppUser?>(context, listen: false);
     following = await ProfileService.isFollowingUser(
       context,
-      currentUserId: user.uid!,
+      currentUserId: user?.uid ?? "",
       profileUserId: widget.profileUserId,
     );
 
-    isCurrentUser = user.uid == widget.profileUserId;
+    isCurrentUser = user?.uid == widget.profileUserId;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AppUser?>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     return following || isCurrentUser
         ? const SizedBox()
         : ElevatedButton(
             onPressed: () async {
-              FollowingService.followUser(
-                context,
-                profileUserId: widget.profileUserId,
-                profileUserDisplayName: widget.profileUserDisplayName,
-                profileUserPictureURL: widget.profileUserPictureURL,
-              );
-              setState(() {
-                following = true;
-              });
+              // Check if logged in or not
+              if (user == null) {
+                navigationState.setNavigateToRoute = HomeScreen.profileTabRoute;
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+              } else {
+                FollowingService.followUser(
+                  context,
+                  profileUserId: widget.profileUserId,
+                  profileUserDisplayName: widget.profileUserDisplayName,
+                  profileUserPictureURL: widget.profileUserPictureURL,
+                );
+                setState(() {
+                  following = true;
+                });
+              }
             },
             child: const Text("Follow"),
           );

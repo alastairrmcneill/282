@@ -35,76 +35,87 @@ admin.initializeApp();
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
   const userId = context.params.userId;
 
-  // Create user feed
-  console.log(`Creating feed for user: ${userId}`);
-  const userFeedRef = admin.firestore().collection("feeds").doc(userId);
-  await userFeedRef.set({});
-  console.log(`Feed created for user: ${userId}`);
+  try {
+    // Create user feed
+    console.log(`Creating feed for user: ${userId}`);
+    const userFeedRef = admin.firestore().collection("feeds").doc(userId);
+    await userFeedRef.set({});
+    console.log(`Feed created for user: ${userId}`);
 
-  // Create user achievements
-  console.log("Create user achievements");
-  const achievementsRef = admin.firestore().collection("achievements");
-  const achievementsSnapshot = await achievementsRef.get();
-  const userRef = admin.firestore().collection("users").doc(userId);
+    // Create user achievements
+    console.log("Create user achievements");
+    const achievementsRef = admin.firestore().collection("achievements");
+    const achievementsSnapshot = await achievementsRef.get();
+    const userRef = admin.firestore().collection("users").doc(userId);
 
-  let batch = admin.firestore().batch();
+    let achievementData = {};
 
-  let achievementData = {};
-
-  achievementsSnapshot.forEach((doc) => {
-    console.log(`Achievement: ${doc.id}`);
-    let achievementId = doc.id;
-    achievementData = {
-      ...achievementData,
-      [achievementId]: {
+    achievementsSnapshot.forEach((doc) => {
+      console.log(`Achievement: ${doc.id}`);
+      let achievementId = doc.id;
+      achievementData[achievementId] = {
         ...doc.data(),
         completed: false,
         progress: 0,
-      },
-    };
-  });
-  batch.update(userRef, { achievements: achievementData });
+      };
+    });
 
-  await batch.commit();
-  console.log("User achievements created");
+    await admin.firestore().runTransaction(async (transaction) => {
+      const userDoc = await transaction.get(userRef);
+      if (!userDoc.exists) {
+        throw new Error("User document does not exist!");
+      }
+      transaction.update(userRef, { achievements: achievementData });
+    });
 
-  // Get my profile
-  console.log("Getting my profile");
-  // const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3"); // Dev
-  const myProfileRef = admin.firestore().collection("users").doc("v3qXEVdb6BYhB4wdyCeIfjSukbE2"); // Prod
-  const myProfile = await myProfileRef.get();
-  console.log("Got my profile");
+    console.log("User achievements created");
 
-  // Create following relationships between the new user and me
-  console.log("Create following relationships between the new user and me");
-  const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
-  const userFollowingRelationshipRef = followingRelationshipsRef.doc();
-  userFollowingRelationshipRef.set({
-    uid: userFollowingRelationshipRef.id,
-    sourceId: userId,
-    sourceDisplayName: snapshot.get("displayName"),
-    sourceProfilePictureURL: snapshot.get("profilePictureURL"),
-    targetId: myProfile.get("uid"),
-    targetDisplayName: myProfile.get("displayName"),
-    targetProfilePictureURL: myProfile.get("profilePictureURL"),
-  });
-  console.log("Following relationship created between the new user and me");
+    // Get my profile
+    console.log("Getting my profile");
+    // const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3"); // Dev
+    const myProfileRef = admin.firestore().collection("users").doc("v3qXEVdb6BYhB4wdyCeIfjSukbE2"); // Prod
+    const myProfile = await myProfileRef.get();
+    if (!myProfile.exists) {
+      throw new Error("Profile document does not exist!");
+    }
+    console.log("Got my profile");
 
-  // Create following relationship between me and the new user
-  console.log("Create following relationship between me and the new user");
-  const userFollowedRelationshipRef = followingRelationshipsRef.doc();
-  userFollowedRelationshipRef.set({
-    uid: userFollowedRelationshipRef.id,
-    sourceId: myProfile.get("uid"),
-    sourceDisplayName: myProfile.get("displayName"),
-    sourceProfilePictureURL: myProfile.get("profilePictureURL"),
-    targetId: userId,
-    targetDisplayName: snapshot.get("displayName"),
-    targetProfilePictureURL: snapshot.get("profilePictureURL"),
-  });
-  console.log("Following relationship created between me and the new user");
+    // Create following relationships between the new user and me
+    console.log("Create following relationships between the new user and me");
+    const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
 
-  console.log("User created successfully");
+    const userFollowingRelationshipRef = followingRelationshipsRef.doc();
+    await userFollowingRelationshipRef.set({
+      uid: userFollowingRelationshipRef.id,
+      sourceId: userId,
+      sourceDisplayName: snapshot.get("displayName"),
+      sourceProfilePictureURL: snapshot.get("profilePictureURL"),
+      targetId: myProfile.get("uid"),
+      targetDisplayName: myProfile.get("displayName"),
+      targetProfilePictureURL: myProfile.get("profilePictureURL"),
+    });
+    console.log("Following relationship created between the new user and me");
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Create following relationship between me and the new user
+    console.log("Create following relationship between me and the new user");
+    const userFollowedRelationshipRef = followingRelationshipsRef.doc();
+    await userFollowedRelationshipRef.set({
+      uid: userFollowedRelationshipRef.id,
+      sourceId: myProfile.get("uid"),
+      sourceDisplayName: myProfile.get("displayName"),
+      sourceProfilePictureURL: myProfile.get("profilePictureURL"),
+      targetId: userId,
+      targetDisplayName: snapshot.get("displayName"),
+      targetProfilePictureURL: snapshot.get("profilePictureURL"),
+    });
+    console.log("Following relationship created between me and the new user");
+
+    console.log("User created successfully");
+  } catch (error) {
+    console.error("Error creating user: ", error);
+  }
 });
 
 exports.onUserUpdated = functions.firestore.document("users/{userId}").onUpdate(async (snapshot, context) => {
