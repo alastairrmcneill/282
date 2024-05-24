@@ -128,7 +128,10 @@ class MunroService {
     AppUser newAppUser = userState.currentUser!;
 
     for (Munro munro in munros) {
-      int munroIndex = newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id] == munro.id);
+      int munroIndex =
+          newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id].toString() == munro.id);
+
+      if (munroIndex == -1) continue;
 
       newAppUser.personalMunroData![munroIndex][MunroFields.summited] = true;
       List<dynamic> summitedDatesRaw = newAppUser.personalMunroData![munroIndex][MunroFields.summitedDates] ?? [];
@@ -175,8 +178,10 @@ class MunroService {
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
 
-    int munroIndex = newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id] == munro.id);
+    int munroIndex =
+        newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id].toString() == munro.id);
 
+    if (munroIndex == -1) return;
     List<dynamic> summitedDatesRaw = newAppUser.personalMunroData![munroIndex][MunroFields.summitedDates] ?? [];
     summitedDatesRaw.remove(Timestamp.fromDate(dateTime));
 
@@ -208,8 +213,10 @@ class MunroService {
     // Update user data with new personal munro data
     AppUser newAppUser = userState.currentUser!;
 
-    int munroIndex = newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id] == munro.id);
+    int munroIndex =
+        newAppUser.personalMunroData!.indexWhere((element) => element[MunroFields.id].toString() == munro.id);
 
+    if (munroIndex == -1) return;
     newAppUser.personalMunroData![munroIndex][MunroFields.saved] =
         !newAppUser.personalMunroData![munroIndex][MunroFields.saved];
 
