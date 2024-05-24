@@ -943,3 +943,50 @@ exports.setMunroIdToString = functions.https.onRequest(async (req, res) => {
     res.status(500).send("Failed to complete migration");
   }
 });
+
+exports.addUserAchievementsIfDontExist = functions.https.onRequest(async (req, res) => {
+  try {
+    // Update users
+    const usersRef = admin.firestore().collection("users");
+    const usersSnapshot = await usersRef.get();
+
+    const achievementsRef = admin.firestore().collection("achievements");
+    const achievementsSnapshot = await achievementsRef.get();
+
+    const usersBatch = admin.firestore().batch();
+
+    console.log("Starting User Migration");
+    usersSnapshot.docs.forEach((userDoc) => {
+      const userData = userDoc.data();
+      console.log(`User: ${userData.uid}`);
+      if (userData.achievements && !Object.keys(userData.achievements).length) {
+        console.log("Achievements map is empty");
+        let achievementData = {};
+
+        achievementsSnapshot.forEach((achievementDoc) => {
+          console.log(`Achievement: ${achievementDoc.id}`);
+          let achievementId = achievementDoc.id;
+          achievementData = {
+            ...achievementData,
+            [achievementId]: {
+              ...achievementDoc.data(),
+              completed: false,
+              progress: 0,
+            },
+          };
+        });
+
+        usersBatch.update(userDoc.ref, { achievements: achievementData });
+      }
+    });
+
+    console.log("Finsihsed User Migration");
+
+    await usersBatch.commit();
+
+    res.send("Migration completed successfully");
+  } catch (error) {
+    console.error("Error in migration: ", error);
+    res.status(500).send("Failed to complete migration");
+  }
+});
