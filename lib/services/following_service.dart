@@ -25,7 +25,7 @@ class FollowingService {
       }
 
       FollowingRelationship followingRelationship = FollowingRelationship(
-        sourceId: userState.currentUser!.uid!,
+        sourceId: userState.currentUser?.uid ?? "",
         targetId: profileUserId,
         targetDisplayName: profileUserDisplayName,
         targetProfilePictureURL: profileUserPictureURL,
@@ -36,6 +36,11 @@ class FollowingService {
       await FollowingRelationshipsDatabase.create(context, followingRelationship: followingRelationship);
 
       // Update app state
+      if (profileState.user == null) {
+        profileState.setIsFollowing = true;
+        stopCircularProgressOverlay(context);
+        return;
+      }
       AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! + 1);
       profileState.setUser = tempUser;
       profileState.setIsFollowing = true;
