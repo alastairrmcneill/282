@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/achievement_model.dart';
+import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class AchievementsDatabase {
   static final _db = FirebaseFirestore.instance;
@@ -174,5 +177,22 @@ class AchievementsDatabase {
     for (Achievement achievement in achievements) {
       await _achievementRef.doc(achievement.uid).set(achievement.toJSON());
     }
+  }
+
+  static Future<List<Achievement>> getAllAchievements(BuildContext context) async {
+    List<Achievement> achievements = [];
+    try {
+      QuerySnapshot querySnapshot = await _achievementRef.get();
+      for (var doc in querySnapshot.docs) {
+        achievements.add(Achievement.fromJSON(doc.data() as Map<String, dynamic>));
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an loading the achievements.");
+    } on Exception catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
+    }
+    return achievements;
   }
 }

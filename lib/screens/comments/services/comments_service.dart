@@ -42,17 +42,27 @@ class CommentsService {
 
   static Future getPostComments(BuildContext context) async {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
 
     try {
       // Set Status
       commentsState.setStatus = CommentsStatus.loading;
 
       // Read comments for post
-      commentsState.setComments = await CommentsDatabase.readPostComments(
+      List<Comment> comments = await CommentsDatabase.readPostComments(
         context,
         postId: commentsState.postId,
         lastCommentId: null,
       );
+
+      // Filter comments
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      comments = comments.where((comment) => !blockedUsers.contains(comment.authorId)).toList();
+
+      // Set comments
+      commentsState.setComments = comments;
 
       // Read post details
       commentsState.setPost = await PostsDatabase.readPostFromUid(context, uid: commentsState.postId);
@@ -68,6 +78,9 @@ class CommentsService {
 
   static Future paginatePostComments(BuildContext context) async {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
 
     try {
       commentsState.setStatus = CommentsStatus.paginating;
@@ -79,11 +92,18 @@ class CommentsService {
       }
 
       // Add posts from database
-      commentsState.addComments = await CommentsDatabase.readPostComments(
+      List<Comment> comments = await CommentsDatabase.readPostComments(
         context,
         postId: commentsState.postId,
         lastCommentId: lastCommentId,
       );
+
+      // Filter comments
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      comments = comments.where((comment) => !blockedUsers.contains(comment.authorId)).toList();
+
+      // Add comments to comments list
+      commentsState.addComments = comments;
 
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error, stackTrace) {

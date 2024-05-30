@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/models/error_model.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -7,16 +8,26 @@ import 'package:two_eight_two/services/services.dart';
 class SearchService {
   static Future search(BuildContext context, {required String query}) async {
     UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+
     try {
       // Set loading
       userSearchState.setStatus = SearchStatus.loading;
 
       // Search
-      userSearchState.setUsers = await UserService.searchUsers(
+      List<AppUser> users = await UserService.searchUsers(
         context,
         searchTerm: query.toLowerCase(),
         lastUserId: null,
       );
+
+      // Filter users
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      users = users.where((user) => !blockedUsers.contains(user.uid)).toList();
+
+      userSearchState.setUsers = users;
 
       userSearchState.setStatus = SearchStatus.loaded;
     } catch (error, stackTrace) {
@@ -27,6 +38,9 @@ class SearchService {
 
   static Future paginateSearch(BuildContext context, {required String query}) async {
     UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
 
     try {
       userSearchState.setStatus = SearchStatus.paginating;
@@ -38,11 +52,18 @@ class SearchService {
       }
 
       // Add posts from database
-      userSearchState.addUsers = await UserService.searchUsers(
+      List<AppUser> users = await UserService.searchUsers(
         context,
         searchTerm: query.toLowerCase(),
         lastUserId: lastUserId,
       );
+
+      // Filter users
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      users = users.where((user) => !blockedUsers.contains(user.uid)).toList();
+
+      userSearchState.addUsers = users;
+
       userSearchState.setStatus = SearchStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

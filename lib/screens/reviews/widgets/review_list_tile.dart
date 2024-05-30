@@ -21,8 +21,9 @@ class ReviewListTile extends StatelessWidget {
     required UserState userState,
     required CreateReviewState createReviewState,
   }) {
+    List<MenuItem> menuItems = [];
     if (review.authorId == userState.currentUser?.uid) {
-      List<MenuItem> menuItems = [
+      menuItems = [
         MenuItem(
           text: 'Edit',
           onTap: () {
@@ -38,11 +39,20 @@ class ReviewListTile extends StatelessWidget {
           },
         ),
       ];
-
-      return PopupMenuBase(items: menuItems);
     } else {
-      return const SizedBox(width: 48);
+      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      menuItems = [
+        MenuItem(
+          text: 'Report',
+          onTap: () {
+            reportState.setContentId = review.uid ?? "";
+            reportState.setType = "review";
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+          },
+        ),
+      ];
     }
+    return PopupMenuBase(items: menuItems);
   }
 
   @override

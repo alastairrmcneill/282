@@ -18,8 +18,9 @@ class CommentTile extends StatelessWidget {
     required Comment comment,
     required UserState userState,
   }) {
+    List<MenuItem> menuItems = [];
     if (comment.authorId == userState.currentUser?.uid) {
-      List<MenuItem> menuItems = [
+      menuItems = [
         MenuItem(
           text: 'Delete',
           onTap: () {
@@ -27,10 +28,20 @@ class CommentTile extends StatelessWidget {
           },
         ),
       ];
-      return PopupMenuBase(items: menuItems);
     } else {
-      return const SizedBox(width: 48);
+      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      menuItems = [
+        MenuItem(
+          text: 'Report',
+          onTap: () {
+            reportState.setContentId = '${comment.postId}/${comment.uid ?? ""}';
+            reportState.setType = "comment";
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+          },
+        ),
+      ];
     }
+    return PopupMenuBase(items: menuItems);
   }
 
   @override

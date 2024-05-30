@@ -30,6 +30,11 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
     loadData(context);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future loadData(BuildContext context) async {
     AppUser? user = Provider.of<AppUser?>(context, listen: false);
     following = await ProfileService.isFollowingUser(
@@ -39,7 +44,9 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
     );
 
     isCurrentUser = user?.uid == widget.profileUserId;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
