@@ -192,8 +192,8 @@ class PostService {
 
   static Future getFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
-    final user = Provider.of<AppUser?>(context, listen: false);
-    if (user == null) {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    if (userState.currentUser == null) {
       // Not logged in
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
@@ -203,13 +203,17 @@ class PostService {
 
       List<Post> posts = await PostsDatabase.getFeedFromUserId(
         context,
-        userId: user.uid ?? "",
+        userId: userState.currentUser?.uid ?? "",
         lastPostId: null,
       );
 
       // Check likes
       LikeService.clearLikedPosts(context);
       LikeService.getLikedPostIds(context, posts: posts);
+
+      // Filter posts
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.setPosts = posts;
       feedState.setStatus = FeedStatus.loaded;
@@ -225,7 +229,11 @@ class PostService {
   static Future paginateFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
-
+    if (userState.currentUser == null) {
+      // Not logged in
+      feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      return;
+    }
     try {
       feedState.setStatus = FeedStatus.paginating;
 
@@ -244,6 +252,10 @@ class PostService {
 
       // Check likes
       LikeService.getLikedPostIds(context, posts: newPosts);
+
+      // Filter posts
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.addPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
