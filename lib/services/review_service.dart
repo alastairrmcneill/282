@@ -122,6 +122,7 @@ class ReviewService {
   static Future getMunroReviews(BuildContext context) async {
     ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       reviewsState.setStatus = ReviewsStatus.loading;
@@ -132,6 +133,10 @@ class ReviewService {
         munroId: munroState.selectedMunro?.id ?? "",
         lastReviewId: null,
       );
+
+      // Filter reviews
+      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      reviews = reviews.where((review) => !blockedUsers.contains(review.authorId)).toList();
 
       reviewsState.setReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
@@ -147,6 +152,7 @@ class ReviewService {
   static Future paginateMunroReviews(BuildContext context) async {
     ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       reviewsState.setStatus = ReviewsStatus.paginating;
@@ -157,6 +163,10 @@ class ReviewService {
         munroId: munroState.selectedMunro?.id ?? "",
         lastReviewId: reviewsState.reviews.last.uid,
       );
+
+      // Filter reviews
+      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      reviews = reviews.where((review) => !blockedUsers.contains(review.authorId)).toList();
 
       reviewsState.addReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
@@ -36,6 +37,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Widget _buildPopUpMenu(
+    BuildContext context, {
+    required ProfileState profileState,
+  }) {
+    ReportState reportState = Provider.of<ReportState>(context, listen: false);
+    List<MenuItem> menuItems = [];
+
+    menuItems = [
+      MenuItem(
+        text: 'Block',
+        onTap: () {
+          showConfirmationDialog(
+            context,
+            message: "Are you sure you want to block this user?",
+            onConfirm: () async {
+              await BlockUserService.blockUser(context, userId: profileState.user?.uid ?? "");
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      ),
+      MenuItem(
+        text: 'Report',
+        onTap: () {
+          reportState.setContentId = profileState.user?.uid ?? "";
+          reportState.setType = "user";
+          Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+        },
+      ),
+    ];
+
+    return PopupMenuBase(items: menuItems);
   }
 
   @override
@@ -120,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     icon: const Icon(Icons.settings_rounded),
                   )
-                : const SizedBox(),
+                : _buildPopUpMenu(context, profileState: profileState)
           ],
         ),
         body: RefreshIndicator(

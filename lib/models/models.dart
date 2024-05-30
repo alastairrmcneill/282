@@ -12,3 +12,4 @@ export 'achievement_model.dart';
 export 'weather_model.dart';
 export 'saved_list_model.dart';
 export 'munro_picture_model.dart';
+export 'report_model.dart';

@@ -84,6 +84,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<BulkMunroUpdateState>(
           create: (_) => BulkMunroUpdateState(),
         ),
+        ChangeNotifierProvider<ReportState>(
+          create: (_) => ReportState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",

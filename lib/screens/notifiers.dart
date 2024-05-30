@@ -19,3 +19,4 @@ export 'achievements/state/achievements_state.dart';
 export 'weather/state/weather_state.dart';
 export 'saved/state/saved_list_state.dart';
 export 'bulk_munro_updates/state/bulk_munro_update_state.dart';
+export 'report/state/report_state.dart';

@@ -20,8 +20,9 @@ class PostHeader extends StatelessWidget {
     required UserState userState,
     required CreatePostState createPostState,
   }) {
+    List<MenuItem> menuItems = [];
     if (post.authorId == userState.currentUser?.uid) {
-      List<MenuItem> menuItems = [
+      menuItems = [
         MenuItem(
           text: 'Edit',
           onTap: () {
@@ -37,10 +38,20 @@ class PostHeader extends StatelessWidget {
           },
         ),
       ];
-      return PopupMenuBase(items: menuItems);
     } else {
-      return const SizedBox();
+      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      menuItems = [
+        MenuItem(
+          text: 'Report',
+          onTap: () {
+            reportState.setContentId = post.uid ?? "";
+            reportState.setType = "post";
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+          },
+        ),
+      ];
     }
+    return PopupMenuBase(items: menuItems);
   }
 
   @override

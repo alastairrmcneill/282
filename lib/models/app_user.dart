@@ -11,6 +11,7 @@ class AppUser {
   int? followingCount;
   String? bio;
   String? fcmToken;
+  List<String>? blockedUsers;
 
   final List<Map<String, dynamic>>? personalMunroData;
   final Map<String, dynamic>? achievements;
@@ -26,6 +27,7 @@ class AppUser {
     this.followingCount,
     this.bio,
     this.fcmToken,
+    this.blockedUsers,
     this.personalMunroData = personalMunroDataExample,
     this.achievements,
   });
@@ -52,6 +54,7 @@ class AppUser {
       AppUserFields.followingCount: followingCount,
       AppUserFields.bio: bio,
       AppUserFields.fcmToken: fcmToken,
+      AppUserFields.blockedUsers: blockedUsers,
       AppUserFields.personalMunroData: personalMunroDataAsString,
       AppUserFields.achievements: achievements,
     };
@@ -68,6 +71,9 @@ class AppUser {
       return munroData;
     }).toList();
 
+    List<dynamic>? rawBlockedUsers = json[AppUserFields.blockedUsers] as List<dynamic>?;
+    List<String> blockedUsers = List<String>.from(rawBlockedUsers ?? []);
+
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
       displayName: json[AppUserFields.displayName] as String?,
@@ -79,6 +85,7 @@ class AppUser {
       followingCount: json[AppUserFields.followingCount] as int? ?? 0,
       bio: json[AppUserFields.bio] as String?,
       fcmToken: json[AppUserFields.fcmToken] as String?,
+      blockedUsers: blockedUsers,
       personalMunroData: listPersonalMunroDataWithString,
       achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
     );
@@ -95,6 +102,7 @@ class AppUser {
     int? followingCount,
     String? bio,
     String? fcmToken,
+    List<String>? blockedUsers,
     List<Map<String, dynamic>>? personalMunroData,
     Map<String, dynamic>? achievements,
   }) {
@@ -109,6 +117,7 @@ class AppUser {
       followingCount: followingCount ?? this.followingCount,
       bio: bio ?? this.bio,
       fcmToken: fcmToken ?? this.fcmToken,
+      blockedUsers: blockedUsers ?? this.blockedUsers,
       personalMunroData: personalMunroData ?? this.personalMunroData,
       achievements: achievements ?? this.achievements,
     );
@@ -134,7 +143,8 @@ class AppUser {
       ${AppUserFields.personalMunroData}: $personalMunroData, 
       ${AppUserFields.achievements}: $achievements,
       ${AppUserFields.bio}: $bio,
-      ${AppUserFields.fcmToken}:$fcmToken
+      ${AppUserFields.fcmToken}:$fcmToken,
+      ${AppUserFields.blockedUsers}: $blockedUsers,
       )''';
 }
 
@@ -150,6 +160,7 @@ class AppUserFields {
   static String followersCount = 'followersCount';
   static String bio = 'bio';
   static String fcmToken = 'fcmToken';
+  static String blockedUsers = 'blockedUsers';
   static String munroChallenges = 'munroChallenges';
   static String achievements = 'achievements';
 }
