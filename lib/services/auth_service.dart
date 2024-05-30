@@ -40,6 +40,19 @@ class AuthService {
 
       if (_auth.currentUser == null) return;
 
+      // Get achievements
+      List<Achievement> achievements = await AchievementService.getAchievements(context);
+      Map<String, dynamic> achievementData = {};
+
+      for (var doc in achievements) {
+        String achievementId = doc.uid;
+        achievementData[achievementId] = {
+          ...doc.toJSON(),
+          "completed": false,
+          "progress": 0,
+        };
+      }
+
       // Save to user database
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
@@ -47,6 +60,7 @@ class AuthService {
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
+        achievements: achievementData,
       );
 
       await UserService.createUser(context, appUser: appUser);
@@ -205,10 +219,24 @@ class AuthService {
         firstName = names[0];
       }
 
+      // Get achievements
+      List<Achievement> achievements = await AchievementService.getAchievements(context);
+      Map<String, dynamic> achievementData = {};
+
+      for (var doc in achievements) {
+        String achievementId = doc.uid;
+        achievementData[achievementId] = {
+          ...doc.toJSON(),
+          "completed": false,
+          "progress": 0,
+        };
+      }
+
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
         displayName: _auth.currentUser!.displayName,
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
+        achievements: achievementData,
       );
       await UserService.createUser(context, appUser: appUser);
 
@@ -257,6 +285,19 @@ class AuthService {
         firstName = names[0];
       }
 
+      // Get achievements
+      List<Achievement> achievements = await AchievementService.getAchievements(context);
+      Map<String, dynamic> achievementData = {};
+
+      for (var doc in achievements) {
+        String achievementId = doc.uid;
+        achievementData[achievementId] = {
+          ...doc.toJSON(),
+          "completed": false,
+          "progress": 0,
+        };
+      }
+
       AppUser appUser = AppUser(
         uid: _auth.currentUser!.uid,
         displayName: _auth.currentUser!.displayName,
@@ -264,6 +305,7 @@ class AuthService {
         lastName: lastName,
         searchName: _auth.currentUser!.displayName?.toLowerCase(),
         profilePictureURL: _auth.currentUser!.photoURL,
+        achievements: achievementData,
       );
 
       await UserService.createUser(context, appUser: appUser);

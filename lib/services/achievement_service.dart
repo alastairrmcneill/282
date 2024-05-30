@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -538,5 +539,19 @@ class AchievementService {
       progress: totalCompletedInArea,
       completed: completed,
     );
+  }
+
+  static Future<List<Achievement>> getAchievements(BuildContext context) async {
+    try {
+      List<Achievement> achievements = await AchievementsDatabase.getAllAchievements(context);
+      return achievements;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(
+        context,
+        message: "There was an issue loading the achievements. Please try again.",
+      );
+      return [];
+    }
   }
 }

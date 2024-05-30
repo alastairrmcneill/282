@@ -35,7 +35,7 @@ class Achievement {
       name: data[AchievementFields.name] as String,
       description: data[AchievementFields.description] as String,
       type: data[AchievementFields.type] as String,
-      completed: data[AchievementFields.completed] as bool,
+      completed: data[AchievementFields.completed] as bool? ?? false,
       criteria: data[AchievementFields.criteria] as Map,
       progress: data[AchievementFields.progress] as int? ?? 0,
     );

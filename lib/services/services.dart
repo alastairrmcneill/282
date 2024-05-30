@@ -19,3 +19,4 @@ export 'saved_list_service.dart';
 export 'shared_preferences_service.dart';
 export 'munro_picture_service.dart';
 export 'block_user_service.dart';
+export 'report_service.dart';

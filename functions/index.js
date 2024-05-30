@@ -42,34 +42,6 @@ exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(
     await userFeedRef.set({});
     console.log(`Feed created for user: ${userId}`);
 
-    // Create user achievements
-    console.log("Create user achievements");
-    const achievementsRef = admin.firestore().collection("achievements");
-    const achievementsSnapshot = await achievementsRef.get();
-    const userRef = admin.firestore().collection("users").doc(userId);
-
-    let achievementData = {};
-
-    achievementsSnapshot.forEach((doc) => {
-      console.log(`Achievement: ${doc.id}`);
-      let achievementId = doc.id;
-      achievementData[achievementId] = {
-        ...doc.data(),
-        completed: false,
-        progress: 0,
-      };
-    });
-
-    await admin.firestore().runTransaction(async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      if (!userDoc.exists) {
-        throw new Error("User document does not exist!");
-      }
-      transaction.update(userRef, { achievements: achievementData });
-    });
-
-    console.log("User achievements created");
-
     // Get my profile
     console.log("Getting my profile");
     // const myProfileRef = admin.firestore().collection("users").doc("jw0V1hFySQfU2ST1ZtUW6wLAXIC3"); // Dev
