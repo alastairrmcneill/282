@@ -42,9 +42,9 @@
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>NSCameraUsageDescription</key>
-		<string>$(PRODUCT_NAME) would like to use your camera</string>
+		<string>$(PRODUCT_NAME) would like access to your camera so you can add stunning photos of your Munro bagging adventures to your posts.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
+		<string>$(PRODUCT_NAME) would like access to your photo library so you can add stunning photos of your Munro bagging adventures to your posts.</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>FirebaseAppDelegateProxyEnabled</key>
