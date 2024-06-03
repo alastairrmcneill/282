@@ -38,8 +38,6 @@ class AuthService {
         },
       );
 
-      if (_auth.currentUser == null) return;
-
       // Get achievements
       List<Achievement> achievements = await AchievementService.getAchievements(context);
       Map<String, dynamic> achievementData = {};
@@ -55,9 +53,9 @@ class AuthService {
 
       // Save to user database
       AppUser appUser = AppUser(
-        uid: _auth.currentUser!.uid,
-        displayName: _auth.currentUser!.displayName,
-        searchName: _auth.currentUser!.displayName?.toLowerCase(),
+        uid: _auth.currentUser?.uid,
+        displayName: _auth.currentUser?.displayName ?? "New User",
+        searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
         achievements: achievementData,
@@ -187,29 +185,27 @@ class AuthService {
 
       UserCredential credential = await _auth.signInWithCredential(appleCredential);
 
-      if (credential.user!.displayName == null) {
-        await credential.user!
-            .updateDisplayName(
+      if (credential.user?.displayName == null) {
+        await credential.user
+            ?.updateDisplayName(
           "${appleIdCredential.givenName ?? ""} ${appleIdCredential.familyName ?? ""}",
         )
             .whenComplete(
           () async {
-            await credential.user!.reload();
+            await credential.user?.reload();
           },
         );
       }
 
-      if (credential.user!.email == null) {
-        await credential.user!.updateEmail(appleIdCredential.email!).whenComplete(
+      if (credential.user?.email == null) {
+        await credential.user?.updateEmail(appleIdCredential.email ?? "").whenComplete(
           () async {
-            await credential.user!.reload();
+            await credential.user?.reload();
           },
         );
       }
 
-      if (_auth.currentUser == null) return;
-
-      List<String> names = _auth.currentUser!.displayName?.split(" ") ?? [];
+      List<String> names = _auth.currentUser?.displayName?.split(" ") ?? [];
       String firstName = "";
       String lastName = "";
       if (names.length > 1) {
@@ -233,9 +229,9 @@ class AuthService {
       }
 
       AppUser appUser = AppUser(
-        uid: _auth.currentUser!.uid,
-        displayName: _auth.currentUser!.displayName,
-        searchName: _auth.currentUser!.displayName?.toLowerCase(),
+        uid: _auth.currentUser?.uid,
+        displayName: _auth.currentUser?.displayName ?? "New User",
+        searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         achievements: achievementData,
       );
       await UserService.createUser(context, appUser: appUser);
@@ -273,8 +269,6 @@ class AuthService {
 
       UserCredential credential = await _auth.signInWithCredential(googleCredential);
 
-      if (_auth.currentUser == null) return;
-
       List<String> names = googleUser.displayName?.split(" ") ?? [];
       String firstName = "";
       String lastName = "";
@@ -299,12 +293,12 @@ class AuthService {
       }
 
       AppUser appUser = AppUser(
-        uid: _auth.currentUser!.uid,
-        displayName: _auth.currentUser!.displayName,
+        uid: _auth.currentUser?.uid ?? "",
+        displayName: _auth.currentUser?.displayName ?? "New User",
         firstName: firstName,
         lastName: lastName,
-        searchName: _auth.currentUser!.displayName?.toLowerCase(),
-        profilePictureURL: _auth.currentUser!.photoURL,
+        searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
+        profilePictureURL: _auth.currentUser?.photoURL,
         achievements: achievementData,
       );
 
