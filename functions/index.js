@@ -245,6 +245,28 @@ exports.onUserDeleted = functions.firestore.document("users/{userId}").onDelete(
   });
   console.log("Reviews deleted");
 
+  // Delete saved lists
+  console.log("Delete saved lists");
+  const savedListsRef = admin.firestore().collection("savedLists").where("userId", "==", userId);
+  const savedListsSnapshot = await savedListsRef.get();
+
+  savedListsSnapshot.forEach((doc) => {
+    console.log(`Deleting saved list: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Saved lists deleted");
+
+  // Delete Munro pictures
+  console.log("Delete Munro pictures");
+  const munroPicturesRef = admin.firestore().collection("munroPictures").where("authorId", "==", userId);
+  const munroPicturesSnapshot = await munroPicturesRef.get();
+
+  munroPicturesSnapshot.forEach((doc) => {
+    console.log(`Deleting munro picture: ${doc.id}`);
+    doc.ref.delete();
+  });
+  console.log("Munro pictures deleted");
+
   console.log("User deleted successfully");
 });
 

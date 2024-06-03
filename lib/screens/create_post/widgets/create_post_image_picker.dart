@@ -38,7 +38,6 @@ class CreatePostImagePicker extends StatelessWidget {
         width: double.infinity,
         child: InkWell(
           onTap: () async {
-            print("Tapped");
             await pickImage(createPostState);
           },
           child: DottedBorder(
