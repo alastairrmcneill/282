@@ -6,6 +6,9 @@ Are you bagging all 282 munros in Scotland? Are you wanting to see what mountain
 
 282 is an all-in-one app for munro discover, tracking and sharing. Find your next munro from the explore page, mark it as complete and share some photos with your followers.
 
+[App Store Download](https://apps.apple.com/us/app/282/id6474512889)
+[Play Store Download](https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo)
+
 ## Support
 
 Email alastair.r.mcneill@gmail.com for support on this app.
