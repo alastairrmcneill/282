@@ -50,7 +50,7 @@ class MunroPictureGallery extends StatelessWidget {
           height: (MediaQuery.of(context).size.width - 60) / 4,
           child: munroDetailState.munroPictures.isEmpty
               ? const Center(
-                  child: Text("No picutres available"),
+                  child: Text("No pictures available"),
                 )
               : SizedBox(
                   width: double.infinity,
