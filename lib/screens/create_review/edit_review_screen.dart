@@ -32,9 +32,13 @@ class EditReviewScreen extends StatelessWidget {
             );
           case CreateReviewStatus.loaded:
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pop(context);
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
             });
-            return const SizedBox();
+            return Scaffold(
+              appBar: AppBar(),
+            );
           default:
             return _buildScreen(context, createReviewState);
         }
