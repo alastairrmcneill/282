@@ -53,26 +53,17 @@ class PushNotificationService {
     UserState userState = Provider.of<UserState>(context, listen: false);
     SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
 
-    print("Checking and updating FCM Token");
-
     if (userState.currentUser == null) return;
 
-    print("User is not null");
-
     if (!settingsState.enablePushNotifications) return;
-
-    print("Push notifications are enabled");
 
     NotificationSettings result = await _messaging.requestPermission();
 
     if (result.authorizationStatus != AuthorizationStatus.authorized) return;
-
-    print("Notifications are authorized");
     final String? token = await _messaging.getToken();
     AppUser appUser = userState.currentUser!;
 
     if (appUser.fcmToken == token) return;
-    print("Updating FCM Token");
 
     AppUser newAppUser = appUser.copyWith(fcmToken: token);
     UserService.updateUser(context, appUser: newAppUser);
