@@ -1,8 +1,11 @@
 // ignore_for_file: use_build_context_synchronously, unused_local_variable
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -51,6 +54,10 @@ class AuthService {
         };
       }
 
+      bool isIOS = Platform.isIOS;
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String appVersion = packageInfo.version;
+
       // Save to user database
       AppUser appUser = AppUser(
         uid: _auth.currentUser?.uid,
@@ -59,6 +66,10 @@ class AuthService {
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
         achievements: achievementData,
+        signInMethod: "email",
+        platform: isIOS ? "iOS" : "Android",
+        appVersion: appVersion,
+        dateCreated: DateTime.now(),
       );
 
       await UserService.createUser(context, appUser: appUser);
@@ -228,11 +239,19 @@ class AuthService {
         };
       }
 
+      bool isIOS = Platform.isIOS;
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String appVersion = packageInfo.version;
+
       AppUser appUser = AppUser(
         uid: _auth.currentUser?.uid,
         displayName: _auth.currentUser?.displayName ?? "New User",
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         achievements: achievementData,
+        platform: isIOS ? "iOS" : "Android",
+        appVersion: appVersion,
+        dateCreated: DateTime.now(),
+        signInMethod: "apple sign in",
       );
       await UserService.createUser(context, appUser: appUser);
 
@@ -292,6 +311,10 @@ class AuthService {
         };
       }
 
+      bool isIOS = Platform.isIOS;
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String appVersion = packageInfo.version;
+
       AppUser appUser = AppUser(
         uid: _auth.currentUser?.uid ?? "",
         displayName: _auth.currentUser?.displayName ?? "New User",
@@ -300,6 +323,10 @@ class AuthService {
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         profilePictureURL: _auth.currentUser?.photoURL,
         achievements: achievementData,
+        platform: isIOS ? "iOS" : "Android",
+        appVersion: appVersion,
+        dateCreated: DateTime.now(),
+        signInMethod: "google sign in",
       );
 
       await UserService.createUser(context, appUser: appUser);
