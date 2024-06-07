@@ -161,7 +161,7 @@ class AuthService {
       // Remove FCM Token
       AppUser? appUser = userState.currentUser;
       if (appUser != null) {
-        AppUser newAppUser = appUser.copyWith(fcmToken: null);
+        AppUser newAppUser = appUser.copyWith(fcmToken: "");
         UserService.updateUser(context, appUser: newAppUser);
       }
 
