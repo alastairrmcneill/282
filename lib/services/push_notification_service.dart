@@ -49,6 +49,26 @@ class PushNotificationService {
     navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const NotificationsScreen()));
   }
 
+  static Future checkAndUpdateFCMToken(BuildContext context) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+
+    if (!settingsState.enablePushNotifications) return;
+
+    NotificationSettings result = await _messaging.requestPermission();
+
+    if (result.authorizationStatus != AuthorizationStatus.authorized) return;
+    final String? token = await _messaging.getToken();
+    AppUser appUser = userState.currentUser!;
+
+    if (appUser.fcmToken == token) return;
+
+    AppUser newAppUser = appUser.copyWith(fcmToken: token);
+    UserService.updateUser(context, appUser: newAppUser);
+  }
+
   static Future applyFCMToken(BuildContext context) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
 

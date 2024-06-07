@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MunroService.loadMunroData(context);
     AchievementService.getUserAchievements(context);
     SavedListService.readUserSavedLists(context);
+    PushNotificationService.checkAndUpdateFCMToken(context);
   }
 
   @override
