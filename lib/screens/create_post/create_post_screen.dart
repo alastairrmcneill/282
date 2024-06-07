@@ -44,7 +44,9 @@ class CreatePostScreen extends StatelessWidget {
                   );
                   Navigator.push(context, MaterialPageRoute(builder: (_) => CreateReviewsScreen()));
                 } else {
-                  Navigator.of(context).pop();
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
                 }
               });
               return const SizedBox();

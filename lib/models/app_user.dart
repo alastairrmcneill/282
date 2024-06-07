@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
@@ -12,9 +13,12 @@ class AppUser {
   String? bio;
   String? fcmToken;
   List<String>? blockedUsers;
-
   final List<Map<String, dynamic>>? personalMunroData;
   final Map<String, dynamic>? achievements;
+  final String? appVersion;
+  final String? platform;
+  final String? signInMethod;
+  final DateTime? dateCreated;
 
   AppUser({
     this.uid,
@@ -30,6 +34,10 @@ class AppUser {
     this.blockedUsers,
     this.personalMunroData = personalMunroDataExample,
     this.achievements,
+    this.appVersion,
+    this.platform,
+    this.signInMethod,
+    this.dateCreated,
   });
 
   List<Map<String, dynamic>>? get personalMunroDataAsString {
@@ -57,6 +65,10 @@ class AppUser {
       AppUserFields.blockedUsers: blockedUsers,
       AppUserFields.personalMunroData: personalMunroDataAsString,
       AppUserFields.achievements: achievements,
+      AppUserFields.appVersion: appVersion,
+      AppUserFields.platform: platform,
+      AppUserFields.signInMethod: signInMethod,
+      AppUserFields.dateCreated: dateCreated,
     };
   }
 
@@ -88,6 +100,10 @@ class AppUser {
       blockedUsers: blockedUsers,
       personalMunroData: listPersonalMunroDataWithString,
       achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
+      appVersion: json[AppUserFields.appVersion] as String?,
+      platform: json[AppUserFields.platform] as String?,
+      signInMethod: json[AppUserFields.signInMethod] as String?,
+      dateCreated: (json[AppUserFields.dateCreated] as Timestamp?)?.toDate(),
     );
   }
 
@@ -105,6 +121,10 @@ class AppUser {
     List<String>? blockedUsers,
     List<Map<String, dynamic>>? personalMunroData,
     Map<String, dynamic>? achievements,
+    String? appVersion,
+    String? platform,
+    String? signInMethod,
+    DateTime? dateCreated,
   }) {
     return AppUser(
       uid: uid ?? this.uid,
@@ -120,6 +140,10 @@ class AppUser {
       blockedUsers: blockedUsers ?? this.blockedUsers,
       personalMunroData: personalMunroData ?? this.personalMunroData,
       achievements: achievements ?? this.achievements,
+      appVersion: appVersion ?? this.appVersion,
+      platform: platform ?? this.platform,
+      signInMethod: signInMethod ?? this.signInMethod,
+      dateCreated: dateCreated ?? this.dateCreated,
     );
   }
 
@@ -145,6 +169,10 @@ class AppUser {
       ${AppUserFields.bio}: $bio,
       ${AppUserFields.fcmToken}:$fcmToken,
       ${AppUserFields.blockedUsers}: $blockedUsers,
+      ${AppUserFields.appVersion}: $appVersion,
+      ${AppUserFields.platform}: $platform,
+      ${AppUserFields.signInMethod}: $signInMethod,
+      ${AppUserFields.dateCreated}: $dateCreated,
       )''';
 }
 
@@ -163,6 +191,10 @@ class AppUserFields {
   static String blockedUsers = 'blockedUsers';
   static String munroChallenges = 'munroChallenges';
   static String achievements = 'achievements';
+  static String appVersion = 'appVersion';
+  static String platform = 'platform';
+  static String signInMethod = 'signInMethod';
+  static String dateCreated = 'dateCreated';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [
