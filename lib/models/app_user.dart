@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
@@ -102,7 +103,7 @@ class AppUser {
       appVersion: json[AppUserFields.appVersion] as String?,
       platform: json[AppUserFields.platform] as String?,
       signInMethod: json[AppUserFields.signInMethod] as String?,
-      dateCreated: json[AppUserFields.dateCreated] as DateTime?,
+      dateCreated: (json[AppUserFields.dateCreated] as Timestamp?)?.toDate(),
     );
   }
 
