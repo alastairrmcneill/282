@@ -29,8 +29,17 @@ const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 const { FieldValue } = require("firebase-admin/firestore");
 const { user } = require("firebase-functions/v1/auth");
+const base64 = require("base-64");
+const fs = require("fs");
 
-admin.initializeApp();
+// Decode the Base64 encoded service account key
+const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
+
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://prod-81998.firebaseio.com",
+});
 
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
   const userId = context.params.userId;
@@ -646,10 +655,16 @@ exports.onCommentCreated = functions.firestore
 exports.onNotificationCreated = functions.firestore
   .document("/notifications/{notificationId}")
   .onCreate(async (snapshot, context) => {
+    console.log("Notification Created");
+    console.log(`Service Account: ${serviceAccount.private_key}`);
+
     const targetId = snapshot.get("targetId");
 
+    console.log(`TargetId: ${targetId}`);
     const userRef = admin.firestore().collection("users").doc(targetId);
     const userDoc = await userRef.get();
+
+    console.log(`UserDoc retrieved. User: ${userDoc.id}`);
 
     const fcmToken = userDoc.get("fcmToken");
     console.log(`fcmToken: ${fcmToken}`);
@@ -667,20 +682,22 @@ exports.onNotificationCreated = functions.firestore
       notificationText = " followed you.";
     }
 
-    const payload = {
+    console.log(`Notification Text: ${notificationText}`);
+
+    // Create the notification message
+    const message = {
       notification: {
         title: `${sourceDisplayName}${notificationText}`,
       },
       data: {
         type: type,
       },
-    };
-    const options = {
-      priority: "high",
-      timeToLive: 60 * 60 * 24,
+      token: fcmToken, // User's FCM token
     };
 
-    admin.messaging().sendToDevice(fcmToken, payload, options);
+    console.log("Sending notification");
+    admin.messaging().send(message);
+    console.log("Notification sent");
   });
 
 exports.onReviewCreated = functions.firestore.document("/reviews/{reviewId}").onCreate(async (snapshot, context) => {
