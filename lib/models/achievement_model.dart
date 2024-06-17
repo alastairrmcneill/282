@@ -91,6 +91,7 @@ class AchievementTypes {
   static const String monthlyMunro = "monthlyMunro";
   static const String multiMunroDay = "multiMunroDay";
   static const String areaGoal = "areaGoal";
+  static const String nameGoal = "nameGoal";
 }
 
 class CriteriaFields {
@@ -98,6 +99,7 @@ class CriteriaFields {
   static const String status = "status";
   static const String year = "year";
   static const String area = "area";
+  static const String names = "names";
 }
 
 class AnnualGoalStatus {
