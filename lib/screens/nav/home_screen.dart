@@ -56,7 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
             return const SplashScreen();
           case UserStatus.error:
             return Scaffold(
-              body: CenterText(text: userState.error.message),
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CenterText(text: userState.error.message),
+                  ElevatedButton(
+                    onPressed: () => AuthService.signOut(context),
+                    child: const Text('Sign Out'),
+                  ),
+                ],
+              ),
             );
           default:
             return _buildScreen(context, userState);
