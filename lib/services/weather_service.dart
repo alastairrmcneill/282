@@ -28,7 +28,6 @@ class WeatherService {
 
       String url =
           'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$long&exclude=minutely,hourly,alerts&appid=${dotenv.env['WEATHER_API_KEY']}&units=$metric';
-      print(url);
       // Make the request
       var response = await http.get(Uri.parse(url));
 
