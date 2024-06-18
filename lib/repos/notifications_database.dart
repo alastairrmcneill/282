@@ -22,7 +22,7 @@ class NotificationsDatabase {
         querySnapshot = await _notificationsRef
             .where(NotifFields.targetId, isEqualTo: userId)
             .orderBy(NotifFields.dateTime, descending: true)
-            .limit(10)
+            .limit(20)
             .get();
       } else {
         final lastNotificationDoc = await _notificationsRef.doc(lastNotificationId).get();
@@ -33,7 +33,7 @@ class NotificationsDatabase {
             .where(NotifFields.targetId, isEqualTo: userId)
             .orderBy(NotifFields.dateTime, descending: true)
             .startAfterDocument(lastNotificationDoc)
-            .limit(10)
+            .limit(20)
             .get();
       }
 
