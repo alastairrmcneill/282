@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -15,6 +17,8 @@ class MunroScreen extends StatefulWidget {
 class _MunroScreenState extends State<MunroScreen> {
   @override
   void initState() {
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    print(munroState.selectedMunro?.toJSON());
     MunroService.loadAdditionalMunroData(context);
     super.initState();
   }
