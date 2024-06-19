@@ -44,7 +44,6 @@ class SavedListService {
 
   static Future readUserSavedLists(BuildContext context) async {
     // Read the user's saved lists
-    print("Reading user's saved lists");
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 

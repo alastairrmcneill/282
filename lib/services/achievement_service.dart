@@ -181,6 +181,14 @@ class AchievementService {
             achievementsState: achievementsState,
           );
           break;
+        case AchievementTypes.nameGoal:
+          _checkNameGoal(
+            context,
+            achievement: achievement,
+            userState: userState,
+            achievementsState: achievementsState,
+          );
+          break;
         default:
           break;
       }
@@ -537,6 +545,68 @@ class AchievementService {
     // Add to regular notifier
     achievementsState.updateAchievement = achievement.copy(
       progress: totalCompletedInArea,
+      completed: completed,
+    );
+  }
+
+  // Name goal
+  static _checkNameGoal(
+    BuildContext context, {
+    required Achievement achievement,
+    required UserState userState,
+    required AchievementsState achievementsState,
+  }) {
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    // Create a new list that combines personalMunroData and munroList
+    List<Map<String, dynamic>> combinedList = userState.currentUser?.personalMunroData?.map((personalMunro) {
+          // Find the matching munro in munroList
+          var matchingMunro = munroState.munroList.firstWhere((munro) => munro.id == personalMunro['id']);
+
+          // Combine the personalMunro and matchingMunro into a new map
+          return {...personalMunro, ...matchingMunro.toJSON()};
+        }).toList() ??
+        [];
+
+    List<String> names = (achievement.criteria[CriteriaFields.names] as String).split(", ");
+
+    // Get total completed
+    int totalCompleted = 0;
+
+    for (String name in names) {
+      int totalCompletedWithName = combinedList
+          .where((element) => element[MunroFields.summited] as bool)
+          .where(
+            (element) => (element[MunroFields.name] as String).toLowerCase().contains(
+                  name.toLowerCase(),
+                ),
+          )
+          .length;
+      totalCompleted += totalCompletedWithName;
+    }
+    // Goal count
+    var countRaw = achievement.criteria[CriteriaFields.count];
+    int count = 0;
+    if (countRaw is String) {
+      count = int.parse(countRaw);
+    } else {
+      count = countRaw;
+    }
+
+    // Compare to goal
+    bool completed = totalCompleted >= count;
+
+    // Update notifiers
+    if (completed && !achievement.completed) {
+      // Add to new notifier
+      achievementsState.addRecentlyCompletedAchievement = achievement.copy(
+        progress: totalCompleted,
+        completed: true,
+      );
+    }
+
+    // Add to regular notifier
+    achievementsState.updateAchievement = achievement.copy(
+      progress: totalCompleted,
       completed: completed,
     );
   }

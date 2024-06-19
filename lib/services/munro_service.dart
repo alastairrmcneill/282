@@ -92,7 +92,6 @@ class MunroService {
 
   static Future<void> loadAdditionalMunroData(BuildContext context) async {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    // Modify to be a single munro
 
     // Read single munro data
     Map<String, dynamic> munroData = await MunroDatabase.getAdditionalMunroData(
@@ -107,11 +106,15 @@ class MunroService {
     double averageRating = (munroData[MunroFields.averageRating] as num).toDouble();
     int reviewCount = munroData[MunroFields.reviewCount] as int;
 
-    tempMunroList[int.parse(munroId) - 1].averageRating = averageRating;
-    tempMunroList[int.parse(munroId) - 1].reviewCount = reviewCount;
+    int munroIndex = tempMunroList.indexWhere((munro) => munro.id == munroId);
+
+    if (munroIndex == -1) return;
+
+    tempMunroList[munroIndex].averageRating = averageRating;
+    tempMunroList[munroIndex].reviewCount = reviewCount;
 
     munroState.setMunroList = tempMunroList;
-    munroState.setSelectedMunro = tempMunroList[int.parse(munroId) - 1];
+    munroState.setSelectedMunro = tempMunroList[munroIndex];
   }
 
   static Future<void> markMunrosAsDone(

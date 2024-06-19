@@ -59,7 +59,11 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                             children: [
                               const Icon(Icons.error),
                               Text(
-                                error.toString(),
+                                error
+                                        .toString()
+                                        .contains('ClientException with SocketException: Connection reset by peer')
+                                    ? "Error loading image. Please check your internet connection and try again."
+                                    : error.toString(),
                                 style: const TextStyle(fontSize: 12),
                               ),
                             ],
