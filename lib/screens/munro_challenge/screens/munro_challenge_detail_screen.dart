@@ -50,7 +50,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const Text('🏔️', style: TextStyle(fontSize: 60)),
             Text(
-              'You still have a few to go before you`ll reach your goal for the year.',
+              'You still have a few to go before you reach your goal for the year.',
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                     fontWeight: FontWeight.w300,
                   ),
