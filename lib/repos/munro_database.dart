@@ -31,7 +31,6 @@ class MunroDatabase {
       munroData.add(doc.data() as Map<String, dynamic>);
     }
 
-    print('Get Additional Munro Data: ${querySnapshot.docs.length} munros found');
     // Return the data as a list of maps
     return munroData;
   }
