@@ -70,6 +70,8 @@ class _MapScreenState extends State<MapScreen> {
             setState(() {
               _selectedMunroID = munro.id;
             });
+
+            munroState.setSelectedMunroId = munro.id;
           },
         ),
       );
@@ -123,11 +125,13 @@ class _MapScreenState extends State<MapScreen> {
         target: LatLng(56.8, -4.2),
         zoom: 6.6,
       ),
-      onCameraMove: (position) {
+      onCameraMove: (position) async {
         if (_currentZoom < position.zoom - 1 || _currentZoom > position.zoom + 1) {
           _currentZoom = position.zoom;
           addCustomIcon();
         }
+        LatLngBounds bounds = await _googleMapController.getVisibleRegion();
+        munroState.setLatLngBounds(bounds);
       },
       cameraTargetBounds: CameraTargetBounds(
         LatLngBounds(
@@ -139,6 +143,7 @@ class _MapScreenState extends State<MapScreen> {
         _searchFocusNode.unfocus();
         munroState.setFilterString = "";
         setState(() => _selectedMunroID = null);
+        munroState.setSelectedMunroId = null;
       },
       minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
       buildingsEnabled: false,
@@ -181,6 +186,8 @@ class _MapScreenState extends State<MapScreen> {
                                 _selectedMunroID = munro.id;
                                 markerTapped(munro);
                               });
+
+                              munroState.setSelectedMunroId = munro.id;
                             },
                           ),
                         ),

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class MunroState extends ChangeNotifier {
   MunroStatus _status = MunroStatus.initial;
   Error _error = Error();
   List<Munro> _munroList = [];
+  String? _selectedMunroId;
   Munro? _selectedMunro;
+  List<Munro> _visibleMunroList = [];
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
+  LatLngBounds? _latLngBounds;
   List<Munro> _createPostFilteredMunroList = [];
   String _createPostFilterString = '';
   List<Munro> _bulkMunroUpdateList = [];
@@ -16,7 +20,9 @@ class MunroState extends ChangeNotifier {
   MunroStatus get status => _status;
   Error get error => _error;
   List<Munro> get munroList => _munroList;
+  List<Munro> get visibleMunroList => _visibleMunroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
+  String? get selectedMunroId => _selectedMunroId;
   Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;
@@ -34,6 +40,7 @@ class MunroState extends ChangeNotifier {
 
   set setMunroList(List<Munro> munroList) {
     _munroList = munroList;
+    _visibleMunroList = munroList;
     notifyListeners();
   }
 
@@ -41,6 +48,11 @@ class MunroState extends ChangeNotifier {
     _selectedMunro = selectedMunro;
     print('Selected Munro Set');
     print(selectedMunro?.toJSON());
+    notifyListeners();
+  }
+
+  set setSelectedMunroId(String? selectedMunroId) {
+    _selectedMunroId = selectedMunroId;
     notifyListeners();
   }
 
@@ -82,10 +94,17 @@ class MunroState extends ChangeNotifier {
     _filter();
   }
 
+  void setLatLngBounds(LatLngBounds bounds) {
+    _visibleMunroList = munroList.where((munro) {
+      return bounds.contains(LatLng(munro.lat, munro.lng));
+    }).toList();
+    _filter();
+  }
+
   _filter() {
     List<Munro> runningList = [];
     if (_filterString != "") {
-      runningList = _munroList.where(
+      runningList = _visibleMunroList.where(
         (munro) {
           if (munro.name.toLowerCase().contains(_filterString.toLowerCase())) return true;
           if (munro.area.toLowerCase().contains(_filterString.toLowerCase())) return true;
@@ -164,3 +183,9 @@ class MunroState extends ChangeNotifier {
 }
 
 enum MunroStatus { initial, loading, loaded, error }
+
+class Filter {
+  String? area;
+  bool? completed;
+  LatLngBounds? bounds;
+}

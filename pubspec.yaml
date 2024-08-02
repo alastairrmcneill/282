@@ -47,6 +47,7 @@ dependencies:
   rate_my_app: ^2.2.0
   readmore: ^3.0.0
   confetti: ^0.7.0
+  sliding_up_panel: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:
