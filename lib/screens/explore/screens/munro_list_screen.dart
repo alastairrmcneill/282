@@ -25,7 +25,7 @@ class MunroListScreen extends StatelessWidget {
             padding: const EdgeInsets.only(top: 40, bottom: 50),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: munroState.visibleMunroList.map((Munro munro) {
+              children: munroState.filteredMunroList.map((Munro munro) {
                 return MunroCard(munro: munro);
               }).toList(),
             ),

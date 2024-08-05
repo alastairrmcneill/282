@@ -15,7 +15,8 @@ import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  final FocusNode searchFocusNode;
+  const MapScreen({super.key, required this.searchFocusNode});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -29,7 +30,6 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
   String? _selectedMunroID;
-  final FocusNode _searchFocusNode = FocusNode();
   bool showTerrain = false;
 
   @override
@@ -48,8 +48,8 @@ class _MapScreenState extends State<MapScreen> {
 
   Set<Marker> getMarkers({required MunroState munroState}) {
     Set<Marker> markers = {};
-
-    for (var munro in munroState.munroList) {
+    print('Rebuilding Map');
+    for (var munro in munroState.filteredMunroList) {
       markers.add(
         Marker(
           markerId: MarkerId(
@@ -84,7 +84,7 @@ class _MapScreenState extends State<MapScreen> {
       munro.lat,
       munro.lng,
     );
-    _searchFocusNode.unfocus();
+    widget.searchFocusNode.unfocus();
     _googleMapController.animateCamera(CameraUpdate.newLatLng(offsetLatLng));
   }
 
@@ -131,7 +131,7 @@ class _MapScreenState extends State<MapScreen> {
           addCustomIcon();
         }
         LatLngBounds bounds = await _googleMapController.getVisibleRegion();
-        munroState.setLatLngBounds(bounds);
+        munroState.setLatLngBounds = bounds;
       },
       cameraTargetBounds: CameraTargetBounds(
         LatLngBounds(
@@ -140,7 +140,7 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
       onTap: (argument) {
-        _searchFocusNode.unfocus();
+        widget.searchFocusNode.unfocus();
         munroState.setFilterString = "";
         setState(() => _selectedMunroID = null);
         munroState.setSelectedMunroId = null;
@@ -171,50 +171,6 @@ class _MapScreenState extends State<MapScreen> {
           : Stack(
               children: [
                 _buildGoogleMap(munroState),
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: MunroSearchBar(
-                            focusNode: _searchFocusNode,
-                            onSelected: (Munro munro) {
-                              setState(() {
-                                _selectedMunroID = munro.id;
-                                markerTapped(munro);
-                              });
-
-                              munroState.setSelectedMunroId = munro.id;
-                            },
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              showTerrain = !showTerrain;
-                              SharedPreferencesService.setMapTerrain(showTerrain);
-                            });
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 10, left: 0, top: 5),
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 0.3, color: Colors.black54),
-                              color: MyColors.backgroundColor,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: showTerrain
-                                ? const Icon(CupertinoIcons.layers)
-                                : const Icon(CupertinoIcons.layers_fill),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
                 Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: _selectedMunroID)),
               ],
             ),

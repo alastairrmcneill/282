@@ -6,13 +6,23 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class ExploreTab extends StatelessWidget {
-  ExploreTab({super.key});
+import 'screens/search_munro_screen.dart';
 
+class ExploreTab extends StatefulWidget {
+  @override
+  _ExploreTabState createState() => _ExploreTabState();
+}
+
+class _ExploreTabState extends State<ExploreTab> {
   final PanelController panelController = PanelController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearchVisible = false;
+  bool _isMunroListViewVisible = false;
+  BorderRadius borderRadius = BorderRadius.vertical(top: Radius.circular(24));
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +37,6 @@ class ExploreTab extends StatelessWidget {
               return CenterText(text: munroState.error.message);
             case MunroStatus.loaded:
               return _buildScreen(context);
-            // return MapScreen();
             default:
               return const LoadingWidget();
           }
@@ -43,17 +52,16 @@ class ExploreTab extends StatelessWidget {
     final double topPadding = MediaQuery.of(context).padding.top;
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
     final double bottomNavBarHeight = layoutState.bottomNavBarHeight; // Default height of BottomNavigationBar
-    final double headerHeight = 60; // Fixed height of the header
-
-    final double availableHeight = screenHeight - topPadding - bottomNavBarHeight - headerHeight - bottomPadding;
+    final double headerHeight = 60;
 
     return Scaffold(
       body: Stack(
         children: <Widget>[
           SlidingUpPanel(
             controller: panelController,
+            color: MyColors.backgroundColor,
             minHeight: munroState.selectedMunroId == null ? 60 : 0,
-            maxHeight: availableHeight + 30,
+            maxHeight: MediaQuery.of(context).size.height - bottomNavBarHeight - headerHeight - topPadding + 20,
             header: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: 20,
@@ -72,10 +80,7 @@ class ExploreTab extends StatelessWidget {
                 ),
               ),
             ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24.0),
-              topRight: Radius.circular(24.0),
-            ),
+            borderRadius: borderRadius,
             collapsed: SlidingPanelCollapsed(
               panelController: panelController,
             ),
@@ -85,18 +90,54 @@ class ExploreTab extends StatelessWidget {
                 panelController: panelController,
               );
             },
+            onPanelSlide: (position) => setState(() {
+              if (position > 0.9) {
+                borderRadius = BorderRadius.zero;
+                _isMunroListViewVisible = true;
+              } else {
+                borderRadius = BorderRadius.vertical(top: Radius.circular(24));
+                _isMunroListViewVisible = false;
+              }
+            }),
             body: Container(
               margin: EdgeInsets.only(
                 bottom: bottomNavBarHeight + MediaQuery.of(context).padding.bottom + 30,
-                top: topPadding + headerHeight,
               ),
-              child: const MapScreen(),
+              child: MapScreen(
+                searchFocusNode: _searchFocusNode,
+              ),
             ),
           ),
+          _buildSearchOverlay(),
           ExploreTabHeader(
             headerHeight: headerHeight,
+            searchFocusNode: _searchFocusNode,
+            isSearchVisible: _isSearchVisible,
+            isMunroListViewVisible: _isMunroListViewVisible,
+            onBackTap: () {
+              setState(() {
+                _isSearchVisible = false;
+                _searchFocusNode.unfocus();
+              });
+            },
+            onSearchTap: () {
+              setState(() {
+                _isSearchVisible = true;
+              });
+            },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSearchOverlay() {
+    return AnimatedOpacity(
+      opacity: _isSearchVisible ? 1.0 : 0.0,
+      duration: Duration(milliseconds: 500),
+      child: Visibility(
+        visible: _isSearchVisible,
+        child: const SearchMunroScreen(),
       ),
     );
   }
