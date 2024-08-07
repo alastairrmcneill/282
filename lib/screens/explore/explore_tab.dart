@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -48,9 +45,7 @@ class _ExploreTabState extends State<ExploreTab> {
   Widget _buildScreen(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
     LayoutState layoutState = Provider.of<LayoutState>(context);
-    final double screenHeight = MediaQuery.of(context).size.height;
     final double topPadding = MediaQuery.of(context).padding.top;
-    final double bottomPadding = MediaQuery.of(context).padding.bottom;
     final double bottomNavBarHeight = layoutState.bottomNavBarHeight; // Default height of BottomNavigationBar
     final double headerHeight = 60;
 

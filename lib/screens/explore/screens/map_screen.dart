@@ -2,7 +2,6 @@
 
 import 'dart:ui' as ui;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,7 +11,6 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MapScreen extends StatefulWidget {
   final FocusNode searchFocusNode;
@@ -48,7 +46,6 @@ class _MapScreenState extends State<MapScreen> {
 
   Set<Marker> getMarkers({required MunroState munroState}) {
     Set<Marker> markers = {};
-    print('Rebuilding Map');
     for (var munro in munroState.filteredMunroList) {
       markers.add(
         Marker(

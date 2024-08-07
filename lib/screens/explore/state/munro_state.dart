@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class MunroState extends ChangeNotifier {
@@ -11,6 +13,9 @@ class MunroState extends ChangeNotifier {
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
   LatLngBounds? _latLngBounds;
+  SortOrder _sortOrder = SortOrder.alphabetical;
+  FilterOptions _filterOptions = FilterOptions();
+  bool _isFilterOptionsSet = false;
   List<Munro> _createPostFilteredMunroList = [];
   String _createPostFilterString = '';
   List<Munro> _bulkMunroUpdateList = [];
@@ -20,6 +25,9 @@ class MunroState extends ChangeNotifier {
   Error get error => _error;
   List<Munro> get munroList => _munroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
+  SortOrder get sortOrder => _sortOrder;
+  FilterOptions get filterOptions => _filterOptions;
+  bool get isFilterOptionsSet => _isFilterOptionsSet;
   String? get selectedMunroId => _selectedMunroId;
   Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
@@ -96,6 +104,18 @@ class MunroState extends ChangeNotifier {
     _filter();
   }
 
+  set setSortOrder(SortOrder sortOrder) {
+    _sortOrder = sortOrder;
+    _filter();
+  }
+
+  set setFilterOptions(FilterOptions filterOptions) {
+    _filterOptions = filterOptions;
+    _isFilterOptionsSet = _filterOptions.areas.isNotEmpty || _filterOptions.completed.isNotEmpty;
+
+    _filter();
+  }
+
   _filter() {
     // Start with all munros
     List<Munro> runningList = _munroList;
@@ -108,6 +128,10 @@ class MunroState extends ChangeNotifier {
     runningList = _filterSearchString(runningList);
 
     // Filter out filters
+    runningList = _filterOutFilterOptions(runningList);
+
+    // Sort order
+    runningList = _sort(runningList);
 
     _filteredMunroList = runningList;
 
@@ -212,12 +236,47 @@ class MunroState extends ChangeNotifier {
     }
     return true;
   }
+
+  List<Munro> _sort(List<Munro> runningList) {
+    switch (_sortOrder) {
+      case SortOrder.alphabetical:
+        runningList.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case SortOrder.height:
+        runningList.sort((a, b) => b.meters.compareTo(a.meters));
+        break;
+      case SortOrder.popular:
+        runningList.sort((a, b) => (b.reviewCount ?? 0).compareTo(a.reviewCount ?? 0));
+        break;
+      case SortOrder.rating:
+        runningList.sort((a, b) => (b.averageRating ?? 0).compareTo(a.averageRating ?? 0));
+        break;
+    }
+    return runningList;
+  }
+
+  List<Munro> _filterOutFilterOptions(List<Munro> runningList) {
+    if (_filterOptions.areas.isNotEmpty) {
+      runningList = runningList.where((munro) {
+        return _filterOptions.areas.contains(munro.area);
+      }).toList();
+    }
+
+    if (_filterOptions.completed.isNotEmpty) {
+      if (_filterOptions.completed.contains('Yes')) {
+        runningList = runningList.where((munro) {
+          return munro.summited;
+        }).toList();
+      }
+      if (_filterOptions.completed.contains('No')) {
+        runningList = runningList.where((munro) {
+          return !munro.summited;
+        }).toList();
+      }
+    }
+
+    return runningList;
+  }
 }
 
 enum MunroStatus { initial, loading, loaded, error }
-
-class Filter {
-  String? area;
-  bool? completed;
-  LatLngBounds? bounds;
-}

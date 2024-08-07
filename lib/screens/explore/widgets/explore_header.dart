@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class ExploreTabHeader extends StatelessWidget {
@@ -24,6 +26,7 @@ class ExploreTabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MunroState munroState = Provider.of<MunroState>(context);
     return Positioned(
       top: 0,
       left: 0,
@@ -59,29 +62,46 @@ class ExploreTabHeader extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // Background color
-                    shape: const CircleBorder(), // Circular shape
-                    elevation: 0, // Drop shadow
-                    padding: const EdgeInsets.all(13),
-                    side: const BorderSide(
-                      color: MyColors.accentColor, // Border color
-                      width: 0.5, // Border width
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const FilterScreen(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white, // Background color
+                      shape: const CircleBorder(), // Circular shape
+                      elevation: 0, // Drop shadow
+                      padding: const EdgeInsets.all(13),
+                      side: const BorderSide(
+                        color: MyColors.accentColor, // Border color
+                        width: 0.5, // Border width
                       ),
-                    );
-                  },
-                  child: const Icon(
-                    CupertinoIcons.slider_horizontal_3,
-                    color: MyColors.accentColor,
-                    size: 20,
-                  ),
-                ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const FilterScreen(),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.slider_horizontal_3,
+                          color: MyColors.accentColor,
+                          size: 20,
+                        ),
+                        munroState.isFilterOptionsSet
+                            ? Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ],
+                    )),
               ],
             ),
           ),
