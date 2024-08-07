@@ -7,9 +7,11 @@ import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import 'screens/search_munro_screen.dart';
+import 'screens/munro_search_screen.dart';
 
 class ExploreTab extends StatefulWidget {
+  const ExploreTab({super.key});
+
   @override
   _ExploreTabState createState() => _ExploreTabState();
 }
@@ -19,7 +21,7 @@ class _ExploreTabState extends State<ExploreTab> {
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchVisible = false;
   bool _isMunroListViewVisible = false;
-  BorderRadius borderRadius = BorderRadius.vertical(top: Radius.circular(24));
+  BorderRadius borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
 
   @override
   Widget build(BuildContext context) {
@@ -45,58 +47,44 @@ class _ExploreTabState extends State<ExploreTab> {
   Widget _buildScreen(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
     LayoutState layoutState = Provider.of<LayoutState>(context);
+
+    final double screenHeight = MediaQuery.of(context).size.height;
     final double topPadding = MediaQuery.of(context).padding.top;
-    final double bottomNavBarHeight = layoutState.bottomNavBarHeight; // Default height of BottomNavigationBar
-    final double headerHeight = 60;
+    final double bottomPadding = MediaQuery.of(context).padding.bottom;
+    final double bottomNavBarHeight = layoutState.bottomNavBarHeight;
+    const double headerHeight = 60;
 
     return Scaffold(
       body: Stack(
-        children: <Widget>[
+        children: [
           SlidingUpPanel(
             controller: panelController,
             color: MyColors.backgroundColor,
             minHeight: munroState.selectedMunroId == null ? 60 : 0,
-            maxHeight: MediaQuery.of(context).size.height - bottomNavBarHeight - headerHeight - topPadding + 20,
-            header: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 20,
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.41,
-                    vertical: 7.5,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[600],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            maxHeight: screenHeight - bottomNavBarHeight - headerHeight - topPadding + 20,
+            header: const SlidingPanelHeader(),
             borderRadius: borderRadius,
             collapsed: SlidingPanelCollapsed(
               panelController: panelController,
             ),
+            onPanelSlide: (position) => setState(() {
+              if (position > 0.9) {
+                borderRadius = BorderRadius.zero;
+                _isMunroListViewVisible = true;
+              } else {
+                borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
+                _isMunroListViewVisible = false;
+              }
+            }),
             panelBuilder: (sc) {
               return MunroListScreen(
                 scrollController: sc,
                 panelController: panelController,
               );
             },
-            onPanelSlide: (position) => setState(() {
-              if (position > 0.9) {
-                borderRadius = BorderRadius.zero;
-                _isMunroListViewVisible = true;
-              } else {
-                borderRadius = BorderRadius.vertical(top: Radius.circular(24));
-                _isMunroListViewVisible = false;
-              }
-            }),
             body: Container(
               margin: EdgeInsets.only(
-                bottom: bottomNavBarHeight + MediaQuery.of(context).padding.bottom + 30,
+                bottom: bottomNavBarHeight + bottomPadding + 30,
               ),
               child: MapScreen(
                 searchFocusNode: _searchFocusNode,
@@ -129,10 +117,10 @@ class _ExploreTabState extends State<ExploreTab> {
   Widget _buildSearchOverlay() {
     return AnimatedOpacity(
       opacity: _isSearchVisible ? 1.0 : 0.0,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       child: Visibility(
         visible: _isSearchVisible,
-        child: const SearchMunroScreen(),
+        child: const MunroSearchScreen(),
       ),
     );
   }
