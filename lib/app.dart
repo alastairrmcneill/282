@@ -87,6 +87,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<ReportState>(
           create: (_) => ReportState(),
         ),
+        ChangeNotifierProvider<LayoutState>(
+          create: (_) => LayoutState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",
