@@ -13,6 +13,8 @@ class RemoteConfigService {
 
     await _remoteConfig.setDefaults(const {
       RCFields.feedbackSurveyDate: "01/01/2000",
+      RCFields.latestAppVersion: "1.0.0",
+      RCFields.whatsNew: "No new features this time. We are working hard to bring you new features soon.",
     });
 
     try {
@@ -33,4 +35,6 @@ class RemoteConfigService {
 
 class RCFields {
   static const feedbackSurveyDate = "feedback_survey_date";
+  static const latestAppVersion = "latest_app_version";
+  static const whatsNew = "whats_new";
 }

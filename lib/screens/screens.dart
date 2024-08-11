@@ -28,3 +28,4 @@ export 'bulk_munro_updates/bulk_munro_update_screen.dart';
 export 'profile/screens/screens.dart';
 export 'munro_challenge/screens/screens.dart';
 export 'report/report_screen.dart';
+export 'whats_new/whats_new_screen.dart';

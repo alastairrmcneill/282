@@ -31,4 +31,15 @@ class SharedPreferencesService {
       prefs.setString('lastFeedbackSurveyDate', latestFeedbackSurveyDateString);
     });
   }
+
+  static Future<String> getLastAppUpdateDialogDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('getLastAppUpdateDialogDate') ?? '01/01/2000';
+  }
+
+  static setLastAppUpdateDialogDate(String date) {
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('getLastAppUpdateDialogDate', date);
+    });
+  }
 }

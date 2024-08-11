@@ -5,6 +5,8 @@ export 'popup_widgets/confirmation_dialog.dart';
 export 'popup_widgets/go_to_munro_bulk_dialog.dart';
 export 'popup_widgets/popup_menu_base.dart';
 export 'popup_widgets/app_survey_dialog.dart';
+export 'popup_widgets/app_update_dialog.dart';
+export 'popup_widgets/whats_new_dialog.dart';
 export 'loading_widget.dart';
 export 'centered_text.dart';
 export 'circle_profile_piucture.dart';

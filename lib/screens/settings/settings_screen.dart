@@ -115,9 +115,8 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             onTap: () async {
               String url = Platform.isIOS
-                  ? "https://testflight.apple.com/join/CsiMRS87"
+                  ? "https://apps.apple.com/us/app/282/id6474512889"
                   : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
-
               try {
                 await launchUrl(
                   Uri.parse(url),
