@@ -5,7 +5,7 @@ import 'package:two_eight_two/services/services.dart';
 class WhatsNewDialog extends StatefulWidget {
   final Widget child;
 
-  const WhatsNewDialog({required this.child, Key? key}) : super(key: key);
+  const WhatsNewDialog({required this.child, super.key});
 
   @override
   _WhatsNewDialogState createState() => _WhatsNewDialogState();

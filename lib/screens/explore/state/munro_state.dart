@@ -50,8 +50,6 @@ class MunroState extends ChangeNotifier {
 
   set setSelectedMunro(Munro? selectedMunro) {
     _selectedMunro = selectedMunro;
-    print('Selected Munro Set');
-    print(selectedMunro?.toJSON());
     notifyListeners();
   }
 
