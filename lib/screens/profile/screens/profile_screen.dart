@@ -163,6 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ProfileService.loadUserFromUid(context, userId: profileState.user?.uid ?? "");
           },
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
                 const ProfileHeader(),

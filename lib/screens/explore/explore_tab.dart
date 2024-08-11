@@ -84,7 +84,7 @@ class _ExploreTabState extends State<ExploreTab> {
             },
             body: Container(
               margin: EdgeInsets.only(
-                bottom: bottomNavBarHeight + bottomPadding + 30,
+                bottom: bottomNavBarHeight + bottomPadding,
               ),
               child: MapScreen(
                 searchFocusNode: _searchFocusNode,
