@@ -29,7 +29,6 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
   void _checkAndShowDialog() async {
     if (_hasShownDialog) return;
     _hasShownDialog = true;
-    await SharedPreferencesService.setLastAppUpdateDialogDate("10/08/2024");
 
     // check if new version available
     bool isIOS = Platform.isIOS;

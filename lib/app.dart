@@ -109,9 +109,11 @@ class App extends StatelessWidget {
           AchievementsCompletedScreen.route: (context) => const AchievementsCompletedScreen(),
           WeatherScreen.route: (context) => const WeatherScreen(),
         },
-        home: const AppUpdateDialog(
-          child: FeedbackSurvey(
-            child: HomeScreen(),
+        home: const WhatsNewDialog(
+          child: AppUpdateDialog(
+            child: FeedbackSurvey(
+              child: HomeScreen(),
+            ),
           ),
         ),
       ),

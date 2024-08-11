@@ -42,4 +42,17 @@ class SharedPreferencesService {
       prefs.setString('getLastAppUpdateDialogDate', date);
     });
   }
+
+  static getShowWhatsNewDialog(String version) {
+    final prefs = SharedPreferences.getInstance();
+    return prefs.then((prefs) {
+      return prefs.getBool('showWhatsNewDialog-$version') ?? true;
+    });
+  }
+
+  static setShownWhatsNewDialog(String version) {
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setBool('showWhatsNewDialog-$version', false);
+    });
+  }
 }
