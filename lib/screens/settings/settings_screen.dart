@@ -93,7 +93,7 @@ class SettingsScreen extends StatelessWidget {
               MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
               bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
-              munroState.setBulkMunroUpdateFilterString = "";
+              munroState.clearFilterAndSorting();
 
               Navigator.push(
                 context,

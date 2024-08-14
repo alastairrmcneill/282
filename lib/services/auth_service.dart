@@ -412,32 +412,23 @@ class AuthService {
   }
 
   static Future _afterSignInNavigation(BuildContext context) async {
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    switch (navigationState.navigateToRoute) {
-      case HomeScreen.route:
-        await MunroService.loadPersonalMunroData(context);
-        break;
-      case HomeScreen.feedTabRoute:
-        await PostService.getFeed(context);
-        NotificationsService.getUserNotifications(context);
-        break;
-      case HomeScreen.savedTabRoute:
-        await MunroService.loadPersonalMunroData(context);
-        break;
-      case HomeScreen.profileTabRoute:
-        await UserService.readCurrentUser(context);
-        await ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
-        break;
-      case MunroScreen.route:
-        break;
-      default:
-    }
+    bool showInAppOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
 
-    // Navigate to the right place
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      navigationState.navigateToRoute, // The name of the route you want to navigate to
-      (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-    );
+    if (showInAppOnboarding) {
+      await UserService.readCurrentUser(context);
+
+      BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
+      UserState userState = Provider.of<UserState>(context, listen: false);
+      MunroState munroState = Provider.of<MunroState>(context, listen: false);
+
+      bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+      munroState.setFilterString = "";
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const InAppOnboarding()),
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 }

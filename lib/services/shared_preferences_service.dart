@@ -55,4 +55,9 @@ class SharedPreferencesService {
       prefs.setBool('showWhatsNewDialog-$version', false);
     });
   }
+
+  static Future<bool> getShowInAppOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('showInAppOnboarding') ?? true;
+  }
 }

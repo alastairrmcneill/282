@@ -10,6 +10,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class MapScreen extends StatefulWidget {
@@ -138,7 +139,6 @@ class _MapScreenState extends State<MapScreen> {
       ),
       onTap: (argument) {
         widget.searchFocusNode.unfocus();
-        munroState.setFilterString = "";
         setState(() => _selectedMunroID = null);
         munroState.setSelectedMunroId = null;
       },

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class ExploreTabHeader extends StatelessWidget {
@@ -23,6 +25,7 @@ class ExploreTabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MunroState munroState = Provider.of<MunroState>(context);
     return Positioned(
       top: 0,
       left: 0,
@@ -51,10 +54,16 @@ class ExploreTabHeader extends StatelessWidget {
                     : const SizedBox(),
                 Expanded(
                   flex: 1,
-                  child: MunroSearchBar(
+                  child: AppSearchBar(
                     focusNode: searchFocusNode,
-                    onSelected: (item) {},
-                    onTap: onSearchTap,
+                    hintText: "Search Munros",
+                    onSearchTap: onSearchTap,
+                    onChanged: (value) {
+                      munroState.setFilterString = value;
+                    },
+                    onClear: () {
+                      munroState.setFilterString = '';
+                    },
                   ),
                 ),
                 const ExploreHeaderFilterButton(),

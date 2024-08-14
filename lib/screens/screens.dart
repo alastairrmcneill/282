@@ -30,3 +30,7 @@ export 'profile/screens/screens.dart';
 export 'munro_challenge/screens/screens.dart';
 export 'report/report_screen.dart';
 export 'whats_new/whats_new_screen.dart';
+export 'in_app_onboarding/in_app_onboarding_screen.dart';
+export 'in_app_onboarding/screens/in_app_onboarding_find_friends.dart';
+export 'in_app_onboarding/screens/in_app_onboarding_munro_updates.dart';
+export 'in_app_onboarding/screens/in_app_onboarding_welcome.dart';

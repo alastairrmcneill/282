@@ -139,6 +139,15 @@ class MunroState extends ChangeNotifier {
     }
   }
 
+  void clearFilterAndSorting() {
+    _filterString = '';
+    _latLngBounds = null;
+    _sortOrder = SortOrder.alphabetical;
+    _filterOptions = FilterOptions();
+    _isFilterOptionsSet = false;
+    _filter();
+  }
+
   set setCreatePostFilterString(String filterString) {
     _createPostFilterString = filterString;
     _createPostFilter();
