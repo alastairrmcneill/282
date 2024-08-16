@@ -907,27 +907,38 @@ exports.onAchievementDeleted = functions.firestore
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
   try {
-    const achievementsRef = admin.firestore().collection("users");
-    const usersSnapshot = await achievementsRef.get();
-    let batch = admin.firestore().batch();
+    const postsRef = admin.firestore().collection("posts");
+    let lastDoc = null;
+    const batchSize = 500;
 
-    usersSnapshot.forEach((userDoc) => {
-      console.log(`User: ${userDoc.id}`);
-      let userRef = achievementsRef.doc(userDoc.id);
-      let personalMunroData = userDoc.data().personalMunroData;
+    while (true) {
+      let query = postsRef.orderBy("__name__").limit(batchSize);
+      if (lastDoc) {
+        query = query.startAfter(lastDoc);
+      }
 
-      let updatedMunroData = personalMunroData.map((munro) => {
-        if (munro.summitedDate === null) {
-          return { ...munro, summitedDates: [] };
-        } else {
-          return { ...munro, summitedDates: [munro.summitedDate] };
+      const postsSnapshot = await query.get();
+      if (postsSnapshot.empty) {
+        break; // No more documents to process
+      }
+
+      let batch = admin.firestore().batch();
+      postsSnapshot.forEach((postDoc) => {
+        if (!postDoc.data().privacy) {
+          // Only update if privacy field doesn't exist
+          console.log(`Updating Post: ${postDoc.id}`);
+          let postRef = postsRef.doc(postDoc.id);
+          batch.update(postRef, { privacy: "public" });
         }
       });
 
-      batch.update(userRef, { personalMunroData: updatedMunroData });
-    });
+      await batch.commit();
+      lastDoc = postsSnapshot.docs[postsSnapshot.docs.length - 1];
 
-    await batch.commit();
+      // To avoid potential timeout, consider adding a delay between batches
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     res.send("Migration completed successfully");
   } catch (error) {
     console.error("Error in migration: ", error);

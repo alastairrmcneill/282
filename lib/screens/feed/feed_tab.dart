@@ -24,7 +24,7 @@ class _FeedTabState extends State<FeedTab> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           feedState.status != FeedStatus.paginating) {
-        PostService.paginateFeed(context);
+        PostService.paginateGlobalFeed(context);
       }
     });
 
@@ -101,9 +101,9 @@ class _FeedTabState extends State<FeedTab> {
       backgroundColor: const Color.fromARGB(255, 236, 240, 233),
       body: RefreshIndicator(
         onRefresh: () async {
-          PostService.getFeed(context);
+          PostService.getGlobalFeed(context);
         },
-        child: feedState.posts.isEmpty
+        child: feedState.globalPosts.isEmpty
             ? const SafeArea(
                 child: Padding(
                   padding: EdgeInsets.all(15),
@@ -121,7 +121,7 @@ class _FeedTabState extends State<FeedTab> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Column(
-                        children: feedState.posts
+                        children: feedState.globalPosts
                             .map(
                               (Post post) => PostWidget(
                                 post: post,

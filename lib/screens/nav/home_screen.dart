@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
             } else {
               // Navigate to feed
-              PostService.getFeed(context);
+              PostService.getGlobalFeed(context);
               NotificationsService.getUserNotifications(context);
               setState(() => _currentIndex = value);
             }

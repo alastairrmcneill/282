@@ -44,7 +44,7 @@ class PushNotificationService {
     if (message == null) return;
 
     navigatorKey.currentState?.pushReplacementNamed(HomeScreen.feedTabRoute);
-    PostService.getFeed(navigatorKey.currentContext!);
+    PostService.getGlobalFeed(navigatorKey.currentContext!);
     NotificationsService.getUserNotifications(navigatorKey.currentContext!);
     navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const NotificationsScreen()));
   }

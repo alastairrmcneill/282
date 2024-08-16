@@ -13,7 +13,7 @@ class Post {
   final List<Munro> includedMunros;
   final List<String> includedMunroIds;
   final int likes;
-  final bool public;
+  final String privacy;
 
   Post({
     this.uid,
@@ -27,7 +27,7 @@ class Post {
     required this.includedMunros,
     required this.includedMunroIds,
     required this.likes,
-    required this.public,
+    required this.privacy,
   });
 
   // To JSON
@@ -51,7 +51,7 @@ class Post {
       PostFields.includedMunros: includedMunrosMaps,
       PostFields.includedMunroIds: includedMunroIds,
       PostFields.likes: likes,
-      PostFields.public: public,
+      PostFields.privacy: privacy,
     };
   }
 
@@ -101,7 +101,7 @@ class Post {
       includedMunros: inlcudedMunrosList,
       includedMunroIds: newIncludedMunroIds,
       likes: json[PostFields.likes] as int,
-      public: json[PostFields.public] as bool? ?? true,
+      privacy: json[PostFields.privacy] as String? ?? Privacy.public,
     );
   }
 
@@ -118,7 +118,7 @@ class Post {
     List<Munro>? includedMunros,
     List<String>? includedMunroIds,
     int? likes,
-    bool? public,
+    String? privacy,
   }) {
     return Post(
       uid: uid ?? this.uid,
@@ -132,7 +132,7 @@ class Post {
       includedMunros: includedMunros ?? this.includedMunros,
       includedMunroIds: includedMunroIds ?? this.includedMunroIds,
       likes: likes ?? this.likes,
-      public: public ?? this.public,
+      privacy: privacy ?? this.privacy,
     );
   }
 }
@@ -150,5 +150,11 @@ class PostFields {
   static String includedMunros = "includedMunros";
   static String includedMunroIds = "includedMunroIds";
   static String likes = "likes";
+  static String privacy = "privacy";
+}
+
+class Privacy {
   static String public = "public";
+  static String friends = "friends";
+  static String private = "private";
 }
