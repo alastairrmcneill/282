@@ -6,6 +6,7 @@ import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.d
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/clickable_image.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroPictureGallery extends StatelessWidget {
   const MunroPictureGallery({super.key});
@@ -57,13 +58,26 @@ class MunroPictureGallery extends StatelessWidget {
                   child: Wrap(
                     runAlignment: WrapAlignment.start,
                     spacing: 5,
-                    children: munroDetailState.munroPictures.take(4).map((MunroPicture munroPicture) {
+                    children: munroDetailState.munroPictures.take(4).toList().asMap().entries.map((entry) {
+                      int index = entry.key;
+                      MunroPicture munroPicture = entry.value;
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: SizedBox(
                           width: (MediaQuery.of(context).size.width - 60) / 4,
                           height: (MediaQuery.of(context).size.width - 60) / 4,
-                          child: ClickableImage(imageURL: munroPicture.imageUrl),
+                          child: ClickableImage(
+                            image: munroPicture,
+                            munroPictures: munroDetailState.munroPictures,
+                            initialIndex: index,
+                            fetchMorePhotos: () async {
+                              List<MunroPicture> newPhotos = await MunroPictureService.paginateMunroPictures(
+                                context,
+                                munroId: munroState.selectedMunro!.id,
+                              );
+                              return newPhotos;
+                            },
+                          ),
                         ),
                       );
                     }).toList(),

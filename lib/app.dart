@@ -5,6 +5,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -106,7 +107,13 @@ class App extends StatelessWidget {
           AchievementsCompletedScreen.route: (context) => const AchievementsCompletedScreen(),
           WeatherScreen.route: (context) => const WeatherScreen(),
         },
-        home: const HomeScreen(),
+        home: const WhatsNewDialog(
+          child: AppUpdateDialog(
+            child: FeedbackSurvey(
+              child: HomeScreen(),
+            ),
+          ),
+        ),
       ),
     );
   }

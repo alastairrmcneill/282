@@ -50,8 +50,6 @@ class MunroState extends ChangeNotifier {
 
   set setSelectedMunro(Munro? selectedMunro) {
     _selectedMunro = selectedMunro;
-    print('Selected Munro Set');
-    print(selectedMunro?.toJSON());
     notifyListeners();
   }
 
@@ -139,6 +137,15 @@ class MunroState extends ChangeNotifier {
     if (!equal) {
       notifyListeners();
     }
+  }
+
+  void clearFilterAndSorting() {
+    _filterString = '';
+    _latLngBounds = null;
+    _sortOrder = SortOrder.alphabetical;
+    _filterOptions = FilterOptions();
+    _isFilterOptionsSet = false;
+    _filter();
   }
 
   set setCreatePostFilterString(String filterString) {

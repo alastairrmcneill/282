@@ -11,6 +11,7 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
+  await RemoteConfigService.init();
   await dotenv.load();
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
 

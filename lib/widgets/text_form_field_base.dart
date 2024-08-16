@@ -22,6 +22,7 @@ class TextFormFieldBase extends StatelessWidget {
   final bool obscureText;
   final bool autocorrect;
   final InputBorder? border;
+
   const TextFormFieldBase({
     super.key,
     this.controller,

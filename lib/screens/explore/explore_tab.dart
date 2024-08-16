@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -84,7 +85,7 @@ class _ExploreTabState extends State<ExploreTab> {
             },
             body: Container(
               margin: EdgeInsets.only(
-                bottom: bottomNavBarHeight + bottomPadding + 30,
+                bottom: bottomNavBarHeight + bottomPadding,
               ),
               child: MapScreen(
                 searchFocusNode: _searchFocusNode,

@@ -1,36 +1,37 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
+import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class ClickableImage extends StatelessWidget {
-  final String imageURL;
-  const ClickableImage({super.key, required this.imageURL});
+  final List<MunroPicture> munroPictures;
+  final int initialIndex;
+  final Future<List<MunroPicture>> Function() fetchMorePhotos;
+  final MunroPicture image;
+  const ClickableImage({
+    super.key,
+    required this.munroPictures,
+    required this.initialIndex,
+    required this.fetchMorePhotos,
+    required this.image,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              insetPadding: const EdgeInsets.all(10),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: GestureDetector(
-                  onDoubleTap: () {},
-                  child: PhotoView(
-                    imageProvider: CachedNetworkImageProvider(imageURL),
-                    scaleStateCycle: (scaleState) => PhotoViewScaleState.zoomedIn,
-                    enableRotation: false,
-                    minScale: PhotoViewComputedScale.contained,
-                    maxScale: PhotoViewComputedScale.covered * 2.5,
-                    tightMode: true,
-                  ),
-                ),
-              ),
-            );
-          },
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FullScreenPhotoViewer(
+              initialPictures: munroPictures,
+              initialIndex: initialIndex,
+              fetchMorePhotos: () async {
+                List<MunroPicture> newPhotos = await fetchMorePhotos();
+                return newPhotos;
+              },
+            ),
+          ),
         );
       },
       child: CachedNetworkImage(
@@ -40,7 +41,7 @@ class ClickableImage extends StatelessWidget {
             value: downloadProgress.progress,
           ),
         ),
-        imageUrl: imageURL,
+        imageUrl: image.imageUrl,
         fit: BoxFit.cover,
       ),
     );
