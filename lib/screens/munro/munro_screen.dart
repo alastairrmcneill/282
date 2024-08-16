@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/explore/screens/munro_search_screen.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -22,7 +18,6 @@ class _MunroScreenState extends State<MunroScreen> {
 
   @override
   void initState() {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
     MunroService.loadAdditionalMunroData(context);
     super.initState();
   }

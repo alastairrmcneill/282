@@ -57,7 +57,14 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
               itemBuilder: (BuildContext context, int index) {
                 MunroPicture munroPicture = profileState.profilePhotos[index];
                 return ClickableImage(
-                  imageURL: munroPicture.imageUrl,
+                  image: munroPicture,
+                  munroPictures: profileState.profilePhotos,
+                  initialIndex: index,
+                  fetchMorePhotos: () async {
+                    List<MunroPicture> newPhotos = await MunroPictureService.paginateProfilePictures(context,
+                        profileId: profileState.user?.uid ?? '');
+                    return newPhotos;
+                  },
                 );
               },
             ),

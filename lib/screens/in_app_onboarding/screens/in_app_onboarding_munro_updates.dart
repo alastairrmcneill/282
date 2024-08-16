@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
@@ -8,7 +6,6 @@ import 'package:two_eight_two/screens/explore/widgets/app_search_bar.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
-import 'package:two_eight_two/widgets/widgets.dart';
 
 class InAppOnboardingMunroUpdates extends StatelessWidget {
   final FocusNode searchFocusNode = FocusNode();

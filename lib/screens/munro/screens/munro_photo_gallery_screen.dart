@@ -59,7 +59,14 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
               itemBuilder: (BuildContext context, int index) {
                 MunroPicture munroPicture = munroDetailState.munroPictures[index];
                 return ClickableImage(
-                  imageURL: munroPicture.imageUrl,
+                  image: munroPicture,
+                  munroPictures: munroDetailState.munroPictures,
+                  initialIndex: index,
+                  fetchMorePhotos: () async {
+                    List<MunroPicture> newPhotos =
+                        await MunroPictureService.paginateMunroPictures(context, munroId: munroState.selectedMunro!.id);
+                    return newPhotos;
+                  },
                 );
               },
             ),

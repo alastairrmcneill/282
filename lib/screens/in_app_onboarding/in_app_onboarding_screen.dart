@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -20,7 +16,6 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
 
   @override
   Widget build(BuildContext context) {
-    NavigationState navigationState = Provider.of<NavigationState>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -77,6 +72,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                           ? ElevatedButton(
                               onPressed: () async {
                                 MunroService.bulkUpdateMunros(context);
+                                SharedPreferencesService.setShowBulkMunroDialog(false);
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(builder: (_) => const HomeScreen()),

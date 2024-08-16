@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class InAppOnboardingWelcome extends StatelessWidget {
   const InAppOnboardingWelcome({super.key});

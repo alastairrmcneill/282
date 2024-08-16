@@ -27,7 +27,7 @@ class MunroPictureService {
     }
   }
 
-  static Future paginateMunroPictures(BuildContext context, {required String munroId}) async {
+  static Future<List<MunroPicture>> paginateMunroPictures(BuildContext context, {required String munroId}) async {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
 
     try {
@@ -48,10 +48,13 @@ class MunroPictureService {
 
       munroDetailState.addMunroPictures = newMunroPictures;
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
+      return newMunroPictures;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      munroDetailState.setError =
-          Error(message: "There was an issue loading pictures for this munro. Please try again.");
+      munroDetailState.setError = Error(
+        message: "There was an issue loading pictures for this munro. Please try again.",
+      );
+      return [];
     }
   }
 
@@ -75,7 +78,7 @@ class MunroPictureService {
     }
   }
 
-  static Future paginateProfilePictures(BuildContext context, {required String profileId}) async {
+  static Future<List<MunroPicture>> paginateProfilePictures(BuildContext context, {required String profileId}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     try {
@@ -96,9 +99,11 @@ class MunroPictureService {
 
       profileState.addProfilePhotos = newMunroPictures;
       profileState.setPhotoStatus = ProfilePhotoStatus.loaded;
+      return newMunroPictures;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
+      return [];
     }
   }
 }

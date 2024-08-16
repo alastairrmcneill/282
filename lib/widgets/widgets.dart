@@ -19,3 +19,4 @@ export 'expandable_text.dart';
 export 'padded_divider.dart';
 export 'text_form_field_base.dart';
 export 'button.dart';
+export 'full_screen_photo_view.dart';
