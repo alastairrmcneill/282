@@ -416,10 +416,6 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
       .set(snapshot.data());
   });
 
-  // Add post to author's feed
-  console.log(`Adding post to feed of ${authorId}`);
-  admin.firestore().collection("feeds").doc(authorId).collection("userFeed").doc(postId).set(snapshot.data());
-
   console.log("Post added to feeds successfully");
 
   // Create munro picture documents

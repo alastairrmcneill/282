@@ -109,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else {
               // Navigate to feed
               PostService.getGlobalFeed(context);
+              PostService.getFriendsFeed(context);
               NotificationsService.getUserNotifications(context);
               setState(() => _currentIndex = value);
             }

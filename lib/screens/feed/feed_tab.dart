@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rate_my_app/rate_my_app.dart';
-import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/feed/screens/feed_list_view.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/widgets/widgets.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class FeedTab extends StatefulWidget {
   const FeedTab({super.key});
@@ -15,25 +15,14 @@ class FeedTab extends StatefulWidget {
 }
 
 class _FeedTabState extends State<FeedTab> {
-  late ScrollController _scrollController;
   @override
   void initState() {
-    FeedState feedState = Provider.of<FeedState>(context, listen: false);
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-          !_scrollController.position.outOfRange &&
-          feedState.status != FeedStatus.paginating) {
-        PostService.paginateGlobalFeed(context);
-      }
-    });
-
     RateMyApp rateMyApp = RateMyApp(
       preferencesPrefix: 'rateMyApp_',
-      minDays: 7,
-      minLaunches: 7,
-      remindDays: 7,
-      remindLaunches: 7,
+      minDays: 2,
+      minLaunches: 2,
+      remindDays: 5,
+      remindLaunches: 5,
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -46,97 +35,69 @@ class _FeedTabState extends State<FeedTab> {
   }
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Consumer<FeedState>(
-      builder: (context, feedState, child) {
-        switch (feedState.status) {
-          case FeedStatus.loading:
-            return _buildLoadingScreen(context, feedState);
-
-          case FeedStatus.error:
-            return Scaffold(
-              appBar: AppBar(),
-              body: CenterText(text: feedState.error.message),
-            );
-          default:
-            return _buildScreen(context, feedState);
-        }
-      },
-    );
-  }
-
-  Widget _buildLoadingScreen(BuildContext context, FeedState feedState) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('282'),
-        actions: const [
-          NotificationIconButton(),
-          FindFriendsIconButton(),
-        ],
-      ),
-      backgroundColor: Colors.grey[100],
-      body: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 3,
-        itemBuilder: (context, index) => const ShimmerPostTile(),
-      ),
-    );
-  }
-
-  Widget _buildScreen(BuildContext context, FeedState feedState) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('282'),
-        actions: const [
-          NotificationIconButton(),
-          FindFriendsIconButton(),
-        ],
-      ),
-      backgroundColor: const Color.fromARGB(255, 236, 240, 233),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          PostService.getGlobalFeed(context);
-        },
-        child: feedState.globalPosts.isEmpty
-            ? const SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: CenterText(
-                    text:
-                        "There are no posts to show. Get out into the hills with your friends and start making some memories!",
+    FeedState feedState = Provider.of<FeedState>(context);
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TabBar(
+                  isScrollable: true,
+                  indicator: const UnderlineTabIndicator(
+                    borderSide: BorderSide(
+                      color: MyColors.accentColor,
+                      width: 2.0,
+                    ),
+                    insets: EdgeInsets.symmetric(horizontal: 16.0),
                   ),
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                  ),
+                  unselectedLabelColor: Colors.grey[600],
+                  tabs: const [
+                    Tab(text: 'All Munro Baggers'),
+                    Tab(text: 'Friends'),
+                  ],
                 ),
-              )
-            : ListView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: feedState.globalPosts
-                            .map(
-                              (Post post) => PostWidget(
-                                post: post,
-                                inFeed: true,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                      SizedBox(
-                        child: feedState.status == FeedStatus.paginating ? const CircularProgressIndicator() : null,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                const Spacer(),
+                // FindFriendsIconButton(),
+                const NotificationIconButton(),
+              ],
+            ),
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            FeedListView(
+              posts: feedState.globalPosts,
+              paginate: () {
+                PostService.paginateGlobalFeed(context);
+              },
+              refreshPosts: () {
+                PostService.getGlobalFeed(context);
+              },
+            ),
+            FeedListView(
+              posts: feedState.friendsPosts,
+              paginate: () {
+                PostService.paginateFriendsFeed(context);
+              },
+              refreshPosts: () {
+                PostService.getFriendsFeed(context);
+              },
+              headerWidget: const FindFriendsHeaderWiget(),
+              emptyList: const EmptyFriendsFeed(),
+            ),
+          ],
+        ),
       ),
     );
   }
