@@ -157,4 +157,5 @@ class Privacy {
   static String public = "public";
   static String friends = "friends";
   static String private = "private";
+  static String hidden = "hidden";
 }

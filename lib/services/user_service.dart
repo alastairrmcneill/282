@@ -75,4 +75,13 @@ class UserService {
       return [];
     }
   }
+
+  static Future updateProfileVisibility(BuildContext context, String newValue) async {
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    AppUser? currentUser = userState.currentUser;
+    if (currentUser == null) return;
+
+    AppUser updatedUser = currentUser.copyWith(profileVisibility: newValue);
+    UserService.updateUser(context, appUser: updatedUser);
+  }
 }

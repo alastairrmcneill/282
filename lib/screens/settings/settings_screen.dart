@@ -73,6 +73,15 @@ class SettingsScreen extends StatelessWidget {
             title: const Text("Units"),
           ),
           ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => PrivacySettingsScreen()),
+              );
+            },
+            title: const Text("Privacy"),
+          ),
+          ListTile(
             onTap: () async {
               try {
                 await launchUrl(

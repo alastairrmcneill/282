@@ -33,12 +33,12 @@ const base64 = require("base-64");
 const fs = require("fs");
 
 // Decode the Base64 encoded service account key
-const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
+// const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://prod-81998.firebaseio.com",
+  // credential: admin.credential.cert(serviceAccount),
+  // databaseURL: "https://prod-81998.firebaseio.com",
 });
 
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
@@ -319,6 +319,7 @@ exports.onFollowUser = functions.firestore
 
     followedUserPostsSnapshot.forEach((doc) => {
       if (doc.exists) {
+        if (doc.get("privacy") === "private") return;
         userFeedRef.doc(doc.id).set(doc.data());
       }
     });
@@ -395,6 +396,40 @@ exports.onUnfollowUser = functions.firestore
 exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(async (snapshot, context) => {
   const postId = context.params.postId;
   const authorId = snapshot.get("authorId");
+  const privacy = snapshot.get("privacy");
+
+  // Upload photos first
+  console.log("Creating munro pictures");
+  const munroPicturesRef = admin.firestore().collection("munroPictures");
+  const imageUrlsMap = snapshot.get("imageUrlsMap");
+  const postDate = snapshot.get("dateTime");
+
+  console.log("Map: ", imageUrlsMap);
+  for (var key in imageUrlsMap) {
+    console.log("Key: ", key);
+    console.log("Value: ", imageUrlsMap[key]);
+    for (var url of imageUrlsMap[key]) {
+      console.log("URL: ", url);
+      const munroPictureRef = munroPicturesRef.doc();
+      await munroPictureRef.set({
+        id: munroPictureRef.id,
+        postId: postId,
+        munroId: key,
+        imageUrl: url,
+        dateTime: postDate,
+        authorId: authorId,
+        privacy: privacy,
+      });
+    }
+  }
+
+  console.log("Munro pictures created successfully");
+
+  // If private then don't carry on
+  if (privacy === "private") {
+    console.log("Post is private. Not adding to feeds");
+    return;
+  }
 
   // Add new post to feeds of all followers.
   const userFollowerRelationshipsRef = admin
@@ -418,31 +453,16 @@ exports.onPostCreated = functions.firestore.document("posts/{postId}").onCreate(
 
   console.log("Post added to feeds successfully");
 
-  // Create munro picture documents
-  console.log("Creating munro pictures");
-  const munroPicturesRef = admin.firestore().collection("munroPictures");
-  const imageUrlsMap = snapshot.get("imageUrlsMap");
-  const postDate = snapshot.get("dateTime");
-
-  console.log("Map: ", imageUrlsMap);
-  for (var key in imageUrlsMap) {
-    console.log("Key: ", key);
-    console.log("Value: ", imageUrlsMap[key]);
-    for (var url of imageUrlsMap[key]) {
-      console.log("URL: ", url);
-      const munroPictureRef = munroPicturesRef.doc();
-      await munroPictureRef.set({
-        id: munroPictureRef.id,
-        postId: postId,
-        munroId: key,
-        imageUrl: url,
-        dateTime: postDate,
-        authorId: authorId,
-      });
-    }
+  // If friends only then don't add to global feed
+  if (privacy === "friends") {
+    console.log("Post is friends only. Not adding to global feed");
+    return;
   }
 
-  console.log("Munro pictures created successfully");
+  // Add to global feed
+  const globalFeedRef = admin.firestore().collection("globalFeed").doc(postId);
+  await globalFeedRef.set(snapshot.data());
+  console.log("Post added to global feed successfully");
 });
 
 exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate(async (snapshot, context) => {
@@ -454,35 +474,7 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
   // Update post data in each follower's feed.
   const updatedPostData = snapshot.after.data();
 
-  // Add new post to feeds of all followers.
-  const userFollowerRelationshipsRef = admin
-    .firestore()
-    .collection("followingRelationships")
-    .where("targetId", "==", authorId);
-
-  const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
-
-  console.log("Starting to update post in feeds");
-  for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
-    console.log(`Updating post in feed of ${userFollowersSnapshot.docs[i].get("sourceId")}`);
-    let doc = userFollowersSnapshot.docs[i];
-    const feedsRef = admin.firestore().collection("feeds").doc(doc.get("sourceId")).collection("userFeed");
-    const postDoc = await feedsRef.doc(postId).get();
-    if (postDoc.exists) {
-      postDoc.ref.update(updatedPostData);
-    }
-  }
-
-  // Update post data in author's feed.
-  console.log(`Updating post in feed of ${authorId}`);
-  const authorFeedRef = admin.firestore().collection("feeds").doc(authorId).collection("userFeed");
-  const authorPostDoc = await authorFeedRef.doc(postId).get();
-
-  if (authorPostDoc.exists) {
-    authorPostDoc.ref.update(updatedPostData);
-  }
-
-  console.log("Post updated in feeds successfully");
+  const privacy = snapshot.after.get("privacy");
 
   // Update munro pictures
   console.log("Updating munro pictures");
@@ -515,11 +507,57 @@ exports.onPostUpdated = functions.firestore.document("/posts/{postId}").onUpdate
         imageUrl: url,
         dateTime: postDate,
         authorId: authorId,
+        privacy: privacy,
       });
     }
   }
 
   console.log("Munro pictures created successfully");
+
+  if (privacy === "private") {
+    console.log("Post is private. Not updating feeds");
+    return;
+  }
+
+  // Add new post to feeds of all followers.
+  const userFollowerRelationshipsRef = admin
+    .firestore()
+    .collection("followingRelationships")
+    .where("targetId", "==", authorId);
+
+  const userFollowersSnapshot = await userFollowerRelationshipsRef.get();
+
+  console.log("Starting to update post in feeds");
+  for (let i = 0; i < userFollowersSnapshot.docs.length; i++) {
+    console.log(`Updating post in feed of ${userFollowersSnapshot.docs[i].get("sourceId")}`);
+    let doc = userFollowersSnapshot.docs[i];
+    const feedsRef = admin.firestore().collection("feeds").doc(doc.get("sourceId")).collection("userFeed");
+    const postDoc = await feedsRef.doc(postId).get();
+    if (postDoc.exists) {
+      postDoc.ref.update(updatedPostData);
+    } else {
+      postDoc.ref.set(updatedPostData);
+    }
+  }
+
+  console.log("Post updated in feeds successfully");
+
+  // Update post in global feed
+  if (privacy === "friends") {
+    console.log("Post is friends only. Not updating global feed");
+    return;
+  }
+
+  console.log("Updating post in global feed");
+  const globalFeedRef = admin.firestore().collection("globalFeed").doc(postId);
+  const globalPostDoc = await globalFeedRef.get();
+  if (globalPostDoc.exists) {
+    globalPostDoc.ref.update(updatedPostData);
+  } else {
+    globalPostDoc.ref.set(updatedPostData);
+  }
+
+  console.log("Post updated in global feed successfully");
 });
 
 exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete(async (snapshot, context) => {
@@ -558,6 +596,16 @@ exports.onPostDeleted = functions.firestore.document("/posts/{postId}").onDelete
   }
 
   console.log("Post deleted from feeds successfully");
+
+  // Delete post from global feed
+  console.log("Deleting post from global feed");
+  const globalFeedRef = admin.firestore().collection("globalFeed").doc(postId);
+  const globalPostDoc = await globalFeedRef.get();
+  if (globalPostDoc.exists) {
+    globalPostDoc.ref.delete();
+  }
+
+  console.log("Post deleted from global feed successfully");
 
   // Delete munro pictures
   console.log("Deleting munro pictures");
@@ -930,6 +978,67 @@ exports.databaseMigration = functions.https.onRequest(async (req, res) => {
 
       await batch.commit();
       lastDoc = postsSnapshot.docs[postsSnapshot.docs.length - 1];
+
+      // To avoid potential timeout, consider adding a delay between batches
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    const usersRef = admin.firestore().collection("users");
+    let lastUserDoc = null;
+    const userBatchSize = 500;
+
+    while (true) {
+      let query = usersRef.orderBy("__name__").limit(userBatchSize);
+      if (lastUserDoc) {
+        query = query.startAfter(lastUserDoc);
+      }
+
+      const usersSnapshot = await query.get();
+      if (usersSnapshot.empty) {
+        break; // No more documents to process
+      }
+
+      let batch = admin.firestore().batch();
+      usersSnapshot.forEach((userDoc) => {
+        if (!userDoc.data().profileVisibility) {
+          // Only update if profileVisibility field doesn't exist
+          console.log(`Updating User: ${userDoc.id}`);
+          let userRef = usersRef.doc(userDoc.id);
+          batch.update(userRef, { profileVisibility: "public" });
+        }
+      });
+
+      await batch.commit();
+      lastUserDoc = usersSnapshot.docs[usersSnapshot.docs.length - 1];
+
+      // To avoid potential timeout, consider adding a delay between batches
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    const globalFeedRef = admin.firestore().collection("globalFeed");
+    let lastPostMoveDoc = null;
+    const batchMovingSize = 500;
+
+    while (true) {
+      let query = postsRef.orderBy("__name__").limit(batchMovingSize);
+      if (lastPostMoveDoc) {
+        query = query.startAfter(lastPostMoveDoc);
+      }
+
+      const postsSnapshot = await query.get();
+      if (postsSnapshot.empty) {
+        break; // No more documents to process
+      }
+
+      let batch = admin.firestore().batch();
+      postsSnapshot.forEach((postDoc) => {
+        console.log(`Copying Post: ${postDoc.id}`);
+        let postRef = globalFeedRef.doc(postDoc.id);
+        batch.set(postRef, postDoc.data());
+      });
+
+      await batch.commit();
+      lastPostMoveDoc = postsSnapshot.docs[postsSnapshot.docs.length - 1];
 
       // To avoid potential timeout, consider adding a delay between batches
       await new Promise((resolve) => setTimeout(resolve, 1000));

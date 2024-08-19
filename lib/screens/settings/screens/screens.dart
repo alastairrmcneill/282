@@ -4,3 +4,4 @@ export 'units_settings_screen.dart';
 export 'about_screen.dart';
 export 'legal_screen.dart';
 export 'document_screen.dart';
+export 'privacy_settings_screen.dart';
