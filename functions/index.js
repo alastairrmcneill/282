@@ -667,33 +667,43 @@ exports.onLikeDeleted = functions.firestore.document("/likes/{likeId}").onDelete
 exports.onCommentCreated = functions.firestore
   .document("/comments/{postId}/postComments/{commentId}")
   .onCreate(async (snapshot, context) => {
-    // Create notification document
-    // Find postId
     const postId = context.params.postId;
-
-    // Get author id from post and set as target
     const postRef = admin.firestore().collection("posts").doc(postId);
     const postDoc = await postRef.get();
-    const targetId = postDoc.get("authorId");
 
-    // Get displayName and Profilepictureurl from comment
     const sourceId = snapshot.get("authorId");
     const sourceProfilePictureURL = snapshot.get("authorProfilePictureURL");
     const sourceDisplayName = snapshot.get("authorDisplayName");
-    if (sourceId === targetId) return;
 
-    const notificationRef = admin.firestore().collection("notifications").doc();
-    notificationRef.set({
-      id: notificationRef.id,
-      targetId: targetId,
-      sourceId: sourceId,
-      sourceDisplayName: sourceDisplayName,
-      sourceProfilePictureURL: sourceProfilePictureURL,
-      postId: postId,
-      type: "comment",
-      dateTime: new Date(),
-      read: false,
+    // Update the list of commenters
+    const postCommenterIds = postDoc.get("commenterIds") || [];
+    if (!postCommenterIds.includes(sourceId)) {
+      postCommenterIds.push(sourceId);
+      await postRef.update({ commenterIds: postCommenterIds });
+    }
+
+    // Send notification to all commenters except the one who made the comment
+    const targetIds = postCommenterIds.filter((id) => id !== sourceId);
+
+    const batch = admin.firestore().batch();
+
+    targetIds.forEach((targetId) => {
+      const notificationRef = admin.firestore().collection("notifications").doc();
+      batch.set(notificationRef, {
+        id: notificationRef.id,
+        targetId: targetId,
+        sourceId: sourceId,
+        sourceDisplayName: sourceDisplayName,
+        sourceProfilePictureURL: sourceProfilePictureURL,
+        postId: postId,
+        type: "comment",
+        dateTime: new Date(),
+        read: false,
+      });
     });
+
+    // Commit the batch
+    await batch.commit();
   });
 
 exports.onNotificationCreated = functions.firestore
@@ -721,7 +731,7 @@ exports.onNotificationCreated = functions.firestore
     if (type == "like") {
       notificationText = " liked your post.";
     } else if (type == "comment") {
-      notificationText = " commented on your post.";
+      notificationText = " commented on a post you follow.";
     } else if (type == "follow") {
       notificationText = " followed you.";
     }
