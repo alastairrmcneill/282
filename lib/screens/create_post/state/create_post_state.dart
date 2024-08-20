@@ -11,6 +11,7 @@ class CreatePostState extends ChangeNotifier {
   Map<String, List<File>> _images = {};
   Map<String, List<String>> _imageURLs = {};
   List<Munro> _selectedMunros = [];
+  String? _postPrivacy;
   Post? _editingPost;
 
   CreatePostStatus get status => _status;
@@ -20,6 +21,7 @@ class CreatePostState extends ChangeNotifier {
   Map<String, List<File>> get images => _images;
   Map<String, List<String>> get imagesURLs => _imageURLs;
   List<Munro> get selectedMunros => _selectedMunros;
+  String? get postPrivacy => _postPrivacy;
   Post? get editingPost => _editingPost;
 
   set setStatus(CreatePostStatus searchStatus) {
@@ -43,6 +45,11 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setPostPrivacy(String? postPrivacy) {
+    _postPrivacy = postPrivacy;
+    notifyListeners();
+  }
+
   setImageURLs({required String munroId, required List<String> imageURLs}) {
     if (_imageURLs[munroId] == null) _imageURLs[munroId] = [];
 
@@ -56,6 +63,7 @@ class CreatePostState extends ChangeNotifier {
     _description = post.description;
     _imageURLs = post.imageUrlsMap;
     _selectedMunros = post.includedMunros;
+    _postPrivacy = post.privacy;
     notifyListeners();
   }
 
@@ -103,6 +111,7 @@ class CreatePostState extends ChangeNotifier {
     _imageURLs = {};
     _images = {};
     _selectedMunros = [];
+    _postPrivacy = null;
     _error = Error();
     _status = CreatePostStatus.initial;
   }

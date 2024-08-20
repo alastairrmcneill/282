@@ -19,6 +19,7 @@ class AppUser {
   final String? platform;
   final String? signInMethod;
   final DateTime? dateCreated;
+  final String? profileVisibility;
 
   AppUser({
     this.uid,
@@ -38,6 +39,7 @@ class AppUser {
     this.platform,
     this.signInMethod,
     this.dateCreated,
+    this.profileVisibility,
   });
 
   List<Map<String, dynamic>>? get personalMunroDataAsString {
@@ -69,6 +71,7 @@ class AppUser {
       AppUserFields.platform: platform,
       AppUserFields.signInMethod: signInMethod,
       AppUserFields.dateCreated: dateCreated,
+      AppUserFields.profileVisibility: profileVisibility,
     };
   }
 
@@ -104,6 +107,7 @@ class AppUser {
       platform: json[AppUserFields.platform] as String?,
       signInMethod: json[AppUserFields.signInMethod] as String?,
       dateCreated: (json[AppUserFields.dateCreated] as Timestamp?)?.toDate(),
+      profileVisibility: json[AppUserFields.profileVisibility] as String?,
     );
   }
 
@@ -125,6 +129,7 @@ class AppUser {
     String? platform,
     String? signInMethod,
     DateTime? dateCreated,
+    String? profileVisibility,
   }) {
     return AppUser(
       uid: uid ?? this.uid,
@@ -144,6 +149,7 @@ class AppUser {
       platform: platform ?? this.platform,
       signInMethod: signInMethod ?? this.signInMethod,
       dateCreated: dateCreated ?? this.dateCreated,
+      profileVisibility: profileVisibility ?? this.profileVisibility,
     );
   }
 
@@ -173,6 +179,7 @@ class AppUser {
       ${AppUserFields.platform}: $platform,
       ${AppUserFields.signInMethod}: $signInMethod,
       ${AppUserFields.dateCreated}: $dateCreated,
+      ${AppUserFields.profileVisibility}: $profileVisibility,
       )''';
 }
 
@@ -195,6 +202,7 @@ class AppUserFields {
   static String platform = 'platform';
   static String signInMethod = 'signInMethod';
   static String dateCreated = 'dateCreated';
+  static String profileVisibility = 'profileVisibility';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [

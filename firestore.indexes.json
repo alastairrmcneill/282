@@ -85,6 +85,24 @@
       ]
     },
     {
+      "collectionGroup": "munroPictures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "munroId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "privacy",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateTime",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "notifications",
       "queryScope": "COLLECTION",
       "fields": [
@@ -187,6 +205,20 @@
         {
           "fieldPath": "dateTime",
           "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "profileVisibility",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "searchName",
+          "order": "ASCENDING"
         }
       ]
     }

@@ -7,12 +7,14 @@ class SettingsState extends ChangeNotifier {
   bool _enablePushNotifications = true;
   bool _metricHeight = false;
   bool _metricTemperature = true;
+  String _defaultPostVisibility = "Test";
 
   SettingsStatus get status => _status;
   Error get error => _error;
   bool get enablePushNotifications => _enablePushNotifications;
   bool get metricHeight => _metricHeight;
   bool get metricTemperature => _metricTemperature;
+  String get defaultPostVisibility => _defaultPostVisibility;
 
   set setStatus(SettingsStatus searchStatus) {
     _status = searchStatus;
@@ -26,6 +28,11 @@ class SettingsState extends ChangeNotifier {
 
   set setMetricTemperature(bool metricTemperature) {
     _metricTemperature = metricTemperature;
+    notifyListeners();
+  }
+
+  set setDefaultPostVisibility(String defaultPostVisibility) {
+    _defaultPostVisibility = defaultPostVisibility;
     notifyListeners();
   }
 

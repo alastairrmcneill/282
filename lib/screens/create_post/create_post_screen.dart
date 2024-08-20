@@ -119,6 +119,8 @@ class CreatePostScreen extends StatelessWidget {
                     const PaddedDivider(top: 35, bottom: 10),
                     const MunroSelector(),
                     const SizedBox(height: 10),
+                    PostPrivacySelector(),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),

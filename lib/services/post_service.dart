@@ -60,7 +60,7 @@ class PostService {
         includedMunros: createPostState.selectedMunros,
         includedMunroIds: createPostState.selectedMunros.map((Munro munro) => munro.id).toList(),
         imageUrlsMap: imageURLsMap,
-        privacy: Privacy.public, // TODO: set this in the state
+        privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
       // Send to database
@@ -113,6 +113,7 @@ class PostService {
         title: createPostState.title,
         description: createPostState.description,
         imageUrlsMap: imageURLsMap,
+        privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
       // Send to database
