@@ -85,6 +85,24 @@
       ]
     },
     {
+      "collectionGroup": "munroPictures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "munroId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "privacy",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateTime",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "notifications",
       "queryScope": "COLLECTION",
       "fields": [

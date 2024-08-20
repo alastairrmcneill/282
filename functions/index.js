@@ -1044,6 +1044,38 @@ exports.databaseMigration = functions.https.onRequest(async (req, res) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
+    const munroPicturesRef = admin.firestore().collection("munroPictures");
+    let lastMunroPictureDoc = null;
+    const munroPicturesBatchSize = 500;
+
+    while (true) {
+      let query = munroPicturesRef.orderBy("__name__").limit(munroPicturesBatchSize);
+      if (lastMunroPictureDoc) {
+        query = query.startAfter(lastMunroPictureDoc);
+      }
+
+      const munroPicturesSnapshot = await query.get();
+      if (munroPicturesSnapshot.empty) {
+        break; // No more documents to process
+      }
+
+      let batch = admin.firestore().batch();
+      munroPicturesSnapshot.forEach((munroPictureDoc) => {
+        if (!munroPictureDoc.data().privacy) {
+          // Only update if privacy field doesn't exist
+          console.log(`Updating munroPicture: ${munroPictureDoc.id}`);
+          let munroPictureRef = munroPicturesRef.doc(munroPictureDoc.id);
+          batch.update(munroPictureRef, { privacy: "public" });
+        }
+      });
+
+      await batch.commit();
+      lastMunroPictureDoc = munroPicturesSnapshot.docs[munroPicturesSnapshot.docs.length - 1];
+
+      // To avoid potential timeout, consider adding a delay between batches
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     res.send("Migration completed successfully");
   } catch (error) {
     console.error("Error in migration: ", error);
