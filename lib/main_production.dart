@@ -13,6 +13,7 @@ main() async {
   await PushNotificationService.initPushNotificaitons();
   await RemoteConfigService.init();
   await dotenv.load();
+  await AnalyticsService.init(flavor: "Production");
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
 
   await SentryFlutter.init(

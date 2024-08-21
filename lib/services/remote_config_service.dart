@@ -15,6 +15,7 @@ class RemoteConfigService {
       RCFields.feedbackSurveyDate: "01/01/2000",
       RCFields.latestAppVersion: "1.0.0",
       RCFields.whatsNew: "No new features this time. We are working hard to bring you new features soon.",
+      RCFields.showPrivacyOption: true,
     });
 
     try {
@@ -37,4 +38,5 @@ class RCFields {
   static const feedbackSurveyDate = "feedback_survey_date";
   static const latestAppVersion = "latest_app_version";
   static const whatsNew = "whats_new";
+  static const showPrivacyOption = "show_privacy_option";
 }

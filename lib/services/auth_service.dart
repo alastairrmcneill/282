@@ -74,6 +74,8 @@ class AuthService {
 
       await UserService.createUser(context, appUser: appUser);
 
+      AnalyticsService.logSignUp(method: "email", platform: isIOS ? "iOS" : "Android");
+
       stopCircularProgressOverlay(context);
 
       // Navigate to the right place
@@ -255,6 +257,8 @@ class AuthService {
       );
       await UserService.createUser(context, appUser: appUser);
 
+      AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
+
       // Navigate to the right place
       await _afterSignInNavigation(context);
 
@@ -330,6 +334,8 @@ class AuthService {
       );
 
       await UserService.createUser(context, appUser: appUser);
+
+      AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
 
       // Navigate to the right place
       await _afterSignInNavigation(context);

@@ -12,6 +12,7 @@ class MunroSummitedButton extends StatelessWidget {
     UserState userState = Provider.of<UserState>(context, listen: false);
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
 
     return SizedBox(
       width: 150,
@@ -24,6 +25,7 @@ class MunroSummitedButton extends StatelessWidget {
             createPostState.reset();
             if (munroState.selectedMunro != null) {
               createPostState.addMunro(munroState.selectedMunro!);
+              createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
               navigationState.setNavigateToRoute = HomeScreen.route;
               Navigator.of(context).push(
                 MaterialPageRoute(

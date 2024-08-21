@@ -66,6 +66,14 @@ class PostService {
       // Send to database
       await PostsDatabase.create(context, post: post);
 
+      // Log event
+      bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
+
+      await AnalyticsService.logPostCreation(
+        privacy: post.privacy,
+        showPrivacyOption: showPrivacyOption,
+      );
+
       // Complete munros
       await MunroService.markMunrosAsDone(
         context,

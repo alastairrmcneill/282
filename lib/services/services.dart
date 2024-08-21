@@ -21,3 +21,4 @@ export 'munro_picture_service.dart';
 export 'block_user_service.dart';
 export 'report_service.dart';
 export 'remote_config_service.dart';
+export 'analytics_service.dart';
