@@ -49,6 +49,8 @@ dependencies:
   confetti: ^0.7.0
   sliding_up_panel: ^2.0.0+1
   firebase_remote_config: ^5.0.4
+  firebase_analytics: ^11.2.1
+  mixpanel_flutter: ^2.3.1
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/services/remote_config_service.dart';
 
 class PostPrivacySelector extends StatelessWidget {
   final List<String> _postVisibilityOptions = [
@@ -16,6 +17,12 @@ class PostPrivacySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     SettingsState settingsState = Provider.of<SettingsState>(context);
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
+
+    bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
+
+    if (!showPrivacyOption) {
+      return const SizedBox.shrink();
+    }
     return ListTile(
       title: const Text('Post Visibility'),
       trailing: DropdownButtonHideUnderline(

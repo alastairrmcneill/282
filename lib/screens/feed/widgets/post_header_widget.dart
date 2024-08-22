@@ -7,6 +7,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/state/settings_state.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -19,6 +20,7 @@ class PostHeader extends StatelessWidget {
     required Post post,
     required UserState userState,
     required CreatePostState createPostState,
+    required SettingsState settingsState,
   }) {
     List<MenuItem> menuItems = [];
     if (post.authorId == userState.currentUser?.uid) {
@@ -28,6 +30,7 @@ class PostHeader extends StatelessWidget {
           onTap: () {
             createPostState.reset();
             createPostState.loadPost = post;
+            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
             Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePostScreen()));
           },
         ),
@@ -57,6 +60,7 @@ class PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     return Padding(
@@ -103,6 +107,7 @@ class PostHeader extends StatelessWidget {
             context,
             userState: userState,
             createPostState: createPostState,
+            settingsState: settingsState,
             post: post,
           ),
         ],

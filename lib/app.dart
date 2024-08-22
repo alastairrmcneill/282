@@ -16,6 +16,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AnalyticsService.logOpen();
     return MultiProvider(
       providers: [
         StreamProvider<AppUser?>.value(
