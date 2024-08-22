@@ -426,13 +426,21 @@ class AuthService {
       BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
       UserState userState = Provider.of<UserState>(context, listen: false);
       MunroState munroState = Provider.of<MunroState>(context, listen: false);
+      AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
 
       bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
       munroState.setFilterString = "";
 
+      var munroChallenge = userState.currentUser?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
+
+      Achievement achievement = Achievement.fromJSON(munroChallenge);
+
+      achievementsState.reset();
+      achievementsState.setCurrentAchievement = achievement;
+
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const InAppOnboarding()),
+        MaterialPageRoute(builder: (_) => InAppOnboarding()),
         (Route<dynamic> route) => false,
       );
     }

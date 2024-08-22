@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class InAppOnboarding extends StatefulWidget {
-  const InAppOnboarding({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  InAppOnboarding({super.key});
 
   @override
   State<InAppOnboarding> createState() => _InAppOnboardingState();
@@ -35,7 +38,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
               children: [
                 PageProgressIndicator(
                   currentPageIndex: _currentPage,
-                  totalPages: 3, // Change this based on the total number of pages
+                  totalPages: 4, // Change this based on the total number of pages
                 ),
                 Expanded(
                   child: PageView(
@@ -49,6 +52,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                     children: [
                       InAppOnboardingWelcome(),
                       InAppOnboardingMunroUpdates(),
+                      InAppOnboardingMunroChallenge(formKey: widget.formKey),
                       InAppOnboardingFindFriends(),
                     ],
                   ),
@@ -68,9 +72,10 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                                 );
                               },
                               child: const Text('Back')),
-                      _currentPage == 2
+                      _currentPage == 3
                           ? ElevatedButton(
                               onPressed: () async {
+                                AchievementService.setMunroChallenge(context);
                                 MunroService.bulkUpdateMunros(context);
                                 SharedPreferencesService.setShowBulkMunroDialog(false);
                                 Navigator.pushAndRemoveUntil(
@@ -82,6 +87,14 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               child: const Text('Get Started'))
                           : ElevatedButton(
                               onPressed: () {
+                                print('Current page: $_currentPage');
+                                if (_currentPage == 2) {
+                                  if (!widget.formKey.currentState!.validate()) {
+                                    return;
+                                  }
+                                  widget.formKey.currentState!.save();
+                                }
+
                                 _pageController.nextPage(
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
