@@ -118,7 +118,12 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _buildGoogleMap(MunroState munroState) {
     return GoogleMap(
-      onMapCreated: (controller) => _googleMapController = controller,
+      onMapCreated: (controller) {
+        _googleMapController = controller;
+        if (munroState.latLngBounds != null) {
+          _googleMapController.animateCamera(CameraUpdate.newLatLngBounds(munroState.latLngBounds!, 0));
+        }
+      },
       initialCameraPosition: const CameraPosition(
         target: LatLng(56.8, -4.2),
         zoom: 6.6,

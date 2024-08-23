@@ -25,6 +25,7 @@ class MunroState extends ChangeNotifier {
   List<Munro> get munroList => _munroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
   SortOrder get sortOrder => _sortOrder;
+  LatLngBounds? get latLngBounds => _latLngBounds;
   FilterOptions get filterOptions => _filterOptions;
   bool get isFilterOptionsSet => _isFilterOptionsSet;
   String? get selectedMunroId => _selectedMunroId;
@@ -45,6 +46,7 @@ class MunroState extends ChangeNotifier {
 
   set setMunroList(List<Munro> munroList) {
     _munroList = munroList;
+    _filter();
     notifyListeners();
   }
 
