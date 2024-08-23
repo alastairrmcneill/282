@@ -116,6 +116,7 @@ class CreatePostScreen extends StatelessWidget {
                         createPostState.setDescription = newValue?.trim();
                       },
                     ),
+                    CreatePostSummitDatePicker(),
                     const PaddedDivider(top: 35, bottom: 10),
                     const MunroSelector(),
                     const SizedBox(height: 10),

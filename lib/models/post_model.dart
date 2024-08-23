@@ -7,6 +7,7 @@ class Post {
   final String authorDisplayName;
   final String? authorProfilePictureURL;
   final DateTime dateTime;
+  final DateTime? summitedDate;
   final String title;
   final String? description;
   final Map<String, List<String>> imageUrlsMap;
@@ -21,6 +22,7 @@ class Post {
     required this.authorDisplayName,
     required this.authorProfilePictureURL,
     required this.dateTime,
+    required this.summitedDate,
     required this.imageUrlsMap,
     required this.title,
     this.description,
@@ -45,6 +47,7 @@ class Post {
       PostFields.authorDisplayName: authorDisplayName,
       PostFields.authorProfilePictureURL: authorProfilePictureURL,
       PostFields.dateTime: dateTime,
+      PostFields.summitedDate: summitedDate,
       PostFields.imageUrlsMap: imageUrlsMap,
       PostFields.title: title,
       PostFields.description: description,
@@ -95,6 +98,7 @@ class Post {
       authorDisplayName: json[PostFields.authorDisplayName] as String,
       authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
       dateTime: (json[PostFields.dateTime] as Timestamp).toDate(),
+      summitedDate: (json[PostFields.dateTime] as Timestamp? ?? json[PostFields.dateTime] as Timestamp).toDate(),
       imageUrlsMap: newImageURLsMap,
       title: json[PostFields.title] as String,
       description: json[PostFields.description] as String?,
@@ -112,6 +116,7 @@ class Post {
     String? authorDisplayName,
     String? authorProfilePictureURL,
     DateTime? dateTime,
+    DateTime? summitedDate,
     Map<String, List<String>>? imageUrlsMap,
     String? title,
     String? description,
@@ -126,6 +131,7 @@ class Post {
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
       authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
       dateTime: dateTime ?? this.dateTime,
+      summitedDate: summitedDate ?? this.summitedDate,
       imageUrlsMap: imageUrlsMap ?? this.imageUrlsMap,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -143,6 +149,7 @@ class PostFields {
   static String authorDisplayName = "authorDisplayName";
   static String authorProfilePictureURL = "authorProfilePictureURL";
   static String dateTime = "dateTime";
+  static String summitedDate = "summitedDate";
   static String imageURLs = "imageURLs";
   static String imageUrlsMap = "imageUrlsMap";
   static String title = "title";
