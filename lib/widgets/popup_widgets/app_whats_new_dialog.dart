@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class WhatsNewDialog extends StatefulWidget {
