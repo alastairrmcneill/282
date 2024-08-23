@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class AppSearchBar extends StatefulWidget {

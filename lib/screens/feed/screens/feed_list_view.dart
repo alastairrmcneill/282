@@ -43,8 +43,6 @@ class _FeedListViewState extends State<FeedListView> {
 
   @override
   Widget build(BuildContext context) {
-    FeedState feedState = Provider.of<FeedState>(context);
-
     return Consumer<FeedState>(
       builder: (context, feedState, child) {
         switch (feedState.status) {
