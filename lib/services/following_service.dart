@@ -74,9 +74,11 @@ class FollowingService {
       );
 
       // Update app state
-      AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! - 1);
-      profileState.setUser = tempUser;
-      profileState.setIsFollowing = false;
+      if (profileState.user != null) {
+        AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! - 1);
+        profileState.setUser = tempUser;
+        profileState.setIsFollowing = false;
+      }
 
       stopCircularProgressOverlay(context);
     } catch (error, stackTrace) {
