@@ -61,6 +61,11 @@ class SharedPreferencesService {
     return prefs.getBool('showInAppOnboarding') ?? true;
   }
 
+  static void setShowInAppOnboarding(bool bool) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('showInAppOnboarding', bool);
+  }
+
   static Future<int> getOpenCount() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt('open_count') ?? 0;

@@ -78,11 +78,11 @@ class AuthService {
 
       stopCircularProgressOverlay(context);
 
-      // Navigate to the right place
-      await _afterSignInNavigation(context);
-
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
@@ -115,11 +115,11 @@ class AuthService {
 
       stopCircularProgressOverlay(context);
 
-      // Navigate to the right screen
-      await _afterSignInNavigation(context);
-
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
@@ -259,11 +259,11 @@ class AuthService {
 
       AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
 
-      // Navigate to the right place
-      await _afterSignInNavigation(context);
-
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on SignInWithAppleAuthorizationException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message);
@@ -337,11 +337,11 @@ class AuthService {
 
       AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
 
-      // Navigate to the right place
-      await _afterSignInNavigation(context);
-
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error signing in.");
