@@ -78,4 +78,14 @@ class AnalyticsService {
       },
     );
   }
+
+  static Future<void> logMunroViewed({required String munroId, required String munroName}) async {
+    await logEvent(
+      name: 'munro_viewed',
+      parameters: {
+        'munro_id': munroId,
+        'munro_name': munroName,
+      },
+    );
+  }
 }

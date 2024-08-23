@@ -17,7 +17,15 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Challenge yourself by setting a goal for how many munros you want to climb in ${DateTime.now().year}.'),
+          Text(
+            'Challenge yourself!',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'What is your target for munros to complete this year? 🎯',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 30),
           Form(
             key: formKey,
@@ -25,6 +33,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
               initialValue: achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
               labelText: "Number of Munros",
               keyboardType: TextInputType.number,
+              fillColor: Colors.white,
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
@@ -40,20 +49,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
               },
             ),
           ),
-          // SizedBox(
-          //   height: 44,
-          //   width: double.infinity,
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       if (!_formKey.currentState!.validate()) {
-          //         return;
-          //       }
-          //       _formKey.currentState!.save();
-          //       AchievementService.setMunroChallenge(context);
-          //     },
-          //     child: const Text('Create Munro Challenge'),
-          //   ),
-          // ),
+          const SizedBox(height: 30),
         ],
       ),
     );
