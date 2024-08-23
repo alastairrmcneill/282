@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -16,6 +14,12 @@ class InAppOnboarding extends StatefulWidget {
 class _InAppOnboardingState extends State<InAppOnboarding> {
   PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService.logOnboardingScreenViewed(screenIndex: 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +91,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               child: const Text('Get Started'))
                           : ElevatedButton(
                               onPressed: () {
-                                print('Current page: $_currentPage');
+                                AnalyticsService.logOnboardingScreenViewed(screenIndex: _currentPage + 1);
                                 if (_currentPage == 2) {
                                   if (!widget.formKey.currentState!.validate()) {
                                     return;

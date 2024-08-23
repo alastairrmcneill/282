@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
-import 'package:two_eight_two/screens/explore/widgets/app_search_bar.dart';
-import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class InAppOnboardingMunroChallenge extends StatelessWidget {
@@ -15,7 +10,6 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
     AchievementsState achievementsState = Provider.of<AchievementsState>(context);
 
     return Padding(
@@ -23,7 +17,15 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Challenge yourself by setting a goal for how many munros you want to climb in ${DateTime.now().year}.'),
+          Text(
+            'Challenge yourself!',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'What is your target for munros to complete this year? 🎯',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 30),
           Form(
             key: formKey,
@@ -31,6 +33,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
               initialValue: achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
               labelText: "Number of Munros",
               keyboardType: TextInputType.number,
+              fillColor: Colors.white,
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
@@ -46,20 +49,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
               },
             ),
           ),
-          // SizedBox(
-          //   height: 44,
-          //   width: double.infinity,
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       if (!_formKey.currentState!.validate()) {
-          //         return;
-          //       }
-          //       _formKey.currentState!.save();
-          //       AchievementService.setMunroChallenge(context);
-          //     },
-          //     child: const Text('Create Munro Challenge'),
-          //   ),
-          // ),
+          const SizedBox(height: 30),
         ],
       ),
     );

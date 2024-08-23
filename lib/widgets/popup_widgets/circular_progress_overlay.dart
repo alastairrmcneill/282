@@ -11,5 +11,7 @@ startCircularProgressOverlay(BuildContext context) {
 
 // Stop showing the loading icon overlay
 stopCircularProgressOverlay(BuildContext context) {
-  Navigator.of(context, rootNavigator: true).pop();
+  if (context.mounted) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
 }

@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double _bottomNavBarHeight = 0.0;
   late int _currentIndex;
   final List<Widget> _screens = [
-    ExploreTab(),
+    const ExploreTab(),
     const FeedTab(),
     // const RecordTab(),
     const SavedTab(),

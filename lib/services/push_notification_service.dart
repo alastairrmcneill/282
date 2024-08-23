@@ -25,7 +25,7 @@ class PushNotificationService {
         AppUser appUser = userState.currentUser!;
         AppUser newAppUser = appUser.copyWith(fcmToken: token);
 
-        UserService.updateUser(context, appUser: newAppUser);
+        await UserService.updateUser(context, appUser: newAppUser);
       }
     }
 
@@ -66,7 +66,7 @@ class PushNotificationService {
     if (appUser.fcmToken == token) return;
 
     AppUser newAppUser = appUser.copyWith(fcmToken: token);
-    UserService.updateUser(context, appUser: newAppUser);
+    await UserService.updateUser(context, appUser: newAppUser);
   }
 
   static Future applyFCMToken(BuildContext context) async {
@@ -79,7 +79,7 @@ class PushNotificationService {
       if (userState.currentUser != null) {
         AppUser appUser = userState.currentUser!;
         AppUser newAppUser = appUser.copyWith(fcmToken: token);
-        UserService.updateUser(context, appUser: newAppUser);
+        await UserService.updateUser(context, appUser: newAppUser);
       }
     }
   }
@@ -91,7 +91,7 @@ class PushNotificationService {
       AppUser appUser = userState.currentUser!;
       if (appUser.fcmToken != null) {
         AppUser newAppUser = appUser.copyWith(fcmToken: "");
-        UserService.updateUser(context, appUser: newAppUser);
+        await UserService.updateUser(context, appUser: newAppUser);
       }
     }
   }

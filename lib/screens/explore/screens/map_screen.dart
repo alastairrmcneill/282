@@ -10,7 +10,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class MapScreen extends StatefulWidget {
@@ -118,7 +117,12 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _buildGoogleMap(MunroState munroState) {
     return GoogleMap(
-      onMapCreated: (controller) => _googleMapController = controller,
+      onMapCreated: (controller) {
+        _googleMapController = controller;
+        if (munroState.latLngBounds != null) {
+          _googleMapController.animateCamera(CameraUpdate.newLatLngBounds(munroState.latLngBounds!, 0));
+        }
+      },
       initialCameraPosition: const CameraPosition(
         target: LatLng(56.8, -4.2),
         zoom: 6.6,
