@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -8,6 +9,7 @@ import 'package:two_eight_two/services/services.dart';
 class MunroPictureService {
   static Future getMunroPictures(BuildContext context, {required String munroId, int count = 18}) async {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
@@ -17,6 +19,10 @@ class MunroPictureService {
         lastPictureId: null,
         count: count,
       );
+
+      // Filter pictures from blocked users
+      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      munroPictures = munroPictures.where((munroPicture) => !blockedUsers.contains(munroPicture.authorId)).toList();
 
       munroDetailState.setMunroPictures = munroPictures;
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
