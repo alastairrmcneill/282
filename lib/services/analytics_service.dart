@@ -58,7 +58,6 @@ class AnalyticsService {
   static Future<void> logOpen() async {
     int openCount = await SharedPreferencesService.getOpenCount();
     openCount += 1;
-    print('Open count: $openCount');
     SharedPreferencesService.setOpenCount(openCount);
 
     if (openCount == 2 || openCount == 3 || openCount == 5 || openCount == 10) {
@@ -69,5 +68,14 @@ class AnalyticsService {
         },
       );
     }
+  }
+
+  static Future<void> logOnboardingScreenViewed({required int screenIndex}) async {
+    await logEvent(
+      name: 'onboarding_screen_viewed',
+      parameters: {
+        'screen_index': screenIndex.toString(),
+      },
+    );
   }
 }

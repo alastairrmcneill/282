@@ -16,6 +16,12 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
   int _currentPage = 0;
 
   @override
+  void initState() {
+    super.initState();
+    AnalyticsService.logOnboardingScreenViewed(screenIndex: 0);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -85,7 +91,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               child: const Text('Get Started'))
                           : ElevatedButton(
                               onPressed: () {
-                                print('Current page: $_currentPage');
+                                AnalyticsService.logOnboardingScreenViewed(screenIndex: _currentPage + 1);
                                 if (_currentPage == 2) {
                                   if (!widget.formKey.currentState!.validate()) {
                                     return;
