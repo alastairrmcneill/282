@@ -23,7 +23,7 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
     if (_hasShownDialog) return;
     _hasShownDialog = true;
 
-    String version = "1.1.4";
+    String version = "1.2.0";
     // Check if dialog has been shown before
     bool showWhatsNewDialog = await SharedPreferencesService.getShowWhatsNewDialog(version);
 
@@ -36,9 +36,12 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
 
   void _showSurveyDialog(BuildContext context, {required String version}) {
     List<String> updates = [
-      "New feature 1",
-      "New feature 2",
-      "New feature 3",
+      "Improved munro search with added filters and sorting.",
+      "New list view for browsing munros.",
+      "New Global feed to see what other munro baggers are up to.",
+      "Improved onboarding flow to set previously climbed munros and a challenge for this year.",
+      "Improved privacy controls.",
+      "Bug fixes.",
     ];
 
     showDialog(
@@ -69,7 +72,7 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "What's new:",
+                              "What's new in v$version:",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
