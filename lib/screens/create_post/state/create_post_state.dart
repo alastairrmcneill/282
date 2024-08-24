@@ -9,6 +9,8 @@ class CreatePostState extends ChangeNotifier {
   String? _title;
   String? _description;
   DateTime? _summitedDate;
+  TimeOfDay? _startTime;
+  Duration? _duration;
   Map<String, List<File>> _images = {};
   Map<String, List<String>> _imageURLs = {};
   List<Munro> _selectedMunros = [];
@@ -20,10 +22,13 @@ class CreatePostState extends ChangeNotifier {
   String? get title => _title;
   String? get description => _description;
   DateTime? get summitedDate => _summitedDate;
+  TimeOfDay? get startTime => _startTime;
+  Duration? get duration => _duration;
   Map<String, List<File>> get images => _images;
   Map<String, List<String>> get imagesURLs => _imageURLs;
   List<Munro> get selectedMunros => _selectedMunros;
   String? get postPrivacy => _postPrivacy;
+  bool get hasImage => images.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
 
   set setStatus(CreatePostStatus searchStatus) {
@@ -52,6 +57,16 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setStartTime(TimeOfDay? startTime) {
+    _startTime = startTime;
+    notifyListeners();
+  }
+
+  set setDuration(Duration? duration) {
+    _duration = duration;
+    notifyListeners();
+  }
+
   set setPostPrivacy(String? postPrivacy) {
     _postPrivacy = postPrivacy;
     notifyListeners();
@@ -68,6 +83,8 @@ class CreatePostState extends ChangeNotifier {
     _editingPost = post;
     _title = post.title;
     _summitedDate = post.summitedDate;
+    _startTime = post.startTime;
+    _duration = post.duration;
     _description = post.description;
     _imageURLs = post.imageUrlsMap;
     _selectedMunros = post.includedMunros;

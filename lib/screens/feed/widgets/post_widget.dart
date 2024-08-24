@@ -40,12 +40,12 @@ class PostWidget extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: post.includedMunros[i].name,
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
                       ),
                       if (i < post.includedMunros.length - 1)
                         TextSpan(
                           text: ', ',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
                         ),
                     ],
                   ),
@@ -86,15 +86,15 @@ class PostWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      post.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Text(
+                  //     post.title,
+                  //     maxLines: 2,
+                  //     overflow: TextOverflow.ellipsis,
+                  //     style: Theme.of(context).textTheme.titleLarge,
+                  //   ),
+                  // ),
                   _buildIncludedMunroText(context),
                   _buildDescription(context),
                   Padding(

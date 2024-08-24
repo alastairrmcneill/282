@@ -20,6 +20,7 @@ class CreatePostSummitDatePicker extends StatelessWidget {
 
     return TextFormFieldBase(
       controller: dateController,
+      prefixIcon: const Icon(Icons.calendar_today),
       readOnly: true,
       onTap: () async {
         pickedStartDate = await showDatePicker(

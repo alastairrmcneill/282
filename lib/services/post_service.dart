@@ -55,6 +55,8 @@ class PostService {
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
         dateTime: postDateTime,
         summitedDate: createPostState.summitedDate ?? postDateTime,
+        startTime: createPostState.startTime,
+        duration: createPostState.duration,
         likes: 0,
         title: title,
         description: createPostState.description,
@@ -122,6 +124,8 @@ class PostService {
         title: createPostState.title,
         description: createPostState.description,
         summitedDate: createPostState.summitedDate,
+        startTime: createPostState.startTime,
+        duration: createPostState.duration,
         imageUrlsMap: imageURLsMap,
         privacy: createPostState.postPrivacy ?? Privacy.public,
       );
