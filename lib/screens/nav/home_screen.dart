@@ -88,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     return Scaffold(
       body: _screens[_currentIndex],
@@ -100,6 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // Check which screen
           if (value == 0) {
+            munroState.setSelectedMunro = null;
+            munroState.setSelectedMunroId = null;
             setState(() => _currentIndex = value);
           }
           if (value == 1) {
