@@ -47,13 +47,16 @@ class PostService {
         title = createPostState.title!;
       }
 
-      DateTime summitDatetime = DateTime.now().toUtc();
+      DateTime postDateTime = DateTime.now().toUtc();
       // Create post object
       Post post = Post(
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: summitDatetime,
+        dateTime: postDateTime,
+        summitedDate: createPostState.summitedDate ?? postDateTime,
+        startTime: createPostState.startTime,
+        duration: createPostState.duration,
         likes: 0,
         title: title,
         description: createPostState.description,
@@ -78,7 +81,7 @@ class PostService {
       await MunroService.markMunrosAsDone(
         context,
         munros: createPostState.selectedMunros,
-        summitDateTime: summitDatetime,
+        summitDateTime: createPostState.summitedDate ?? postDateTime,
       );
 
       // Check for achievements
@@ -120,6 +123,9 @@ class PostService {
       Post newPost = post.copyWith(
         title: createPostState.title,
         description: createPostState.description,
+        summitedDate: createPostState.summitedDate,
+        startTime: createPostState.startTime,
+        duration: createPostState.duration,
         imageUrlsMap: imageURLsMap,
         privacy: createPostState.postPrivacy ?? Privacy.public,
       );
@@ -131,7 +137,7 @@ class PostService {
       MunroService.markMunrosAsDone(
         context,
         munros: createPostState.selectedMunros,
-        summitDateTime: newPost.dateTime,
+        summitDateTime: newPost.summitedDate!,
       );
 
       // Update state

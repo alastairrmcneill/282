@@ -12,9 +12,6 @@ class SettingsSerivce {
     settingsState.setMetricHeight = prefs.getBool(SettingsFields.metricHeight) ?? false;
     settingsState.setMetricTemperature = prefs.getBool(SettingsFields.metricTemperature) ?? true;
     settingsState.setDefaultPostVisibility = prefs.getString(SettingsFields.defaultPostVisibility) ?? Privacy.public;
-    print(
-        "prefs.getString(SettingsFields.defaultPostVisibility): ${prefs.getString(SettingsFields.defaultPostVisibility)}");
-    print("SettingsState.defaultPostVisibility: ${settingsState.defaultPostVisibility}");
   }
 
   // Read bool setting

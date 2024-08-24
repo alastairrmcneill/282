@@ -46,8 +46,9 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     }
 
     DateTime lastFeedbackSurveyDate = DateFormat("dd/MM/yyyy").parse(lastFeedbackSurveyDateString);
-
     if (!latestFeedbackSurveyDate.isAfter(lastFeedbackSurveyDate)) return;
+
+    if (lastFeedbackSurveyDate.isAfter(DateTime.now())) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showSurveyDialog(context, surveyDate: latestFeedbackSurveyDate);
