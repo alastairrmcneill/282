@@ -181,3 +181,11 @@ class Privacy {
   static String private = "private";
   static String hidden = "hidden";
 }
+
+class PrivacyDescriptions {
+  static String public = "Visible to everyone. Your post will show up in the global feed.";
+  static String friends = "Visible to friends. Your post will show up in your friends' feeds.";
+  static String private =
+      "Visible to only you. Your post will not show up in any feeds and will only be seen on your profile.";
+  static String hidden = "Hidden";
+}

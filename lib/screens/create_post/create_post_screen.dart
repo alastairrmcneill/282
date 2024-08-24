@@ -99,7 +99,7 @@ class CreatePostScreen extends StatelessWidget {
                         createPostState.setDescription = newValue?.trim();
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -112,7 +112,7 @@ class CreatePostScreen extends StatelessWidget {
                     const CreatePostSummitTimePicker(),
                     const SizedBox(height: 10),
                     const CreatePostDurationPicker(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 40),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -121,7 +121,7 @@ class CreatePostScreen extends StatelessWidget {
                       ),
                     ),
                     const MunroSelector(),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 30),
                     PostPrivacySelector(),
                     const SizedBox(height: 100),
                   ],

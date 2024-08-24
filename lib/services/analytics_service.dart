@@ -9,9 +9,9 @@ class AnalyticsService {
 
   static Future<void> init({required String flavor}) async {
     // Once you've called this method once, you can access `mixpanel` throughout the rest of your application.
-    mixpanel = await Mixpanel.init("883b6c76f333637c8d85b499ca6ba1ec", trackAutomaticEvents: true);
-
-    print("Mixpanel Token: ${dotenv.env['MIXPANEL_TOKEN_${flavor.toUpperCase()}']}");
+    String token = dotenv.env['MIXPANEL_TOKEN_${flavor.toUpperCase()}'] ?? "";
+    print('Token $token');
+    mixpanel = await Mixpanel.init(token, trackAutomaticEvents: true);
 
     _analytics = FirebaseAnalytics.instance;
     await _analytics?.setAnalyticsCollectionEnabled(true);
