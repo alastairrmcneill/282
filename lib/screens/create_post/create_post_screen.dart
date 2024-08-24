@@ -76,7 +76,7 @@ class CreatePostScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     // TextFormFieldBase(
                     //   initialValue: createPostState.title,
                     //   onSaved: (newValue) {
@@ -92,14 +92,14 @@ class CreatePostScreen extends StatelessWidget {
                     TextFormFieldBase(
                       initialValue: createPostState.description,
                       hintText: "How was it? Tell us about your hike.",
-                      maxLines: 4,
+                      maxLines: 3,
                       textCapitalization: TextCapitalization.sentences,
                       keyboardType: TextInputType.text,
                       onSaved: (newValue) {
                         createPostState.setDescription = newValue?.trim();
                       },
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -112,7 +112,7 @@ class CreatePostScreen extends StatelessWidget {
                     const CreatePostSummitTimePicker(),
                     const SizedBox(height: 10),
                     const CreatePostDurationPicker(),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -121,7 +121,7 @@ class CreatePostScreen extends StatelessWidget {
                       ),
                     ),
                     const MunroSelector(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
                     PostPrivacySelector(),
                     const SizedBox(height: 100),
                   ],
