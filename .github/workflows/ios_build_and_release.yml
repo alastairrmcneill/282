@@ -13,6 +13,11 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.3"
+
       - name: Decode AndroidManifest.xml
         run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
 
