@@ -25,6 +25,7 @@ class CreatePostSummitDatePicker extends StatelessWidget {
       onTap: () async {
         pickedStartDate = await showDatePicker(
           context: context,
+          helpText: "Summit Date",
           initialDate: DateTime.now(),
           firstDate: DateTime(1900),
           lastDate: DateTime.now(),

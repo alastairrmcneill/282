@@ -24,7 +24,11 @@ class CreatePostSummitTimePicker extends StatelessWidget {
       readOnly: true,
       onTap: () async {
         pickedStartTime = await showTimePicker(
+          initialEntryMode: TimePickerEntryMode.input,
           context: context,
+          helpText: "Start Time",
+          hourLabelText: 'Hour',
+          minuteLabelText: 'Minute',
           initialTime: TimeOfDay.now(),
         );
 
