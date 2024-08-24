@@ -958,7 +958,7 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.32):
     - BoringSSL-GRPC/Interface (= 0.0.32)
   - BoringSSL-GRPC/Interface (0.0.32)
-  - cloud_firestore (5.1.0):
+  - cloud_firestore (5.2.1):
     - Firebase/Firestore (= 10.29.0)
     - firebase_core
     - Flutter
@@ -988,14 +988,14 @@ PODS:
     - Firebase/Analytics (= 10.29.0)
     - firebase_core
     - Flutter
-  - firebase_auth (5.1.2):
+  - firebase_auth (5.1.4):
     - Firebase/Auth (= 10.29.0)
     - firebase_core
     - Flutter
   - firebase_core (3.3.0):
     - Firebase/CoreOnly (= 10.29.0)
     - Flutter
-  - firebase_messaging (15.0.3):
+  - firebase_messaging (15.0.4):
     - Firebase/Messaging (= 10.29.0)
     - firebase_core
     - Flutter
@@ -1003,7 +1003,7 @@ PODS:
     - Firebase/RemoteConfig (= 10.29.0)
     - firebase_core
     - Flutter
-  - firebase_storage (12.1.1):
+  - firebase_storage (12.1.3):
     - Firebase/Storage (= 10.29.0)
     - firebase_core
     - Flutter
@@ -1103,8 +1103,11 @@ PODS:
     - SDWebImageWebPCoder
   - flutter_native_splash (0.0.1):
     - Flutter
+  - Google-Maps-iOS-Utils (5.0.0):
+    - GoogleMaps (~> 8.0)
   - google_maps_flutter_ios (0.0.1):
     - Flutter
+    - Google-Maps-iOS-Utils (< 7.0, >= 5.0)
     - GoogleMaps (< 10.0, >= 8.4)
   - google_sign_in_ios (0.0.1):
     - AppAuth (>= 1.7.4)
@@ -1298,17 +1301,17 @@ PODS:
     - Flutter
     - FlutterMacOS
   - RecaptchaInterop (100.0.0)
-  - SDWebImage (5.19.6):
-    - SDWebImage/Core (= 5.19.6)
-  - SDWebImage/Core (5.19.6)
+  - SDWebImage (5.19.7):
+    - SDWebImage/Core (= 5.19.7)
+  - SDWebImage/Core (5.19.7)
   - SDWebImageWebPCoder (0.14.6):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
-  - Sentry/HybridSDK (8.32.0)
-  - sentry_flutter (8.5.0):
+  - Sentry/HybridSDK (8.33.0)
+  - sentry_flutter (8.7.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.32.0)
+    - Sentry/HybridSDK (= 8.33.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -1366,6 +1369,7 @@ SPEC REPOS:
     - FirebaseRemoteConfigInterop
     - FirebaseSharedSwift
     - FirebaseStorage
+    - Google-Maps-iOS-Utils
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleMaps
@@ -1436,14 +1440,14 @@ SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
-  cloud_firestore: 65b92bd5db2a75160ef73b5abb29688073cfa249
+  cloud_firestore: 8a2ff2bb050f87d0ca996866625cefbe2395a83b
   Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
   firebase_analytics: 04491d1ee74c8e7c2330c96afc54188a969b06ee
-  firebase_auth: 34ea4e6a58280c0fc8c9c405545b2ee496356865
+  firebase_auth: 8dbfcdd635cc4fb2ea213aeee8c9a979b3d3373b
   firebase_core: 57aeb91680e5d5e6df6b888064be7c785f146efb
-  firebase_messaging: 9862d2d50c71b4b32b9967e04e52a8976b7cff81
+  firebase_messaging: c862b3d2b973ecc769194dc8de09bd22c77ae757
   firebase_remote_config: 622c7e72a9349b7db48658ea902d9f2f1f2d7aaa
-  firebase_storage: 0c4ba1911a57a983e7aa1c962968ca18c1125173
+  firebase_storage: a099c6305aead7bed5dc7272db64c57195cd8fea
   FirebaseABTesting: d87f56707159bae64e269757a6e963d490f2eebe
   FirebaseAnalytics: 23717de130b779aa506e757edb9713d24b6ffeda
   FirebaseAppCheckInterop: 6a1757cfd4067d8e00fccd14fcc1b8fd78cfac07
@@ -1463,7 +1467,8 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
   flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
-  google_maps_flutter_ios: 5bc2be60ad012e79b182ce0fb0ef5030a50fb03e
+  Google-Maps-iOS-Utils: 66d6de12be1ce6d3742a54661e7a79cb317a9321
+  google_maps_flutter_ios: e31555a04d1986ab130f2b9f24b6cdc861acc6d3
   google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
   GoogleAppMeasurement: f9de05ee17401e3355f68e8fc8b5064d429f5918
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
@@ -1486,10 +1491,10 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   rate_my_app: cd3e1c44d12f387482698ffaf6ea9bd669a69b94
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
-  SDWebImage: a79252b60f4678812d94316c91da69ec83089c9f
+  SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
-  Sentry: 96ae1dcdf01a644bc3a3b1dc279cecaf48a833fb
-  sentry_flutter: f1d86adcb93a959bc47a40d8d55059bdf7569bc5
+  Sentry: 8560050221424aef0bebc8e31eedf00af80f90a6
+  sentry_flutter: e26b861f744e5037a3faf9bf56603ec65d658a61
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
