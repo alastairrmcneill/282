@@ -95,9 +95,7 @@ class MunroSummaryTile extends StatelessWidget {
                               ),
                         const SizedBox(height: 4),
                         Text(
-                          settingsState.metricHeight
-                              ? "${munro.meters}m - ${munro.area}"
-                              : "${munro.feet}ft - ${munro.area}",
+                          "${munro.area} · ${settingsState.metricHeight ? "${munro.meters}m" : "${munro.feet}ft"}",
                           style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                         ),
                         Row(
@@ -162,6 +160,7 @@ class MunroSummaryTile extends StatelessWidget {
                             munroState.setSelectedMunro = munro;
                             createPostState.reset();
                             createPostState.addMunro(munro);
+                            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.push(
                               context,

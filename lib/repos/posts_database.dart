@@ -126,7 +126,7 @@ class PostsDatabase {
     }
   }
 
-  static Future getFeedFromUserId(
+  static Future getFriendsFeedFromUserId(
     BuildContext context, {
     required String userId,
     required lastPostId,
@@ -171,6 +171,48 @@ class PostsDatabase {
     }
   }
 
+  static Future getGlobalFeed(
+    BuildContext context, {
+    required lastPostId,
+  }) async {
+    List<Post> posts = [];
+    QuerySnapshot querySnapshot;
+
+    try {
+      if (lastPostId == null) {
+        // Load first bathc
+        querySnapshot = await _postsRef
+            .where(PostFields.privacy, isEqualTo: Privacy.public)
+            .orderBy(PostFields.dateTime, descending: true)
+            .limit(10)
+            .get();
+      } else {
+        final lastPostDoc = await _postsRef.doc(lastPostId).get();
+
+        if (!lastPostDoc.exists) return [];
+
+        querySnapshot = await _postsRef
+            .where(PostFields.privacy, isEqualTo: Privacy.public)
+            .orderBy(PostFields.dateTime, descending: true)
+            .startAfterDocument(lastPostDoc)
+            .limit(10)
+            .get();
+      }
+
+      for (var doc in querySnapshot.docs) {
+        Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
+
+        posts.add(post);
+      }
+
+      return posts;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error getting the posts. Please try again.");
+      return posts;
+    }
+  }
+
   static Future getPostsFromMunro(
     BuildContext context, {
     required String munroId,
@@ -188,7 +230,7 @@ class PostsDatabase {
             .orderBy(PostFields.imageURLs)
             .orderBy(PostFields.dateTime, descending: true)
             .where(PostFields.includedMunroIds, arrayContains: munroId)
-            .where(PostFields.public, isEqualTo: true)
+            .where(PostFields.privacy, isEqualTo: Privacy.public)
             .limit(count)
             .get();
       } else {
@@ -202,7 +244,7 @@ class PostsDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .startAfterDocument(lastPostDoc)
             .where(PostFields.includedMunroIds, arrayContains: munroId)
-            .where(PostFields.public, isEqualTo: true)
+            .where(PostFields.privacy, isEqualTo: Privacy.public)
             .limit(count)
             .get();
       }

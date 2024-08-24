@@ -11,7 +11,9 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
+  await RemoteConfigService.init();
   await dotenv.load();
+  await AnalyticsService.init(flavor: "Development");
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
 
   await SentryFlutter.init(

@@ -4,11 +4,13 @@ import 'package:two_eight_two/models/models.dart';
 class FeedState extends ChangeNotifier {
   FeedStatus _status = FeedStatus.initial;
   Error _error = Error();
-  List<Post> _posts = [];
+  List<Post> _friendsPosts = [];
+  List<Post> _globalPosts = [];
 
   FeedStatus get status => _status;
   Error get error => _error;
-  List<Post> get posts => _posts;
+  List<Post> get friendsPosts => _friendsPosts;
+  List<Post> get globalPosts => _globalPosts;
 
   set setStatus(FeedStatus searchStatus) {
     _status = searchStatus;
@@ -21,27 +23,46 @@ class FeedState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setPosts(List<Post> posts) {
-    _posts = posts;
+  set setFriendsPosts(List<Post> posts) {
+    _friendsPosts = posts;
     notifyListeners();
   }
 
-  set addPosts(List<Post> posts) {
-    _posts.addAll(posts);
+  set addFriendsPosts(List<Post> posts) {
+    _friendsPosts.addAll(posts);
+    notifyListeners();
+  }
+
+  set setGlobalPosts(List<Post> posts) {
+    _globalPosts = posts;
+    notifyListeners();
+  }
+
+  set addGlobalPosts(List<Post> posts) {
+    _globalPosts.addAll(posts);
     notifyListeners();
   }
 
   updatePost(Post post) {
-    int index = _posts.indexWhere((element) => element.uid == post.uid);
+    int index = _friendsPosts.indexWhere((element) => element.uid == post.uid);
     if (index != -1) {
-      _posts[index] = post;
+      _friendsPosts[index] = post;
+    }
+
+    index = _globalPosts.indexWhere((element) => element.uid == post.uid);
+    if (index != -1) {
+      _globalPosts[index] = post;
     }
     notifyListeners();
   }
 
   removePost(Post post) {
-    if (_posts.contains(post)) {
-      _posts.remove(post);
+    if (_friendsPosts.contains(post)) {
+      _friendsPosts.remove(post);
+    }
+
+    if (_globalPosts.contains(post)) {
+      _globalPosts.remove(post);
     }
     notifyListeners();
   }

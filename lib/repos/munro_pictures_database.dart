@@ -22,6 +22,7 @@ class MunroPicturesDatabase {
         // Load first bathc
         querySnapshot = await _munroPicturesRef
             .where(MunroPictureFields.munroId, isEqualTo: munroId)
+            .where(MunroPictureFields.privacy, isEqualTo: Privacy.public)
             .orderBy(PostFields.dateTime, descending: true)
             .limit(count)
             .get();
@@ -32,6 +33,7 @@ class MunroPicturesDatabase {
 
         querySnapshot = await _munroPicturesRef
             .where(MunroPictureFields.munroId, isEqualTo: munroId)
+            .where(MunroPictureFields.privacy, isEqualTo: Privacy.public)
             .orderBy(PostFields.dateTime, descending: true)
             .startAfterDocument(lastPictureDoc)
             .limit(count)

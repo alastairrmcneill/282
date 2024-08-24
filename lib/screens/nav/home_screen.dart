@@ -22,6 +22,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey _bottomNavigationKey = GlobalKey();
+  double _bottomNavBarHeight = 0.0;
   late int _currentIndex;
   final List<Widget> _screens = [
     const ExploreTab(),
@@ -36,6 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _currentIndex = widget.startingIndex!;
     _loadData();
     super.initState();
+    LayoutState layoutState = Provider.of<LayoutState>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBox = _bottomNavigationKey.currentContext!.findRenderObject() as RenderBox;
+      setState(() {
+        layoutState.setBottomNavBarHeight = renderBox.size.height;
+      });
+    });
   }
 
   Future _loadData() async {
@@ -83,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        key: _bottomNavigationKey,
         onTap: (value) {
           // Reset notifiers
           profileState.clear();
@@ -98,7 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
             } else {
               // Navigate to feed
-              PostService.getFeed(context);
+              PostService.getGlobalFeed(context);
+              PostService.getFriendsFeed(context);
               NotificationsService.getUserNotifications(context);
               setState(() => _currentIndex = value);
             }

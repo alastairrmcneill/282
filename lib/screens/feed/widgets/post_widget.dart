@@ -16,15 +16,44 @@ class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.post, this.inFeed = true});
 
   Widget _buildIncludedMunroText(BuildContext context) {
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
     if (post.includedMunros.isEmpty) return const SizedBox();
     return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        post.includedMunros.map((munro) => munro.name).join(', '),
-        style: Theme.of(context).textTheme.bodySmall,
-        maxLines: 2,
-      ),
-    );
+        alignment: Alignment.centerLeft,
+        child: Wrap(
+          children: [
+            for (int i = 0; i < post.includedMunros.length; i++) ...[
+              GestureDetector(
+                onTap: () {
+                  // Handle the click event for each munro.name here
+                  munroState.setSelectedMunro = post.includedMunros[i];
+                  MunroPictureService.getMunroPictures(context, munroId: post.includedMunros[i].id, count: 4);
+                  ReviewService.getMunroReviews(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const MunroScreen(),
+                    ),
+                  );
+                },
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: post.includedMunros[i].name,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
+                      ),
+                      if (i < post.includedMunros.length - 1)
+                        TextSpan(
+                          text: ', ',
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ));
   }
 
   Widget _buildDescription(BuildContext context) {
@@ -57,15 +86,15 @@ class PostWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      post.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Text(
+                  //     post.title,
+                  //     maxLines: 2,
+                  //     overflow: TextOverflow.ellipsis,
+                  //     style: Theme.of(context).textTheme.titleLarge,
+                  //   ),
+                  // ),
                   _buildIncludedMunroText(context),
                   _buildDescription(context),
                   Padding(

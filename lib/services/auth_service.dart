@@ -74,13 +74,15 @@ class AuthService {
 
       await UserService.createUser(context, appUser: appUser);
 
-      stopCircularProgressOverlay(context);
+      AnalyticsService.logSignUp(method: "email", platform: isIOS ? "iOS" : "Android");
 
-      // Navigate to the right place
-      await _afterSignInNavigation(context);
+      stopCircularProgressOverlay(context);
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
@@ -113,11 +115,11 @@ class AuthService {
 
       stopCircularProgressOverlay(context);
 
-      // Navigate to the right screen
-      await _afterSignInNavigation(context);
-
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       stopCircularProgressOverlay(context);
@@ -255,11 +257,13 @@ class AuthService {
       );
       await UserService.createUser(context, appUser: appUser);
 
-      // Navigate to the right place
-      await _afterSignInNavigation(context);
+      AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on SignInWithAppleAuthorizationException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message);
@@ -331,11 +335,13 @@ class AuthService {
 
       await UserService.createUser(context, appUser: appUser);
 
-      // Navigate to the right place
-      await _afterSignInNavigation(context);
+      AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
+
+      // Navigate to the right place
+      await _afterSignInNavigation(context);
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error signing in.");
@@ -412,32 +418,31 @@ class AuthService {
   }
 
   static Future _afterSignInNavigation(BuildContext context) async {
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    switch (navigationState.navigateToRoute) {
-      case HomeScreen.route:
-        await MunroService.loadPersonalMunroData(context);
-        break;
-      case HomeScreen.feedTabRoute:
-        await PostService.getFeed(context);
-        NotificationsService.getUserNotifications(context);
-        break;
-      case HomeScreen.savedTabRoute:
-        await MunroService.loadPersonalMunroData(context);
-        break;
-      case HomeScreen.profileTabRoute:
-        await UserService.readCurrentUser(context);
-        await ProfileService.loadUserFromUid(context, userId: _auth.currentUser!.uid);
-        break;
-      case MunroScreen.route:
-        break;
-      default:
-    }
+    bool showInAppOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
 
-    // Navigate to the right place
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      navigationState.navigateToRoute, // The name of the route you want to navigate to
-      (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-    );
+    if (showInAppOnboarding) {
+      await UserService.readCurrentUser(context);
+
+      BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
+      UserState userState = Provider.of<UserState>(context, listen: false);
+      MunroState munroState = Provider.of<MunroState>(context, listen: false);
+      AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+
+      bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+      munroState.setFilterString = "";
+
+      var munroChallenge = userState.currentUser?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
+
+      Achievement achievement = Achievement.fromJSON(munroChallenge);
+
+      achievementsState.reset();
+      achievementsState.setCurrentAchievement = achievement;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => InAppOnboarding()),
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 }

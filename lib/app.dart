@@ -5,6 +5,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -15,6 +16,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AnalyticsService.logOpen();
     return MultiProvider(
       providers: [
         StreamProvider<AppUser?>.value(
@@ -87,6 +89,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<ReportState>(
           create: (_) => ReportState(),
         ),
+        ChangeNotifierProvider<LayoutState>(
+          create: (_) => LayoutState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",
@@ -103,7 +108,13 @@ class App extends StatelessWidget {
           AchievementsCompletedScreen.route: (context) => const AchievementsCompletedScreen(),
           WeatherScreen.route: (context) => const WeatherScreen(),
         },
-        home: const HomeScreen(),
+        home: const WhatsNewDialog(
+          child: AppUpdateDialog(
+            child: FeedbackSurvey(
+              child: HomeScreen(),
+            ),
+          ),
+        ),
       ),
     );
   }

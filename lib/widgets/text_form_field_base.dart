@@ -22,6 +22,8 @@ class TextFormFieldBase extends StatelessWidget {
   final bool obscureText;
   final bool autocorrect;
   final InputBorder? border;
+  final Color? fillColor;
+
   const TextFormFieldBase({
     super.key,
     this.controller,
@@ -45,6 +47,7 @@ class TextFormFieldBase extends StatelessWidget {
     this.textInputAction,
     this.autocorrect = true,
     this.border,
+    this.fillColor,
   });
 
   @override
@@ -71,6 +74,8 @@ class TextFormFieldBase extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         border: border,
+        filled: fillColor != null,
+        fillColor: fillColor,
       ),
       textCapitalization: textCapitalization,
       keyboardType: keyboardType,

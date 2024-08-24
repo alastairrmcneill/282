@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroStatsRow extends StatelessWidget {
-  const MunroStatsRow({super.key});
+  final VoidCallback? onAreaTap;
+  final VoidCallback? onReviewsTap;
+  const MunroStatsRow({super.key, this.onAreaTap, this.onReviewsTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +26,19 @@ class MunroStatsRow extends StatelessWidget {
                 : "${munroState.selectedMunro?.feet}",
             subStat: settingsState.metricHeight ? "m" : "ft",
           ),
-          StatText(text: "Area", stat: munroState.selectedMunro?.area ?? ""),
           StatText(
+            onTap: onAreaTap ??
+                () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => MunroAreaScreen(
+                            area: munroState.selectedMunro?.area ?? "",
+                          )));
+                },
+            text: "Area",
+            stat: munroState.selectedMunro?.area ?? "",
+          ),
+          StatText(
+            onTap: onReviewsTap,
             text: "Rating",
             stat: munroState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
             subStat: "/5",

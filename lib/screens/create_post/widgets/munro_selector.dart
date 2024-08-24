@@ -85,11 +85,11 @@ class _MunroSelectorState extends State<MunroSelector> {
                   children: [
                     Text(
                       munro.name,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
                     ),
                     Text(
                       "${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}",
-                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 5),
                     CreatePostImagePicker(munroId: munro.id),
@@ -105,14 +105,22 @@ class _MunroSelectorState extends State<MunroSelector> {
             const SizedBox(height: 20),
             SizedBox(
               height: 44,
-              width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
                   munroState.setCreatePostFilterString = "";
                   _showModalSheet(munroState, createPostState, formState);
                 },
-                child: const Text(
-                  "Add Munro",
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add),
+                      Text(
+                        "Add another munro",
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

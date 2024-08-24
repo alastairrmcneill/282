@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class Post {
@@ -7,13 +8,16 @@ class Post {
   final String authorDisplayName;
   final String? authorProfilePictureURL;
   final DateTime dateTime;
+  final DateTime? summitedDate;
+  final TimeOfDay? startTime;
+  final Duration? duration;
   final String title;
   final String? description;
   final Map<String, List<String>> imageUrlsMap;
   final List<Munro> includedMunros;
   final List<String> includedMunroIds;
   final int likes;
-  final bool public;
+  final String privacy;
 
   Post({
     this.uid,
@@ -21,13 +25,16 @@ class Post {
     required this.authorDisplayName,
     required this.authorProfilePictureURL,
     required this.dateTime,
+    required this.summitedDate,
+    required this.startTime,
+    required this.duration,
     required this.imageUrlsMap,
     required this.title,
     this.description,
     required this.includedMunros,
     required this.includedMunroIds,
     required this.likes,
-    required this.public,
+    required this.privacy,
   });
 
   // To JSON
@@ -45,13 +52,16 @@ class Post {
       PostFields.authorDisplayName: authorDisplayName,
       PostFields.authorProfilePictureURL: authorProfilePictureURL,
       PostFields.dateTime: dateTime,
+      PostFields.summitedDate: summitedDate,
+      PostFields.startTime: startTime,
+      PostFields.duration: duration,
       PostFields.imageUrlsMap: imageUrlsMap,
       PostFields.title: title,
       PostFields.description: description,
       PostFields.includedMunros: includedMunrosMaps,
       PostFields.includedMunroIds: includedMunroIds,
       PostFields.likes: likes,
-      PostFields.public: public,
+      PostFields.privacy: privacy,
     };
   }
 
@@ -95,13 +105,16 @@ class Post {
       authorDisplayName: json[PostFields.authorDisplayName] as String,
       authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
       dateTime: (json[PostFields.dateTime] as Timestamp).toDate(),
+      summitedDate: (json[PostFields.dateTime] as Timestamp? ?? json[PostFields.dateTime] as Timestamp).toDate(),
+      startTime: json[PostFields.startTime] as TimeOfDay? ?? const TimeOfDay(hour: 12, minute: 0),
+      duration: json[PostFields.duration] as Duration? ?? Duration.zero,
       imageUrlsMap: newImageURLsMap,
       title: json[PostFields.title] as String,
       description: json[PostFields.description] as String?,
       includedMunros: inlcudedMunrosList,
       includedMunroIds: newIncludedMunroIds,
       likes: json[PostFields.likes] as int,
-      public: json[PostFields.public] as bool? ?? true,
+      privacy: json[PostFields.privacy] as String? ?? Privacy.public,
     );
   }
 
@@ -112,13 +125,16 @@ class Post {
     String? authorDisplayName,
     String? authorProfilePictureURL,
     DateTime? dateTime,
+    DateTime? summitedDate,
+    TimeOfDay? startTime,
+    Duration? duration,
     Map<String, List<String>>? imageUrlsMap,
     String? title,
     String? description,
     List<Munro>? includedMunros,
     List<String>? includedMunroIds,
     int? likes,
-    bool? public,
+    String? privacy,
   }) {
     return Post(
       uid: uid ?? this.uid,
@@ -126,13 +142,16 @@ class Post {
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
       authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
       dateTime: dateTime ?? this.dateTime,
+      summitedDate: summitedDate ?? this.summitedDate,
+      startTime: startTime ?? this.startTime,
+      duration: duration ?? this.duration,
       imageUrlsMap: imageUrlsMap ?? this.imageUrlsMap,
       title: title ?? this.title,
       description: description ?? this.description,
       includedMunros: includedMunros ?? this.includedMunros,
       includedMunroIds: includedMunroIds ?? this.includedMunroIds,
       likes: likes ?? this.likes,
-      public: public ?? this.public,
+      privacy: privacy ?? this.privacy,
     );
   }
 }
@@ -143,6 +162,9 @@ class PostFields {
   static String authorDisplayName = "authorDisplayName";
   static String authorProfilePictureURL = "authorProfilePictureURL";
   static String dateTime = "dateTime";
+  static String summitedDate = "summitedDate";
+  static String startTime = "startTime";
+  static String duration = "duration";
   static String imageURLs = "imageURLs";
   static String imageUrlsMap = "imageUrlsMap";
   static String title = "title";
@@ -150,5 +172,20 @@ class PostFields {
   static String includedMunros = "includedMunros";
   static String includedMunroIds = "includedMunroIds";
   static String likes = "likes";
+  static String privacy = "privacy";
+}
+
+class Privacy {
   static String public = "public";
+  static String friends = "friends";
+  static String private = "private";
+  static String hidden = "hidden";
+}
+
+class PrivacyDescriptions {
+  static String public = "Visible to everyone. Your post will show up in the global feed.";
+  static String friends = "Visible to friends. Your post will show up in your friends' feeds.";
+  static String private =
+      "Visible to only you. Your post will not show up in any feeds and will only be seen on your profile.";
+  static String hidden = "Hidden";
 }

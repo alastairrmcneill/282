@@ -1,0 +1,57 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
+
+class InAppOnboardingMunroChallenge extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  const InAppOnboardingMunroChallenge({super.key, required this.formKey});
+
+  @override
+  Widget build(BuildContext context) {
+    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Challenge yourself!',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'What is your target for munros to complete this year? 🎯',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 30),
+          Form(
+            key: formKey,
+            child: TextFormFieldBase(
+              initialValue: achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
+              labelText: "Number of Munros",
+              keyboardType: TextInputType.number,
+              fillColor: Colors.white,
+              validator: (value) {
+                if (value == null ||
+                    value.isEmpty ||
+                    int.tryParse(value) == null ||
+                    int.parse(value) < 1 ||
+                    int.parse(value) > 282) {
+                  return 'Please enter a number between 1 and 282.';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                achievementsState.currentAchievement?.criteria[CriteriaFields.count] = int.parse(value!);
+              },
+            ),
+          ),
+          const SizedBox(height: 30),
+        ],
+      ),
+    );
+  }
+}

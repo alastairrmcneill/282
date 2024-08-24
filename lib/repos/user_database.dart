@@ -83,6 +83,7 @@ class UserDatabase {
 
         userSnap = await _db
             .collection('users')
+            .where(AppUserFields.profileVisibility, isEqualTo: Privacy.public)
             .orderBy(AppUserFields.searchName, descending: false)
             .startAt([searchTerm])
             .endAt(["$searchTerm\uf8ff"])
@@ -95,6 +96,7 @@ class UserDatabase {
         if (!lastUserDoc.exists) return [];
         userSnap = await _db
             .collection('users')
+            .where(AppUserFields.profileVisibility, isEqualTo: Privacy.public)
             .orderBy(AppUserFields.searchName, descending: false)
             .startAfterDocument(lastUserDoc)
             .endAt(["$searchTerm\uf8ff"])

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class MyTheme {
   static ThemeData get lightTheme {
@@ -63,6 +65,48 @@ class MyTheme {
             decoration: TextDecoration.underline,
           ),
         ),
+      ),
+      datePickerTheme: DatePickerThemeData(
+        headerBackgroundColor: Colors.white,
+        headerForegroundColor: MyColors.textColor,
+        dayStyle: const TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w300),
+        yearStyle: const TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w500),
+        cancelButtonStyle: TextButton.styleFrom(
+          foregroundColor: MyColors.textColor,
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        confirmButtonStyle: TextButton.styleFrom(
+          foregroundColor: MyColors.textColor,
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0), // Rounded corners
+        ),
+      ),
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0), // Rounded corners
+        ),
+        cancelButtonStyle: TextButton.styleFrom(
+          foregroundColor: MyColors.textColor,
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        confirmButtonStyle: TextButton.styleFrom(
+          foregroundColor: MyColors.textColor,
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        dialBackgroundColor: Colors.white,
+        dialTextStyle: const TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w300),
+        padding: const EdgeInsets.all(20),
       ),
       iconTheme: const IconThemeData(color: MyColors.accentColor),
       inputDecorationTheme: InputDecorationTheme(

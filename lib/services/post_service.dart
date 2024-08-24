@@ -47,30 +47,41 @@ class PostService {
         title = createPostState.title!;
       }
 
-      DateTime summitDatetime = DateTime.now().toUtc();
+      DateTime postDateTime = DateTime.now().toUtc();
       // Create post object
       Post post = Post(
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: summitDatetime,
+        dateTime: postDateTime,
+        summitedDate: createPostState.summitedDate ?? postDateTime,
+        startTime: createPostState.startTime,
+        duration: createPostState.duration,
         likes: 0,
         title: title,
         description: createPostState.description,
         includedMunros: createPostState.selectedMunros,
         includedMunroIds: createPostState.selectedMunros.map((Munro munro) => munro.id).toList(),
         imageUrlsMap: imageURLsMap,
-        public: true,
+        privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
       // Send to database
       await PostsDatabase.create(context, post: post);
 
+      // Log event
+      bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
+
+      await AnalyticsService.logPostCreation(
+        privacy: post.privacy,
+        showPrivacyOption: showPrivacyOption,
+      );
+
       // Complete munros
       await MunroService.markMunrosAsDone(
         context,
         munros: createPostState.selectedMunros,
-        summitDateTime: summitDatetime,
+        summitDateTime: createPostState.summitedDate ?? postDateTime,
       );
 
       // Check for achievements
@@ -112,7 +123,11 @@ class PostService {
       Post newPost = post.copyWith(
         title: createPostState.title,
         description: createPostState.description,
+        summitedDate: createPostState.summitedDate,
+        startTime: createPostState.startTime,
+        duration: createPostState.duration,
         imageUrlsMap: imageURLsMap,
+        privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
       // Send to database
@@ -122,7 +137,7 @@ class PostService {
       MunroService.markMunrosAsDone(
         context,
         munros: createPostState.selectedMunros,
-        summitDateTime: newPost.dateTime,
+        summitDateTime: newPost.summitedDate!,
       );
 
       // Update state
@@ -190,7 +205,7 @@ class PostService {
     }
   }
 
-  static Future getFeed(BuildContext context) async {
+  static Future getFriendsFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
     if (userState.currentUser == null) {
@@ -201,7 +216,7 @@ class PostService {
     try {
       feedState.setStatus = FeedStatus.loading;
 
-      List<Post> posts = await PostsDatabase.getFeedFromUserId(
+      List<Post> posts = await PostsDatabase.getFriendsFeedFromUserId(
         context,
         userId: userState.currentUser?.uid ?? "",
         lastPostId: null,
@@ -215,7 +230,7 @@ class PostService {
       List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
       posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
-      feedState.setPosts = posts;
+      feedState.setFriendsPosts = posts;
       feedState.setStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -226,7 +241,7 @@ class PostService {
     }
   }
 
-  static Future paginateFeed(BuildContext context) async {
+  static Future paginateFriendsFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
     if (userState.currentUser == null) {
@@ -239,12 +254,12 @@ class PostService {
 
       // Find last user ID
       String? lastPostId;
-      if (feedState.posts.isNotEmpty) {
-        lastPostId = feedState.posts.last.uid!;
+      if (feedState.friendsPosts.isNotEmpty) {
+        lastPostId = feedState.friendsPosts.last.uid!;
       }
 
       // Add posts from database
-      List<Post> newPosts = await PostsDatabase.getFeedFromUserId(
+      List<Post> newPosts = await PostsDatabase.getFriendsFeedFromUserId(
         context,
         userId: userState.currentUser?.uid ?? "",
         lastPostId: lastPostId,
@@ -257,7 +272,80 @@ class PostService {
       List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
       newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
-      feedState.addPosts = newPosts;
+      feedState.addFriendsPosts = newPosts;
+      feedState.setStatus = FeedStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      feedState.setError = Error(message: "There was an issue loading your feed. Please try again.");
+    }
+  }
+
+  static Future getGlobalFeed(BuildContext context) async {
+    FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    if (userState.currentUser == null) {
+      // Not logged in
+      feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      return;
+    }
+    try {
+      feedState.setStatus = FeedStatus.loading;
+
+      List<Post> posts = await PostsDatabase.getGlobalFeed(
+        context,
+        lastPostId: null,
+      );
+
+      // Check likes
+      LikeService.clearLikedPosts(context);
+      LikeService.getLikedPostIds(context, posts: posts);
+
+      // Filter posts
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
+
+      feedState.setGlobalPosts = posts;
+      feedState.setStatus = FeedStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      feedState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue retreiving your posts. Please try again.",
+      );
+    }
+  }
+
+  static Future paginateGlobalFeed(BuildContext context) async {
+    FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    if (userState.currentUser == null) {
+      // Not logged in
+      feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      return;
+    }
+    try {
+      feedState.setStatus = FeedStatus.paginating;
+
+      // Find last user ID
+      String? lastPostId;
+      if (feedState.globalPosts.isNotEmpty) {
+        lastPostId = feedState.globalPosts.last.uid!;
+      }
+
+      // Add posts from database
+      List<Post> newPosts = await PostsDatabase.getGlobalFeed(
+        context,
+        lastPostId: lastPostId,
+      );
+
+      // Check likes
+      LikeService.getLikedPostIds(context, posts: newPosts);
+
+      // Filter posts
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
+
+      feedState.addGlobalPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

@@ -13,3 +13,5 @@ export 'weather_model.dart';
 export 'saved_list_model.dart';
 export 'munro_picture_model.dart';
 export 'report_model.dart';
+export 'filter_options.dart';
+export 'app_feedback_model.dart';

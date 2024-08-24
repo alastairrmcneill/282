@@ -8,18 +8,27 @@ class CreatePostState extends ChangeNotifier {
   Error _error = Error();
   String? _title;
   String? _description;
+  DateTime? _summitedDate;
+  TimeOfDay? _startTime;
+  Duration? _duration;
   Map<String, List<File>> _images = {};
   Map<String, List<String>> _imageURLs = {};
   List<Munro> _selectedMunros = [];
+  String? _postPrivacy;
   Post? _editingPost;
 
   CreatePostStatus get status => _status;
   Error get error => _error;
   String? get title => _title;
   String? get description => _description;
+  DateTime? get summitedDate => _summitedDate;
+  TimeOfDay? get startTime => _startTime;
+  Duration? get duration => _duration;
   Map<String, List<File>> get images => _images;
   Map<String, List<String>> get imagesURLs => _imageURLs;
   List<Munro> get selectedMunros => _selectedMunros;
+  String? get postPrivacy => _postPrivacy;
+  bool get hasImage => images.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
 
   set setStatus(CreatePostStatus searchStatus) {
@@ -43,6 +52,26 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setSummitedDate(DateTime? summitedDate) {
+    _summitedDate = summitedDate;
+    notifyListeners();
+  }
+
+  set setStartTime(TimeOfDay? startTime) {
+    _startTime = startTime;
+    notifyListeners();
+  }
+
+  set setDuration(Duration? duration) {
+    _duration = duration;
+    notifyListeners();
+  }
+
+  set setPostPrivacy(String? postPrivacy) {
+    _postPrivacy = postPrivacy;
+    notifyListeners();
+  }
+
   setImageURLs({required String munroId, required List<String> imageURLs}) {
     if (_imageURLs[munroId] == null) _imageURLs[munroId] = [];
 
@@ -53,9 +82,13 @@ class CreatePostState extends ChangeNotifier {
   set loadPost(Post post) {
     _editingPost = post;
     _title = post.title;
+    _summitedDate = post.summitedDate;
+    _startTime = post.startTime;
+    _duration = post.duration;
     _description = post.description;
     _imageURLs = post.imageUrlsMap;
     _selectedMunros = post.includedMunros;
+    _postPrivacy = post.privacy;
     notifyListeners();
   }
 
@@ -99,10 +132,12 @@ class CreatePostState extends ChangeNotifier {
   reset() {
     _title = null;
     _description = null;
+    _summitedDate = null;
     _editingPost = null;
     _imageURLs = {};
     _images = {};
     _selectedMunros = [];
+    _postPrivacy = null;
     _error = Error();
     _status = CreatePostStatus.initial;
   }

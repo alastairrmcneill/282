@@ -10,3 +10,4 @@ export 'saved_list_database.dart';
 export 'munro_pictures_database.dart';
 export 'report_database.dart';
 export 'achievements_database.dart';
+export 'feedback_database.dart';

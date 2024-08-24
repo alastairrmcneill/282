@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -18,6 +19,7 @@ class UserSearchScreen extends StatefulWidget {
 class _UserSearchScreenState extends State<UserSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   late ScrollController _scrollController;
+  late FocusNode _focusNode;
   @override
   void initState() {
     UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
@@ -29,6 +31,8 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
         SearchService.paginateSearch(context, query: _searchController.text.trim());
       }
     });
+    _focusNode = FocusNode();
+    _focusNode.requestFocus();
     super.initState();
   }
 
@@ -50,22 +54,14 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 15),
-              border: InputBorder.none,
-              hintText: 'Search 282',
-              suffixIcon: IconButton(
-                icon: const Icon(CupertinoIcons.xmark, size: 22),
-                onPressed: () {
-                  _searchController.clear();
-                  SearchService.clearSearch(context);
-                },
-              ),
-              filled: true,
-            ),
-            textInputAction: TextInputAction.search,
+          title: AppSearchBar(
+            focusNode: _focusNode,
+            hintText: "Find friends",
+            onClear: () {
+              _searchController.clear();
+              SearchService.clearSearch(context);
+            },
+            onSearchTap: () {},
             onChanged: (value) {
               if (value.trim().length >= 3) {
                 SearchService.search(context, query: value.trim());
