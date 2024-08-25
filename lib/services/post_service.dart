@@ -48,14 +48,23 @@ class PostService {
       }
 
       DateTime postDateTime = DateTime.now().toUtc();
+
+      // Get summitDateTime by combining date and time
+      DateTime? summitDateTime = DateTime(
+        createPostState.summitedDate?.year ?? postDateTime.year,
+        createPostState.summitedDate?.month ?? postDateTime.month,
+        createPostState.summitedDate?.day ?? postDateTime.day,
+        createPostState.startTime?.hour ?? 12,
+        createPostState.startTime?.minute ?? 0,
+      );
+
       // Create post object
       Post post = Post(
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
         dateTime: postDateTime,
-        summitedDate: createPostState.summitedDate ?? postDateTime,
-        startTime: createPostState.startTime,
+        summitedDateTime: summitDateTime,
         duration: createPostState.duration,
         likes: 0,
         title: title,
@@ -81,7 +90,7 @@ class PostService {
       await MunroService.markMunrosAsDone(
         context,
         munros: createPostState.selectedMunros,
-        summitDateTime: createPostState.summitedDate ?? postDateTime,
+        summitDateTime: summitDateTime,
       );
 
       // Check for achievements
@@ -120,11 +129,19 @@ class PostService {
       // Create post object
       Post post = createPostState.editingPost!;
 
+      // Get summitDateTime by combining date and time
+      DateTime? summitDateTime = DateTime(
+        createPostState.summitedDate?.year ?? post.summitedDateTime!.year,
+        createPostState.summitedDate?.month ?? post.summitedDateTime!.month,
+        createPostState.summitedDate?.day ?? post.summitedDateTime!.day,
+        createPostState.startTime?.hour ?? 12,
+        createPostState.startTime?.minute ?? 0,
+      );
+
       Post newPost = post.copyWith(
         title: createPostState.title,
         description: createPostState.description,
-        summitedDate: createPostState.summitedDate,
-        startTime: createPostState.startTime,
+        summitedDateTime: summitDateTime,
         duration: createPostState.duration,
         imageUrlsMap: imageURLsMap,
         privacy: createPostState.postPrivacy ?? Privacy.public,
@@ -137,7 +154,7 @@ class PostService {
       MunroService.markMunrosAsDone(
         context,
         munros: createPostState.selectedMunros,
-        summitDateTime: newPost.summitedDate!,
+        summitDateTime: newPost.summitedDateTime!,
       );
 
       // Update state

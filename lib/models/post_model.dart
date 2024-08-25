@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class Post {
@@ -8,8 +7,7 @@ class Post {
   final String authorDisplayName;
   final String? authorProfilePictureURL;
   final DateTime dateTime;
-  final DateTime? summitedDate;
-  final TimeOfDay? startTime;
+  final DateTime? summitedDateTime;
   final Duration? duration;
   final String title;
   final String? description;
@@ -25,8 +23,7 @@ class Post {
     required this.authorDisplayName,
     required this.authorProfilePictureURL,
     required this.dateTime,
-    required this.summitedDate,
-    required this.startTime,
+    required this.summitedDateTime,
     required this.duration,
     required this.imageUrlsMap,
     required this.title,
@@ -52,9 +49,8 @@ class Post {
       PostFields.authorDisplayName: authorDisplayName,
       PostFields.authorProfilePictureURL: authorProfilePictureURL,
       PostFields.dateTime: dateTime,
-      PostFields.summitedDate: summitedDate,
-      PostFields.startTime: startTime,
-      PostFields.duration: duration,
+      PostFields.summitedDateTime: summitedDateTime,
+      PostFields.duration: duration?.inMilliseconds,
       PostFields.imageUrlsMap: imageUrlsMap,
       PostFields.title: title,
       PostFields.description: description,
@@ -105,9 +101,9 @@ class Post {
       authorDisplayName: json[PostFields.authorDisplayName] as String,
       authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
       dateTime: (json[PostFields.dateTime] as Timestamp).toDate(),
-      summitedDate: (json[PostFields.dateTime] as Timestamp? ?? json[PostFields.dateTime] as Timestamp).toDate(),
-      startTime: json[PostFields.startTime] as TimeOfDay? ?? const TimeOfDay(hour: 12, minute: 0),
-      duration: json[PostFields.duration] as Duration? ?? Duration.zero,
+      summitedDateTime:
+          (json[PostFields.summitedDateTime] as Timestamp? ?? json[PostFields.dateTime] as Timestamp).toDate(),
+      duration: Duration(milliseconds: json[PostFields.duration] as int? ?? 0),
       imageUrlsMap: newImageURLsMap,
       title: json[PostFields.title] as String,
       description: json[PostFields.description] as String?,
@@ -125,8 +121,7 @@ class Post {
     String? authorDisplayName,
     String? authorProfilePictureURL,
     DateTime? dateTime,
-    DateTime? summitedDate,
-    TimeOfDay? startTime,
+    DateTime? summitedDateTime,
     Duration? duration,
     Map<String, List<String>>? imageUrlsMap,
     String? title,
@@ -142,8 +137,7 @@ class Post {
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
       authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
       dateTime: dateTime ?? this.dateTime,
-      summitedDate: summitedDate ?? this.summitedDate,
-      startTime: startTime ?? this.startTime,
+      summitedDateTime: summitedDateTime ?? this.summitedDateTime,
       duration: duration ?? this.duration,
       imageUrlsMap: imageUrlsMap ?? this.imageUrlsMap,
       title: title ?? this.title,
@@ -162,8 +156,7 @@ class PostFields {
   static String authorDisplayName = "authorDisplayName";
   static String authorProfilePictureURL = "authorProfilePictureURL";
   static String dateTime = "dateTime";
-  static String summitedDate = "summitedDate";
-  static String startTime = "startTime";
+  static String summitedDateTime = "summitedDateTime";
   static String duration = "duration";
   static String imageURLs = "imageURLs";
   static String imageUrlsMap = "imageUrlsMap";

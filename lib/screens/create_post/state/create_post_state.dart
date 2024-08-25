@@ -82,8 +82,8 @@ class CreatePostState extends ChangeNotifier {
   set loadPost(Post post) {
     _editingPost = post;
     _title = post.title;
-    _summitedDate = post.summitedDate;
-    _startTime = post.startTime;
+    _summitedDate = post.summitedDateTime;
+    _startTime = TimeOfDay.fromDateTime(post.summitedDateTime ?? DateTime(0, 0, 0, 12, 0));
     _duration = post.duration;
     _description = post.description;
     _imageURLs = post.imageUrlsMap;
@@ -133,6 +133,8 @@ class CreatePostState extends ChangeNotifier {
     _title = null;
     _description = null;
     _summitedDate = null;
+    _startTime = null;
+    _duration = null;
     _editingPost = null;
     _imageURLs = {};
     _images = {};
