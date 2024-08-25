@@ -151,6 +151,7 @@ class CreatePostScreen extends StatelessWidget {
                 _formKey.currentState!.save();
 
                 if (!createPostState.hasImage) {
+                  AnalyticsService.logCreatePostNoPhotos();
                   bool? carryOn = await showDialog<bool>(
                     context: context,
                     builder: (BuildContext context) {
@@ -209,6 +210,7 @@ class CreatePostScreen extends StatelessWidget {
                                     icon: const Icon(Icons.cancel_rounded),
                                     label: const Text('No, Skip'),
                                     onPressed: () {
+                                      AnalyticsService.logCreatePostNoPhotosResponse("skip");
                                       Navigator.of(context).pop(true);
                                     },
                                   ),
@@ -222,6 +224,7 @@ class CreatePostScreen extends StatelessWidget {
                                     icon: const Icon(Icons.check_circle_rounded),
                                     label: const Text('Yes, Add!'),
                                     onPressed: () {
+                                      AnalyticsService.logCreatePostNoPhotosResponse("add");
                                       Navigator.of(context).pop(false);
                                     },
                                   ),

@@ -335,7 +335,7 @@ class AuthService {
 
       await UserService.createUser(context, appUser: appUser);
 
-      AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
+      AnalyticsService.logSignUp(method: "google", platform: isIOS ? "iOS" : "Android");
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
