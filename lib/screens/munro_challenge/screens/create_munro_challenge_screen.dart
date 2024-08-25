@@ -25,7 +25,9 @@ class CreateMunroChallengeScreen extends StatelessWidget {
             );
           case AchievementsStatus.loaded:
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pop(context);
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
             });
             return const SizedBox();
           default:
