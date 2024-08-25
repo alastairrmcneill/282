@@ -87,4 +87,51 @@ class AnalyticsService {
       },
     );
   }
+
+  static Future<void> logSurveyShown() async {
+    await logEvent(
+      name: 'survey_shown',
+      parameters: {},
+    );
+  }
+
+  static Future<void> logSurveyAnswered({required String? q1, required String? q2}) async {
+    await logEvent(
+      name: 'survey_answers',
+      parameters: {
+        'q1': {q1 == null || q1 == ""}.toString(),
+        'q2': {q2 == null || q2 == ""}.toString(),
+      },
+    );
+  }
+
+  static Future<void> logAppUpdateDialogShown() async {
+    await logEvent(
+      name: 'app_update_dialog_shown',
+      parameters: {},
+    );
+  }
+
+  static Future<void> logAppUpdateDialogUpdateNow() async {
+    await logEvent(
+      name: 'app_update_dialog_update_now',
+      parameters: {},
+    );
+  }
+
+  static void logCreatePostNoPhotos() async {
+    await logEvent(
+      name: 'create_post_no_photos_dialog_shown',
+      parameters: {},
+    );
+  }
+
+  static void logCreatePostNoPhotosResponse(String response) async {
+    await logEvent(
+      name: 'create_post_no_photos_dialog_response',
+      parameters: {
+        'response': response,
+      },
+    );
+  }
 }

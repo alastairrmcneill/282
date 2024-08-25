@@ -85,6 +85,8 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
   }) {
     List<String> updates = whatsNew.split(';');
 
+    AnalyticsService.logAppUpdateDialogShown();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -150,6 +152,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
+                        AnalyticsService.logAppUpdateDialogUpdateNow();
                         String url = Platform.isIOS
                             ? "https://apps.apple.com/us/app/282/id6474512889"
                             : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";

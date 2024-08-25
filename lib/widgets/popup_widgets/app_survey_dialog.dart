@@ -75,11 +75,13 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     );
 
     await FeedbackDatabase.create(context, feedback: feedback);
+    AnalyticsService.logSurveyAnswered(q1: response1, q2: response2);
 
     showSnackBar(context, "Thank you for your feedback! 🙏");
   }
 
   void _showSurveyDialog(BuildContext context, {required DateTime surveyDate}) {
+    AnalyticsService.logSurveyShown();
     showDialog(
       context: context,
       builder: (BuildContext context) {

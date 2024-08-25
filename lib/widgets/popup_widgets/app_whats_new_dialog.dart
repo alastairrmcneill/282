@@ -72,7 +72,7 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "What's new in v$version:",
+                              "What's new!",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
