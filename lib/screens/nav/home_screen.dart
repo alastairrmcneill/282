@@ -36,10 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _currentIndex = widget.startingIndex!;
-    _loadData();
     super.initState();
-    LayoutState layoutState = Provider.of<LayoutState>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      LayoutState layoutState = Provider.of<LayoutState>(context, listen: false);
+
+      _loadData();
       final RenderBox renderBox = _bottomNavigationKey.currentContext!.findRenderObject() as RenderBox;
       setState(() {
         layoutState.setBottomNavBarHeight = renderBox.size.height;

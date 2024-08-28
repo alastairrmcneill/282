@@ -40,6 +40,14 @@ class ReviewDatabase {
       DocumentReference ref = _reviewsRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "ReviewDatabase.readReviewFromUid",
+        collection: "reviews",
+        documentCount: 1,
+        userId: null,
+        documentId: uid,
+      );
+
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       Review review = Review.fromJSON(data);
@@ -69,6 +77,14 @@ class ReviewDatabase {
             .where(ReviewFields.munroId, isEqualTo: munroId)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "ReviewDatabase.readReviewsFromMunro.firstBatch",
+          collection: "reviews",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: munroId,
+        );
       } else {
         final lastPostDoc = await _reviewsRef.doc(lastReviewId).get();
 
@@ -80,6 +96,14 @@ class ReviewDatabase {
             .where(ReviewFields.munroId, isEqualTo: munroId)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "ReviewDatabase.readReviewsFromMunro.paginate",
+          collection: "reviews",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: munroId,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
@@ -112,6 +136,14 @@ class ReviewDatabase {
             .where(ReviewFields.authorId, isEqualTo: authorId)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "ReviewDatabase.readReviewsFromUser.firstBatch",
+          collection: "reviews",
+          documentCount: querySnapshot.docs.length,
+          userId: authorId,
+          documentId: null,
+        );
       } else {
         final lastPostDoc = await _reviewsRef.doc(lastReviewId).get();
 
@@ -123,6 +155,14 @@ class ReviewDatabase {
             .where(ReviewFields.authorId, isEqualTo: authorId)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "ReviewDatabase.readReviewsFromUser.paginate",
+          collection: "reviews",
+          documentCount: querySnapshot.docs.length,
+          userId: authorId,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {

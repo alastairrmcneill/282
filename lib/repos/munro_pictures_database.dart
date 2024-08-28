@@ -26,6 +26,14 @@ class MunroPicturesDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(count)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "MunroPicturesDatabase.readMunroPictures.firstBatch",
+          collection: "munroPictures",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: munroId,
+        );
       } else {
         final lastPictureDoc = await _munroPicturesRef.doc(lastPictureId).get();
 
@@ -38,6 +46,14 @@ class MunroPicturesDatabase {
             .startAfterDocument(lastPictureDoc)
             .limit(count)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "MunroPicturesDatabase.readMunroPictures.paginate",
+          collection: "munroPictures",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: munroId,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
@@ -70,6 +86,14 @@ class MunroPicturesDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(count)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "MunroPicturesDatabase.readProfilePictures.firstBatch",
+          collection: "munroPictures",
+          documentCount: querySnapshot.docs.length,
+          userId: profileId,
+          documentId: null,
+        );
       } else {
         final lastPictureDoc = await _munroPicturesRef.doc(lastPictureId).get();
 
@@ -81,6 +105,14 @@ class MunroPicturesDatabase {
             .startAfterDocument(lastPictureDoc)
             .limit(count)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "MunroPicturesDatabase.readProfilePictures.paginate",
+          collection: "munroPictures",
+          documentCount: querySnapshot.docs.length,
+          userId: profileId,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {

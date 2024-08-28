@@ -24,6 +24,14 @@ class NotificationsDatabase {
             .orderBy(NotifFields.dateTime, descending: true)
             .limit(20)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "NotificationsDatabase.readUserNotifs.firstBatch",
+          collection: "notifications",
+          documentCount: querySnapshot.docs.length,
+          userId: userId,
+          documentId: null,
+        );
       } else {
         final lastNotificationDoc = await _notificationsRef.doc(lastNotificationId).get();
 
@@ -35,6 +43,14 @@ class NotificationsDatabase {
             .startAfterDocument(lastNotificationDoc)
             .limit(20)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "NotificationsDatabase.readUserNotifs.paginate",
+          collection: "notifications",
+          documentCount: querySnapshot.docs.length,
+          userId: userId,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
