@@ -119,19 +119,37 @@ class AnalyticsService {
     );
   }
 
-  static void logCreatePostNoPhotos() async {
+  static Future<void> logCreatePostNoPhotos() async {
     await logEvent(
       name: 'create_post_no_photos_dialog_shown',
       parameters: {},
     );
   }
 
-  static void logCreatePostNoPhotosResponse(String response) async {
+  static Future<void> logCreatePostNoPhotosResponse(String response) async {
     await logEvent(
       name: 'create_post_no_photos_dialog_response',
       parameters: {
         'response': response,
       },
     );
+  }
+
+  static Future<void> logDatabaseRead({
+    required String method,
+    required String collection,
+    required int documentCount,
+    required String? userId,
+    required String? documentId,
+    Map<String, dynamic>? additionalData,
+  }) async {
+    logEvent(name: 'Database Read', parameters: {
+      'method': method,
+      'collection': collection,
+      'documentCount': documentCount.toString(),
+      'userId': userId ?? "",
+      'documentId': documentId ?? "",
+      ...additionalData ?? {},
+    });
   }
 }
