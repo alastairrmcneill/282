@@ -35,3 +35,4 @@ export 'in_app_onboarding/screens/in_app_onboarding_find_friends.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_munro_updates.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_welcome.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_munro_challenge.dart';
+export 'group_filter_screen/group_filter_screen.dart';

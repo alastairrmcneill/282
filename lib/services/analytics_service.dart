@@ -119,14 +119,14 @@ class AnalyticsService {
     );
   }
 
-  static void logCreatePostNoPhotos() async {
+  static Future<void> logCreatePostNoPhotos() async {
     await logEvent(
       name: 'create_post_no_photos_dialog_shown',
       parameters: {},
     );
   }
 
-  static void logCreatePostNoPhotosResponse(String response) async {
+  static Future<void> logCreatePostNoPhotosResponse(String response) async {
     await logEvent(
       name: 'create_post_no_photos_dialog_response',
       parameters: {

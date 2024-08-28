@@ -38,8 +38,8 @@ class ExploreTabHeader extends StatelessWidget {
           height: headerHeight,
           child: Padding(
             padding: EdgeInsets.only(
-              left: isSearchVisible ? 0 : 30,
-              right: 30,
+              left: isSearchVisible ? 0 : 15,
+              right: 15,
             ),
             child: Row(
               children: [
@@ -66,6 +66,7 @@ class ExploreTabHeader extends StatelessWidget {
                     },
                   ),
                 ),
+                const ExploreHeaderGroupButton(),
                 const ExploreHeaderFilterButton(),
               ],
             ),
