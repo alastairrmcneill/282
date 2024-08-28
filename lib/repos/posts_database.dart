@@ -41,6 +41,14 @@ class PostsDatabase {
       DocumentReference ref = _postsRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "PostsDatabase.readPostFromUid",
+        collection: "posts",
+        documentCount: 1,
+        userId: null,
+        documentId: uid,
+      );
+
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       Post post = Post.fromJSON(data);
@@ -64,6 +72,14 @@ class PostsDatabase {
 
         posts.add(post);
       }
+
+      AnalyticsService.logDatabaseRead(
+        method: "PostsDatabase.readAllPost",
+        collection: "posts",
+        documentCount: posts.length,
+        userId: null,
+        documentId: null,
+      );
 
       return posts;
     } on FirebaseException catch (error, stackTrace) {
@@ -89,6 +105,14 @@ class PostsDatabase {
             .where(PostFields.authorId, isEqualTo: userId)
             .limit(6)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.readPostsFromUserId.firstBatch",
+          collection: "posts",
+          documentCount: querySnapshot.docs.length,
+          userId: userId,
+          documentId: null,
+        );
       } else {
         final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
@@ -100,6 +124,14 @@ class PostsDatabase {
             .where(PostFields.authorId, isEqualTo: userId)
             .limit(6)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.readPostsFromUserId.paginate",
+          collection: "posts",
+          documentCount: querySnapshot.docs.length,
+          userId: userId,
+          documentId: null,
+        );
       }
       for (var doc in querySnapshot.docs) {
         Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
@@ -143,6 +175,14 @@ class PostsDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.getFriendsFeedFromUserId.firstBatch",
+          collection: "feeds",
+          documentCount: querySnapshot.docs.length,
+          userId: userId,
+          documentId: null,
+        );
       } else {
         final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
@@ -155,6 +195,14 @@ class PostsDatabase {
             .startAfterDocument(lastPostDoc)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.getFriendsFeedFromUserId.paginate",
+          collection: "feeds",
+          documentCount: querySnapshot.docs.length,
+          userId: userId,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
@@ -186,6 +234,14 @@ class PostsDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.getGlobalFeed.firstBatch",
+          collection: "posts",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: null,
+        );
       } else {
         final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
@@ -197,6 +253,14 @@ class PostsDatabase {
             .startAfterDocument(lastPostDoc)
             .limit(10)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.getGlobalFeed.paginate",
+          collection: "posts",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
@@ -233,6 +297,14 @@ class PostsDatabase {
             .where(PostFields.privacy, isEqualTo: Privacy.public)
             .limit(count)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.getPostsFromMunro.firstBatch",
+          collection: "posts",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: munroId,
+        );
       } else {
         final lastPostDoc = await _postsRef.doc(lastPostId).get();
 
@@ -247,6 +319,14 @@ class PostsDatabase {
             .where(PostFields.privacy, isEqualTo: Privacy.public)
             .limit(count)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "PostsDatabase.getPostsFromMunro.paginate",
+          collection: "posts",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: munroId,
+        );
       }
 
       for (var doc in querySnapshot.docs) {

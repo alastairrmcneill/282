@@ -186,6 +186,14 @@ class AchievementsDatabase {
       for (var doc in querySnapshot.docs) {
         achievements.add(Achievement.fromJSON(doc.data() as Map<String, dynamic>));
       }
+      AnalyticsService.logDatabaseRead(
+        method: "AchievementsDatabase.getAllAchievements",
+        collection: 'achievements',
+        documentCount: querySnapshot.docs.length,
+        userId: null,
+        documentId: null,
+        additionalData: null,
+      );
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an loading the achievements.");

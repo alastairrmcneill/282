@@ -54,6 +54,15 @@ class CommentsDatabase {
 
       Comment comment = Comment.fromJSON(data);
 
+      AnalyticsService.logDatabaseRead(
+        method: "CommentsDatabase.readCommentFromUid",
+        collection: "comments",
+        documentCount: 1,
+        userId: null,
+        documentId: commentId,
+        additionalData: null,
+      );
+
       return comment;
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -73,6 +82,15 @@ class CommentsDatabase {
 
         comments.add(comment);
       }
+
+      AnalyticsService.logDatabaseRead(
+        method: "CommentsDatabase.readAllPostComment",
+        collection: "comments",
+        documentCount: querySnapshot.docs.length,
+        userId: null,
+        documentId: postId,
+        additionalData: null,
+      );
 
       return comments;
     } on FirebaseException catch (error, stackTrace) {
@@ -99,6 +117,14 @@ class CommentsDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(15)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "CommentsDatabase.readPostComments.firstBatch",
+          collection: "comments",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: postId,
+        );
       } else {
         final lastCommentDoc = await _commentsRef.doc(postId).collection('postComments').doc(lastCommentId).get();
 
@@ -111,6 +137,14 @@ class CommentsDatabase {
             .startAfterDocument(lastCommentDoc)
             .limit(15)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "CommentsDatabase.readPostComments.paginate",
+          collection: "comments",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: postId,
+        );
       }
 
       for (var doc in querySnapshot.docs) {

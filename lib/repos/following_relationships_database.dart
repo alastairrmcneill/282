@@ -21,6 +21,14 @@ class FollowingRelationshipsDatabase {
         .limit(1) // We only need to check if at least one document exists
         .get();
 
+    AnalyticsService.logDatabaseRead(
+      method: "FollowingRelationshipsDatabase.getRelationshipFromSourceAndTarget",
+      collection: "followingRelationships",
+      documentCount: querySnapshot.docs.length,
+      userId: null,
+      documentId: null,
+    );
+
     return querySnapshot;
   }
 
@@ -48,6 +56,13 @@ class FollowingRelationshipsDatabase {
           .limit(1) // We only need to check if at least one document exists
           .get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "FollowingRelationshipsDatabase.delete",
+        collection: "followingRelationships",
+        documentCount: querySnapshot.docs.length,
+        userId: null,
+        documentId: null,
+      );
       await querySnapshot.docs[0].reference.delete();
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -71,6 +86,14 @@ class FollowingRelationshipsDatabase {
             .orderBy(FollowingRelationshipFields.sourceDisplayName, descending: false)
             .limit(20) // We only need to check if at least one document exists
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "FollowingRelationshipsDatabase.getFollowersFromUid.firstLoad",
+          collection: "followingRelationships",
+          documentCount: querySnapshot.docs.length,
+          userId: targetId,
+          documentId: null,
+        );
       } else {
         // Paginating
         final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
@@ -83,6 +106,14 @@ class FollowingRelationshipsDatabase {
             .startAfterDocument(lastFollowingRelationshipDoc)
             .limit(20)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "FollowingRelationshipsDatabase.getFollowersFromUid.paginate",
+          collection: "followingRelationships",
+          documentCount: querySnapshot.docs.length,
+          userId: targetId,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
@@ -115,6 +146,13 @@ class FollowingRelationshipsDatabase {
             .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
             .limit(20) // We only need to check if at least one document exists
             .get();
+        AnalyticsService.logDatabaseRead(
+          method: "FollowingRelationshipsDatabase.getFollowingFromUid.firstLoad",
+          collection: "followingRelationships",
+          documentCount: querySnapshot.docs.length,
+          userId: sourceId,
+          documentId: null,
+        );
       } else {
         // Paginating
         final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
@@ -127,6 +165,14 @@ class FollowingRelationshipsDatabase {
             .startAfterDocument(lastFollowingRelationshipDoc)
             .limit(20)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "FollowingRelationshipsDatabase.getFollowingFromUid.paginate",
+          collection: "followingRelationships",
+          documentCount: querySnapshot.docs.length,
+          userId: sourceId,
+          documentId: null,
+        );
       }
 
       for (var doc in querySnapshot.docs) {
