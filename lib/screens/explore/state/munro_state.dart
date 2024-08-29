@@ -46,8 +46,8 @@ class MunroState extends ChangeNotifier {
 
   set setMunroList(List<Munro> munroList) {
     _munroList = munroList;
-    _filter();
     notifyListeners();
+    _filter();
   }
 
   set setSelectedMunro(Munro? selectedMunro) {
