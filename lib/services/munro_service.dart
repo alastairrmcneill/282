@@ -83,8 +83,10 @@ class MunroService {
       double averageRating = (munro[MunroFields.averageRating] as num).toDouble();
       int reviewCount = munro[MunroFields.reviewCount] as int;
 
-      tempMunroList[int.parse(munroId) - 1].averageRating = averageRating;
-      tempMunroList[int.parse(munroId) - 1].reviewCount = reviewCount;
+      int index = tempMunroList.indexWhere((element) => element.id == munroId);
+
+      tempMunroList[index].averageRating = averageRating;
+      tempMunroList[index].reviewCount = reviewCount;
     }
 
     munroState.setMunroList = tempMunroList;
