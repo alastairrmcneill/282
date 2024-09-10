@@ -284,6 +284,11 @@ exports.onFollowUser = functions.firestore
   .onCreate(async (snapshot, context) => {
     const relationshipId = context.params.uid;
 
+    // if searchName doesn't exist then set it as lowercase displayName
+    if (snapshot.get("targetSearchName") === undefined) {
+      snapshot.ref.update({ targetSearchName: snapshot.get("targetDisplayName").toLowerCase() });
+    }
+
     // Get IDs
     const sourceId = snapshot.get("sourceId");
     const targetId = snapshot.get("targetId");
@@ -961,126 +966,36 @@ exports.onAchievementDeleted = functions.firestore
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
   try {
-    const postsRef = admin.firestore().collection("posts");
-    let lastDoc = null;
-    const batchSize = 500;
+    const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
+    let lastFollowingRelationshipDoc = null;
+    const followingRelationshipsBatchSize = 500;
 
     while (true) {
-      let query = postsRef.orderBy("__name__").limit(batchSize);
-      if (lastDoc) {
-        query = query.startAfter(lastDoc);
+      let query = followingRelationshipsRef.orderBy("__name__").limit(followingRelationshipsBatchSize);
+      if (lastFollowingRelationshipDoc) {
+        query = query.startAfter(lastFollowingRelationshipDoc);
       }
 
-      const postsSnapshot = await query.get();
-      if (postsSnapshot.empty) {
+      const followingRelationshipsSnapshot = await query.get();
+      if (followingRelationshipsSnapshot.empty) {
         break; // No more documents to process
       }
 
       let batch = admin.firestore().batch();
-      postsSnapshot.forEach((postDoc) => {
-        if (!postDoc.data().privacy) {
+      followingRelationshipsSnapshot.forEach((followingRelationshipDoc) => {
+        if (!followingRelationshipDoc.data().targetSearchName) {
           // Only update if privacy field doesn't exist
-          console.log(`Updating Post: ${postDoc.id}`);
-          let postRef = postsRef.doc(postDoc.id);
-          batch.update(postRef, { privacy: "public" });
+          console.log(`Updating followingRelationship: ${followingRelationshipDoc.id}`);
+          let followingRelationshipRef = followingRelationshipsRef.doc(followingRelationshipDoc.id);
+          batch.update(followingRelationshipRef, {
+            targetSearchName: followingRelationshipDoc.data().targetDisplayName.toLowerCase(),
+          });
         }
       });
 
       await batch.commit();
-      lastDoc = postsSnapshot.docs[postsSnapshot.docs.length - 1];
-
-      // To avoid potential timeout, consider adding a delay between batches
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    const usersRef = admin.firestore().collection("users");
-    let lastUserDoc = null;
-    const userBatchSize = 500;
-
-    while (true) {
-      let query = usersRef.orderBy("__name__").limit(userBatchSize);
-      if (lastUserDoc) {
-        query = query.startAfter(lastUserDoc);
-      }
-
-      const usersSnapshot = await query.get();
-      if (usersSnapshot.empty) {
-        break; // No more documents to process
-      }
-
-      let batch = admin.firestore().batch();
-      usersSnapshot.forEach((userDoc) => {
-        if (!userDoc.data().profileVisibility) {
-          // Only update if profileVisibility field doesn't exist
-          console.log(`Updating User: ${userDoc.id}`);
-          let userRef = usersRef.doc(userDoc.id);
-          batch.update(userRef, { profileVisibility: "public" });
-        }
-      });
-
-      await batch.commit();
-      lastUserDoc = usersSnapshot.docs[usersSnapshot.docs.length - 1];
-
-      // To avoid potential timeout, consider adding a delay between batches
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    const globalFeedRef = admin.firestore().collection("globalFeed");
-    let lastPostMoveDoc = null;
-    const batchMovingSize = 500;
-
-    while (true) {
-      let query = postsRef.orderBy("__name__").limit(batchMovingSize);
-      if (lastPostMoveDoc) {
-        query = query.startAfter(lastPostMoveDoc);
-      }
-
-      const postsSnapshot = await query.get();
-      if (postsSnapshot.empty) {
-        break; // No more documents to process
-      }
-
-      let batch = admin.firestore().batch();
-      postsSnapshot.forEach((postDoc) => {
-        console.log(`Copying Post: ${postDoc.id}`);
-        let postRef = globalFeedRef.doc(postDoc.id);
-        batch.set(postRef, postDoc.data());
-      });
-
-      await batch.commit();
-      lastPostMoveDoc = postsSnapshot.docs[postsSnapshot.docs.length - 1];
-
-      // To avoid potential timeout, consider adding a delay between batches
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    const munroPicturesRef = admin.firestore().collection("munroPictures");
-    let lastMunroPictureDoc = null;
-    const munroPicturesBatchSize = 500;
-
-    while (true) {
-      let query = munroPicturesRef.orderBy("__name__").limit(munroPicturesBatchSize);
-      if (lastMunroPictureDoc) {
-        query = query.startAfter(lastMunroPictureDoc);
-      }
-
-      const munroPicturesSnapshot = await query.get();
-      if (munroPicturesSnapshot.empty) {
-        break; // No more documents to process
-      }
-
-      let batch = admin.firestore().batch();
-      munroPicturesSnapshot.forEach((munroPictureDoc) => {
-        if (!munroPictureDoc.data().privacy) {
-          // Only update if privacy field doesn't exist
-          console.log(`Updating munroPicture: ${munroPictureDoc.id}`);
-          let munroPictureRef = munroPicturesRef.doc(munroPictureDoc.id);
-          batch.update(munroPictureRef, { privacy: "public" });
-        }
-      });
-
-      await batch.commit();
-      lastMunroPictureDoc = munroPicturesSnapshot.docs[munroPicturesSnapshot.docs.length - 1];
+      lastFollowingRelationshipDoc =
+        followingRelationshipsSnapshot.docs[followingRelationshipsSnapshot.docs.length - 1];
 
       // To avoid potential timeout, consider adding a delay between batches
       await new Promise((resolve) => setTimeout(resolve, 1000));

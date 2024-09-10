@@ -19,6 +19,20 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "sourceId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "targetSearchName",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "followingRelationships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "targetId",
           "order": "ASCENDING"
         },

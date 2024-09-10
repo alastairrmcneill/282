@@ -2,7 +2,7 @@ class AppFeedback {
   final String? uid;
   final String userId;
   final DateTime dateProvided;
-  final DateTime surveyDate;
+  final int surveyNumber;
   final String feedback1;
   final String feedback2;
   final String version;
@@ -12,7 +12,7 @@ class AppFeedback {
     this.uid,
     required this.userId,
     required this.dateProvided,
-    required this.surveyDate,
+    required this.surveyNumber,
     required this.feedback1,
     required this.feedback2,
     required this.version,
@@ -24,7 +24,7 @@ class AppFeedback {
       'uid': uid,
       'userId': userId,
       'dateProvided': dateProvided,
-      'surveyDate': surveyDate,
+      'surveyNumber': surveyNumber,
       'feedback1': feedback1,
       'feedback2': feedback2,
       'version': version,
@@ -32,24 +32,11 @@ class AppFeedback {
     };
   }
 
-  factory AppFeedback.fromJSON(Map<String, dynamic> json) {
-    return AppFeedback(
-      uid: json['uid'],
-      userId: json['userId'],
-      dateProvided: json['dateProvided'],
-      surveyDate: json['surveyDate'],
-      feedback1: json['feedback1'],
-      feedback2: json['feedback2'],
-      version: json['version'],
-      platform: json['platform'],
-    );
-  }
-
   AppFeedback copyWith({
     String? uid,
     String? userId,
     DateTime? dateProvided,
-    DateTime? surveyDate,
+    int? surveyNumber,
     String? feedback1,
     String? feedback2,
     String? version,
@@ -59,7 +46,7 @@ class AppFeedback {
       uid: uid ?? this.uid,
       userId: userId ?? this.userId,
       dateProvided: dateProvided ?? this.dateProvided,
-      surveyDate: surveyDate ?? this.surveyDate,
+      surveyNumber: surveyNumber ?? this.surveyNumber,
       feedback1: feedback1 ?? this.feedback1,
       feedback2: feedback2 ?? this.feedback2,
       version: version ?? this.version,

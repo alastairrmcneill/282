@@ -12,10 +12,11 @@ class RemoteConfigService {
     ));
 
     await _remoteConfig.setDefaults(const {
-      RCFields.feedbackSurveyDate: "01/01/2000",
+      RCFields.feedbackSurveyNumber: 0,
       RCFields.latestAppVersion: "1.0.0",
       RCFields.whatsNew: "No new features this time. We are working hard to bring you new features soon.",
       RCFields.showPrivacyOption: true,
+      RCFields.groupFilterNewIcon: true,
     });
 
     try {
@@ -32,11 +33,16 @@ class RemoteConfigService {
   static getBool(String key) {
     return _remoteConfig.getBool(key);
   }
+
+  static getInt(String key) {
+    return _remoteConfig.getInt(key);
+  }
 }
 
 class RCFields {
-  static const feedbackSurveyDate = "feedback_survey_date";
+  static const feedbackSurveyNumber = "feedback_survey_number";
   static const latestAppVersion = "latest_app_version";
   static const whatsNew = "whats_new";
   static const showPrivacyOption = "show_privacy_option";
+  static const groupFilterNewIcon = "group_filter_new_icon";
 }

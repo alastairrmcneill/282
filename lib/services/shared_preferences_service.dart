@@ -21,14 +21,14 @@ class SharedPreferencesService {
     prefs.setBool('mapTerrain', value);
   }
 
-  static Future<String> getLastFeedbackSurveyDate() async {
+  static Future<int> getLastFeedbackSurveyNumber() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('lastFeedbackSurveyDate') ?? '01/01/2000';
+    return prefs.getInt('lastFeedbackSurveyNumber') ?? -1;
   }
 
-  static setLastFeedbackSurveyDate(String latestFeedbackSurveyDateString) {
+  static setLastFeedbackSurveyNumber(int latestFeedbackSurveyNumber) {
     SharedPreferences.getInstance().then((prefs) {
-      prefs.setString('lastFeedbackSurveyDate', latestFeedbackSurveyDateString);
+      prefs.setInt('lastFeedbackSurveyNumber', latestFeedbackSurveyNumber);
     });
   }
 

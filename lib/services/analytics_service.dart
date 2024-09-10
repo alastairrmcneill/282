@@ -134,4 +134,11 @@ class AnalyticsService {
       },
     );
   }
+
+  static Future<void> troubleShootAppSurvey(Map<String, String>? parameters) async {
+    await logEvent(
+      name: 'trouble_shoot_app_survey',
+      parameters: parameters,
+    );
+  }
 }

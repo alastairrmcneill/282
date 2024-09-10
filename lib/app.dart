@@ -92,6 +92,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<LayoutState>(
           create: (_) => LayoutState(),
         ),
+        ChangeNotifierProvider<GroupFilterState>(
+          create: (_) => GroupFilterState(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: flavor == "Development",

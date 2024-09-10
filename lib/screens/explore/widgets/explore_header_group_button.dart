@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class ExploreHeaderGroupButton extends StatelessWidget {
@@ -10,7 +12,11 @@ class ExploreHeaderGroupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final user = Provider.of<AppUser?>(context, listen: false);
+    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context);
+
+    bool showNewIcon = RemoteConfigService.getBool(RCFields.groupFilterNewIcon);
 
     return Padding(
       padding: const EdgeInsets.only(left: 8),
@@ -32,63 +38,64 @@ class ExploreHeaderGroupButton extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const GroupFilterScreen(),
-                    ),
-                  );
+                  if (user == null) {
+                    navigationState.setNavigateToRoute = HomeScreen.route;
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const GroupFilterScreen(),
+                      ),
+                    );
+                  }
                 },
-                child: Stack(
-                  children: [
-                    const Icon(
-                      CupertinoIcons.person_2,
-                      color: MyColors.accentColor,
-                      size: 20,
-                    ),
-                    munroState.isFilterOptionsSet
-                        ? Positioned(
-                            right: 0,
-                            top: 0,
-                            child: Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
+                child: const Icon(
+                  CupertinoIcons.person_2,
+                  color: MyColors.accentColor,
+                  size: 20,
                 ),
               ),
             ),
           ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Container(
-              height: 14,
-              decoration: const BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                child: Center(
-                  child: Text(
-                    'New',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      height: 0,
+          if (showNewIcon && groupFilterState.selectedFriendsUids.isEmpty)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                height: 14,
+                decoration: const BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                  child: Center(
+                    child: Text(
+                      'New',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                        height: 0,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          if (groupFilterState.selectedFriendsUids.isNotEmpty)
+            Positioned(
+              right: 7,
+              top: 7,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
         ],
       ),
     );
