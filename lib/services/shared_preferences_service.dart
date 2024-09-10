@@ -56,6 +56,16 @@ class SharedPreferencesService {
     });
   }
 
+  static Future<String?> getFirstAppVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('firstAppVersion');
+  }
+
+  static setFirstAppVersion(String version) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('firstAppVersion', version);
+  }
+
   static Future<bool> getShowInAppOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('showInAppOnboarding') ?? true;
