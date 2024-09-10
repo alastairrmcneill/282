@@ -24,19 +24,19 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
     _hasShownDialog = true;
 
     String version = "1.2.2";
-    // // Check if dialog has been shown before
-    // bool showWhatsNewDialog = await SharedPreferencesService.getShowWhatsNewDialog(version);
+    // Check if dialog has been shown before
+    bool showWhatsNewDialog = await SharedPreferencesService.getShowWhatsNewDialog(version);
 
-    // String? firstAppVersion = await SharedPreferencesService.getFirstAppVersion();
+    String? firstAppVersion = await SharedPreferencesService.getFirstAppVersion();
 
-    // if (firstAppVersion == null) {
-    //   SharedPreferencesService.setFirstAppVersion(version);
-    //   return;
-    // }
+    if (firstAppVersion == null) {
+      SharedPreferencesService.setFirstAppVersion(version);
+      return;
+    }
 
-    // if (firstAppVersion == version) return;
+    if (firstAppVersion == version) return;
 
-    // if (!showWhatsNewDialog) return;
+    if (!showWhatsNewDialog) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showSurveyDialog(context, version: version);
@@ -44,15 +44,6 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
   }
 
   void _showSurveyDialog(BuildContext context, {required String version}) {
-    List<String> updates = [
-      "Improved munro search with added filters and sorting.",
-      "New list view for browsing munros.",
-      "New Global feed to see what other munro baggers are up to.",
-      "Improved onboarding flow to set previously climbed munros and a challenge for this year.",
-      "Improved privacy controls.",
-      "Bug fixes.",
-    ];
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
