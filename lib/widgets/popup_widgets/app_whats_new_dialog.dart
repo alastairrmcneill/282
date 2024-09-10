@@ -23,7 +23,7 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
     if (_hasShownDialog) return;
     _hasShownDialog = true;
 
-    String version = "1.2.2";
+    String version = "1.2.6";
     // Check if dialog has been shown before
     bool showWhatsNewDialog = await SharedPreferencesService.getShowWhatsNewDialog(version);
 
