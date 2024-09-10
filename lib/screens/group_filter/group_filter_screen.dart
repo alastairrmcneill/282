@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
@@ -35,6 +34,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      AnalyticsService.logEvent(name: "Group View Screen Opened");
       GroupFilterService.getInitialFriends(context, userId: user?.uid ?? '');
     });
   }
@@ -146,6 +146,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                   onPressed: groupFilterState.selectedFriendsUids.isNotEmpty
                       ? () async {
                           // Run the filter
+                          AnalyticsService.logEvent(name: "Group View Filter Applied");
                           await GroupFilterService.filterMunrosBySelection(context);
                           Navigator.pop(context);
                         }
