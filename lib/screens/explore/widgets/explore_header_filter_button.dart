@@ -13,45 +13,53 @@ class ExploreHeaderFilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
 
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        shape: const CircleBorder(),
-        elevation: 0,
-        padding: const EdgeInsets.all(13),
-        side: const BorderSide(
-          color: MyColors.accentColor,
-          width: 0.5,
-        ),
-      ),
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const FilterScreen(),
-          ),
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
       child: Stack(
         children: [
-          const Icon(
-            CupertinoIcons.slider_horizontal_3,
-            color: MyColors.accentColor,
-            size: 20,
-          ),
-          munroState.isFilterOptionsSet
-              ? Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
+          SizedBox(
+            height: 44,
+            width: 44,
+            child: Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: const CircleBorder(),
+                  elevation: 0,
+                  padding: const EdgeInsets.all(13),
+                  side: const BorderSide(
+                    color: MyColors.accentColor,
+                    width: 0.5,
                   ),
-                )
-              : const SizedBox(),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const FilterScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  CupertinoIcons.slider_horizontal_3,
+                  color: MyColors.accentColor,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+          if (munroState.isFilterOptionsSet) // TODO: change what this is checking for
+            Positioned(
+              right: 7,
+              top: 7,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
         ],
       ),
     );

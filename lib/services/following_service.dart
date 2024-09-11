@@ -29,6 +29,7 @@ class FollowingService {
         targetId: profileUserId,
         targetDisplayName: profileUserDisplayName,
         targetProfilePictureURL: profileUserPictureURL,
+        targetSearchName: profileUserDisplayName.toLowerCase(),
         sourceDisplayName: userState.currentUser!.displayName!,
         sourceProfilePictureURL: userState.currentUser!.profilePictureURL,
       );

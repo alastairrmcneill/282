@@ -23,9 +23,18 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
     if (_hasShownDialog) return;
     _hasShownDialog = true;
 
-    String version = "1.2.1";
+    String version = "1.2.6";
     // Check if dialog has been shown before
     bool showWhatsNewDialog = await SharedPreferencesService.getShowWhatsNewDialog(version);
+
+    String? firstAppVersion = await SharedPreferencesService.getFirstAppVersion();
+
+    if (firstAppVersion == null) {
+      SharedPreferencesService.setFirstAppVersion(version);
+      return;
+    }
+
+    if (firstAppVersion == version) return;
 
     if (!showWhatsNewDialog) return;
 
@@ -35,15 +44,6 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
   }
 
   void _showSurveyDialog(BuildContext context, {required String version}) {
-    List<String> updates = [
-      "Improved munro search with added filters and sorting.",
-      "New list view for browsing munros.",
-      "New Global feed to see what other munro baggers are up to.",
-      "Improved onboarding flow to set previously climbed munros and a challenge for this year.",
-      "Improved privacy controls.",
-      "Bug fixes.",
-    ];
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -69,22 +69,39 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
                       child: SizedBox(
                         width: double.infinity,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "What's new!",
+                              "🎉 New Group Planning view! 🎉",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
                                   .copyWith(fontSize: 13, fontWeight: FontWeight.bold, height: 1.8),
                             ),
-                            const SizedBox(height: 5),
-                            ...updates.map(
-                              (update) => Text(
-                                "• $update",
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 13, height: 1.8),
+                            const SizedBox(height: 20),
+
+                            Text("Struggling to decide which munro to do with your friends?"),
+                            const SizedBox(height: 15),
+                            Text(
+                                "Well now you can simply select them in the Group Planning screen and browse all the munros that none of you have done yet!"),
+                            const SizedBox(height: 15),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Image.asset(
+                                  "assets/images/whats_new_group_filter.png",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            )
+                            ),
+
+                            // ...updates.map(
+                            //   (update) => Text(
+                            //     "• $update",
+                            //     style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 13, height: 1.8),
+                            //   ),
+                            // )
                           ],
                         ),
                       ),
@@ -96,10 +113,6 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (_) => const WhatsNewScreen()),
-                        // );
                       },
                       child: const Text('Done'),
                     ),

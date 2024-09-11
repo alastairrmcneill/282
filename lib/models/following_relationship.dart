@@ -4,6 +4,7 @@ class FollowingRelationship {
   final String targetId;
   final String targetDisplayName;
   final String? targetProfilePictureURL;
+  final String targetSearchName;
   final String sourceDisplayName;
   final String? sourceProfilePictureURL;
 
@@ -13,6 +14,7 @@ class FollowingRelationship {
     required this.targetId,
     required this.targetDisplayName,
     required this.targetProfilePictureURL,
+    required this.targetSearchName,
     required this.sourceDisplayName,
     required this.sourceProfilePictureURL,
   });
@@ -24,6 +26,7 @@ class FollowingRelationship {
       FollowingRelationshipFields.targetId: targetId,
       FollowingRelationshipFields.targetDisplayName: targetDisplayName,
       FollowingRelationshipFields.targetProfilePictureURL: targetProfilePictureURL,
+      FollowingRelationshipFields.targetSearchName: targetSearchName,
       FollowingRelationshipFields.sourceDisplayName: sourceDisplayName,
       FollowingRelationshipFields.sourceProfilePictureURL: sourceProfilePictureURL,
     };
@@ -36,6 +39,8 @@ class FollowingRelationship {
       targetId: json[FollowingRelationshipFields.targetId] as String,
       targetDisplayName: json[FollowingRelationshipFields.targetDisplayName] as String,
       targetProfilePictureURL: json[FollowingRelationshipFields.targetProfilePictureURL] as String?,
+      targetSearchName: json[FollowingRelationshipFields.targetSearchName] as String? ??
+          json[FollowingRelationshipFields.targetDisplayName] as String,
       sourceDisplayName: json[FollowingRelationshipFields.sourceDisplayName] as String,
       sourceProfilePictureURL: json[FollowingRelationshipFields.sourceProfilePictureURL] as String?,
     );
@@ -47,6 +52,7 @@ class FollowingRelationship {
     String? targetId,
     String? targetDisplayName,
     String? targetProfilePictureURL,
+    String? targetSearchName,
     String? sourceDisplayName,
     String? sourceProfilePictureURL,
   }) {
@@ -56,6 +62,7 @@ class FollowingRelationship {
       targetId: targetId ?? this.targetId,
       targetDisplayName: targetDisplayName ?? this.targetDisplayName,
       targetProfilePictureURL: targetProfilePictureURL ?? this.targetProfilePictureURL,
+      targetSearchName: targetSearchName ?? this.targetSearchName,
       sourceDisplayName: sourceDisplayName ?? this.sourceDisplayName,
       sourceProfilePictureURL: sourceProfilePictureURL ?? this.sourceProfilePictureURL,
     );
@@ -63,7 +70,7 @@ class FollowingRelationship {
 
   @override
   String toString() =>
-      'FollowingRelationship(uid: $uid, sourceId: $sourceId, targetId: $targetId, targetDisplayName: $targetDisplayName, targetProfilePictureURL: $targetProfilePictureURL, sourceDisplayName: $sourceDisplayName, sourceProfilePictureURL: $sourceProfilePictureURL)';
+      'FollowingRelationship(uid: $uid, sourceId: $sourceId, targetId: $targetId, targetDisplayName: $targetDisplayName, targetSearchName: $targetSearchName, targetProfilePictureURL: $targetProfilePictureURL, sourceDisplayName: $sourceDisplayName, sourceProfilePictureURL: $sourceProfilePictureURL)';
 }
 
 class FollowingRelationshipFields {
@@ -72,6 +79,7 @@ class FollowingRelationshipFields {
   static String targetId = "targetId";
   static String targetDisplayName = "targetDisplayName";
   static String targetProfilePictureURL = "targetProfilePictureURL";
+  static String targetSearchName = "targetSearchName";
   static String sourceDisplayName = 'sourceDisplayName';
   static String sourceProfilePictureURL = 'sourceProfilePictureURL';
 }

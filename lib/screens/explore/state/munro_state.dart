@@ -19,6 +19,7 @@ class MunroState extends ChangeNotifier {
   String _createPostFilterString = '';
   List<Munro> _bulkMunroUpdateList = [];
   String _bulkMunroUpdateFilterString = '';
+  List<String> _groupFilterMunroIds = [];
 
   MunroStatus get status => _status;
   Error get error => _error;
@@ -115,6 +116,11 @@ class MunroState extends ChangeNotifier {
     _filter();
   }
 
+  set setGroupFilterMunroIds(List<String> groupFilterMunroIds) {
+    _groupFilterMunroIds = groupFilterMunroIds;
+    _filter();
+  }
+
   _filter() {
     // Start with all munros
     List<Munro> runningList = _munroList;
@@ -128,6 +134,9 @@ class MunroState extends ChangeNotifier {
 
     // Filter out filters
     runningList = _filterOutFilterOptions(runningList);
+
+    // Filter out group filter
+    runningList = _filterOutGroupFilter(runningList);
 
     // Sort order
     runningList = _sort(runningList);
@@ -283,6 +292,15 @@ class MunroState extends ChangeNotifier {
       }
     }
 
+    return runningList;
+  }
+
+  List<Munro> _filterOutGroupFilter(List<Munro> runningList) {
+    if (_groupFilterMunroIds.isNotEmpty) {
+      runningList = runningList.where((munro) {
+        return !_groupFilterMunroIds.contains(munro.id);
+      }).toList();
+    }
     return runningList;
   }
 }

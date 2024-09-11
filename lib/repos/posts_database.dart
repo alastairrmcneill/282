@@ -67,12 +67,6 @@ class PostsDatabase {
     try {
       QuerySnapshot querySnapshot = await _postsRef.get();
 
-      for (var doc in querySnapshot.docs) {
-        Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
-
-        posts.add(post);
-      }
-
       AnalyticsService.logDatabaseRead(
         method: "PostsDatabase.readAllPost",
         collection: "posts",
@@ -80,6 +74,12 @@ class PostsDatabase {
         userId: null,
         documentId: null,
       );
+
+      for (var doc in querySnapshot.docs) {
+        Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
+
+        posts.add(post);
+      }
 
       return posts;
     } on FirebaseException catch (error, stackTrace) {
@@ -175,7 +175,6 @@ class PostsDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(10)
             .get();
-
         AnalyticsService.logDatabaseRead(
           method: "PostsDatabase.getFriendsFeedFromUserId.firstBatch",
           collection: "feeds",
@@ -297,7 +296,6 @@ class PostsDatabase {
             .where(PostFields.privacy, isEqualTo: Privacy.public)
             .limit(count)
             .get();
-
         AnalyticsService.logDatabaseRead(
           method: "PostsDatabase.getPostsFromMunro.firstBatch",
           collection: "posts",

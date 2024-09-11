@@ -24,7 +24,6 @@ class NotificationsDatabase {
             .orderBy(NotifFields.dateTime, descending: true)
             .limit(20)
             .get();
-
         AnalyticsService.logDatabaseRead(
           method: "NotificationsDatabase.readUserNotifs.firstBatch",
           collection: "notifications",

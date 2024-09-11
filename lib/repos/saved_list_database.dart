@@ -51,11 +51,6 @@ class SavedListDatabase {
     try {
       QuerySnapshot querySnapshot = await _savedListsRef.where(SavedListFields.userId, isEqualTo: userUid).get();
 
-      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-        SavedList savedList = SavedList.fromJSON(doc.data() as Map<String, Object?>);
-        savedLists.add(savedList);
-      }
-
       AnalyticsService.logDatabaseRead(
         method: "SavedListDatabase.readFromUserUid",
         collection: "savedLists",
@@ -63,6 +58,11 @@ class SavedListDatabase {
         userId: userUid,
         documentId: null,
       );
+
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        SavedList savedList = SavedList.fromJSON(doc.data() as Map<String, Object?>);
+        savedLists.add(savedList);
+      }
 
       return savedLists;
     } on FirebaseException catch (error, stackTrace) {
