@@ -11,7 +11,7 @@ class MunroStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context);
     SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
 
     return Container(
