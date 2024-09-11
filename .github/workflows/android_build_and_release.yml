@@ -52,7 +52,7 @@ jobs:
           flutter build appbundle --flavor production --target lib/main_production.dart
 
       - name: Upload generated aab to the artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: aab-stores
           path: build/app/outputs/bundle/productionRelease/app-production-release.aab
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download App Bundle
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: aab-stores
           path: build/app/outputs/bundle/productionRelease/
