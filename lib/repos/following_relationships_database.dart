@@ -63,7 +63,6 @@ class FollowingRelationshipsDatabase {
         userId: null,
         documentId: null,
       );
-
       await querySnapshot.docs[0].reference.delete();
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);

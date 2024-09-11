@@ -81,6 +81,14 @@ class PostsDatabase {
         posts.add(post);
       }
 
+      AnalyticsService.logDatabaseRead(
+        method: "PostsDatabase.readAllPost",
+        collection: "posts",
+        documentCount: posts.length,
+        userId: null,
+        documentId: null,
+      );
+
       return posts;
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -175,6 +183,7 @@ class PostsDatabase {
             .orderBy(PostFields.dateTime, descending: true)
             .limit(10)
             .get();
+
         AnalyticsService.logDatabaseRead(
           method: "PostsDatabase.getFriendsFeedFromUserId.firstBatch",
           collection: "feeds",
@@ -296,6 +305,7 @@ class PostsDatabase {
             .where(PostFields.privacy, isEqualTo: Privacy.public)
             .limit(count)
             .get();
+
         AnalyticsService.logDatabaseRead(
           method: "PostsDatabase.getPostsFromMunro.firstBatch",
           collection: "posts",

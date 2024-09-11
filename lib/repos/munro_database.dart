@@ -55,7 +55,6 @@ class MunroDatabase {
       userId: null,
       documentId: munroId,
     );
-
     // Convert to map
     if (!querySnapshot.exists) {
       return {};

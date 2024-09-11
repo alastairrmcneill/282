@@ -64,6 +64,14 @@ class SavedListDatabase {
         savedLists.add(savedList);
       }
 
+      AnalyticsService.logDatabaseRead(
+        method: "SavedListDatabase.readFromUserUid",
+        collection: "savedLists",
+        documentCount: savedLists.length,
+        userId: userUid,
+        documentId: null,
+      );
+
       return savedLists;
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
