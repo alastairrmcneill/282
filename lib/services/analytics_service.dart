@@ -134,4 +134,22 @@ class AnalyticsService {
       },
     );
   }
+
+  static Future<void> logDatabaseRead({
+    required String method,
+    required String collection,
+    required int documentCount,
+    required String? userId,
+    required String? documentId,
+    Map<String, dynamic>? additionalData,
+  }) async {
+    logEvent(name: 'Database Read', parameters: {
+      'method': method,
+      'collection': collection,
+      'documentCount': documentCount.toString(),
+      'userId': userId ?? "",
+      'documentId': documentId ?? "",
+      ...additionalData ?? {},
+    });
+  }
 }

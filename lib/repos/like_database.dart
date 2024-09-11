@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/log_service.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class LikeDatabase {
@@ -38,6 +39,14 @@ class LikeDatabase {
           .limit(1) // We only need to check if at least one document exists
           .get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "LikeDatabase.delete",
+        collection: "likes",
+        documentCount: querySnapshot.docs.length,
+        userId: userId,
+        documentId: postId,
+      );
+
       await querySnapshot.docs[0].reference.delete();
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -58,6 +67,15 @@ class LikeDatabase {
             .where(LikeFields.userId, isEqualTo: userId)
             .limit(1)
             .get();
+
+        await AnalyticsService.logDatabaseRead(
+          method: "LikeDatabase.getLikedPostIds",
+          collection: "likes",
+          documentCount: likeDocs.docs.length,
+          userId: userId,
+          documentId: post.uid,
+        );
+
         if (likeDocs.docs.isNotEmpty) {
           if (likeDocs.docs[0].exists) {
             postIds.add(post.uid!);
@@ -72,7 +90,10 @@ class LikeDatabase {
     }
   }
 
-  static Future<List<Like>> readPostLikes({required String postId, required String? lastLikeId}) async {
+  static Future<List<Like>> readPostLikes({
+    required String postId,
+    required String? lastLikeId,
+  }) async {
     List<Like> likes = [];
     QuerySnapshot querySnapshot;
 
@@ -84,6 +105,14 @@ class LikeDatabase {
             .orderBy(LikeFields.userDisplayName, descending: true)
             .limit(30)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "LikeDatabase.readPostLikes.firstBatch",
+          collection: "likes",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: postId,
+        );
       } else {
         final lastLikeDoc = await _likesRef.doc(lastLikeId).get();
 
@@ -95,6 +124,14 @@ class LikeDatabase {
             .startAfterDocument(lastLikeDoc)
             .limit(30)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "LikeDatabase.readPostLikes.paginate",
+          collection: "likes",
+          documentCount: querySnapshot.docs.length,
+          userId: null,
+          documentId: postId,
+        );
       }
 
       for (var doc in querySnapshot.docs) {

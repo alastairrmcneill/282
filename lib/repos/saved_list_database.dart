@@ -26,6 +26,14 @@ class SavedListDatabase {
       DocumentReference ref = _savedListsRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "SavedListDatabase.readFromUid",
+        collection: "savedLists",
+        documentCount: 1,
+        userId: null,
+        documentId: uid,
+      );
+
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       SavedList savedList = SavedList.fromJSON(data);
@@ -42,6 +50,14 @@ class SavedListDatabase {
     List<SavedList> savedLists = [];
     try {
       QuerySnapshot querySnapshot = await _savedListsRef.where(SavedListFields.userId, isEqualTo: userUid).get();
+
+      AnalyticsService.logDatabaseRead(
+        method: "SavedListDatabase.readFromUserUid",
+        collection: "savedLists",
+        documentCount: savedLists.length,
+        userId: userUid,
+        documentId: null,
+      );
 
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         SavedList savedList = SavedList.fromJSON(doc.data() as Map<String, Object?>);

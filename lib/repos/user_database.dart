@@ -17,9 +17,18 @@ class UserDatabase {
 
       final DocumentReference userDocRef = _userRef.doc(appUser.uid);
       final DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
       if (!userDocSnapshot.exists) {
         await userDocRef.set(appUser.toJSON());
       }
+
+      AnalyticsService.logDatabaseRead(
+        method: "UserDatabase.create",
+        collection: "users",
+        documentCount: 1,
+        userId: appUser.uid,
+        documentId: null,
+      );
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your account.");
@@ -56,6 +65,14 @@ class UserDatabase {
       DocumentReference ref = _userRef.doc(uid);
       DocumentSnapshot documentSnapshot = await ref.get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "UserDatabase.readUserFromUid",
+        collection: "users",
+        documentCount: 1,
+        userId: null,
+        documentId: uid,
+      );
+
       Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
 
       AppUser appUser = AppUser.fromJSON(data);
@@ -89,6 +106,14 @@ class UserDatabase {
             .endAt(["$searchTerm\uf8ff"])
             .limit(20)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "UserDatabase.readUsersByName.firstBatch",
+          collection: "users",
+          documentCount: userSnap.docs.length,
+          userId: null,
+          documentId: null,
+        );
       } else {
         // Carry out paginated search
         final lastUserDoc = await _db.collection('users').doc(lastUserId).get();
@@ -102,6 +127,14 @@ class UserDatabase {
             .endAt(["$searchTerm\uf8ff"])
             .limit(20)
             .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "UserDatabase.readUsersByName.paginate",
+          collection: "users",
+          documentCount: userSnap.docs.length,
+          userId: null,
+          documentId: null,
+        );
       }
 
       for (var doc in userSnap.docs) {
@@ -141,6 +174,14 @@ class UserDatabase {
           users.add(AppUser.fromJSON(doc.data() as Map<String, dynamic>));
         }
       }
+
+      AnalyticsService.logDatabaseRead(
+        method: "UserDatabase.readUsersFromUids",
+        collection: "users",
+        documentCount: users.length,
+        userId: null,
+        documentId: null,
+      );
 
       return users;
     } on FirebaseException catch (error, stackTrace) {
