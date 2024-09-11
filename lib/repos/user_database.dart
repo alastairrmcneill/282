@@ -17,6 +17,7 @@ class UserDatabase {
 
       final DocumentReference userDocRef = _userRef.doc(appUser.uid);
       final DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
       if (!userDocSnapshot.exists) {
         await userDocRef.set(appUser.toJSON());
       }
@@ -145,6 +146,48 @@ class UserDatabase {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.toString());
       return searchResult;
+    }
+  }
+
+  static Future<List<AppUser>> readUsersFromUids(BuildContext context, {required List<String> uids}) async {
+    List<AppUser> users = [];
+
+    try {
+      // Split UIDs into chunks of 10 (since Firestore 'in' query supports max 10 items)
+      const int chunkSize = 10;
+      List<List<String>> chunks = [];
+      for (var i = 0; i < uids.length; i += chunkSize) {
+        chunks.add(uids.sublist(i, i + chunkSize > uids.length ? uids.length : i + chunkSize));
+      }
+
+      // Perform queries in parallel
+      List<Future<QuerySnapshot>> futures = chunks.map((chunk) {
+        return _userRef.where(AppUserFields.uid, whereIn: chunk).get();
+      }).toList();
+
+      // Wait for all futures to complete
+      List<QuerySnapshot> querySnapshots = await Future.wait(futures);
+
+      // Collect all the documents from the query users
+      for (QuerySnapshot snapshot in querySnapshots) {
+        for (var doc in snapshot.docs) {
+          users.add(AppUser.fromJSON(doc.data() as Map<String, dynamic>));
+        }
+      }
+
+      AnalyticsService.logDatabaseRead(
+        method: "UserDatabase.readUsersFromUids",
+        collection: "users",
+        documentCount: users.length,
+        userId: null,
+        documentId: null,
+      );
+
+      return users;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.toString());
+      return users;
     }
   }
 }

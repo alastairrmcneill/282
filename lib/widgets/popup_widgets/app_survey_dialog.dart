@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -33,29 +32,24 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     if (_hasShownDialog) return;
     _hasShownDialog = true;
 
-    String latestFeedbackSurveyDateString = RemoteConfigService.getString(RCFields.feedbackSurveyDate);
+    int currentFeedbackSurveyNumber = RemoteConfigService.getInt(RCFields.feedbackSurveyNumber);
 
-    DateTime latestFeedbackSurveyDate = DateFormat("dd/MM/yyyy").parse(latestFeedbackSurveyDateString);
+    int lastFeedbackSurveyNumber = await SharedPreferencesService.getLastFeedbackSurveyNumber();
 
-    String lastFeedbackSurveyDateString = await SharedPreferencesService.getLastFeedbackSurveyDate();
-
-    if (lastFeedbackSurveyDateString == '01/01/2000') {
-      // If this is the first day that the app is installed, set the lastFeedbackSurveyDate to the latestFeedbackSurveyDate and don't show the survey
-      await SharedPreferencesService.setLastFeedbackSurveyDate(latestFeedbackSurveyDateString);
+    if (lastFeedbackSurveyNumber == -1) {
+      // If this is the first time that the app is installed, set the lastFeedbackSurveyNumber to the currentFeedbackSurveyNumber and don't show the survey
+      await SharedPreferencesService.setLastFeedbackSurveyNumber(0);
       return;
     }
 
-    DateTime lastFeedbackSurveyDate = DateFormat("dd/MM/yyyy").parse(lastFeedbackSurveyDateString);
-    if (!latestFeedbackSurveyDate.isAfter(lastFeedbackSurveyDate)) return;
-
-    if (lastFeedbackSurveyDate.isAfter(DateTime.now())) return;
+    if (!(currentFeedbackSurveyNumber > lastFeedbackSurveyNumber)) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showSurveyDialog(context, surveyDate: latestFeedbackSurveyDate);
+      _showSurveyDialog(context, surveyNumber: currentFeedbackSurveyNumber);
     });
   }
 
-  void _submit(DateTime surveyDate) async {
+  void _submit(int surveyNumber) async {
     final user = Provider.of<AppUser?>(context, listen: false);
     String response1 = _feedbackController1.text;
     String response2 = _feedbackController2.text;
@@ -67,7 +61,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     AppFeedback feedback = AppFeedback(
       userId: user?.uid ?? "No User",
       dateProvided: DateTime.now(),
-      surveyDate: surveyDate,
+      surveyNumber: surveyNumber,
       feedback1: response1,
       feedback2: response2,
       version: appVersion,
@@ -80,7 +74,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     showSnackBar(context, "Thank you for your feedback! 🙏");
   }
 
-  void _showSurveyDialog(BuildContext context, {required DateTime surveyDate}) {
+  void _showSurveyDialog(BuildContext context, {required int surveyNumber}) {
     AnalyticsService.logSurveyShown();
     showDialog(
       context: context,
@@ -88,7 +82,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
         return PopScope(
           onPopInvoked: (didPop) {
             if (didPop) {
-              SharedPreferencesService.setLastFeedbackSurveyDate(DateFormat("dd/MM/yyyy").format(surveyDate));
+              SharedPreferencesService.setLastFeedbackSurveyNumber(surveyNumber);
             }
           },
           child: Dialog(
@@ -107,7 +101,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hi there 👋, Alastair here (founder of 282). I hope yo've been enjoying the 282 app so far. I'm always looking for ways to improve the experience for users and so please can you help me out by answering a couple of questions below: ",
+                            "Hi there 👋, Alastair here (founder of 282). I hope you've been enjoying the 282 app so far. I'm always looking for ways to improve the experience for users and so please can you help me out by answering a couple of questions below: ",
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           const SizedBox(height: 10),
@@ -149,7 +143,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        _submit(surveyDate);
+                        _submit(surveyNumber);
                         Navigator.of(context).pop();
                       },
                       child: const Text('Submit'),

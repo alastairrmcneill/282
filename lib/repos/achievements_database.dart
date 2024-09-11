@@ -183,6 +183,14 @@ class AchievementsDatabase {
     List<Achievement> achievements = [];
     try {
       QuerySnapshot querySnapshot = await _achievementRef.get();
+      AnalyticsService.logDatabaseRead(
+        method: "AchievementsDatabase.getAllAchievements",
+        collection: 'achievements',
+        documentCount: querySnapshot.docs.length,
+        userId: null,
+        documentId: null,
+        additionalData: null,
+      );
       for (var doc in querySnapshot.docs) {
         achievements.add(Achievement.fromJSON(doc.data() as Map<String, dynamic>));
       }

@@ -67,6 +67,14 @@ class PostsDatabase {
     try {
       QuerySnapshot querySnapshot = await _postsRef.get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "PostsDatabase.readAllPost",
+        collection: "posts",
+        documentCount: posts.length,
+        userId: null,
+        documentId: null,
+      );
+
       for (var doc in querySnapshot.docs) {
         Post post = Post.fromJSON(doc.data() as Map<String, dynamic>);
 

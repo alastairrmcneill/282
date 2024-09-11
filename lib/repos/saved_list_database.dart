@@ -51,6 +51,14 @@ class SavedListDatabase {
     try {
       QuerySnapshot querySnapshot = await _savedListsRef.where(SavedListFields.userId, isEqualTo: userUid).get();
 
+      AnalyticsService.logDatabaseRead(
+        method: "SavedListDatabase.readFromUserUid",
+        collection: "savedLists",
+        documentCount: savedLists.length,
+        userId: userUid,
+        documentId: null,
+      );
+
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         SavedList savedList = SavedList.fromJSON(doc.data() as Map<String, Object?>);
         savedLists.add(savedList);

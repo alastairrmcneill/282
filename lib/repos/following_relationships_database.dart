@@ -146,6 +146,7 @@ class FollowingRelationshipsDatabase {
             .orderBy(FollowingRelationshipFields.targetDisplayName, descending: false)
             .limit(20) // We only need to check if at least one document exists
             .get();
+
         AnalyticsService.logDatabaseRead(
           method: "FollowingRelationshipsDatabase.getFollowingFromUid.firstLoad",
           collection: "followingRelationships",
@@ -168,6 +169,71 @@ class FollowingRelationshipsDatabase {
 
         AnalyticsService.logDatabaseRead(
           method: "FollowingRelationshipsDatabase.getFollowingFromUid.paginate",
+          collection: "followingRelationships",
+          documentCount: querySnapshot.docs.length,
+          userId: sourceId,
+          documentId: null,
+        );
+      }
+
+      for (var doc in querySnapshot.docs) {
+        FollowingRelationship followingRelationship =
+            FollowingRelationship.fromJSON(doc.data() as Map<String, dynamic>);
+
+        following.add(followingRelationship);
+      }
+      return following;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error creating the relationship.");
+      return following;
+    }
+  }
+
+  static Future<List<FollowingRelationship>> searchFollowingByUid(
+    BuildContext context, {
+    required String sourceId,
+    required String searchTerm,
+    required lastFollowingRelationshipID,
+  }) async {
+    List<FollowingRelationship> following = [];
+    QuerySnapshot<Object?> querySnapshot;
+
+    try {
+      if (lastFollowingRelationshipID == null) {
+        // First loading
+        querySnapshot = await _followingRelationshipRef
+            .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
+            .orderBy(FollowingRelationshipFields.targetSearchName, descending: false)
+            .startAt([searchTerm])
+            .endAt(["$searchTerm\uf8ff"])
+            .limit(20)
+            .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "FollowingRelationshipsDatabase.searchFollowingByUid.firstLoad",
+          collection: "followingRelationships",
+          documentCount: querySnapshot.docs.length,
+          userId: sourceId,
+          documentId: null,
+        );
+      } else {
+        // Paginating
+        final lastFollowingRelationshipDoc = await _followingRelationshipRef.doc(lastFollowingRelationshipID).get();
+
+        if (!lastFollowingRelationshipDoc.exists) return [];
+
+        querySnapshot = await _followingRelationshipRef
+            .where(FollowingRelationshipFields.sourceId, isEqualTo: sourceId)
+            .orderBy(FollowingRelationshipFields.targetSearchName, descending: false)
+            .startAt([searchTerm])
+            .endAt(["$searchTerm\uf8ff"])
+            .startAfterDocument(lastFollowingRelationshipDoc)
+            .limit(20)
+            .get();
+
+        AnalyticsService.logDatabaseRead(
+          method: "FollowingRelationshipsDatabase.searchFollowingByUid.paginate",
           collection: "followingRelationships",
           documentCount: querySnapshot.docs.length,
           userId: sourceId,
