@@ -37,7 +37,7 @@ jobs:
           flutterfire: "false"
 
       - name: Archive IPA
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-ipa
           path: build/ios/ipa/282.ipa
@@ -48,7 +48,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Download App Bundle
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: release-ipa
           path: build/ios/ipa/
