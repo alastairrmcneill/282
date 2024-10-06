@@ -32,7 +32,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
             child: TextFormFieldBase(
               initialValue: achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
               labelText: "Number of Munros",
-              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
               fillColor: Colors.white,
               validator: (value) {
                 if (value == null ||
