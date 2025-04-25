@@ -33,12 +33,12 @@ const base64 = require("base-64");
 const fs = require("fs");
 
 // Decode the Base64 encoded service account key
-const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
+// const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://prod-81998.firebaseio.com",
+  // credential: admin.credential.cert(serviceAccount),
+  // databaseURL: "https://prod-81998.firebaseio.com",
 });
 
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
@@ -966,40 +966,37 @@ exports.onAchievementDeleted = functions.firestore
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
   try {
-    const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
-    let lastFollowingRelationshipDoc = null;
-    const followingRelationshipsBatchSize = 500;
+    // Get all current munro docs
+    console.log("Starting Migration");
+    const munroCollectionRef = admin.firestore().collection("munros");
+    const munroSnapshot = await munroCollectionRef.get();
 
-    while (true) {
-      let query = followingRelationshipsRef.orderBy("__name__").limit(followingRelationshipsBatchSize);
-      if (lastFollowingRelationshipDoc) {
-        query = query.startAfter(lastFollowingRelationshipDoc);
-      }
-
-      const followingRelationshipsSnapshot = await query.get();
-      if (followingRelationshipsSnapshot.empty) {
-        break; // No more documents to process
-      }
-
-      let batch = admin.firestore().batch();
-      followingRelationshipsSnapshot.forEach((followingRelationshipDoc) => {
-        if (!followingRelationshipDoc.data().targetSearchName) {
-          // Only update if privacy field doesn't exist
-          console.log(`Updating followingRelationship: ${followingRelationshipDoc.id}`);
-          let followingRelationshipRef = followingRelationshipsRef.doc(followingRelationshipDoc.id);
-          batch.update(followingRelationshipRef, {
-            targetSearchName: followingRelationshipDoc.data().targetDisplayName.toLowerCase(),
-          });
-        }
-      });
-
-      await batch.commit();
-      lastFollowingRelationshipDoc =
-        followingRelationshipsSnapshot.docs[followingRelationshipsSnapshot.docs.length - 1];
-
-      // To avoid potential timeout, consider adding a delay between batches
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (munroSnapshot.empty) {
+      console.log("No munros found");
+      return res.status(404).send("No munros found");
     }
+
+    // Build one doc
+    const allRatings = {};
+
+    munroSnapshot.forEach((doc) => {
+      console.log(`Munro: ${doc.id}`);
+      const munroData = doc.data();
+      const munroId = doc.id;
+      const averageRating = munroData.averageRating || 0;
+      const reviewCount = munroData.reviewCount || 0;
+
+      const sumOfRatings = averageRating * reviewCount;
+
+      allRatings[munroId] = {
+        sumOfRatings: sumOfRatings,
+        numberOfRatings: reviewCount,
+      };
+    });
+
+    // Save to db
+    const allRatingsRef = admin.firestore().collection("munroData").doc("allRatings");
+    await allRatingsRef.set({ ratings: allRatings });
 
     res.send("Migration completed successfully");
   } catch (error) {
@@ -1085,3 +1082,69 @@ exports.addUserAchievementsIfDontExist = functions.https.onRequest(async (req, r
     res.status(500).send("Failed to complete migration");
   }
 });
+
+exports.scheduledRecalculateMunroRatings = functions.pubsub
+  .schedule("every 5 minutes")
+  .timeZone("Europe/London")
+  .onRun(async () => {
+    try {
+      // Getting starting data
+      console.log("scheduledRecalculateMunroRatings started");
+
+      const db = admin.firestore();
+      const now = admin.firestore.Timestamp.now();
+      const metaRef = db.doc("system/ratingsSync");
+      const metaSnap = await metaRef.get();
+
+      const lastRun =
+        metaSnap.exists && metaSnap.data()?.lastRun
+          ? metaSnap.data().lastRun.toDate?.() ?? metaSnap.data().lastRun
+          : admin.firestore.Timestamp.fromMillis(0); // fallback if never run
+
+      console.log("Last run: ", lastRun);
+
+      const reviewsRef = db.collection("reviews");
+      const newReviewsSnap = await reviewsRef.where("dateTime", ">", lastRun).get();
+
+      console.log("New reviews found: ", newReviewsSnap.size);
+
+      if (newReviewsSnap.empty) return null;
+
+      const ratingsRef = db.doc("munroData/allRatings");
+      const ratingsDoc = await ratingsRef.get();
+      const ratingsData = ratingsDoc.exists ? ratingsDoc.data()?.ratings ?? {} : {};
+
+      newReviewsSnap.forEach((doc) => {
+        const data = doc.data();
+        const munroId = data.munroId;
+        const rating = data.rating;
+
+        if (!munroId || typeof rating !== "number") return;
+
+        // Initialize entry if missing
+        if (!ratingsData[munroId]) {
+          ratingsData[munroId] = {
+            sumOfRatings: 0,
+            numberOfRatings: 0,
+          };
+        }
+
+        ratingsData[munroId].sumOfRatings += rating;
+        ratingsData[munroId].numberOfRatings += 1;
+
+        console.log(
+          `Updated ${munroId}: sum=${ratingsData[munroId].sumOfRatings}, count=${ratingsData[munroId].numberOfRatings}`
+        );
+      });
+
+      await ratingsRef.set({ ratings: ratingsData });
+      await metaRef.set({ lastRun: now });
+
+      console.log("Ratings updated & last run timestamp recorded.");
+      console.log("scheduledRecalculateMunroRatings finished");
+      return null;
+    } catch (error) {
+      console.error("Error in migration: ", error);
+      res.status(500).send("Failed to complete migration");
+    }
+  });
