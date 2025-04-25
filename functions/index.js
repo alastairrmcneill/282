@@ -33,12 +33,12 @@ const base64 = require("base-64");
 const fs = require("fs");
 
 // Decode the Base64 encoded service account key
-// const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
+const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  // credential: admin.credential.cert(serviceAccount),
-  // databaseURL: "https://prod-81998.firebaseio.com",
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://prod-81998.firebaseio.com",
 });
 
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
