@@ -7,7 +7,7 @@ import 'package:two_eight_two/services/services.dart';
 
 class MunroDatabase {
   static final _db = FirebaseFirestore.instance;
-  static final CollectionReference _munroRef = _db.collection('munros');
+  static final DocumentReference _munroRef = _db.collection('munroData').doc('allRatings');
 
   static Future<List<Munro>> loadBasicMunroData(BuildContext context) async {
     List<Munro> munroList = [];
@@ -21,47 +21,25 @@ class MunroDatabase {
     // Check if user logged in
   }
 
-  static Future<List<Map<String, dynamic>>> getAllAdditionalMunrosData(BuildContext context) async {
+  static Future<Map<String, dynamic>> getAllAdditionalMunrosData(BuildContext context) async {
     // Get additional data from firestore
-    QuerySnapshot querySnapshot = await _munroRef.get();
+    DocumentSnapshot documentSnapshot = await _munroRef.get();
+    print(
+        "🚀 ~ MunroDatabase ~ Future<Map<String,dynamic>>getAllAdditionalMunrosData ~ documentSnapshot: ${documentSnapshot.data()}");
 
     AnalyticsService.logDatabaseRead(
       method: "MunroDatabase.getAllAdditionalMunrosData",
       collection: "munros",
-      documentCount: querySnapshot.docs.length,
+      documentCount: 1,
       userId: null,
       documentId: null,
     );
+    if (!documentSnapshot.exists) return {};
 
-    // Convert to list of maps
-    List<Map<String, dynamic>> munroData = [];
+    var data = documentSnapshot.data() as Map<String, dynamic>? ?? {};
 
-    for (var doc in querySnapshot.docs) {
-      munroData.add(doc.data() as Map<String, dynamic>);
-    }
+    Map<String, dynamic> munroData = data[MunroFields.ratings];
 
-    // Return the data as a list of maps
-    return munroData;
-  }
-
-  static Future<Map<String, dynamic>> getAdditionalMunroData(BuildContext context, {required String munroId}) async {
-    // Get additional data from firestore
-    DocumentSnapshot querySnapshot = await _munroRef.doc(munroId).get();
-
-    AnalyticsService.logDatabaseRead(
-      method: "MunroDatabase.getAdditionalMunroData",
-      collection: "munros",
-      documentCount: querySnapshot.exists ? 1 : 0,
-      userId: null,
-      documentId: munroId,
-    );
-    // Convert to map
-    if (!querySnapshot.exists) {
-      return {};
-    }
-    Map<String, dynamic> munroData = querySnapshot.data() as Map<String, dynamic>;
-
-    // Return the data as a list of maps
     return munroData;
   }
 }
