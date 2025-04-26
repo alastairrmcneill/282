@@ -33,12 +33,12 @@ const base64 = require("base-64");
 const fs = require("fs");
 
 // Decode the Base64 encoded service account key
-const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
+// const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://prod-81998.firebaseio.com",
+  // credential: admin.credential.cert(serviceAccount),
+  // databaseURL: "https://prod-81998.firebaseio.com",
 });
 
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
@@ -1056,59 +1056,46 @@ exports.scheduledRecalculateMunroRatings = functions.pubsub
   .timeZone("Europe/London")
   .onRun(async () => {
     try {
-      // Getting starting data
-      console.log("scheduledRecalculateMunroRatings started");
+      console.log("🚀 ~ scheduledRecalculateMunroRatings started");
 
+      // Get meta data
       const db = admin.firestore();
-      const now = admin.firestore.Timestamp.now();
       const metaRef = db.doc("system/ratingsSync");
       const metaSnap = await metaRef.get();
 
-      // Use stored timestamp and UID or fallback
-      var lastReviewDateTime =
-        metaSnap.exists && metaSnap.data()?.lastReviewDateTime
-          ? metaSnap.data().lastReviewDateTime
-          : admin.firestore.Timestamp.fromMillis(0);
+      const lastRatingsRun = metaSnap.exists ? metaSnap.data().lastRatingsRun : null;
+      const lastRatingsRunDate = lastRatingsRun ? lastRatingsRun.toDate() : null;
+      const now = admin.firestore.Timestamp.now();
 
-      var lastReviewUid = metaSnap.exists && metaSnap.data()?.lastReviewUid ? metaSnap.data().lastReviewUid : "";
+      console.log("🚀 ~ lastRatingsRunDate:", lastRatingsRunDate);
+      console.log("🚀 ~ now:", now);
 
-      console.log("Last review date: ", lastReviewDateTime.toDate());
-      console.log("Last review UID: ", lastReviewUid);
+      // Get reviews since last run
+      let reviewsRef = db.collection("reviews");
+      query = reviewsRef;
 
-      // Fetch new reviews since last run
-      console.log("Fetching new reviews");
-      const reviewsRef = db.collection("reviews");
-
-      let newReviewsSnap;
-
-      if (!metaSnap.exists || !metaSnap.data()?.lastReviewDateTime || !metaSnap.data()?.lastReviewUid) {
-        // First run: no filter
-        newReviewsSnap = await db.collection("reviews").orderBy("dateTime").orderBy("uid").get();
-      } else {
-        newReviewsSnap = await db
-          .collection("reviews")
-          .orderBy("dateTime")
-          .orderBy("uid")
-          .startAfter([lastReviewDateTime, lastReviewUid])
-          .get();
+      if (lastRatingsRunDate) {
+        query = reviewsRef.where("dateTime", ">", lastRatingsRunDate);
       }
+      const reviewsSnapshot = await query.get();
+      console.log("🚀 ~ reviewsSnapshot.size:", reviewsSnapshot.size);
 
-      console.log("New reviews found: ", newReviewsSnap.size);
+      if (reviewsSnapshot.empty) return null;
 
-      if (newReviewsSnap.empty) return null;
-
+      // Get current munro data
       const ratingsRef = db.doc("munroData/allRatings");
       const ratingsDoc = await ratingsRef.get();
       const ratingsData = ratingsDoc.exists ? ratingsDoc.data()?.ratings ?? {} : {};
 
-      newReviewsSnap.forEach((doc) => {
+      // Update current munro data
+      reviewsSnapshot.forEach((doc) => {
         const data = doc.data();
         const munroId = data.munroId;
         const rating = data.rating;
-        const reviewDateTime = data.dateTime;
 
-        if (!munroId || typeof rating !== "number" || !reviewDateTime) return;
+        if (!munroId || typeof rating !== "number") return;
 
+        // Initialize entry if missing
         if (!ratingsData[munroId]) {
           ratingsData[munroId] = {
             sumOfRatings: 0,
@@ -1120,26 +1107,21 @@ exports.scheduledRecalculateMunroRatings = functions.pubsub
         ratingsData[munroId].numberOfRatings += 1;
 
         console.log(
-          `Updated ${munroId}: sum=${ratingsData[munroId].sumOfRatings}, count=${ratingsData[munroId].numberOfRatings}`
+          `🚀 ~ Updated ${munroId}: sum=${ratingsData[munroId].sumOfRatings}, count=${ratingsData[munroId].numberOfRatings}`
         );
-
-        // Correctly track last review
-        if (
-          !lastReviewDateTime ||
-          reviewDateTime.toMillis() > lastReviewDateTime.toMillis() ||
-          (reviewDateTime.toMillis() === lastReviewDateTime.toMillis() && doc.id > lastReviewUid)
-        ) {
-          lastReviewDateTime = reviewDateTime;
-          lastReviewUid = doc.id;
-        }
       });
 
+      // Save new munro data
       await ratingsRef.set({ ratings: ratingsData });
-      await metaRef.set({ lastReviewUid: lastReviewUid, lastReviewDateTime: lastReviewDateTime });
 
-      console.log("Ratings updated & last run timestamp recorded.");
-      console.log("scheduledRecalculateMunroRatings finished");
+      // Save meta data
+      await metaRef.set({ lastRatingsRun: now });
+
+      console.log("🚀 ~ Set allRatings and lastRatingsRun successfully");
+      console.log("🚀 ~ scheduledRecalculateMunroRatings finished successfully.");
+      return null;
     } catch (error) {
-      console.error("Error in migration: ", error);
+      console.error("🚀 ~ Error in scheduledRecalculateMunroRatings:", error);
+      return null;
     }
   });
