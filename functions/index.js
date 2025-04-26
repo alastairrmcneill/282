@@ -966,41 +966,6 @@ exports.onAchievementDeleted = functions.firestore
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
   try {
-    const followingRelationshipsRef = admin.firestore().collection("followingRelationships");
-    let lastFollowingRelationshipDoc = null;
-    const followingRelationshipsBatchSize = 500;
-
-    while (true) {
-      let query = followingRelationshipsRef.orderBy("__name__").limit(followingRelationshipsBatchSize);
-      if (lastFollowingRelationshipDoc) {
-        query = query.startAfter(lastFollowingRelationshipDoc);
-      }
-
-      const followingRelationshipsSnapshot = await query.get();
-      if (followingRelationshipsSnapshot.empty) {
-        break; // No more documents to process
-      }
-
-      let batch = admin.firestore().batch();
-      followingRelationshipsSnapshot.forEach((followingRelationshipDoc) => {
-        if (!followingRelationshipDoc.data().targetSearchName) {
-          // Only update if privacy field doesn't exist
-          console.log(`Updating followingRelationship: ${followingRelationshipDoc.id}`);
-          let followingRelationshipRef = followingRelationshipsRef.doc(followingRelationshipDoc.id);
-          batch.update(followingRelationshipRef, {
-            targetSearchName: followingRelationshipDoc.data().targetDisplayName.toLowerCase(),
-          });
-        }
-      });
-
-      await batch.commit();
-      lastFollowingRelationshipDoc =
-        followingRelationshipsSnapshot.docs[followingRelationshipsSnapshot.docs.length - 1];
-
-      // To avoid potential timeout, consider adding a delay between batches
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
     res.send("Migration completed successfully");
   } catch (error) {
     console.error("Error in migration: ", error);
@@ -1085,3 +1050,78 @@ exports.addUserAchievementsIfDontExist = functions.https.onRequest(async (req, r
     res.status(500).send("Failed to complete migration");
   }
 });
+
+exports.scheduledRecalculateMunroRatings = functions.pubsub
+  .schedule("every 5 minutes")
+  .timeZone("Europe/London")
+  .onRun(async () => {
+    try {
+      console.log("🚀 ~ scheduledRecalculateMunroRatings started");
+
+      // Get meta data
+      const db = admin.firestore();
+      const metaRef = db.doc("system/ratingsSync");
+      const metaSnap = await metaRef.get();
+
+      const lastRatingsRun = metaSnap.exists ? metaSnap.data().lastRatingsRun : null;
+      const lastRatingsRunDate = lastRatingsRun ? lastRatingsRun.toDate() : null;
+      const now = admin.firestore.Timestamp.now();
+
+      console.log("🚀 ~ lastRatingsRunDate:", lastRatingsRunDate);
+      console.log("🚀 ~ now:", now);
+
+      // Get reviews since last run
+      let reviewsRef = db.collection("reviews");
+      query = reviewsRef;
+
+      if (lastRatingsRunDate) {
+        query = reviewsRef.where("dateTime", ">", lastRatingsRunDate);
+      }
+      const reviewsSnapshot = await query.get();
+      console.log("🚀 ~ reviewsSnapshot.size:", reviewsSnapshot.size);
+
+      if (reviewsSnapshot.empty) return null;
+
+      // Get current munro data
+      const ratingsRef = db.doc("munroData/allRatings");
+      const ratingsDoc = await ratingsRef.get();
+      const ratingsData = ratingsDoc.exists ? ratingsDoc.data()?.ratings ?? {} : {};
+
+      // Update current munro data
+      reviewsSnapshot.forEach((doc) => {
+        const data = doc.data();
+        const munroId = data.munroId;
+        const rating = data.rating;
+
+        if (!munroId || typeof rating !== "number") return;
+
+        // Initialize entry if missing
+        if (!ratingsData[munroId]) {
+          ratingsData[munroId] = {
+            sumOfRatings: 0,
+            numberOfRatings: 0,
+          };
+        }
+
+        ratingsData[munroId].sumOfRatings += rating;
+        ratingsData[munroId].numberOfRatings += 1;
+
+        console.log(
+          `🚀 ~ Updated ${munroId}: sum=${ratingsData[munroId].sumOfRatings}, count=${ratingsData[munroId].numberOfRatings}`
+        );
+      });
+
+      // Save new munro data
+      await ratingsRef.set({ ratings: ratingsData });
+
+      // Save meta data
+      await metaRef.set({ lastRatingsRun: now });
+
+      console.log("🚀 ~ Set allRatings and lastRatingsRun successfully");
+      console.log("🚀 ~ scheduledRecalculateMunroRatings finished successfully.");
+      return null;
+    } catch (error) {
+      console.error("🚀 ~ Error in scheduledRecalculateMunroRatings:", error);
+      return null;
+    }
+  });

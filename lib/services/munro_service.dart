@@ -74,49 +74,28 @@ class MunroService {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     // Read all munro review data
-    List<Map<String, dynamic>> munroData = await MunroDatabase.getAllAdditionalMunrosData(context);
+    Map<String, dynamic> munroData = await MunroDatabase.getAllAdditionalMunrosData(context);
     List<Munro> tempMunroList = munroState.munroList;
 
-    // Loop through all munros and add review data that exists
-    for (var munro in munroData) {
-      String munroId = munro[MunroFields.id];
-      double averageRating = (munro[MunroFields.averageRating] as num).toDouble();
-      int reviewCount = munro[MunroFields.reviewCount] as int;
+    // Loop through all munros and update their review data
+    munroData.forEach((munroId, data) {
+      int numberOfRatings = data[MunroFields.numberOfRatings] ?? 0;
+      double sumOfRatings = (data[MunroFields.sumOfRatings] as num?)?.toDouble() ?? 0.0;
 
+      // Calculate average rating
+      double averageRating = numberOfRatings > 0 ? sumOfRatings / numberOfRatings : 0.0;
+
+      // Find the index of the munro in the list
       int index = tempMunroList.indexWhere((element) => element.id == munroId);
 
-      tempMunroList[index].averageRating = averageRating;
-      tempMunroList[index].reviewCount = reviewCount;
-    }
+      if (index != -1) {
+        // Update the munro's average rating and review count
+        tempMunroList[index].averageRating = averageRating;
+        tempMunroList[index].reviewCount = numberOfRatings;
+      }
+    });
 
     munroState.setMunroList = tempMunroList;
-  }
-
-  static Future<void> loadAdditionalMunroData(BuildContext context) async {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-
-    // Read single munro data
-    Map<String, dynamic> munroData = await MunroDatabase.getAdditionalMunroData(
-      context,
-      munroId: munroState.selectedMunro?.id ?? "",
-    );
-
-    if (munroData.isEmpty) return;
-    List<Munro> tempMunroList = munroState.munroList;
-
-    String munroId = munroData[MunroFields.id];
-    double averageRating = (munroData[MunroFields.averageRating] as num).toDouble();
-    int reviewCount = munroData[MunroFields.reviewCount] as int;
-
-    int munroIndex = tempMunroList.indexWhere((munro) => munro.id == munroId);
-
-    if (munroIndex == -1) return;
-
-    tempMunroList[munroIndex].averageRating = averageRating;
-    tempMunroList[munroIndex].reviewCount = reviewCount;
-
-    munroState.setMunroList = tempMunroList;
-    munroState.setSelectedMunro = tempMunroList[munroIndex];
   }
 
   static Future<void> markMunrosAsDone(

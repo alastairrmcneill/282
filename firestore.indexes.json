@@ -213,6 +213,20 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "dateTime",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "uid",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "reviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "munroId",
           "order": "ASCENDING"
         },
