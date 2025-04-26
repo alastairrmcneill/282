@@ -966,38 +966,6 @@ exports.onAchievementDeleted = functions.firestore
 
 exports.databaseMigration = functions.https.onRequest(async (req, res) => {
   try {
-    // Get all current munro docs
-    console.log("Starting Migration");
-    const munroCollectionRef = admin.firestore().collection("munros");
-    const munroSnapshot = await munroCollectionRef.get();
-
-    if (munroSnapshot.empty) {
-      console.log("No munros found");
-      return res.status(404).send("No munros found");
-    }
-
-    // Build one doc
-    const allRatings = {};
-
-    munroSnapshot.forEach((doc) => {
-      console.log(`Munro: ${doc.id}`);
-      const munroData = doc.data();
-      const munroId = doc.id;
-      const averageRating = munroData.averageRating || 0;
-      const reviewCount = munroData.reviewCount || 0;
-
-      const sumOfRatings = averageRating * reviewCount;
-
-      allRatings[munroId] = {
-        sumOfRatings: sumOfRatings,
-        numberOfRatings: reviewCount,
-      };
-    });
-
-    // Save to db
-    const allRatingsRef = admin.firestore().collection("munroData").doc("allRatings");
-    await allRatingsRef.set({ ratings: allRatings });
-
     res.send("Migration completed successfully");
   } catch (error) {
     console.error("Error in migration: ", error);
