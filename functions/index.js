@@ -1115,14 +1115,13 @@ exports.scheduledRecalculateMunroRatings = functions.pubsub
 
       if (!metaSnap.exists || !metaSnap.data()?.lastReviewDateTime || !metaSnap.data()?.lastReviewUid) {
         // First run: no filter
-        newReviewsSnap = await db.collection("reviews").orderBy("dateTime").orderBy("uid").limit(1000).get();
+        newReviewsSnap = await db.collection("reviews").orderBy("dateTime").orderBy("uid").get();
       } else {
         newReviewsSnap = await db
           .collection("reviews")
           .orderBy("dateTime")
           .orderBy("uid")
           .startAfter([lastReviewDateTime, lastReviewUid])
-          .limit(1000)
           .get();
       }
 
@@ -1138,10 +1137,10 @@ exports.scheduledRecalculateMunroRatings = functions.pubsub
         const data = doc.data();
         const munroId = data.munroId;
         const rating = data.rating;
+        const reviewDateTime = data.dateTime;
 
-        if (!munroId || typeof rating !== "number") return;
+        if (!munroId || typeof rating !== "number" || !reviewDateTime) return;
 
-        // Initialize entry if missing
         if (!ratingsData[munroId]) {
           ratingsData[munroId] = {
             sumOfRatings: 0,
@@ -1156,12 +1155,19 @@ exports.scheduledRecalculateMunroRatings = functions.pubsub
           `Updated ${munroId}: sum=${ratingsData[munroId].sumOfRatings}, count=${ratingsData[munroId].numberOfRatings}`
         );
 
-        // Update last review date and UID
-        lastReviewUid = doc.id;
+        // Correctly track last review
+        if (
+          !lastReviewDateTime ||
+          reviewDateTime.toMillis() > lastReviewDateTime.toMillis() ||
+          (reviewDateTime.toMillis() === lastReviewDateTime.toMillis() && doc.id > lastReviewUid)
+        ) {
+          lastReviewDateTime = reviewDateTime;
+          lastReviewUid = doc.id;
+        }
       });
 
       await ratingsRef.set({ ratings: ratingsData });
-      await metaRef.set({ lastReviewUid: lastReviewUid, lastReviewDateTime: now });
+      await metaRef.set({ lastReviewUid: lastReviewUid, lastReviewDateTime: lastReviewDateTime });
 
       console.log("Ratings updated & last run timestamp recorded.");
       console.log("scheduledRecalculateMunroRatings finished");

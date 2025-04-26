@@ -18,14 +18,11 @@ class MunroDatabase {
     }
 
     return munroList;
-    // Check if user logged in
   }
 
   static Future<Map<String, dynamic>> getAllAdditionalMunrosData(BuildContext context) async {
     // Get additional data from firestore
     DocumentSnapshot documentSnapshot = await _munroRef.get();
-    print(
-        "🚀 ~ MunroDatabase ~ Future<Map<String,dynamic>>getAllAdditionalMunrosData ~ documentSnapshot: ${documentSnapshot.data()}");
 
     AnalyticsService.logDatabaseRead(
       method: "MunroDatabase.getAllAdditionalMunrosData",
@@ -34,10 +31,10 @@ class MunroDatabase {
       userId: null,
       documentId: null,
     );
+
     if (!documentSnapshot.exists) return {};
 
     var data = documentSnapshot.data() as Map<String, dynamic>? ?? {};
-
     Map<String, dynamic> munroData = data[MunroFields.ratings];
 
     return munroData;
