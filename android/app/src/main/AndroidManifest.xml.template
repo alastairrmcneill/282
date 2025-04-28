@@ -19,6 +19,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/notification_color" />
+        <meta-data 
+            android:name="flutter_deeplinking_enabled" 
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -37,6 +40,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="twoeighttwo.app.link" />
+                <data android:scheme="https" android:host="twoeighttwo-alternate.app.link" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
