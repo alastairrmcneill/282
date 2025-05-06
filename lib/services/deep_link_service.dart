@@ -31,6 +31,15 @@ class DeepLinkService {
 
   static void _handleBranchLinkData(Map<dynamic, dynamic> data, GlobalKey<NavigatorState> navigatorKey) async {
     final String? munroId = data['munroId']?.toString();
+
+    // Log data
+    AnalyticsService.logEvent(
+      name: 'branch_link_clicked',
+      parameters: {
+        'munro_id': munroId ?? 'null',
+      },
+    );
+
     if (munroId == null || munroId.isEmpty) return;
 
     final BuildContext context = navigatorKey.currentContext!;
@@ -76,6 +85,16 @@ class DeepLinkService {
   }
 
   static Future<void> shareMunro(BuildContext context, String munroName, String munroId) async {
+    // Log share event
+    AnalyticsService.logEvent(
+      name: 'munro_shared',
+      parameters: {
+        'munro_id': munroId,
+        'munro_name': munroName,
+      },
+    );
+
+    // Create a Branch link
     try {
       final BranchUniversalObject buo = BranchUniversalObject(
         canonicalIdentifier: 'munro/$munroId',
@@ -104,7 +123,7 @@ class DeepLinkService {
         throw Exception('Branch link creation failed: ${response.errorMessage}');
       }
     } catch (e) {
-      showSnackBar(context, 'Failed to share Munro link.');
+      showSnackBar(context, 'Failed to share link.');
     }
   }
 
