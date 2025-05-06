@@ -38,6 +38,19 @@ class MunroSliverAppBar extends StatelessWidget {
 
     menuItems.add(
       MenuItem(
+        text: "Share",
+        onTap: () async {
+          await DeepLinkService.shareMunro(
+            context,
+            munroState.selectedMunro?.name ?? "",
+            munroState.selectedMunro?.id ?? "",
+          );
+        },
+      ),
+    );
+
+    menuItems.add(
+      MenuItem(
         text: "Send Feedback",
         onTap: () async {
           try {

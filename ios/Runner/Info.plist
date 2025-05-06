@@ -66,5 +66,15 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>branch_key</key>
+		<string>key_live_dEuikc8s8YiZzyQpsEd5LcmjEuouBy6b</string>
+		<key>branch_app_domain</key>
+		<string>twoeighttwo.app.link</string>
+		<key>BranchURI</key>
+		<string>twoeighttwo.app.link</string>
+		<key>FlutterDeepLinkingEnabled</key>
+		<false/>
+		<key>branch_disable_nativelink</key>
+	    <true/>
 	</dict>
 </plist>
