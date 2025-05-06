@@ -54,6 +54,7 @@ class MunroTitle extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(width: 8),
         InkWell(
           onTap: () async {
             if (user == null) {
