@@ -7,11 +7,11 @@ on:
 
 jobs:
   setup_and_build_IPA:
-    name: setup_and_build_IPA
+    name: Setup and Build IPA
     runs-on: macos-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Decode AndroidManifest.xml
         run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
@@ -37,7 +37,7 @@ jobs:
           flutterfire: "false"
 
       - name: Archive IPA
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-ipa
           path: build/ios/ipa/282.ipa
@@ -48,7 +48,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Download App Bundle
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: release-ipa
           path: build/ios/ipa/
