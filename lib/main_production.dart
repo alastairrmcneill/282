@@ -14,6 +14,7 @@ main() async {
   await RemoteConfigService.init();
   await dotenv.load();
   await AnalyticsService.init(flavor: "Production");
+  await DeepLinkService.initBranchLinks(flavor: "Production", navigatorKey: navigatorKey);
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
 
   await SentryFlutter.init(

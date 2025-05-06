@@ -15,7 +15,9 @@ class ReviewDatabase {
 
       Review newReview = review.copyWith(uid: ref.id);
 
-      await ref.set(newReview.toJSON());
+      final data = newReview.toJSON()..[ReviewFields.dateTime] = FieldValue.serverTimestamp();
+
+      await ref.set(data);
     } on FirebaseException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.message ?? "There was an error creating your review.");

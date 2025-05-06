@@ -171,4 +171,7 @@ class MunroFields {
   static String saved = "saved";
   static String averageRating = "averageRating";
   static String reviewCount = "reviewCount";
+  static String numberOfRatings = "numberOfRatings";
+  static String sumOfRatings = "sumOfRatings";
+  static String ratings = "ratings";
 }

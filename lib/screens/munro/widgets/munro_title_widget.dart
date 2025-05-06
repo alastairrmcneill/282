@@ -5,6 +5,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class MunroTitle extends StatelessWidget {
@@ -41,6 +42,19 @@ class MunroTitle extends StatelessWidget {
             ],
           ),
         ),
+        InkWell(
+          onTap: () async {
+            await DeepLinkService.shareMunro(context, munro.name, munro.id);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Icon(
+              CupertinoIcons.share,
+              color: MyColors.accentColor,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
         InkWell(
           onTap: () async {
             if (user == null) {

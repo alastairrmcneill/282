@@ -20,7 +20,7 @@ class AnalyticsService {
     required String name,
     Map<String, String>? parameters,
   }) async {
-    print('Logging event: $name : $parameters');
+    print("🚀 ~ AnalyticsService ~ logEvent: $name : $parameters");
     await _analytics?.logEvent(name: name, parameters: parameters);
     await mixpanel?.track(
       name,
