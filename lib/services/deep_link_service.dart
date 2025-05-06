@@ -2,12 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class DeepLinkService {
-  static bool _initialLinkHandled = false;
   static StreamSubscription<Map>? _branchStreamSubscription;
 
   static Future<void> initBranchLinks({required GlobalKey<NavigatorState> navigatorKey, required String flavor}) async {
@@ -16,60 +17,65 @@ class DeepLinkService {
       branchAttributionLevel: BranchAttributionLevel.FULL,
     );
 
-    print('Branch SDK initialized');
-    FlutterBranchSdk.listSession().listen((data) {
-      print('Got deep link!');
-      print(data);
-      if (data.containsKey('munroId')) {
-        print('Munro ID: ${data['munroId']}');
-      }
-    });
-
-    // _branchStreamSubscription = FlutterBranchSdk.listSession().listen(
-    //   (data) {
-    //     if (data.containsKey('+clicked_branch_link') && data['+clicked_branch_link'] == true) {
-    //       _handleBranchLinkData(data, navigatorKey);
-    //     }
-    //   },
-    //   onError: (error) {
-    //     print('Branch deep link error: $error');
-    //   },
-    // );
+    _branchStreamSubscription = FlutterBranchSdk.listSession().listen(
+      (data) {
+        if (data.containsKey('+clicked_branch_link') && data['+clicked_branch_link'] == true) {
+          _handleBranchLinkData(data, navigatorKey);
+        }
+      },
+      onError: (error) {
+        print('Branch deep link error: $error');
+      },
+    );
   }
 
   static void _handleBranchLinkData(Map<dynamic, dynamic> data, GlobalKey<NavigatorState> navigatorKey) async {
-    print("🚀 ~ DeepLinkService ~ void_handleBranchLinkData ~ data: $data");
-    if (_initialLinkHandled) return;
-    _initialLinkHandled = true;
+    final String? munroId = data['munroId']?.toString();
+    if (munroId == null || munroId.isEmpty) return;
 
-    // final BuildContext context = navigatorKey.currentContext!;
-    // final MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final BuildContext context = navigatorKey.currentContext!;
+    final MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
-    // final String? munroId = data['munroId']?.toString();
-    // if (munroId == null || munroId.isEmpty) return;
+    try {
+      // Load necessary data
+      await SettingsSerivce.loadSettings(context);
+      await UserService.readCurrentUser(context);
+      await SavedListService.readUserSavedLists(context);
 
-    // try {
-    //   await SettingsSerivce.loadSettings(context);
-    //   await UserService.readCurrentUser(context);
-    //   await SavedListService.readUserSavedLists(context);
+      munroState.setSelectedMunroId = munroId;
+      var munro = munroState.munroList.firstWhere((munro) => munro.id == munroId);
+      munroState.setSelectedMunro = munro;
 
-    //   munroState.setSelectedMunroId = munroId;
-    //   await MunroService.loadMunroDetail(context, munroId: munroId);
+      navigatorKey.currentState!.pushNamed(
+        MunroScreen.route,
+      );
 
-    //   navigatorKey.currentState!.pushNamedAndRemoveUntil(
-    //     HomeScreen.route,
-    //     (route) => false,
-    //   );
+      navigatorKey.currentState!.pushReplacement(
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 300),
+          pageBuilder: (_, __, ___) => const MunroScreen(),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
 
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     navigatorKey.currentState!.pushNamed(MunroScreen.route);
-    //   });
-    // } catch (e) {
-    //   print('Error handling Branch link: $e');
-    // }
+      // If I want to always open the munro over the map. If not then the above works fine but it could open munros over the feed etc. Do we care?
+
+      // navigatorKey.currentState!.pushNamedAndRemoveUntil(
+      //   HomeScreen.route,
+      //   (route) => false,
+      // );
+
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   navigatorKey.currentState!.pushNamed(MunroScreen.route);
+      // });
+    } catch (e) {
+      print('Error handling Branch link: $e');
+    }
   }
 
-  static Future<void> shareMunro(BuildContext context, String munroId) async {
+  static Future<void> shareMunro(BuildContext context, String munroName, String munroId) async {
     try {
       final BranchUniversalObject buo = BranchUniversalObject(
         canonicalIdentifier: 'munro/$munroId',
@@ -92,16 +98,13 @@ class DeepLinkService {
         linkProperties: linkProperties,
       );
 
-      // if (response.success && response.result != null) {
-      //   await Share.share('Check out this Munro! ${response.result}');
-      // } else {
-      //   throw Exception('Branch link creation failed: ${response.errorMessage}');
-      // }
+      if (response.success && response.result != null) {
+        await SharePlus.instance.share(ShareParams(text: 'Check out $munroName - ${response.result}'));
+      } else {
+        throw Exception('Branch link creation failed: ${response.errorMessage}');
+      }
     } catch (e) {
-      print('Failed to create or share Branch link: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to share Munro link.')),
-      );
+      showSnackBar(context, 'Failed to share Munro link.');
     }
   }
 

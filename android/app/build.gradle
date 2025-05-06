@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     id 'com.google.gms.google-services'
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.firebase.crashlytics"
 }
 
 def localProperties = new Properties()
@@ -71,26 +72,22 @@ android {
         release {
            signingConfig signingConfigs.release
         }
-   
+    }
+    flavorDimensions "default"
+    productFlavors {
+        development {
+            dimension "default"
+            resValue "string", "app_name", "Dev 282"
+            applicationIdSuffix ".dev"
+        }
         
-        flavorDimensions "default"
-        productFlavors {
-            development {
-                dimension "default"
-                resValue "string", "app_name", "Dev 282"
-                applicationIdSuffix ".dev"
-            }
-           
-            production {
-                dimension "default"
-                resValue "string", "app_name", "282"
-                applicationIdSuffix ""
-            }
+        production {
+            dimension "default"
+            resValue "string", "app_name", "282"
+            applicationIdSuffix ""
         }
     }
 }
-
-
 
 flutter {
     source '../..'
@@ -102,4 +99,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    implementation 'io.branch.sdk.android:library:5.+'
 }
