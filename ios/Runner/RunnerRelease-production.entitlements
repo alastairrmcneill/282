@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>aps-environment</key>
-	<string>development</string>
+	<string>production</string>
 	<key>com.apple.developer.applesignin</key>
 	<array>
 		<string>Default</string>
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>282.app.link</string>
-		<string>282-alternate.app.link</string>
+	  <string>applinks:282.app.link</string>
+	  <string>applinks:282-alternate.app.link</string>
 	</array>
 </dict>
 </plist>

@@ -73,8 +73,12 @@
 		<key>BranchURI</key>
 		<string>282.app.link</string>
 		<key>FlutterDeepLinkingEnabled</key>
-		<false/>
+		<true/>
 		<key>branch_disable_nativelink</key>
 	    <true/>
+		<key>NSUserActivityTypes</key>
+		<array>
+			<string>NSUserActivityTypeBrowsingWeb</string>
+		</array>
 	</dict>
 </plist>
