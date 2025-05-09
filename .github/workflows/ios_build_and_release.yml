@@ -41,10 +41,6 @@ jobs:
           keychain-password: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
           flutterfire: "false"
 
-      - name: Verify Embedded Entitlements
-        run: |
-          codesign -d --entitlements :- build/ios/ipa/Payload/*.app
-
       - name: Archive IPA
         uses: actions/upload-artifact@v4
         with:
