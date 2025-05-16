@@ -4,10 +4,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -22,145 +23,143 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   bool loading = true;
-  late GoogleMapController _googleMapController;
-  BitmapDescriptor _completedIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
-  double _currentZoom = 6.6;
+  late MapboxMap _mapboxMap;
+  late PointAnnotationManager _annotationManager;
+  List<PointAnnotation?> currentAnnotations = [];
+  final Map<String, PointAnnotation> _annotationMap = {};
+
+  double _zoom = 5.5;
   String? _selectedMunroID;
   bool showTerrain = false;
+  bool _tappedAnnotation = false;
+
+  CameraOptions camera = CameraOptions(
+    center: Point(coordinates: Position(-98.0, 39.5)),
+    zoom: 2,
+    bearing: 0,
+    pitch: 0,
+  );
 
   @override
   void initState() {
     super.initState();
+
     loadData();
-    addCustomIcon();
   }
 
   void loadData() async {
-    showTerrain = await SharedPreferencesService.getMapTerrain();
     await MunroDatabase.loadBasicMunroData(context).then(
       (value) => setState(() => loading = false),
     );
   }
 
-  Set<Marker> getMarkers({required MunroState munroState}) {
-    Set<Marker> markers = {};
-    for (var munro in munroState.filteredMunroList) {
-      markers.add(
-        Marker(
-          markerId: MarkerId(
-            munro.id.toString(),
-          ),
-          position: LatLng(munro.lat, munro.lng),
-          visible: true,
-          consumeTapEvents: true,
-          icon: _selectedMunroID == munro.id
-              ? _selectedIcon
-              : munro.summited
-                  ? _completedIcon
-                  : _incompletedIcon,
-          anchor: const Offset(0.5, 0.7),
-          draggable: false,
-          onTap: () {
-            markerTapped(munro);
-            setState(() {
-              _selectedMunroID = munro.id;
-            });
+  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState) async {
+    _mapboxMap = mapboxMap;
+    await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
+    await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
 
-            munroState.setSelectedMunroId = munro.id;
-          },
+    _mapboxMap.setBounds(
+      CameraBoundsOptions(
+        bounds: CoordinateBounds(
+          southwest: Point(
+            coordinates: Position(-10, 53),
+          ), // too north, too south, too zoomed out, not enough zoomed in
+
+          northeast: Point(
+            coordinates: Position(0, 62),
+          ),
+          infiniteBounds: false,
+        ),
+        minZoom: 4,
+        maxZoom: 14,
+      ),
+    );
+    _addMunroSymbols(munroState: munroState);
+  }
+
+  Future<void> _addMunroSymbols({required MunroState munroState}) async {
+    final List<Munro> munros = munroState.filteredMunroList;
+
+    final Uint8List incomplete = await _loadMarker('assets/munro_incomplete.png');
+    final Uint8List complete = await _loadMarker('assets/munro_complete.png');
+    final Uint8List selected = await _loadMarker('assets/munro_selected.png');
+
+    _annotationManager = await _mapboxMap.annotations.createPointAnnotationManager();
+
+    // 👇 Attach tap listener
+    List<PointAnnotationOptions> markers = [];
+    double iconSize = getIconSize();
+
+    for (var munro in munros) {
+      final icon = _selectedMunroID == munro.id
+          ? selected
+          : munro.summited
+              ? complete
+              : incomplete;
+
+      markers.add(
+        PointAnnotationOptions(
+          geometry: Point(coordinates: Position(munro.lng, munro.lat)),
+          image: icon,
+          iconSize: 0.6, //iconSize,
         ),
       );
     }
-    return markers;
-  }
 
-  markerTapped(Munro munro) {
-    final offsetLatLng = LatLng(
-      munro.lat,
-      munro.lng,
+    currentAnnotations = await _annotationManager.createMulti(markers);
+
+    for (int i = 0; i < munros.length; i++) {
+      _annotationMap[munros[i].id] = currentAnnotations[i]!;
+    }
+
+    _annotationManager.addOnPointAnnotationClickListener(
+      MunroAnnotationClickListener(
+        currentAnnotations: currentAnnotations,
+        munros: munros,
+        onMunroSelected: (id) async {
+          print("🚀 ~ _MapScreenState ~ void _onMunroSelected ~ id: $id");
+          setState(() {
+            _selectedMunroID = id;
+          });
+          munroState.setSelectedMunroId = id;
+          await _refreshAnnotations(munroState);
+        },
+        onAnnotationTap: () {
+          _tappedAnnotation = true;
+        },
+      ),
     );
-    widget.searchFocusNode.unfocus();
-    _googleMapController.animateCamera(CameraUpdate.newLatLng(offsetLatLng));
   }
 
-  Future<Uint8List> getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+  Future<void> _refreshAnnotations(MunroState munroState) async {
+    await _annotationManager.deleteAll();
+    await _addMunroSymbols(munroState: munroState);
+  }
+
+  void _updateMarkerSizes() {
+    final newSize = getIconSize();
+
+    for (var annotation in currentAnnotations) {
+      if (annotation != null) {
+        annotation.iconSize = newSize;
+
+        print("🚀 ~ _MapScreenState ~ void_updateMarkerSizes ~ annotation: ${annotation.iconSize}");
+        _annotationManager.update(annotation);
+      }
+    }
+  }
+
+  Future<Uint8List> _loadMarker(String assetPath) async {
+    ByteData data = await rootBundle.load(assetPath);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  Future addCustomIcon() async {
-    final Uint8List incompleteMarkerIcon = await getBytesFromAsset(
-      'assets/munro_incomplete.png',
-      (_currentZoom * 7).round(),
-    );
-    final Uint8List completeMarkerIcon = await getBytesFromAsset(
-      'assets/munro_complete.png',
-      (_currentZoom * 7).round(),
-    );
-    final Uint8List selectedMarkerIcon = await getBytesFromAsset(
-      'assets/munro_selected.png',
-      (_currentZoom * 7).round(),
-    );
-
-    if (mounted) {
-      setState(() {
-        _incompletedIcon = BitmapDescriptor.fromBytes(incompleteMarkerIcon);
-        _completedIcon = BitmapDescriptor.fromBytes(completeMarkerIcon);
-        _selectedIcon = BitmapDescriptor.fromBytes(selectedMarkerIcon);
-      });
-    }
-  }
-
-  Widget _buildGoogleMap(MunroState munroState) {
-    return GoogleMap(
-      onMapCreated: (controller) {
-        _googleMapController = controller;
-        if (munroState.latLngBounds != null) {
-          _googleMapController.animateCamera(CameraUpdate.newLatLngBounds(munroState.latLngBounds!, 0));
-        }
-      },
-      initialCameraPosition: const CameraPosition(
-        target: LatLng(56.8, -4.2),
-        zoom: 6.6,
-      ),
-      onCameraMove: (position) async {
-        if (_currentZoom < position.zoom - 1 || _currentZoom > position.zoom + 1) {
-          _currentZoom = position.zoom;
-          addCustomIcon();
-        }
-        LatLngBounds bounds = await _googleMapController.getVisibleRegion();
-        munroState.setLatLngBounds = bounds;
-      },
-      cameraTargetBounds: CameraTargetBounds(
-        LatLngBounds(
-          northeast: const LatLng(58.5, -3),
-          southwest: const LatLng(55, -6.4),
-        ),
-      ),
-      onTap: (argument) {
-        widget.searchFocusNode.unfocus();
-        setState(() => _selectedMunroID = null);
-        munroState.setSelectedMunroId = null;
-      },
-      minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
-      buildingsEnabled: false,
-      trafficEnabled: false,
-      liteModeEnabled: false,
-      indoorViewEnabled: false,
-      tiltGesturesEnabled: false,
-      mapToolbarEnabled: false,
-      compassEnabled: true,
-      zoomControlsEnabled: false,
-      mapType: showTerrain ? MapType.terrain : MapType.hybrid,
-      padding: const EdgeInsets.all(20),
-      markers: getMarkers(munroState: munroState),
-      myLocationButtonEnabled: false,
-      myLocationEnabled: false,
-    );
+  double getIconSize() {
+    const m = 0.070588;
+    const b = 0.1118;
+    return m * _zoom + b;
   }
 
   @override
@@ -168,13 +167,79 @@ class _MapScreenState extends State<MapScreen> {
     MunroState munroState = Provider.of<MunroState>(context, listen: true);
     return Scaffold(
       body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                _buildGoogleMap(munroState),
-                Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: _selectedMunroID)),
-              ],
+          ? MapShimmerLoader()
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
+                  return const SizedBox.shrink();
+                }
+
+                return Stack(
+                  children: [
+                    MapWidget(
+                      key: const ValueKey("mapWidget"),
+                      onMapCreated: (MapboxMap mapboxMap) => _onMapCreated(mapboxMap, munroState),
+                      styleUri: "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
+                      cameraOptions: CameraOptions(
+                        center: Point(coordinates: Position(-4.2, 56.8)),
+                        zoom: _zoom,
+                      ),
+                      onTapListener: (MapContentGestureContext eventData) async {
+                        print("🚀 ~ _MapScreenState ~ void _onTapListener ~ _tappedAnnotation: $_tappedAnnotation");
+                        if (_tappedAnnotation) {
+                          _tappedAnnotation = false;
+                          return;
+                        }
+                        widget.searchFocusNode.unfocus();
+                        if (_selectedMunroID != null) {
+                          setState(() => _selectedMunroID = null);
+                          munroState.setSelectedMunroId = null;
+                          await _refreshAnnotations(munroState);
+                        }
+                      },
+                      // onCameraChangeListener: (eventData) async {
+                      //   final cameraState = await _mapboxMap.getCameraState();
+                      //   final newZoom = cameraState.zoom;
+
+                      //   if ((newZoom - _zoom).abs() > 0.1) {
+                      //     _zoom = newZoom;
+                      //     // _updateMarkerSizes();
+                      //   }
+                      // },
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: MunroSummaryTile(munroId: _selectedMunroID),
+                    ),
+                  ],
+                );
+              },
             ),
     );
+  }
+}
+
+class MunroAnnotationClickListener extends OnPointAnnotationClickListener {
+  final List<PointAnnotation?> currentAnnotations;
+  final List<Munro> munros;
+  final Function(String) onMunroSelected;
+  final VoidCallback onAnnotationTap;
+
+  MunroAnnotationClickListener({
+    required this.currentAnnotations,
+    required this.munros,
+    required this.onMunroSelected,
+    required this.onAnnotationTap,
+  });
+
+  @override
+  bool onPointAnnotationClick(PointAnnotation annotation) {
+    onAnnotationTap(); // Set the flag in parent
+    final index = currentAnnotations.indexOf(annotation);
+    if (index != -1) {
+      final tappedMunro = munros[index];
+      onMunroSelected(tappedMunro.id);
+    }
+    return true;
   }
 }
