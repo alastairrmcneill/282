@@ -115,6 +115,7 @@ class _MapScreenState extends State<MapScreen> {
       MunroAnnotationClickListener(
         onMunroAnnotationSelected: (annotation) async {
           _tappedAnnotation = true;
+
           if (annotation.id == _selectedAnnotation?.id) {
             return true;
           }
@@ -133,9 +134,7 @@ class _MapScreenState extends State<MapScreen> {
             var recreatedAnnotation = await _annotationManager.create(newPreviouslySelectedAnnotation);
 
             // Update the currentAnnotations list
-            int previousIndex = currentAnnotations.indexWhere(
-              (element) => element?.id == _previousSelectedAnnotation?.id,
-            );
+            int previousIndex = currentAnnotations.indexWhere((element) => element?.id == _selectedAnnotation?.id);
             if (previousIndex != -1) {
               currentAnnotations[previousIndex] = recreatedAnnotation;
             }
@@ -156,11 +155,14 @@ class _MapScreenState extends State<MapScreen> {
           _previousSelectedAnnotation = annotation;
           _selectedAnnotation = await _annotationManager.create(newAnnotation);
 
-          var index = currentAnnotations.indexWhere((element) => element?.id == annotation.id);
-          currentAnnotations[index] = _selectedAnnotation;
+          // Update the currentAnnotations list
+          int clickedIndex = currentAnnotations.indexWhere((element) => element?.id == _previousSelectedAnnotation?.id);
 
-          _selectedMunroID = munros[index].id;
-          munroState.setSelectedMunroId = munros[index].id;
+          if (clickedIndex != -1) {
+            currentAnnotations[clickedIndex] = _selectedAnnotation;
+            _selectedMunroID = munros[clickedIndex].id;
+            munroState.setSelectedMunroId = munros[clickedIndex].id;
+          }
         },
       ),
     );
@@ -214,7 +216,15 @@ class _MapScreenState extends State<MapScreen> {
                             iconSize: 0.6,
                           );
 
-                          _annotationManager.create(newPreviouslySelectedAnnotation);
+                          var recreatedAnnotation = await _annotationManager.create(newPreviouslySelectedAnnotation);
+
+                          // Update the currentAnnotations list
+                          int previousIndex =
+                              currentAnnotations.indexWhere((element) => element?.id == _selectedAnnotation?.id);
+                          if (previousIndex != -1) {
+                            currentAnnotations[previousIndex] = recreatedAnnotation;
+                          }
+
                           _previousSelectedAnnotation = null;
                           _selectedAnnotation = null;
                         }
