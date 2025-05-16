@@ -163,6 +163,14 @@ class _MapScreenState extends State<MapScreen> {
             _selectedMunroID = munros[clickedIndex].id;
             munroState.setSelectedMunroId = munros[clickedIndex].id;
           }
+
+          // Move the camera to center the clicked marker
+          await _mapboxMap.flyTo(
+            CameraOptions(
+              center: annotation.geometry,
+            ),
+            MapAnimationOptions(duration: 1000), // Optional: Animation duration in milliseconds
+          );
         },
       ),
     );
