@@ -258,9 +258,9 @@ class MunroAnnotationClickListener extends OnPointAnnotationClickListener {
   });
 
   @override
-  bool onPointAnnotationClick(PointAnnotation annotation) {
+  Future<bool> onPointAnnotationClick(PointAnnotation annotation) async {
     print("Annotation clicked: ${annotation.id}");
-    onMunroAnnotationSelected(annotation);
+    await onMunroAnnotationSelected(annotation);
     return true;
   }
 }

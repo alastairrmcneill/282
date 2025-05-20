@@ -38,7 +38,9 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
 
     if (lastFeedbackSurveyNumber == -1) {
       // If this is the first time that the app is installed, set the lastFeedbackSurveyNumber to the currentFeedbackSurveyNumber and don't show the survey
-      await SharedPreferencesService.setLastFeedbackSurveyNumber(0);
+      await SharedPreferencesService.setLastFeedbackSurveyNumber(
+          0); // This means it will show the next time they open the app which is too soon. Need to check when they installed the app too
+
       return;
     }
 
