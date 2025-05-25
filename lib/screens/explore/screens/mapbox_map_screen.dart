@@ -11,15 +11,15 @@ import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 
-class MapScreen extends StatefulWidget {
+class MapboxMapScreen extends StatefulWidget {
   final FocusNode searchFocusNode;
-  const MapScreen({super.key, required this.searchFocusNode});
+  const MapboxMapScreen({super.key, required this.searchFocusNode});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  State<MapboxMapScreen> createState() => _MapboxMapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapboxMapScreenState extends State<MapboxMapScreen> {
   bool loading = true;
   late MapboxMap _mapboxMap;
   Map<String, PointAnnotation?> allAnnotations = {};
