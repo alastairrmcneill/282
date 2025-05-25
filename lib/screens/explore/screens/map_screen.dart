@@ -1,5 +1,4 @@
-// ignore_for_file: unused_field
-
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MapScreen extends StatefulWidget {
   final FocusNode searchFocusNode;
@@ -24,19 +22,29 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   bool loading = true;
   late MapboxMap _mapboxMap;
-  late PointAnnotationManager _annotationManager;
-  PointAnnotation? _previousSelectedAnnotation;
-  PointAnnotation? _selectedAnnotation;
-  List<PointAnnotation?> currentAnnotations = [];
-  final Map<String, PointAnnotation> _annotationMap = {};
+  Map<String, PointAnnotation?> allAnnotations = {};
 
-  String? _selectedMunroID;
+  PointAnnotation? selectedAnnotation;
+  String? selectedMunroId;
+  late PointAnnotationManager _annotationManager;
+  final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
+    bounds: CoordinateBounds(
+      southwest: Point(
+        coordinates: Position(-10, 53),
+      ),
+      northeast: Point(
+        coordinates: Position(0, 62),
+      ),
+      infiniteBounds: false,
+    ),
+    minZoom: 4,
+    maxZoom: 14,
+  );
   bool showTerrain = false;
-  bool _tappedAnnotation = false;
 
   CameraOptions startingCamera = CameraOptions(
-    center: Point(coordinates: Position(-4.2, 56.8)),
-    zoom: 5.5,
+    center: Point(coordinates: Position(-4.559, 57.334)),
+    zoom: 6.15,
   );
 
   late Uint8List incompleteIcon;
@@ -64,21 +72,7 @@ class _MapScreenState extends State<MapScreen> {
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
-    _mapboxMap.setBounds(
-      CameraBoundsOptions(
-        bounds: CoordinateBounds(
-          southwest: Point(
-            coordinates: Position(-10, 53),
-          ),
-          northeast: Point(
-            coordinates: Position(0, 62),
-          ),
-          infiniteBounds: false,
-        ),
-        minZoom: 4,
-        maxZoom: 14,
-      ),
-    );
+    _mapboxMap.setBounds(cameraBounds);
     _addMunroSymbols(munroState: munroState);
   }
 
@@ -87,16 +81,16 @@ class _MapScreenState extends State<MapScreen> {
 
     _annotationManager = await _mapboxMap.annotations.createPointAnnotationManager();
 
-    List<PointAnnotationOptions> markers = [];
+    List<PointAnnotationOptions> pointAnnotationOptions = [];
 
     for (var munro in munros) {
-      final icon = _selectedMunroID == munro.id
+      final icon = selectedMunroId == munro.id
           ? selectedIcon
           : munro.summited
               ? completeIcon
               : incompleteIcon;
 
-      markers.add(
+      pointAnnotationOptions.add(
         PointAnnotationOptions(
           geometry: Point(coordinates: Position(munro.lng, munro.lat)),
           image: icon,
@@ -105,75 +99,11 @@ class _MapScreenState extends State<MapScreen> {
       );
     }
 
-    currentAnnotations = await _annotationManager.createMulti(markers);
+    var annotations = await _annotationManager.createMulti(pointAnnotationOptions);
 
-    for (int i = 0; i < munros.length; i++) {
-      _annotationMap[munros[i].id] = currentAnnotations[i]!;
+    for (var i = 0; i < annotations.length; i++) {
+      allAnnotations[munros[i].id] = annotations[i];
     }
-
-    _annotationManager.addOnPointAnnotationClickListener(
-      MunroAnnotationClickListener(
-        onMunroAnnotationSelected: (annotation) async {
-          _tappedAnnotation = true;
-
-          if (annotation.id == _selectedAnnotation?.id) {
-            return true;
-          }
-
-          if (_previousSelectedAnnotation != null && _selectedAnnotation != null) {
-            // Delete the previously selected annotation
-            _annotationManager.delete(_selectedAnnotation!);
-
-            // Create a new annotation with the original icon
-            var newPreviouslySelectedAnnotation = PointAnnotationOptions(
-              geometry: _previousSelectedAnnotation!.geometry,
-              image: _previousSelectedAnnotation!.image,
-              iconSize: 0.6,
-            );
-
-            var recreatedAnnotation = await _annotationManager.create(newPreviouslySelectedAnnotation);
-
-            // Update the currentAnnotations list
-            int previousIndex = currentAnnotations.indexWhere((element) => element?.id == _selectedAnnotation?.id);
-            if (previousIndex != -1) {
-              currentAnnotations[previousIndex] = recreatedAnnotation;
-            }
-
-            _previousSelectedAnnotation = null;
-            _selectedAnnotation = null;
-          }
-
-          // Delete the one we just clicked
-          _annotationManager.delete(annotation);
-
-          var newAnnotation = PointAnnotationOptions(
-            geometry: annotation.geometry,
-            image: selectedIcon,
-            iconSize: 0.6,
-          );
-
-          _previousSelectedAnnotation = annotation;
-          _selectedAnnotation = await _annotationManager.create(newAnnotation);
-
-          // Update the currentAnnotations list
-          int clickedIndex = currentAnnotations.indexWhere((element) => element?.id == _previousSelectedAnnotation?.id);
-
-          if (clickedIndex != -1) {
-            currentAnnotations[clickedIndex] = _selectedAnnotation;
-            _selectedMunroID = munros[clickedIndex].id;
-            munroState.setSelectedMunroId = munros[clickedIndex].id;
-          }
-
-          // Move the camera to center the clicked marker
-          await _mapboxMap.flyTo(
-            CameraOptions(
-              center: annotation.geometry,
-            ),
-            MapAnimationOptions(duration: 1000), // Optional: Animation duration in milliseconds
-          );
-        },
-      ),
-    );
   }
 
   Future<Uint8List> _loadMarker(String assetPath) async {
@@ -181,6 +111,77 @@ class _MapScreenState extends State<MapScreen> {
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  }
+
+  void handleMapTap(ScreenCoordinate tapScreenPoint) async {
+    const double threshold = 40.0;
+
+    String? closestMunroId;
+    PointAnnotation? closestAnnotation;
+    double minDist = double.infinity;
+
+    for (final entry in allAnnotations.entries) {
+      final String munroId = entry.key;
+      final PointAnnotation? annotation = entry.value;
+
+      if (annotation == null) continue;
+
+      final geoCoord = annotation.geometry;
+
+      final screen = await _mapboxMap.pixelForCoordinate(geoCoord);
+
+      final dx = screen.x - tapScreenPoint.x;
+      final dy = screen.y - tapScreenPoint.y;
+      final dist = sqrt(dx * dx + dy * dy);
+
+      if (dist < threshold && dist < minDist) {
+        minDist = dist;
+        closestMunroId = munroId;
+        closestAnnotation = annotation;
+      }
+    }
+
+    await deselectAnnotation();
+    if (closestAnnotation != null && closestMunroId != null) {
+      await selectAnnotation(closestMunroId, closestAnnotation);
+    }
+  }
+
+  Future<void> deselectAnnotation() async {
+    if (selectedAnnotation != null && selectedMunroId != null) {
+      final MunroState munroState = Provider.of<MunroState>(context, listen: false);
+      final Munro munro = munroState.munroList.firstWhere((munro) => munro.id == selectedMunroId);
+      final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
+          geometry: selectedAnnotation!.geometry, image: munro.summited ? completeIcon : incompleteIcon, iconSize: 0.6);
+      await _annotationManager.delete(selectedAnnotation!);
+      var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
+      allAnnotations[selectedMunroId!] = oldAnnotation;
+
+      selectedAnnotation = null;
+      munroState.setSelectedMunroId = null;
+      setState(() {
+        selectedMunroId = null;
+      });
+    }
+  }
+
+  Future<void> selectAnnotation(String munroId, PointAnnotation tappedAnnotation) async {
+    final MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
+      geometry: tappedAnnotation.geometry,
+      image: selectedIcon,
+      iconSize: 0.7,
+    );
+
+    await _annotationManager.delete(tappedAnnotation);
+
+    var newAnnotation = await _annotationManager.create(newAnnotationOptions);
+    allAnnotations[munroId] = newAnnotation;
+    selectedAnnotation = newAnnotation;
+    munroState.setSelectedMunroId = munroId;
+    setState(() {
+      selectedMunroId = munroId;
+    });
   }
 
   @override
@@ -202,65 +203,19 @@ class _MapScreenState extends State<MapScreen> {
                       onMapCreated: (MapboxMap mapboxMap) => _onMapCreated(mapboxMap, munroState),
                       styleUri: "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
                       cameraOptions: startingCamera,
-                      onTapListener: (MapContentGestureContext eventData) async {
+                      onTapListener: (context) {
                         widget.searchFocusNode.unfocus();
-
-                        if (_tappedAnnotation) {
-                          _tappedAnnotation = false;
-                          return;
-                        }
-
-                        setState(() => _selectedMunroID = null);
-                        munroState.setSelectedMunroId = null;
-
-                        if (_previousSelectedAnnotation != null && _selectedAnnotation != null) {
-                          // Delete the previously selected annotation
-                          _annotationManager.delete(_selectedAnnotation!);
-
-                          // Create a new annotation with the original icon
-                          var newPreviouslySelectedAnnotation = PointAnnotationOptions(
-                            geometry: _previousSelectedAnnotation!.geometry,
-                            image: _previousSelectedAnnotation!.image,
-                            iconSize: 0.6,
-                          );
-
-                          var recreatedAnnotation = await _annotationManager.create(newPreviouslySelectedAnnotation);
-
-                          // Update the currentAnnotations list
-                          int previousIndex =
-                              currentAnnotations.indexWhere((element) => element?.id == _selectedAnnotation?.id);
-                          if (previousIndex != -1) {
-                            currentAnnotations[previousIndex] = recreatedAnnotation;
-                          }
-
-                          _previousSelectedAnnotation = null;
-                          _selectedAnnotation = null;
-                        }
+                        handleMapTap(context.touchPosition);
                       },
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: MunroSummaryTile(munroId: _selectedMunroID),
+                      child: MunroSummaryTile(munroId: selectedMunroId),
                     ),
                   ],
                 );
               },
             ),
     );
-  }
-}
-
-class MunroAnnotationClickListener extends OnPointAnnotationClickListener {
-  final Function(PointAnnotation) onMunroAnnotationSelected;
-
-  MunroAnnotationClickListener({
-    required this.onMunroAnnotationSelected,
-  });
-
-  @override
-  Future<bool> onPointAnnotationClick(PointAnnotation annotation) async {
-    print("Annotation clicked: ${annotation.id}");
-    await onMunroAnnotationSelected(annotation);
-    return true;
   }
 }
