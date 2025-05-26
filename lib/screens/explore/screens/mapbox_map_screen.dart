@@ -50,11 +50,12 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   late Uint8List incompleteIcon;
   late Uint8List completeIcon;
   late Uint8List selectedIcon;
+  String mapAreaId = "full_map_area";
 
   @override
   void initState() {
     super.initState();
-
+    checkAndDownloadMap();
     loadData();
   }
 
@@ -66,6 +67,75 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     await MunroDatabase.loadBasicMunroData(context).then(
       (value) => setState(() => loading = false),
     );
+  }
+
+  Future<void> checkAndDownloadMap() async {
+    OfflineManager _offlineManager = await OfflineManager.create();
+    TileStore _tileStore = await TileStore.createDefault();
+
+    List<TileRegion> regions = await _tileStore.allTileRegions();
+    bool alreadyDownloaded = regions.any((r) => r.id == "scotland-tile-region");
+
+    print("🚀 ~ _MapboxMapScreenState ~ Future<void>checkAndDownloadMap ~ alreadyDownloaded: $alreadyDownloaded");
+    if (alreadyDownloaded) {
+      TileRegion region = regions.firstWhere((r) => r.id == "scotland-tile-region");
+      print("🚀 ~ region.completedResourceCount: ${region.completedResourceCount}");
+      print("🚀 ~ region.requiredResourceCount: ${region.requiredResourceCount}");
+      if (region.completedResourceCount < region.requiredResourceCount) {
+        print("🚀 ~ removing region and starting again");
+        _tileStore.removeRegion("scotland-tile-region");
+        alreadyDownloaded = false;
+      }
+    }
+
+    if (!alreadyDownloaded) {
+      final double west = -6.3, south = 56, east = -2.9, north = 58.5;
+
+      final scotlandPolygon = Polygon(coordinates: [
+        [
+          Position(west, south),
+          Position(east, south),
+          Position(east, north),
+          Position(west, north),
+          Position(west, south), // Close the ring
+        ]
+      ]);
+
+      final regionGeometry = scotlandPolygon.toJson(); //
+      final stylePackLoadOptions = StylePackLoadOptions(
+        glyphsRasterizationMode: GlyphsRasterizationMode.IDEOGRAPHS_RASTERIZED_LOCALLY,
+        metadata: {"tag": "scotland"},
+        acceptExpired: false,
+      );
+      await _offlineManager.loadStylePack(
+        "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
+        stylePackLoadOptions,
+        (progress) {},
+      );
+
+      final tileRegionLoadOptions = TileRegionLoadOptions(
+        geometry: regionGeometry,
+        descriptorsOptions: [
+          TilesetDescriptorOptions(
+            styleURI: "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
+            minZoom: 6,
+            maxZoom: 7,
+          ),
+        ],
+        metadata: {"tag": "scotland"},
+        acceptExpired: true,
+        networkRestriction: NetworkRestriction.NONE,
+      );
+
+      await _tileStore.loadTileRegion(
+        "scotland-tile-region",
+        tileRegionLoadOptions,
+        (progress) {
+          print("🚀 ~ progress.completedResourceCount: ${progress.completedResourceCount}");
+          print("🚀 ~ progress.requiredResourceCount: ${progress.requiredResourceCount}");
+        },
+      );
+    }
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState) async {
