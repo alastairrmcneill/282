@@ -2,13 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  SentryWidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
   await RemoteConfigService.init();
@@ -16,6 +17,7 @@ main() async {
   await AnalyticsService.init(flavor: "Development");
   await DeepLinkService.initBranchLinks(flavor: "Development", navigatorKey: navigatorKey);
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
+  MapboxOptions.setAccessToken(dotenv.env["MAPBOX_TOKEN"] ?? "");
 
   await SentryFlutter.init(
     (options) {

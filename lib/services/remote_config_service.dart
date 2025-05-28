@@ -17,6 +17,7 @@ class RemoteConfigService {
       RCFields.whatsNew: "No new features this time. We are working hard to bring you new features soon.",
       RCFields.showPrivacyOption: true,
       RCFields.groupFilterNewIcon: true,
+      RCFields.mapboxMapScreen: false,
     });
 
     try {
@@ -45,4 +46,5 @@ class RCFields {
   static const whatsNew = "whats_new";
   static const showPrivacyOption = "show_privacy_option";
   static const groupFilterNewIcon = "group_filter_new_icon";
+  static const mapboxMapScreen = "mapbox_map_screen";
 }
