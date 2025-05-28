@@ -12,15 +12,15 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 
-class MapScreen extends StatefulWidget {
+class GoogleMapScreen extends StatefulWidget {
   final FocusNode searchFocusNode;
-  const MapScreen({super.key, required this.searchFocusNode});
+  const GoogleMapScreen({super.key, required this.searchFocusNode});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  State<GoogleMapScreen> createState() => _GoogleMapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _GoogleMapScreenState extends State<GoogleMapScreen> {
   bool loading = true;
   late GoogleMapController _googleMapController;
   BitmapDescriptor _completedIcon = BitmapDescriptor.defaultMarker;

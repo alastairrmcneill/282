@@ -103,7 +103,6 @@ class App extends StatelessWidget {
         routes: {
           HomeScreen.route: (context) => const HomeScreen(startingIndex: 0),
           HomeScreen.feedTabRoute: (context) => const HomeScreen(startingIndex: 1),
-          // "/record_tab": (context) => const HomeScreen(startingIndex: 2),
           HomeScreen.savedTabRoute: (context) => const HomeScreen(startingIndex: 2),
           HomeScreen.profileTabRoute: (context) => const HomeScreen(startingIndex: 3),
           AuthHomeScreen.route: (context) => const AuthHomeScreen(),
