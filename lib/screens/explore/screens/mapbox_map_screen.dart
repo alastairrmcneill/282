@@ -266,7 +266,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       selectedMunroId = munroId;
     });
 
-    await _mapboxMap.setCamera(CameraOptions(center: tappedAnnotation.geometry));
+    await _mapboxMap.flyTo(
+      CameraOptions(center: tappedAnnotation.geometry),
+      MapAnimationOptions(duration: 1000),
+    );
   }
 
   @override
