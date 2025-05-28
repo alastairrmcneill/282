@@ -9,7 +9,7 @@ import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  SentryWidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
   await RemoteConfigService.init();
