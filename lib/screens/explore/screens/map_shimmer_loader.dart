@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MapShimmerLoader extends StatelessWidget {

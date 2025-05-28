@@ -23,6 +23,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   bool loading = true;
   late MapboxMap _mapboxMap;
   Map<String, PointAnnotation?> allAnnotations = {};
+  String scotlandRegionId = "scotland-tile-region";
+  String styleUri = "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v";
 
   PointAnnotation? selectedAnnotation;
   String? selectedMunroId;
@@ -70,72 +72,83 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> checkAndDownloadMap() async {
-    OfflineManager _offlineManager = await OfflineManager.create();
-    TileStore _tileStore = await TileStore.createDefault();
+    final OfflineManager offlineManager = await OfflineManager.create();
+    final TileStore tileStore = await TileStore.createDefault();
 
-    List<TileRegion> regions = await _tileStore.allTileRegions();
-    bool alreadyDownloaded = regions.any((r) => r.id == "scotland-tile-region");
-
-    print("🚀 ~ _MapboxMapScreenState ~ Future<void>checkAndDownloadMap ~ alreadyDownloaded: $alreadyDownloaded");
-    if (alreadyDownloaded) {
-      TileRegion region = regions.firstWhere((r) => r.id == "scotland-tile-region");
-      print("🚀 ~ region.completedResourceCount: ${region.completedResourceCount}");
-      print("🚀 ~ region.requiredResourceCount: ${region.requiredResourceCount}");
-      if (region.completedResourceCount < region.requiredResourceCount) {
-        print("🚀 ~ removing region and starting again");
-        _tileStore.removeRegion("scotland-tile-region");
-        alreadyDownloaded = false;
-      }
+    if (await _isRegionAlreadyDownloaded(tileStore)) {
+      await _handleExistingRegion(offlineManager, tileStore);
+    } else {
+      await _downloadRegion(offlineManager, tileStore);
     }
+  }
 
-    if (!alreadyDownloaded) {
-      final double west = -6.3, south = 56, east = -2.9, north = 58.5;
+  Future<bool> _isRegionAlreadyDownloaded(TileStore tileStore) async {
+    final List<TileRegion> regions = await tileStore.allTileRegions();
+    return regions.any((region) => region.id == scotlandRegionId);
+  }
 
-      final scotlandPolygon = Polygon(coordinates: [
-        [
-          Position(west, south),
-          Position(east, south),
-          Position(east, north),
-          Position(west, north),
-          Position(west, south), // Close the ring
-        ]
-      ]);
+  Future<void> _handleExistingRegion(OfflineManager offlineManager, TileStore tileStore) async {
+    final List<TileRegion> regions = await tileStore.allTileRegions();
+    final TileRegion region = regions.firstWhere((region) => region.id == scotlandRegionId);
 
-      final regionGeometry = scotlandPolygon.toJson(); //
-      final stylePackLoadOptions = StylePackLoadOptions(
-        glyphsRasterizationMode: GlyphsRasterizationMode.IDEOGRAPHS_RASTERIZED_LOCALLY,
-        metadata: {"tag": "scotland"},
-        acceptExpired: false,
-      );
-      await _offlineManager.loadStylePack(
-        "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
-        stylePackLoadOptions,
-        (progress) {},
-      );
+    print("🚀 ~ region.completedResourceCount: ${region.completedResourceCount}");
+    print("🚀 ~ region.requiredResourceCount: ${region.requiredResourceCount}");
 
-      final tileRegionLoadOptions = TileRegionLoadOptions(
-        geometry: regionGeometry,
-        descriptorsOptions: [
-          TilesetDescriptorOptions(
-            styleURI: "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
-            minZoom: 6,
-            maxZoom: 7,
-          ),
-        ],
-        metadata: {"tag": "scotland"},
-        acceptExpired: true,
-        networkRestriction: NetworkRestriction.NONE,
-      );
-
-      await _tileStore.loadTileRegion(
-        "scotland-tile-region",
-        tileRegionLoadOptions,
-        (progress) {
-          print("🚀 ~ progress.completedResourceCount: ${progress.completedResourceCount}");
-          print("🚀 ~ progress.requiredResourceCount: ${progress.requiredResourceCount}");
-        },
-      );
+    if (region.completedResourceCount < region.requiredResourceCount) {
+      print("🚀 ~ removing region and starting again");
+      await tileStore.removeRegion(scotlandRegionId);
+      await _downloadRegion(offlineManager, tileStore);
     }
+  }
+
+  Future<void> _downloadRegion(OfflineManager offlineManager, TileStore tileStore) async {
+    const double west = -6.3, south = 56, east = -2.9, north = 58.5;
+
+    final scotlandPolygon = Polygon(coordinates: [
+      [
+        Position(west, south),
+        Position(east, south),
+        Position(east, north),
+        Position(west, north),
+        Position(west, south), // Close the ring
+      ]
+    ]);
+
+    final regionGeometry = scotlandPolygon.toJson();
+    final stylePackLoadOptions = StylePackLoadOptions(
+      glyphsRasterizationMode: GlyphsRasterizationMode.IDEOGRAPHS_RASTERIZED_LOCALLY,
+      metadata: {"tag": "scotland"},
+      acceptExpired: false,
+    );
+
+    await offlineManager.loadStylePack(
+      styleUri,
+      stylePackLoadOptions,
+      (progress) {},
+    );
+
+    final tileRegionLoadOptions = TileRegionLoadOptions(
+      geometry: regionGeometry,
+      descriptorsOptions: [
+        TilesetDescriptorOptions(
+          styleURI: styleUri,
+          minZoom: 6,
+          maxZoom: 7,
+        ),
+      ],
+      metadata: {"tag": "scotland"},
+      acceptExpired: true,
+      networkRestriction: NetworkRestriction.NONE,
+    );
+
+    await tileStore.loadTileRegion(
+      scotlandRegionId,
+      tileRegionLoadOptions,
+      (progress) {
+        print("🚀 ~ progress.completedResourceCount: ${progress.completedResourceCount}");
+        print("🚀 ~ progress.requiredResourceCount: ${progress.requiredResourceCount}");
+      },
+    );
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState) async {
@@ -252,6 +265,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     setState(() {
       selectedMunroId = munroId;
     });
+
+    await _mapboxMap.setCamera(CameraOptions(center: tappedAnnotation.geometry));
   }
 
   @override
@@ -271,7 +286,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
                     MapWidget(
                       key: const ValueKey("mapWidget"),
                       onMapCreated: (MapboxMap mapboxMap) => _onMapCreated(mapboxMap, munroState),
-                      styleUri: "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v",
+                      styleUri: styleUri,
                       cameraOptions: startingCamera,
                       onTapListener: (context) {
                         widget.searchFocusNode.unfocus();
