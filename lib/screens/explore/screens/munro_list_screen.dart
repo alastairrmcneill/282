@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import '../../../models/models.dart';
 
 class MunroListScreen extends StatelessWidget {
@@ -11,6 +12,7 @@ class MunroListScreen extends StatelessWidget {
   final PanelController panelController;
 
   const MunroListScreen({super.key, required this.scrollController, required this.panelController});
+  static const String route = '${ExploreTab.route}/munro_list';
 
   @override
   Widget build(BuildContext context) {

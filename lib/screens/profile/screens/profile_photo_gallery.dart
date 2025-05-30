@@ -6,6 +6,7 @@ import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
 class ProfilePhotoGallery extends StatefulWidget {
+  static const String route = '/profile/photo_gallery';
   const ProfilePhotoGallery({super.key});
 
   @override

@@ -18,12 +18,7 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
     int progress = profileState.user?.personalMunroData?.where((munro) => munro[MunroFields.summited]).length ?? 0;
 
     return ClickableStatBox(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const MunrosCompletedScreen()),
-        );
-      },
+      onTap: () => Navigator.of(context).pushNamed(MunrosCompletedScreen.route),
       progress: progress.toString(),
       count: " / $count",
       subtitle: "Completed",

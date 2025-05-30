@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  ForgotPasswordScreen({Key? key}) : super(key: key);
+  ForgotPasswordScreen({super.key});
+  static const String route = '${AuthHomeScreen.authRoute}/forgot_password';
 
   Future _forgotPassword(BuildContext context) async {
     await AuthService.forgotPassword(context, email: _emailController.text.trim());

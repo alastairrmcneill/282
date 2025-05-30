@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
-import "package:two_eight_two/screens/create_review/state/create_review_state.dart";
 import "package:two_eight_two/screens/create_review/widgets/widgets.dart";
 import "package:two_eight_two/screens/notifiers.dart";
 import "package:two_eight_two/services/services.dart";
@@ -9,6 +8,7 @@ import "package:two_eight_two/widgets/widgets.dart";
 
 class EditReviewScreen extends StatelessWidget {
   const EditReviewScreen({super.key});
+  static const String route = '/review/edit';
 
   @override
   Widget build(BuildContext context) {

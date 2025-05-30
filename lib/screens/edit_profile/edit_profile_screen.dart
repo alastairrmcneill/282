@@ -11,6 +11,7 @@ import 'package:two_eight_two/services/services.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
+  static const String route = '/profile/edit';
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();

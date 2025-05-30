@@ -40,10 +40,7 @@ showGoToBulkMunroDialog(BuildContext context) async {
                 bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
                 munroState.setBulkMunroUpdateFilterString = "";
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const BulkMunroUpdateScreen()),
-                );
+                Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
               },
               child: Text('Go'),
             ),

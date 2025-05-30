@@ -20,10 +20,7 @@ class MunroReviewsWidget extends StatelessWidget {
         InkWell(
           onTap: () {
             ReviewService.getMunroReviews(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ReviewsScreen()),
-            );
+            Navigator.of(context).pushNamed(ReviewsScreen.route);
           },
           child: Container(
             color: Colors.transparent,

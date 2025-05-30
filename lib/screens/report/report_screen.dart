@@ -7,6 +7,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 class ReportScreen extends StatelessWidget {
   ReportScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const String route = '/report';
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,4 @@
 import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/achievements/state/achievements_state.dart';
@@ -9,7 +8,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 class AchievementsCompletedScreen extends StatefulWidget {
   const AchievementsCompletedScreen({super.key});
 
-  static const String route = "/achievements_completed_screen";
+  static const String route = "/achievements_completed";
 
   @override
   State<AchievementsCompletedScreen> createState() => _AchievementsCompletedScreenState();

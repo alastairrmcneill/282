@@ -29,7 +29,7 @@ class ReviewListTile extends StatelessWidget {
           onTap: () {
             createReviewState.reset();
             createReviewState.loadReview = review;
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const EditReviewScreen()));
+            Navigator.of(context).pushNamed(EditReviewScreen.route);
           },
         ),
         MenuItem(
@@ -47,7 +47,7 @@ class ReviewListTile extends StatelessWidget {
           onTap: () {
             reportState.setContentId = review.uid ?? "";
             reportState.setType = "review";
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+            Navigator.of(context).pushNamed(ReportScreen.route);
           },
         ),
       ];
@@ -80,7 +80,7 @@ class ReviewListTile extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     ProfileService.loadUserFromUid(context, userId: review.authorId);
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                    Navigator.of(context).pushNamed(ProfileScreen.route);
                   },
                   child: Text(
                     "${review.authorDisplayName} - ${review.dateTime.timeAgoShort()}",

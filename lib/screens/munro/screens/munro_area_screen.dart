@@ -4,12 +4,19 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
-class MunroAreaScreen extends StatelessWidget {
+class MunroAreaScreenArgs {
   final String area;
-  const MunroAreaScreen({super.key, required this.area});
+  MunroAreaScreenArgs({required this.area});
+}
+
+class MunroAreaScreen extends StatelessWidget {
+  static const String route = '/munro/area';
+  final MunroAreaScreenArgs args;
+  const MunroAreaScreen({super.key, required this.args});
 
   @override
   Widget build(BuildContext context) {
+    String area = args.area;
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     List<Munro> munros = munroState.munroList.where((munro) => munro.area == area).toList();

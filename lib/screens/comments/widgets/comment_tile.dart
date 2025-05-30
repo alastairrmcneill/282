@@ -36,7 +36,7 @@ class CommentTile extends StatelessWidget {
           onTap: () {
             reportState.setContentId = '${comment.postId}/${comment.uid ?? ""}';
             reportState.setType = "comment";
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+            Navigator.of(context).pushNamed(ReportScreen.route);
           },
         ),
       ];
@@ -67,11 +67,8 @@ class CommentTile extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     ProfileService.loadUserFromUid(context, userId: comment.authorId);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ProfileScreen(),
-                      ),
+                    Navigator.of(context).pushNamed(
+                      ProfileScreen.route,
                     );
                   },
                   child: Text(

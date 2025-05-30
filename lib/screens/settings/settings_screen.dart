@@ -14,6 +14,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatelessWidget {
+  static const String route = '/settings';
   const SettingsScreen({super.key});
 
   @override
@@ -29,55 +30,37 @@ class SettingsScreen extends StatelessWidget {
         children: [
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const EditProfileScreen()),
-              );
+              Navigator.of(context).pushNamed(EditProfileScreen.route);
             },
             title: const Text("Edit Profile"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MunroChallengeListScreen()),
-              );
+              Navigator.of(context).pushNamed(MunroChallengeListScreen.route);
             },
             title: const Text("Munro Challenges"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AchievementListScreen()),
-              );
+              Navigator.of(context).pushNamed(AchievementListScreen.route);
             },
             title: const Text("Achievements"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
-              );
+              Navigator.of(context).pushNamed(NotificationSettingsScreen.route);
             },
             title: const Text("Push Notifications"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const UnitsSettingsScreen()),
-              );
+              Navigator.of(context).pushNamed(UnitsSettingsScreen.route);
             },
             title: const Text("Units"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => PrivacySettingsScreen()),
-              );
+              Navigator.of(context).pushNamed(PrivacySettingsScreen.route);
             },
             title: const Text("Privacy"),
           ),
@@ -104,10 +87,7 @@ class SettingsScreen extends StatelessWidget {
               bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
               munroState.clearFilterAndSorting();
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const BulkMunroUpdateScreen()),
-              );
+              Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
             },
             title: Text('Bulk Munro Update'),
           ),
@@ -140,19 +120,13 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LegalScreen()),
-              );
+              Navigator.of(context).pushNamed(LegalScreen.route);
             },
             title: const Text("Legal"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AboutScreen()),
-              );
+              Navigator.of(context).pushNamed(AboutScreen.route);
             },
             title: const Text("About"),
           ),

@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/create_post/widgets/create_post_summit_duration_picker.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -11,6 +9,7 @@ import '../screens.dart';
 
 class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({super.key});
+  static const String route = '/posts/create';
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -44,7 +43,7 @@ class CreatePostScreen extends StatelessWidget {
                     HomeScreen.route,
                     (Route<dynamic> route) => false,
                   );
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => CreateReviewsScreen()));
+                  Navigator.of(context).pushNamed(CreateReviewsScreen.route);
                 } else {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();

@@ -60,14 +60,10 @@ class MunroSummitedWidget extends StatelessWidget {
       onTap: () {
         if (userState.currentUser == null) {
           navigationState.setNavigateToRoute = HomeScreen.route;
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+          Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
           if (munroState.selectedMunro != null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const MunroSummitsScreen(),
-              ),
-            );
+            Navigator.of(context).pushNamed(MunroSummitsScreen.route);
           }
         }
       },

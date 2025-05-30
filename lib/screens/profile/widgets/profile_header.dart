@@ -66,12 +66,7 @@ class ProfileHeader extends StatelessWidget {
                             context,
                             userId: profileState.user!.uid!,
                           );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const FollowersFollowingScreen(),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
                         },
                       ),
                       const SizedBox(width: 10),
@@ -83,12 +78,7 @@ class ProfileHeader extends StatelessWidget {
                             context,
                             userId: profileState.user!.uid!,
                           );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const FollowersFollowingScreen(),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
                         },
                       ),
                     ],
@@ -98,10 +88,7 @@ class ProfileHeader extends StatelessWidget {
                       profileState.isCurrentUser
                           ? ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => const EditProfileScreen()),
-                                );
+                                Navigator.of(context).pushNamed(EditProfileScreen.route);
                               },
                               child: const Text('Edit profile'),
                             )
@@ -115,12 +102,7 @@ class ProfileHeader extends StatelessWidget {
                         width: 36,
                         child: OutlinedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const UserSearchScreen(),
-                              ),
-                            );
+                            Navigator.of(context).pushNamed(UserSearchScreen.route);
                           },
                           child: const Center(child: Icon(Icons.person_search)),
                         ),

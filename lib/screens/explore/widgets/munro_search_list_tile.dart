@@ -32,11 +32,7 @@ class MunroSearchListTile extends StatelessWidget {
         munroState.setSelectedMunro = munro;
         MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
         ReviewService.getMunroReviews(context);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const MunroScreen(),
-          ),
-        );
+        Navigator.of(context).pushNamed(MunroScreen.route);
       },
     );
   }

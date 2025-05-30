@@ -57,6 +57,15 @@ class MunroTitle extends StatelessWidget {
         const SizedBox(width: 8),
         InkWell(
           onTap: () async {
+            AnalyticsService.logEvent(
+              name: "Save MunroButton Clicked",
+              parameters: {
+                "source": "Munro Summary Tile",
+                "munro_id": munroState.selectedMunro?.id ?? "",
+                "munro_name": munroState.selectedMunro?.name ?? "",
+                "user_id": user?.uid ?? "",
+              },
+            );
             if (user == null) {
               navigationState.setNavigateToRoute = HomeScreen.route;
               Navigator.pushNamed(context, AuthHomeScreen.route);

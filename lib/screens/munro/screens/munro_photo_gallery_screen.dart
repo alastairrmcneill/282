@@ -6,6 +6,7 @@ import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
 class MunroPhotoGallery extends StatefulWidget {
+  static const String route = '/munro/photo_gallery';
   const MunroPhotoGallery({super.key});
 
   @override

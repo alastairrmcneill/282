@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyWidget extends StatelessWidget {
+  static const String route = '/template/screen';
   const MyWidget({super.key});
 
   @override

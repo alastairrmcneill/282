@@ -31,7 +31,7 @@ class PostHeader extends StatelessWidget {
             createPostState.reset();
             createPostState.loadPost = post;
             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-            Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePostScreen()));
+            Navigator.of(context).pushNamed(CreatePostScreen.route);
           },
         ),
         MenuItem(
@@ -49,7 +49,7 @@ class PostHeader extends StatelessWidget {
           onTap: () {
             reportState.setContentId = post.uid ?? "";
             reportState.setType = "post";
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+            Navigator.of(context).pushNamed(ReportScreen.route);
           },
         ),
       ];
@@ -83,12 +83,7 @@ class PostHeader extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       ProfileService.loadUserFromUid(context, userId: post.authorId);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ProfileScreen(),
-                        ),
-                      );
+                      Navigator.of(context).pushNamed(ProfileScreen.route);
                     },
                     child: Text(
                       post.authorDisplayName,

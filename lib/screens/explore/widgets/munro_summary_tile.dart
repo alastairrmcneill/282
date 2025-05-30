@@ -37,11 +37,7 @@ class MunroSummaryTile extends StatelessWidget {
             munroState.setSelectedMunro = munro;
             MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
             ReviewService.getMunroReviews(context);
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const MunroScreen(),
-              ),
-            );
+            Navigator.of(context).pushNamed(MunroScreen.route);
           },
           child: Card(
             shape: RoundedRectangleBorder(
@@ -137,6 +133,15 @@ class MunroSummaryTile extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: InkWell(
                         onTap: () async {
+                          AnalyticsService.logEvent(
+                            name: "Save MunroButton Clicked",
+                            parameters: {
+                              "source": "Munro Summary Tile",
+                              "munro_id": munroState.selectedMunro?.id ?? "",
+                              "munro_name": munroState.selectedMunro?.name ?? "",
+                              "user_id": user?.uid ?? "",
+                            },
+                          );
                           if (user == null) {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
@@ -162,12 +167,7 @@ class MunroSummaryTile extends StatelessWidget {
                             createPostState.addMunro(munro);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
                             navigationState.setNavigateToRoute = HomeScreen.route;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CreatePostScreen(),
-                              ),
-                            );
+                            Navigator.of(context).pushNamed(CreatePostScreen.route);
                           }
                         },
                         child: Icon(munro.summited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),

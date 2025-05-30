@@ -3,10 +3,23 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class SavedTab extends StatelessWidget {
+class SavedTab extends StatefulWidget {
   const SavedTab({super.key});
+  static const String route = '/saved_tab';
+
+  @override
+  State<SavedTab> createState() => _SavedTabState();
+}
+
+class _SavedTabState extends State<SavedTab> {
+  @override
+  void initState() {
+    appRouteObserver.updateCurrentScreen(SavedTab.route);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
