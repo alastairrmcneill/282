@@ -6,6 +6,7 @@ import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FollowersFollowingScreen extends StatefulWidget {
@@ -59,14 +60,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
 
   void _logTabAnalytics(int index) {
     final screen = index == 0 ? '/profile/following_tab' : '/profile/followers_tab';
-    AnalyticsService.logEvent(
-      name: 'screen_view',
-      parameters: {
-        'screen': screen,
-        'timestamp': DateTime.now().toIso8601String(),
-        // Add session_id here if you have one
-      },
-    );
+    appRouteObserver.updateCurrentScreen(screen);
   }
 
   @override

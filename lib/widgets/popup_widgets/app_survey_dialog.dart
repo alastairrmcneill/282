@@ -67,8 +67,12 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
       platform: isIOS ? "iOS" : "Android",
     );
 
-    await FeedbackDatabase.create(context, feedback: feedback);
     AnalyticsService.logSurveyAnswered(q1: response1, q2: response2);
+
+    if (response1.isEmpty && response2.isEmpty) {
+      return;
+    }
+    await FeedbackDatabase.create(context, feedback: feedback);
 
     showSnackBar(context, "Thank you for your feedback! 🙏");
   }
