@@ -12,6 +12,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class InAppOnboardingFindFriends extends StatelessWidget {
   final FocusNode searchFocusNode = FocusNode();
+  static const String route = '/in_app_onboarding/find_friends';
   InAppOnboardingFindFriends({super.key});
 
   @override
@@ -82,12 +83,7 @@ class InAppOnboardingFindFriends extends StatelessWidget {
                         ),
                         onTap: () {
                           ProfileService.loadUserFromUid(context, userId: user.uid!);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ProfileScreen(),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed(ProfileScreen.route);
                         },
                       );
                     } else {

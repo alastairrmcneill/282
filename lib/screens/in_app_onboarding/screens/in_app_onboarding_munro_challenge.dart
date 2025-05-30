@@ -4,9 +4,16 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class InAppOnboardingMunroChallenge extends StatelessWidget {
+class InAppOnboardingMunroChallengeArgs {
   final GlobalKey<FormState> formKey;
-  const InAppOnboardingMunroChallenge({super.key, required this.formKey});
+
+  InAppOnboardingMunroChallengeArgs({required this.formKey});
+}
+
+class InAppOnboardingMunroChallenge extends StatelessWidget {
+  final InAppOnboardingMunroChallengeArgs args;
+  static const String route = '/in_app_onboarding/munro_challenge';
+  const InAppOnboardingMunroChallenge({super.key, required this.args});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           Form(
-            key: formKey,
+            key: args.formKey,
             child: TextFormFieldBase(
               initialValue: achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
               labelText: "Number of Munros",

@@ -26,11 +26,8 @@ class LikeTile extends StatelessWidget {
       ),
       onTap: () {
         ProfileService.loadUserFromUid(context, userId: like.userId);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const ProfileScreen(),
-          ),
+        Navigator.of(context).pushNamed(
+          ProfileScreen.route,
         );
       },
     );

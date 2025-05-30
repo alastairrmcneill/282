@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class PrivacySettingsScreen extends StatelessWidget {
+  static const String route = '${SettingsScreen.route}/privacy';
   PrivacySettingsScreen({super.key});
 
   final List<String> _postVisibilityOptions = [

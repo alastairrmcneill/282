@@ -8,6 +8,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class LikesScreen extends StatefulWidget {
   const LikesScreen({super.key});
+  static const String route = '/posts/likes';
 
   @override
   State<LikesScreen> createState() => _LikesScreenState();

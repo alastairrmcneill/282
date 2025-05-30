@@ -11,7 +11,7 @@ class CreateFreeAccountButton extends StatelessWidget {
       height: 44,
       child: ElevatedButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => RegistrationEmailScreen()));
+          Navigator.of(context).pushNamed(RegistrationEmailScreen.route);
         },
         child: const Text('Create a free account'),
       ),

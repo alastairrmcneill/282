@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
-
-  static String route = '/auth_home_screen';
+  static const String authRoute = '/auth';
+  static const String route = '$authRoute/home';
 
   @override
   State<AuthHomeScreen> createState() => _AuthHomeScreenState();
@@ -51,6 +52,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                               constraints: const BoxConstraints(),
                               padding: const EdgeInsets.all(2),
                               onPressed: () {
+                                AnalyticsService.logEvent(name: "auth_home_screen_close_button_tapped");
                                 Navigator.of(context).pop();
                               },
                               icon: const Icon(
@@ -98,11 +100,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => LoginScreen(),
-                                  ),
-                                );
+                                Navigator.of(context).pushNamed(LoginScreen.route);
                               },
                           ),
                         ],
@@ -123,12 +121,11 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const DocumentScreen(
-                                      title: "Terms & Conditions",
-                                      mdFileName: "assets/documents/terms_and_conditions.md",
-                                    ),
+                                Navigator.of(context).pushNamed(
+                                  DocumentScreen.route,
+                                  arguments: DocumentScreenArgs(
+                                    title: "Terms & Conditions",
+                                    mdFileName: "assets/documents/terms_and_conditions.md",
                                   ),
                                 );
                               },
@@ -142,12 +139,11 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const DocumentScreen(
-                                      title: "Privacy Policy",
-                                      mdFileName: "assets/documents/privacy_policy.md",
-                                    ),
+                                Navigator.of(context).pushNamed(
+                                  DocumentScreen.route,
+                                  arguments: DocumentScreenArgs(
+                                    title: "Privacy Policy",
+                                    mdFileName: "assets/documents/privacy_policy.md",
                                   ),
                                 );
                               },

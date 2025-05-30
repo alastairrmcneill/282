@@ -4,16 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/screens.dart';
+
+class RegistrationPasswordScreenArgs {
+  final RegistrationData registrationData;
+
+  RegistrationPasswordScreenArgs({required this.registrationData});
+}
 
 class RegistrationPasswordScreen extends StatelessWidget {
-  final RegistrationData registrationData;
+  final RegistrationPasswordScreenArgs args;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  RegistrationPasswordScreen({super.key, required this.registrationData});
+  RegistrationPasswordScreen({super.key, required this.args});
+  static const String route = '${AuthHomeScreen.authRoute}/registration/password';
 
   @override
   Widget build(BuildContext context) {
+    RegistrationData registrationData = args.registrationData;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Step 2 of 3"),
@@ -62,11 +71,10 @@ class RegistrationPasswordScreen extends StatelessWidget {
                       _formKey.currentState!.save();
 
                       registrationData.password = _passwordController.text.trim();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => RegistrationNamesScreen(
-                            registrationData: registrationData,
-                          ),
+                      Navigator.of(context).pushNamed(
+                        RegistrationNamesScreen.route,
+                        arguments: RegistrationNamesScreenArgs(
+                          registrationData: registrationData,
                         ),
                       );
                     },

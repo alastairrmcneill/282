@@ -29,10 +29,12 @@ class MunroStatsRow extends StatelessWidget {
           StatText(
             onTap: onAreaTap ??
                 () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => MunroAreaScreen(
-                            area: munroState.selectedMunro?.area ?? "",
-                          )));
+                  Navigator.of(context).pushNamed(
+                    MunroAreaScreen.route,
+                    arguments: MunroAreaScreenArgs(
+                      area: munroState.selectedMunro?.area ?? "",
+                    ),
+                  );
                 },
             text: "Area",
             stat: munroState.selectedMunro?.area ?? "",

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'screens/munro_search_screen.dart';
 
 class ExploreTab extends StatefulWidget {
   const ExploreTab({super.key});
+  static const String route = '/explore';
 
   @override
   _ExploreTabState createState() => _ExploreTabState();
@@ -20,9 +22,19 @@ class ExploreTab extends StatefulWidget {
 class _ExploreTabState extends State<ExploreTab> {
   final PanelController panelController = PanelController();
   final FocusNode _searchFocusNode = FocusNode();
+
   bool _isSearchVisible = false;
   bool _isMunroListViewVisible = false;
+  bool _hasLoggedPanelOpen = false;
+  bool _hasLoggedSearchOpen = false;
+
   BorderRadius borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
+
+  @override
+  void initState() {
+    appRouteObserver.updateCurrentScreen(ExploreTab.route);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +77,21 @@ class _ExploreTabState extends State<ExploreTab> {
             maxHeight: screenHeight - bottomNavBarHeight - headerHeight - topPadding + 20,
             header: const SlidingPanelHeader(),
             borderRadius: borderRadius,
-            collapsed: SlidingPanelCollapsed(
-              panelController: panelController,
-            ),
+            collapsed: SlidingPanelCollapsed(panelController: panelController),
             onPanelSlide: (position) => setState(() {
-              if (position > 0.9) {
-                borderRadius = BorderRadius.zero;
+              if (position > 0.95 && !_hasLoggedPanelOpen) {
+                _hasLoggedPanelOpen = true;
                 _isMunroListViewVisible = true;
-              } else {
-                borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
+                borderRadius = BorderRadius.zero;
+
+                AnalyticsService.logEvent(
+                  name: 'Screen Viewed',
+                  parameters: {'screen': MunroListScreen.route},
+                );
+              } else if (position < 0.8) {
+                _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
+                borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
               }
             }),
             panelBuilder: (sc) {
@@ -88,12 +105,8 @@ class _ExploreTabState extends State<ExploreTab> {
                 bottom: bottomNavBarHeight + bottomPadding,
               ),
               child: RemoteConfigService.getBool(RCFields.mapboxMapScreen)
-                  ? MapboxMapScreen(
-                      searchFocusNode: _searchFocusNode,
-                    )
-                  : GoogleMapScreen(
-                      searchFocusNode: _searchFocusNode,
-                    ),
+                  ? MapboxMapScreen(searchFocusNode: _searchFocusNode)
+                  : GoogleMapScreen(searchFocusNode: _searchFocusNode),
             ),
           ),
           _buildSearchOverlay(),
@@ -106,11 +119,19 @@ class _ExploreTabState extends State<ExploreTab> {
               setState(() {
                 _isSearchVisible = false;
                 _searchFocusNode.unfocus();
+                _hasLoggedSearchOpen = false;
               });
             },
             onSearchTap: () {
               setState(() {
                 _isSearchVisible = true;
+                if (!_hasLoggedSearchOpen) {
+                  _hasLoggedSearchOpen = true;
+                  AnalyticsService.logEvent(
+                    name: 'Screen Viewed',
+                    parameters: {'screen': MunroSearchScreen.route},
+                  );
+                }
               });
             },
           ),

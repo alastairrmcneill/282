@@ -4,17 +4,23 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:two_eight_two/models/models.dart';
 
-class FullScreenPhotoViewer extends StatefulWidget {
+class FullScreenPhotoViewerArgs {
   final List<MunroPicture> initialPictures;
   final int initialIndex;
   final Future<List<MunroPicture>> Function() fetchMorePhotos;
 
-  const FullScreenPhotoViewer({
-    super.key,
+  FullScreenPhotoViewerArgs({
     required this.initialPictures,
     required this.initialIndex,
     required this.fetchMorePhotos,
   });
+}
+
+class FullScreenPhotoViewer extends StatefulWidget {
+  static const String route = "/fullScreenPhotoViewer";
+  final FullScreenPhotoViewerArgs args;
+
+  const FullScreenPhotoViewer({super.key, required this.args});
 
   @override
   _FullScreenPhotoViewerState createState() => _FullScreenPhotoViewerState();
@@ -29,8 +35,8 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
   @override
   void initState() {
     super.initState();
-    photos = widget.initialPictures;
-    currentIndex = widget.initialIndex;
+    photos = widget.args.initialPictures;
+    currentIndex = widget.args.initialIndex;
     _pageController = PageController(initialPage: currentIndex);
   }
 
@@ -40,7 +46,7 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
         isLoading = true;
       });
 
-      List<MunroPicture> newPhotos = await widget.fetchMorePhotos();
+      List<MunroPicture> newPhotos = await widget.args.fetchMorePhotos();
 
       setState(() {
         photos.addAll(newPhotos);

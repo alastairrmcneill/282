@@ -24,11 +24,7 @@ class FindFriendsHeaderWiget extends StatelessWidget {
             hintText: "Search...",
             onSearchTap: () {
               focusNode.unfocus();
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const UserSearchScreen(),
-                ),
-              );
+              Navigator.of(context).pushNamed(UserSearchScreen.route);
             },
           )
         ],

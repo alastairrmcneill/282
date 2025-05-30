@@ -15,12 +15,7 @@ class NotificationIconButton extends StatelessWidget {
     return IconButton(
       onPressed: () {
         NotificationsService.getUserNotifications(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const NotificationsScreen(),
-          ),
-        );
+        Navigator.of(context).pushNamed(NotificationsScreen.route);
       },
       icon: Stack(
         children: [

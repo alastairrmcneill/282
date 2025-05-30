@@ -37,11 +37,7 @@ class MunroSummaryTile extends StatelessWidget {
             munroState.setSelectedMunro = munro;
             MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
             ReviewService.getMunroReviews(context);
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const MunroScreen(),
-              ),
-            );
+            Navigator.of(context).pushNamed(MunroScreen.route);
           },
           child: Card(
             shape: RoundedRectangleBorder(
@@ -162,12 +158,7 @@ class MunroSummaryTile extends StatelessWidget {
                             createPostState.addMunro(munro);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
                             navigationState.setNavigateToRoute = HomeScreen.route;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CreatePostScreen(),
-                              ),
-                            );
+                            Navigator.of(context).pushNamed(CreatePostScreen.route);
                           }
                         },
                         child: Icon(munro.summited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),

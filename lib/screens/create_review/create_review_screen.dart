@@ -10,6 +10,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 class CreateReviewsScreen extends StatelessWidget {
   CreateReviewsScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const String route = '/review/create';
 
   @override
   Widget build(BuildContext context) {

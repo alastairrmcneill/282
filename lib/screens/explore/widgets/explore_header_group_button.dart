@@ -40,13 +40,9 @@ class ExploreHeaderGroupButton extends StatelessWidget {
                 onPressed: () {
                   if (user == null) {
                     navigationState.setNavigateToRoute = HomeScreen.route;
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                    Navigator.of(context).pushNamed(AuthHomeScreen.route);
                   } else {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const GroupFilterScreen(),
-                      ),
-                    );
+                    Navigator.of(context).pushNamed(GroupFilterScreen.route);
                   }
                 },
                 child: const Icon(

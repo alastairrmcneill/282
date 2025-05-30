@@ -12,10 +12,7 @@ class HomeScreen extends StatefulWidget {
   final int? startingIndex;
   const HomeScreen({super.key, this.startingIndex = 0});
 
-  static const String route = '/home_screen';
-  static const String feedTabRoute = '/feed_tab';
-  static const String savedTabRoute = '/saved_tab';
-  static const String profileTabRoute = '/profile_tab';
+  static const String route = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,7 +20,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey _bottomNavigationKey = GlobalKey();
-  double _bottomNavBarHeight = 0.0;
   late int _currentIndex;
   final List<Widget> _screens = [
     const ExploreTab(),
@@ -107,8 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           if (value == 1) {
             if (user == null) {
-              navigationState.setNavigateToRoute = HomeScreen.feedTabRoute;
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+              navigationState.setNavigateToRoute = FeedTab.route;
+              Navigator.of(context).pushNamed(AuthHomeScreen.route);
             } else {
               // Navigate to feed
               PostService.getGlobalFeed(context);
@@ -119,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           if (value == 2) {
             if (user == null) {
-              navigationState.setNavigateToRoute = HomeScreen.savedTabRoute;
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+              navigationState.setNavigateToRoute = SavedTab.route;
+              Navigator.of(context).pushNamed(AuthHomeScreen.route);
             } else {
               // Navigate to saved
               SavedListService.readUserSavedLists(context);
@@ -129,8 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           if (value == 3) {
             if (user == null) {
-              navigationState.setNavigateToRoute = HomeScreen.profileTabRoute;
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+              navigationState.setNavigateToRoute = ProfileTab.route;
+              Navigator.of(context).pushNamed(AuthHomeScreen.route);
             } else {
               // Navigate to profile
               ProfileService.loadUserFromUid(context, userId: user.uid!);
@@ -153,11 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
             activeIcon: Icon(CupertinoIcons.news_solid),
             label: 'Feed',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.navigation_outlined),
-          //   activeIcon: Icon(Icons.navigation_rounded),
-          //   label: 'Record',
-          // ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.bookmark),
             activeIcon: Icon(CupertinoIcons.bookmark_fill),

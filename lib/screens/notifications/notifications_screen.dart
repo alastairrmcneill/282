@@ -7,6 +7,7 @@ import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationsScreen extends StatefulWidget {
+  static const String route = '/notifications';
   const NotificationsScreen({super.key});
 
   @override

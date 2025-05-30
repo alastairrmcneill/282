@@ -29,11 +29,7 @@ class EmptyFriendsFeed extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const UserSearchScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(UserSearchScreen.route);
                 },
                 child: const Text("Find Friends"),
               ),

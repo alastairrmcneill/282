@@ -6,6 +6,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunrosCompletedScreen extends StatelessWidget {
+  static const String route = '/profile/munros_completed';
   const MunrosCompletedScreen({super.key});
 
   @override

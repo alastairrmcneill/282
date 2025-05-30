@@ -6,32 +6,62 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
 
 class FeedTab extends StatefulWidget {
   const FeedTab({super.key});
+  static const String route = '/feed_tab';
 
   @override
   State<FeedTab> createState() => _FeedTabState();
 }
 
-class _FeedTabState extends State<FeedTab> {
+class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
-    RateMyApp rateMyApp = RateMyApp(
-      preferencesPrefix: 'rateMyApp_',
-      minDays: 2,
-      minLaunches: 2,
-      remindDays: 5,
-      remindLaunches: 5,
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await rateMyApp.init();
-      if (mounted && rateMyApp.shouldOpenDialog) {
-        rateMyApp.showRateDialog(context);
-      }
-    });
     super.initState();
+
+    // Initialize TabController
+    _tabController = TabController(length: 2, vsync: this);
+
+    // Log the first tab on launch
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logTabAnalytics(_tabController.index);
+
+      // RateMyApp logic
+      RateMyApp rateMyApp = RateMyApp(
+        preferencesPrefix: 'rateMyApp_',
+        minDays: 2,
+        minLaunches: 2,
+        remindDays: 5,
+        remindLaunches: 5,
+      );
+
+      rateMyApp.init().then((_) {
+        if (mounted && rateMyApp.shouldOpenDialog) {
+          rateMyApp.showRateDialog(context);
+        }
+      });
+    });
+
+    // Listen for tab changes
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return; // Wait for animation to complete
+      _logTabAnalytics(_tabController.index);
+    });
+  }
+
+  void _logTabAnalytics(int index) {
+    final screenName = index == 0 ? '/feed_tab/global' : '/feed_tab/friends';
+    appRouteObserver.updateCurrentScreen(screenName);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,11 +72,12 @@ class _FeedTabState extends State<FeedTab> {
       child: Scaffold(
         appBar: AppBar(
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(0),
+            preferredSize: const Size.fromHeight(0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 TabBar(
+                  controller: _tabController,
                   isScrollable: true,
                   indicator: const UnderlineTabIndicator(
                     borderSide: BorderSide(
@@ -61,38 +92,30 @@ class _FeedTabState extends State<FeedTab> {
                   unselectedLabelStyle: const TextStyle(
                     fontWeight: FontWeight.w400,
                   ),
-                  unselectedLabelColor: Colors.grey[600],
+                  unselectedLabelColor: Colors.grey,
                   tabs: const [
                     Tab(text: 'All Munro Baggers'),
                     Tab(text: 'Friends'),
                   ],
                 ),
                 const Spacer(),
-                // FindFriendsIconButton(),
                 const NotificationIconButton(),
               ],
             ),
           ),
         ),
         body: TabBarView(
+          controller: _tabController,
           children: [
             FeedListView(
               posts: feedState.globalPosts,
-              paginate: () {
-                PostService.paginateGlobalFeed(context);
-              },
-              refreshPosts: () {
-                PostService.getGlobalFeed(context);
-              },
+              paginate: () => PostService.paginateGlobalFeed(context),
+              refreshPosts: () => PostService.getGlobalFeed(context),
             ),
             FeedListView(
               posts: feedState.friendsPosts,
-              paginate: () {
-                PostService.paginateFriendsFeed(context);
-              },
-              refreshPosts: () {
-                PostService.getFriendsFeed(context);
-              },
+              paginate: () => PostService.paginateFriendsFeed(context),
+              refreshPosts: () => PostService.getFriendsFeed(context),
               headerWidget: const FindFriendsHeaderWiget(),
               emptyList: const EmptyFriendsFeed(),
             ),

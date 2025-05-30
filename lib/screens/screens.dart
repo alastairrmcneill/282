@@ -9,7 +9,6 @@ export 'munro/screens/munro_area_screen.dart';
 export 'nav/home_screen.dart';
 export 'onboarding/screen.dart';
 export 'profile/profile_tab.dart';
-export 'record/record_tab.dart';
 export 'saved/saved_tab.dart';
 export 'user_search/user_search_screen.dart';
 export 'settings/settings_screen.dart';

@@ -438,9 +438,8 @@ class AuthService {
       achievementsState.reset();
       achievementsState.setCurrentAchievement = achievement;
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => InAppOnboarding()),
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        InAppOnboarding.route,
         (Route<dynamic> route) => false,
       );
     }

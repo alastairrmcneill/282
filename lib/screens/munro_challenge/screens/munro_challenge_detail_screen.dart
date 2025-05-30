@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -8,6 +7,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroChallengeDetailScreen extends StatelessWidget {
   const MunroChallengeDetailScreen({super.key});
+  static const String route = '/munro_challenge/detail';
 
   Widget _buildMessage(BuildContext context, Achievement achievement) {
     if (achievement.completed) {
@@ -91,12 +91,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CreateMunroChallengeScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(CreateMunroChallengeScreen.route);
                 },
                 child: const Text('Update Challenge'),
               ),

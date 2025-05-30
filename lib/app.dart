@@ -4,6 +4,8 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
+import 'package:two_eight_two/support/app_router.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -100,16 +102,8 @@ class App extends StatelessWidget {
         debugShowCheckedModeBanner: flavor == "Development",
         theme: MyTheme.lightTheme,
         navigatorKey: navigatorKey,
-        routes: {
-          HomeScreen.route: (context) => const HomeScreen(startingIndex: 0),
-          HomeScreen.feedTabRoute: (context) => const HomeScreen(startingIndex: 1),
-          HomeScreen.savedTabRoute: (context) => const HomeScreen(startingIndex: 2),
-          HomeScreen.profileTabRoute: (context) => const HomeScreen(startingIndex: 3),
-          AuthHomeScreen.route: (context) => const AuthHomeScreen(),
-          MunroScreen.route: (context) => const MunroScreen(),
-          AchievementsCompletedScreen.route: (context) => const AchievementsCompletedScreen(),
-          WeatherScreen.route: (context) => const WeatherScreen(),
-        },
+        navigatorObservers: [appRouteObserver],
+        onGenerateRoute: AppRouter.generateRoute,
         home: const WhatsNewDialog(
           child: AppUpdateDialog(
             child: FeedbackSurvey(

@@ -49,12 +49,7 @@ class MunroChallengeWidget extends StatelessWidget {
                 onPressed: () {
                   achievementsState.reset();
                   achievementsState.setCurrentAchievement = achievement;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CreateMunroChallengeScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(CreateMunroChallengeScreen.route);
                 },
                 child: const Text("Edit"),
               ),
@@ -62,12 +57,7 @@ class MunroChallengeWidget extends StatelessWidget {
                 onPressed: () {
                   achievementsState.reset();
                   achievementsState.setCurrentAchievement = achievement;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MunroChallengeListScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(MunroChallengeListScreen.route);
                 },
                 child: const Text("Past Challenges"),
               ),

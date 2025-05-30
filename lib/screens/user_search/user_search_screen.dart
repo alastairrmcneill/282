@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
@@ -10,6 +9,7 @@ import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class UserSearchScreen extends StatefulWidget {
+  static const String route = "/user_search";
   const UserSearchScreen({super.key});
 
   @override
@@ -138,12 +138,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             ),
             onTap: () {
               ProfileService.loadUserFromUid(context, userId: user.uid!);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const ProfileScreen(),
-                ),
-              );
+              Navigator.of(context).pushNamed(ProfileScreen.route);
             },
           );
         } else {

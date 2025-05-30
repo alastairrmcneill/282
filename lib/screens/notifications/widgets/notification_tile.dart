@@ -68,16 +68,11 @@ class NotificationTile extends StatelessWidget {
           commentsState.reset();
           commentsState.setPostId = notification.postId!;
           CommentsService.getPostComments(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
+          Navigator.of(context).pushNamed(CommentsScreen.route);
         } else if (notification.type == "follow") {
           // Navigate to the user post
           ProfileService.loadUserFromUid(context, userId: notification.sourceId);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const ProfileScreen(),
-            ),
-          );
+          Navigator.of(context).pushNamed(ProfileScreen.route);
         }
       },
     );

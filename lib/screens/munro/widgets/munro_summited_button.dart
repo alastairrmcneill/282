@@ -20,18 +20,14 @@ class MunroSummitedButton extends StatelessWidget {
         onPressed: () {
           if (userState.currentUser == null) {
             navigationState.setNavigateToRoute = HomeScreen.route;
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+            Navigator.of(context).pushNamed(AuthHomeScreen.route);
           } else {
             createPostState.reset();
             if (munroState.selectedMunro != null) {
               createPostState.addMunro(munroState.selectedMunro!);
               createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
               navigationState.setNavigateToRoute = HomeScreen.route;
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => CreatePostScreen(),
-                ),
-              );
+              Navigator.of(context).pushNamed(CreatePostScreen.route);
             }
           }
         },

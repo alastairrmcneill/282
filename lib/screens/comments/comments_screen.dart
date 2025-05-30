@@ -10,6 +10,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({super.key});
+  static const String route = '/posts/comments';
 
   @override
   State<CommentsScreen> createState() => _CommentsScreenState();
@@ -145,12 +146,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         likesState.reset();
                         likesState.setPostId = commentsState.postId;
                         LikeService.getPostLikes(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const LikesScreen(),
-                          ),
-                        );
+                        Navigator.of(context).pushNamed(LikesScreen.route);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

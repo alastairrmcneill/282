@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 class RegistrationEmailScreen extends StatelessWidget {
   TextEditingController _emailController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   RegistrationEmailScreen({super.key});
+  static const String route = '${AuthHomeScreen.authRoute}/registration/email';
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +47,10 @@ class RegistrationEmailScreen extends StatelessWidget {
                       _formKey.currentState!.save();
                       RegistrationData registrationData = RegistrationData();
                       registrationData.email = _emailController.text.trim();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => RegistrationPasswordScreen(
-                            registrationData: registrationData,
-                          ),
+                      Navigator.of(context).pushNamed(
+                        RegistrationPasswordScreen.route,
+                        arguments: RegistrationPasswordScreenArgs(
+                          registrationData: registrationData,
                         ),
                       );
                     },

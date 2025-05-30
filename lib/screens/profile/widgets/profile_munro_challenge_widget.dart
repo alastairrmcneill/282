@@ -32,12 +32,7 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
         if (profileState.isCurrentUser) {
           achievementsState.reset();
           achievementsState.setCurrentAchievement = achievement;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const MunroChallengeDetailScreen(),
-            ),
-          );
+          Navigator.of(context).pushNamed(MunroChallengeDetailScreen.route);
         }
       },
       progress: count == 0 ? "" : progress.toString(),

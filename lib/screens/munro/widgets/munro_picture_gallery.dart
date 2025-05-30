@@ -20,10 +20,7 @@ class MunroPictureGallery extends StatelessWidget {
         InkWell(
           onTap: () {
             MunroPictureService.getMunroPictures(context, munroId: munroState.selectedMunro!.id);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const MunroPhotoGallery()),
-            );
+            Navigator.of(context).pushNamed(MunroPhotoGallery.route);
           },
           child: Container(
             color: Colors.transparent,
