@@ -24,6 +24,10 @@ class WeatherDisclaimer extends StatelessWidget {
             style: const TextStyle(color: Colors.blue),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
+                AnalyticsService.logEvent(
+                  name: "Weather Met Office Link Clicked",
+                  parameters: {},
+                );
                 try {
                   await launchUrl(
                     Uri.parse('https://www.metoffice.gov.uk/'),

@@ -35,6 +35,13 @@ class MunroDescription extends StatelessWidget {
                     ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
+                    AnalyticsService.logEvent(
+                      name: "Walk Highlands Munro Link Clicked",
+                      parameters: {
+                        "munro_id": munroState.selectedMunro?.id ?? "",
+                        "munro_name": munroState.selectedMunro?.name ?? "",
+                      },
+                    );
                     try {
                       await launchUrl(
                         Uri.parse(munroState.selectedMunro?.link ?? ""),

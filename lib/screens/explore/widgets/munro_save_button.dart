@@ -4,6 +4,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class MunroSaveButton extends StatelessWidget {
@@ -29,6 +30,15 @@ class MunroSaveButton extends StatelessWidget {
           padding: const EdgeInsets.all(2), // Adjust padding to make it circular
         ),
         onPressed: () async {
+          AnalyticsService.logEvent(
+            name: "Save Munro Button Clicked",
+            parameters: {
+              "source": "Munro Page",
+              "munro_id": munroState.selectedMunro?.id ?? "",
+              "munro_name": munroState.selectedMunro?.name ?? "",
+              "user_id": user?.uid ?? "",
+            },
+          );
           if (user == null) {
             navigationState.setNavigateToRoute = HomeScreen.route;
             Navigator.pushNamed(context, AuthHomeScreen.route);
