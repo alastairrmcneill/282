@@ -19,6 +19,7 @@ class FeedListView extends StatefulWidget {
     this.headerWidget,
     this.emptyList,
   });
+  static const String route = '/feed/list';
 
   @override
   State<FeedListView> createState() => _FeedListViewState();

@@ -7,6 +7,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewsScreen extends StatefulWidget {
   const ReviewsScreen({super.key});
+  static const String route = '/reviews';
 
   @override
   State<ReviewsScreen> createState() => _ReviewsScreenState();

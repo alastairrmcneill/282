@@ -5,6 +5,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroSummitsScreen extends StatelessWidget {
+  static const String route = '/munro/summits';
   const MunroSummitsScreen({super.key});
 
   @override

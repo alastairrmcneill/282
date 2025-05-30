@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 class AboutScreen extends StatelessWidget {
+  static const String route = '${SettingsScreen.route}/about';
   const AboutScreen({super.key});
 
   @override

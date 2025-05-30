@@ -7,7 +7,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class BulkMunroUpdateScreen extends StatefulWidget {
-  static const String routeName = '/bulk_munro_update';
+  static const String route = '/bulk_munro_update';
   const BulkMunroUpdateScreen({super.key});
 
   @override

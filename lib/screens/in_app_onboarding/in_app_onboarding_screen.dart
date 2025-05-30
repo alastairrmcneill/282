@@ -5,6 +5,8 @@ import 'package:two_eight_two/services/services.dart';
 
 class InAppOnboarding extends StatefulWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  static const String route = '/in_app_onboarding';
+
   InAppOnboarding({super.key});
 
   @override
@@ -12,13 +14,24 @@ class InAppOnboarding extends StatefulWidget {
 }
 
 class _InAppOnboardingState extends State<InAppOnboarding> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    AnalyticsService.logOnboardingScreenViewed(screenIndex: 0);
+    // Log first screen view
+    AnalyticsService.logOnboardingScreenViewed(screenIndex: _currentPage);
+    AnalyticsService.logOnboardingStarted();
+  }
+
+  void _onPageChanged(int newPage) {
+    setState(() {
+      _currentPage = newPage;
+    });
+
+    // Log screen view on every page change
+    AnalyticsService.logOnboardingScreenViewed(screenIndex: newPage);
   }
 
   @override
@@ -42,21 +55,19 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
               children: [
                 PageProgressIndicator(
                   currentPageIndex: _currentPage,
-                  totalPages: 4, // Change this based on the total number of pages
+                  totalPages: 4,
                 ),
                 Expanded(
                   child: PageView(
                     controller: _pageController,
-                    onPageChanged: (int page) {
-                      setState(() {
-                        _currentPage = page;
-                      });
-                    },
+                    onPageChanged: _onPageChanged,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       InAppOnboardingWelcome(),
                       InAppOnboardingMunroUpdates(),
-                      InAppOnboardingMunroChallenge(formKey: widget.formKey),
+                      InAppOnboardingMunroChallenge(
+                        args: InAppOnboardingMunroChallengeArgs(formKey: widget.formKey),
+                      ),
                       InAppOnboardingFindFriends(),
                     ],
                   ),
@@ -75,23 +86,25 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                                   curve: Curves.easeInOut,
                                 );
                               },
-                              child: const Text('Back')),
+                              child: const Text('Back'),
+                            ),
                       _currentPage == 3
                           ? ElevatedButton(
                               onPressed: () async {
                                 AchievementService.setMunroChallenge(context);
                                 MunroService.bulkUpdateMunros(context);
                                 SharedPreferencesService.setShowBulkMunroDialog(false);
-                                Navigator.pushAndRemoveUntil(
+                                AnalyticsService.logOnboardingCompleted();
+                                Navigator.pushNamedAndRemoveUntil(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const HomeScreen()),
-                                  (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+                                  HomeScreen.route,
+                                  (Route<dynamic> route) => false,
                                 );
                               },
-                              child: const Text('Get Started'))
+                              child: const Text('Get Started'),
+                            )
                           : ElevatedButton(
                               onPressed: () {
-                                AnalyticsService.logOnboardingScreenViewed(screenIndex: _currentPage + 1);
                                 if (_currentPage == 2) {
                                   if (!widget.formKey.currentState!.validate()) {
                                     return;
@@ -107,16 +120,13 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               child: const Row(
                                 children: [
                                   Text('Next'),
-                                  Icon(
-                                    Icons.chevron_right_rounded,
-                                    size: 18,
-                                  )
+                                  Icon(Icons.chevron_right_rounded, size: 18),
                                 ],
                               ),
                             ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

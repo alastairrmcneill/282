@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class AchievementDetailScreen extends StatelessWidget {
+class AchievementDetailsScreenArgs {
   final Achievement achievement;
-  const AchievementDetailScreen({super.key, required this.achievement});
+  AchievementDetailsScreenArgs({required this.achievement});
+}
+
+class AchievementDetailScreen extends StatelessWidget {
+  static const String route = '/achievement_detail';
+  final AchievementDetailsScreenArgs args;
+  const AchievementDetailScreen({super.key, required this.args});
 
   Widget _buildMessage(BuildContext context, Achievement achievement) {
     if (achievement.completed) {
@@ -45,6 +51,7 @@ class AchievementDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Achievement achievement = args.achievement;
     return Scaffold(
       appBar: AppBar(
         title: Text(achievement.name),

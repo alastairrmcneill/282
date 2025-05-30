@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/weather_model.dart';
@@ -8,7 +7,7 @@ import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class WeatherScreen extends StatefulWidget {
-  static const String route = "/weather_screen";
+  static const String route = "/weather";
   const WeatherScreen({super.key});
 
   @override

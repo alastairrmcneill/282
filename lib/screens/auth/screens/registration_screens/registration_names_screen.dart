@@ -4,17 +4,26 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
-class RegistrationNamesScreen extends StatelessWidget {
+class RegistrationNamesScreenArgs {
   final RegistrationData registrationData;
+
+  RegistrationNamesScreenArgs({required this.registrationData});
+}
+
+class RegistrationNamesScreen extends StatelessWidget {
+  final RegistrationNamesScreenArgs args;
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  RegistrationNamesScreen({super.key, required this.registrationData});
+  RegistrationNamesScreen({super.key, required this.args});
+  static const String route = '${AuthHomeScreen.authRoute}/registration/names';
 
   @override
   Widget build(BuildContext context) {
+    RegistrationData registrationData = args.registrationData;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Step 3 of 3"),

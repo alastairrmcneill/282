@@ -22,12 +22,7 @@ class CircularProfilePicture extends StatelessWidget {
       onTap: () {
         if (profileUid == null) return;
         ProfileService.loadUserFromUid(context, userId: profileUid!);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const ProfileScreen(),
-          ),
-        );
+        Navigator.of(context).pushNamed(ProfileScreen.route);
       },
       child: Container(
         width: radius * 2,

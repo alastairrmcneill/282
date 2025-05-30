@@ -5,13 +5,22 @@ import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DocumentScreen extends StatelessWidget {
+class DocumentScreenArgs {
   final String title;
   final String mdFileName;
-  const DocumentScreen({super.key, required this.title, required this.mdFileName});
+  DocumentScreenArgs({required this.title, required this.mdFileName});
+}
+
+class DocumentScreen extends StatelessWidget {
+  final DocumentScreenArgs args;
+  const DocumentScreen({super.key, required this.args});
+  static const String route = 'settings/document';
 
   @override
   Widget build(BuildContext context) {
+    String title = args.title;
+    String mdFileName = args.mdFileName;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),

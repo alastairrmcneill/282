@@ -62,8 +62,8 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
                   onPressed: () async {
                     // Check if logged in or not
                     if (user == null) {
-                      navigationState.setNavigateToRoute = HomeScreen.profileTabRoute;
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                      navigationState.setNavigateToRoute = ProfileTab.route;
+                      Navigator.of(context).pushNamed(AuthHomeScreen.route);
                     } else {
                       FollowingService.unfollowUser(
                         context,
@@ -83,8 +83,8 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
                   onPressed: () async {
                     // Check if logged in or not
                     if (user == null) {
-                      navigationState.setNavigateToRoute = HomeScreen.profileTabRoute;
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthHomeScreen()));
+                      navigationState.setNavigateToRoute = ProfileTab.route;
+                      Navigator.of(context).pushNamed(AuthHomeScreen.route);
                     } else {
                       FollowingService.followUser(
                         context,

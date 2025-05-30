@@ -5,6 +5,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class MunroChallengeListScreen extends StatelessWidget {
+  static const String route = '/munro_challenges';
   const MunroChallengeListScreen({super.key});
 
   @override
@@ -37,12 +38,7 @@ class MunroChallengeListScreen extends StatelessWidget {
                   ? () {
                       achievementsState.reset();
                       achievementsState.setCurrentAchievement = achievement;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MunroChallengeDetailScreen(),
-                        ),
-                      );
+                      Navigator.of(context).pushNamed(MunroChallengeDetailScreen.route);
                     }
                   : null,
             );

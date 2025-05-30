@@ -11,6 +11,7 @@ import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
+  static const String route = '/profile';
   const ProfileScreen({super.key});
 
   @override
@@ -65,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () {
           reportState.setContentId = profileState.user?.uid ?? "";
           reportState.setType = "user";
-          Navigator.push(context, MaterialPageRoute(builder: (_) => ReportScreen()));
+          Navigator.of(context).pushNamed(ReportScreen.route);
         },
       ),
     ];
@@ -147,11 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             profileState.isCurrentUser
                 ? IconButton(
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const SettingsScreen(),
-                        ),
-                      );
+                      Navigator.of(context).pushNamed(SettingsScreen.route);
                     },
                     icon: const Icon(Icons.settings_rounded),
                   )

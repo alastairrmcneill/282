@@ -4,12 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const String route = '${AuthHomeScreen.authRoute}/login';
 
   LoginScreen({super.key});
 

@@ -6,6 +6,7 @@ import 'package:two_eight_two/screens/screens.dart';
 
 class AchievementListScreen extends StatelessWidget {
   const AchievementListScreen({super.key});
+  static const String route = '/achievements_list';
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +33,11 @@ class AchievementListScreen extends StatelessWidget {
               title: Text(achievement.name),
               subtitle: Text(achievement.description),
               trailing: achievement.completed ? const Icon(Icons.check) : null,
-              onTap: () => Navigator.push(
+              onTap: () => Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => AchievementDetailScreen(achievement: achievement),
+                AchievementDetailScreen.route,
+                arguments: AchievementDetailsScreenArgs(
+                  achievement: achievement,
                 ),
               ),
             );

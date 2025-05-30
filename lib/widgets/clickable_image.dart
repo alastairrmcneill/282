@@ -20,17 +20,15 @@ class ClickableImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FullScreenPhotoViewer(
-              initialPictures: munroPictures,
-              initialIndex: initialIndex,
-              fetchMorePhotos: () async {
-                List<MunroPicture> newPhotos = await fetchMorePhotos();
-                return newPhotos;
-              },
-            ),
+        Navigator.of(context).pushNamed(
+          FullScreenPhotoViewer.route,
+          arguments: FullScreenPhotoViewerArgs(
+            initialPictures: munroPictures,
+            initialIndex: initialIndex,
+            fetchMorePhotos: () async {
+              List<MunroPicture> newPhotos = await fetchMorePhotos();
+              return newPhotos;
+            },
           ),
         );
       },

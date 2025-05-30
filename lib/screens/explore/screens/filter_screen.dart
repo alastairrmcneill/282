@@ -4,9 +4,11 @@ import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
+  static const String route = '${ExploreTab.route}/filter';
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();

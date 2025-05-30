@@ -29,11 +29,7 @@ class PostWidget extends StatelessWidget {
                   munroState.setSelectedMunro = post.includedMunros[i];
                   MunroPictureService.getMunroPictures(context, munroId: post.includedMunros[i].id, count: 4);
                   ReviewService.getMunroReviews(context);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const MunroScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(MunroScreen.route);
                 },
                 child: Text.rich(
                   TextSpan(
@@ -120,12 +116,7 @@ class PostWidget extends StatelessWidget {
                             likesState.reset();
                             likesState.setPostId = post.uid!;
                             LikeService.getPostLikes(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const LikesScreen(),
-                              ),
-                            );
+                            Navigator.of(context).pushNamed(LikesScreen.route);
                           },
                           child: Text(
                             post.likes == 1 ? "1 like" : "${post.likes} likes",
@@ -138,7 +129,7 @@ class PostWidget extends StatelessWidget {
                             commentsState.reset();
                             commentsState.setPostId = post.uid!;
                             CommentsService.getPostComments(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const CommentsScreen()));
+                            Navigator.of(context).pushNamed(CommentsScreen.route);
                           },
                           child: const Icon(CupertinoIcons.chat_bubble, size: 22),
                         ),

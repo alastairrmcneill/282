@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class InAppOnboardingWelcome extends StatelessWidget {
   const InAppOnboardingWelcome({super.key});
+  static const String route = '/in_app_onboarding/welcome';
 
   @override
   Widget build(BuildContext context) {

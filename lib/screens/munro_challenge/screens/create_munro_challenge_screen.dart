@@ -8,6 +8,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 class CreateMunroChallengeScreen extends StatelessWidget {
   CreateMunroChallengeScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const String route = '/munro_challenge/create';
 
   @override
   Widget build(BuildContext context) {

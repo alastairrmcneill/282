@@ -152,4 +152,18 @@ class AnalyticsService {
       ...additionalData ?? {},
     });
   }
+
+  static Future<void> logOnboardingCompleted() async {
+    await logEvent(
+      name: 'Onboarding Progress',
+      parameters: {"status": "completed"},
+    );
+  }
+
+  static Future<void> logOnboardingStarted() async {
+    await logEvent(
+      name: 'Onboarding Progress',
+      parameters: {"status": "started"},
+    );
+  }
 }

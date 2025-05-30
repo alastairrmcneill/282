@@ -33,11 +33,7 @@ class ExploreHeaderFilterButton extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const FilterScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(FilterScreen.route);
                 },
                 child: const Icon(
                   CupertinoIcons.slider_horizontal_3,
