@@ -15,10 +15,10 @@ class HomeScreen extends StatefulWidget {
   static const String route = '/home';
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   final GlobalKey _bottomNavigationKey = GlobalKey();
   late int _currentIndex;
   final List<Widget> _screens = [
@@ -77,6 +77,21 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
     );
+  }
+
+  String get currentTabRoute {
+    switch (_currentIndex) {
+      case 0:
+        return ExploreTab.route;
+      case 1:
+        return FeedTab.route;
+      case 2:
+        return SavedTab.route;
+      case 3:
+        return ProfileTab.route;
+      default:
+        return HomeScreen.route;
+    }
   }
 
   Widget _buildScreen(BuildContext context, UserState userState) {

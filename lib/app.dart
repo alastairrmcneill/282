@@ -10,6 +10,7 @@ import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<HomeScreenState> homeScreenKey = GlobalKey<HomeScreenState>();
 
 class App extends StatelessWidget {
   final String flavor;
@@ -104,10 +105,10 @@ class App extends StatelessWidget {
         navigatorKey: navigatorKey,
         navigatorObservers: [appRouteObserver],
         onGenerateRoute: AppRouter.generateRoute,
-        home: const WhatsNewDialog(
+        home: WhatsNewDialog(
           child: AppUpdateDialog(
             child: FeedbackSurvey(
-              child: HomeScreen(),
+              child: HomeScreen(key: homeScreenKey),
             ),
           ),
         ),
