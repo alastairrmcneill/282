@@ -84,10 +84,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _isMunroListViewVisible = true;
                 borderRadius = BorderRadius.zero;
 
-                AnalyticsService.logEvent(
-                  name: 'Screen Viewed',
-                  parameters: {'screen': MunroListScreen.route},
-                );
+                appRouteObserver.updateCurrentScreen(MunroListScreen.route);
               } else if (position < 0.8) {
                 _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
@@ -120,6 +117,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _isSearchVisible = false;
                 _searchFocusNode.unfocus();
                 _hasLoggedSearchOpen = false;
+                appRouteObserver.updateCurrentScreen(ExploreTab.route);
               });
             },
             onSearchTap: () {
@@ -127,10 +125,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _isSearchVisible = true;
                 if (!_hasLoggedSearchOpen) {
                   _hasLoggedSearchOpen = true;
-                  AnalyticsService.logEvent(
-                    name: 'Screen Viewed',
-                    parameters: {'screen': MunroSearchScreen.route},
-                  );
+                  appRouteObserver.updateCurrentScreen(MunroSearchScreen.route);
                 }
               });
             },
