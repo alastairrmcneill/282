@@ -134,7 +134,7 @@ class MunroSummaryTile extends StatelessWidget {
                       child: InkWell(
                         onTap: () async {
                           AnalyticsService.logEvent(
-                            name: "Save MunroButton Clicked",
+                            name: "Save Munro Button Clicked",
                             parameters: {
                               "source": "Munro Summary Tile",
                               "munro_id": munroState.selectedMunro?.id ?? "",

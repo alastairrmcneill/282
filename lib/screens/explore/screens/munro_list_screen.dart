@@ -5,6 +5,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
 import '../../../models/models.dart';
 
 class MunroListScreen extends StatelessWidget {
@@ -47,6 +48,7 @@ class MunroListScreen extends StatelessWidget {
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeInOut,
                   );
+                  appRouteObserver.updateCurrentScreen(ExploreTab.route);
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,

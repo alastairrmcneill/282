@@ -36,7 +36,6 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AnalyticsService.logEvent(name: "Group View Screen Opened");
       GroupFilterService.getInitialFriends(context, userId: user?.uid ?? '');
     });
   }

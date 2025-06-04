@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/app.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/analytics_service.dart';
 
 class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
@@ -25,6 +28,7 @@ class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
 
   void _trackScreenTransition(Route? newRoute, Route? oldRoute) {
     final String? newScreen = _getScreenName(newRoute);
+    if (newScreen == _previousScreen) return;
 
     if (newScreen != null) {
       final now = DateTime.now();
@@ -57,14 +61,25 @@ class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
     if (route is PageRoute) {
       final name = route.settings.name;
       if (name != null && name.isNotEmpty) {
-        return name == "/" ? "/home" : name;
+        if (name == '/' || name == HomeScreen.route) {
+          return _getActiveTabRouteFromHome();
+        }
+        return name;
       }
+    }
+    return null;
+  }
+
+  String? _getActiveTabRouteFromHome() {
+    if (homeScreenKey.currentState != null) {
+      return homeScreenKey.currentState!.currentTabRoute;
     }
     return null;
   }
 
   void updateCurrentScreen(String newScreen) {
     final now = DateTime.now();
+    if (newScreen == _previousScreen) return;
 
     if (_previousScreen != null && _previousScreenStartTime != null) {
       final duration = now.difference(_previousScreenStartTime!);
