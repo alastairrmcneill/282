@@ -59,7 +59,7 @@ class UserDatabase {
     }
   }
 
-  // Read single user
+// Read single user
   static Future<AppUser?> readUserFromUid(BuildContext context, {required String uid}) async {
     try {
       DocumentReference ref = _userRef.doc(uid);
