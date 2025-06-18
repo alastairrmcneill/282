@@ -1,0 +1,7 @@
+-- Likes
+CREATE TABLE likes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  date_time_created TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

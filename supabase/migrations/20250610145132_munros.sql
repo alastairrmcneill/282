@@ -1,0 +1,17 @@
+-- CREATEING THE MUNRO TABLE SAME AS THE JSON FILE
+CREATE TABLE munros (
+  id INT PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  extra TEXT NOT NULL,
+  area TEXT NOT NULL,
+  meters INT NOT NULL,
+  section TEXT NOT NULL,
+  region TEXT NOT NULL,
+  feet INT NOT NULL,
+  lat DOUBLE PRECISION NOT NULL,
+  lng DOUBLE PRECISION NOT NULL,
+  link TEXT NOT NULL,
+  description TEXT NOT NULL,
+  picture_url TEXT NOT NULL,
+  starting_point_url TEXT NOT NULL
+);
