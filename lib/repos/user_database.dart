@@ -59,6 +59,32 @@ class UserDatabase {
     }
   }
 
+// Read single user
+  static Future<AppUser?> readUserFromUid(BuildContext context, {required String uid}) async {
+    try {
+      DocumentReference ref = _userRef.doc(uid);
+      DocumentSnapshot documentSnapshot = await ref.get();
+
+      AnalyticsService.logDatabaseRead(
+        method: "UserDatabase.readUserFromUid",
+        collection: "users",
+        documentCount: 1,
+        userId: null,
+        documentId: uid,
+      );
+
+      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
+
+      AppUser appUser = AppUser.fromJSON(data);
+
+      return appUser;
+    } on FirebaseException catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
+      return null;
+    }
+  }
+
   // Read multiple users
   static Future<List<AppUser>> readUsersByName(
     BuildContext context, {
