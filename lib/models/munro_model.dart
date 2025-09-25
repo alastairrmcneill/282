@@ -103,6 +103,40 @@ class Munro {
     );
   }
 
+  static Munro fromSupabase(Map<String, dynamic> json) {
+    List<dynamic> summitedDatesRaw = json[MunroFields.summitedDates] ?? [];
+    List<DateTime> summitedDates = [];
+    for (var date in summitedDatesRaw) {
+      summitedDates.add((date as Timestamp).toDate());
+    }
+
+    return Munro(
+      id: (json[MunroFields.id] as int).toString(),
+      name: json[MunroFields.name] as String,
+      extra: json[MunroFields.extra] as String,
+      area: json[MunroFields.area] as String,
+      meters: json[MunroFields.maters] as int,
+      section: json[MunroFields.section] as String,
+      region: json[MunroFields.region] as String,
+      feet: json[MunroFields.feet] as int,
+      lat: json[MunroFields.lat] as double,
+      lng: json[MunroFields.lng] as double,
+      link: json[MunroFields.link] as String,
+      description: json[MunroFields.description] as String,
+      pictureURL: json[MunroFields.pictureURLSupabase] as String,
+      startingPointURL: json[MunroFields.startingPointURLSupabase] as String? ?? "",
+      summited: (json[MunroFields.summited] ?? false) as bool,
+      summitedDate:
+          json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
+      summitedDates: summitedDates,
+      saved: json[MunroFields.saved] as bool? ?? false,
+      averageRating: json[MunroFields.averageRatingSupabase] != null
+          ? (json[MunroFields.averageRatingSupabase] as num).toDouble()
+          : null,
+      reviewCount: json[MunroFields.reviewCountSupabase] as int?,
+    );
+  }
+
   Munro copy({
     String? id,
     String? name,
@@ -165,12 +199,16 @@ class MunroFields {
   static String description = "description";
   static String pictureURL = "pictureURL";
   static String startingPointURL = "startingPointURL";
+  static String pictureURLSupabase = "picture_url";
+  static String startingPointURLSupabase = "starting_point_url";
   static String summited = "summited";
   static String summitedDate = "summitedDate";
   static String summitedDates = "summitedDates";
   static String saved = "saved";
   static String averageRating = "averageRating";
   static String reviewCount = "reviewCount";
+  static String averageRatingSupabase = "average_rating";
+  static String reviewCountSupabase = "reviews_count";
   static String numberOfRatings = "numberOfRatings";
   static String sumOfRatings = "sumOfRatings";
   static String ratings = "ratings";

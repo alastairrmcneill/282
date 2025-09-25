@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/munro_database_supabase.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -16,7 +17,12 @@ class MunroService {
 
       // Load in munro data
       List<Munro> munroList = [];
-      munroList = await MunroDatabase.loadBasicMunroData(context);
+
+      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+        munroList = await MunroDatabaseSupabase.getMunroData(context);
+      } else {
+        munroList = await MunroDatabase.loadBasicMunroData(context);
+      }
 
       if (userState.currentUser != null) {
         // Add personal munro data

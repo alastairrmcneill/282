@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
@@ -18,6 +19,10 @@ main() async {
   await DeepLinkService.initBranchLinks(flavor: "Production", navigatorKey: navigatorKey);
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
   MapboxOptions.setAccessToken(dotenv.env["MAPBOX_TOKEN"] ?? "");
+  await Supabase.initialize(
+    url: dotenv.env["SUPABASE_URL"] ?? "",
+    anonKey: dotenv.env["SUPABASE_PUBLISHABLE_KEY"] ?? "",
+  );
 
   await SentryFlutter.init(
     (options) {
