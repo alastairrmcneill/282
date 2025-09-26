@@ -6,4 +6,6 @@ SELECT
 FROM 
   reviews r 
 LEFT JOIN users u
-  ON u.id = r.author_id;
+  ON u.id = r.author_id
+ORDER BY 
+  r.date_time_created DESC, id ASC;
