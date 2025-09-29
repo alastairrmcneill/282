@@ -12,16 +12,28 @@ class MunroPictureService {
 
     try {
       munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
-      List<MunroPicture> munroPictures = await MunroPicturesDatabase.readMunroPictures(
-        context,
-        munroId: munroId,
-        lastPictureId: null,
-        count: count,
-      );
-
-      // Filter pictures from blocked users
       List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
-      munroPictures = munroPictures.where((munroPicture) => !blockedUsers.contains(munroPicture.authorId)).toList();
+      List<MunroPicture> munroPictures = [];
+
+      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+        munroPictures = await MunroPicturesDatabaseSupabase.readMunroPictures(
+          context,
+          munroId: munroId,
+          excludedAuthorIds: blockedUsers,
+          offset: 0,
+          count: count,
+        );
+      } else {
+        munroPictures = await MunroPicturesDatabase.readMunroPictures(
+          context,
+          munroId: munroId,
+          lastPictureId: null,
+          count: count,
+        );
+
+        // Filter pictures from blocked users
+        munroPictures = munroPictures.where((munroPicture) => !blockedUsers.contains(munroPicture.authorId)).toList();
+      }
 
       munroDetailState.setMunroPictures = munroPictures;
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
@@ -34,22 +46,38 @@ class MunroPictureService {
 
   static Future<List<MunroPicture>> paginateMunroPictures(BuildContext context, {required String munroId}) async {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       munroDetailState.setGalleryStatus = MunroDetailStatus.paginating;
+      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<MunroPicture> newMunroPictures = [];
 
-      // Find last user ID
-      String? lastMunroPictureId;
-      if (munroDetailState.munroPictures.isNotEmpty) {
-        lastMunroPictureId = munroDetailState.munroPictures.last.uid;
+      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+        newMunroPictures = await MunroPicturesDatabaseSupabase.readMunroPictures(
+          context,
+          munroId: munroId,
+          excludedAuthorIds: blockedUsers,
+          offset: munroDetailState.munroPictures.length,
+        );
+      } else {
+        // Find last user ID
+        String? lastMunroPictureId;
+        if (munroDetailState.munroPictures.isNotEmpty) {
+          lastMunroPictureId = munroDetailState.munroPictures.last.uid;
+        }
+
+        // Add munroPictures from database
+        List<MunroPicture> newMunroPictures = await MunroPicturesDatabase.readMunroPictures(
+          context,
+          munroId: munroId,
+          lastPictureId: lastMunroPictureId,
+        );
+
+        // Filter pictures from blocked users
+        newMunroPictures =
+            newMunroPictures.where((munroPicture) => !blockedUsers.contains(munroPicture.authorId)).toList();
       }
-
-      // Add munroPictures from database
-      List<MunroPicture> newMunroPictures = await MunroPicturesDatabase.readMunroPictures(
-        context,
-        munroId: munroId,
-        lastPictureId: lastMunroPictureId,
-      );
 
       munroDetailState.addMunroPictures = newMunroPictures;
       munroDetailState.setGalleryStatus = MunroDetailStatus.loaded;
@@ -65,17 +93,35 @@ class MunroPictureService {
 
   static Future getProfilePictures(BuildContext context, {required String profileId, int count = 18}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       profileState.setPhotoStatus = ProfilePhotoStatus.loading;
-      List<MunroPicture> munroPictures = await MunroPicturesDatabase.readProfilePictures(
-        context,
-        profileId: profileId,
-        lastPictureId: null,
-        count: count,
-      );
+      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<MunroPicture> profilePictures = [];
 
-      profileState.setProfilePhotos = munroPictures;
+      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+        profilePictures = await MunroPicturesDatabaseSupabase.readProfilePictures(
+          context,
+          profileId: profileId,
+          excludedAuthorIds: blockedUsers,
+          offset: 0,
+          count: count,
+        );
+      } else {
+        profilePictures = await MunroPicturesDatabase.readProfilePictures(
+          context,
+          profileId: profileId,
+          lastPictureId: null,
+          count: count,
+        );
+
+        // Filter pictures from blocked users
+        profilePictures =
+            profilePictures.where((profilePicture) => !blockedUsers.contains(profilePicture.authorId)).toList();
+      }
+
+      profileState.setProfilePhotos = profilePictures;
       profileState.setPhotoStatus = ProfilePhotoStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -85,26 +131,42 @@ class MunroPictureService {
 
   static Future<List<MunroPicture>> paginateProfilePictures(BuildContext context, {required String profileId}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
-      profileState.setPhotoStatus = ProfilePhotoStatus.paginating;
+      profileState.setPhotoStatus = ProfilePhotoStatus.loading;
+      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<MunroPicture> profilePictures = [];
 
-      // Find last user ID
-      String? lastMunroPictureId;
-      if (profileState.profilePhotos.isNotEmpty) {
-        lastMunroPictureId = profileState.profilePhotos.last.uid;
+      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+        profilePictures = await MunroPicturesDatabaseSupabase.readProfilePictures(
+          context,
+          profileId: profileId,
+          excludedAuthorIds: blockedUsers,
+          offset: profileState.profilePhotos.length,
+        );
+      } else {
+        // Find last user ID
+        String? lastMunroPictureId;
+        if (profileState.profilePhotos.isNotEmpty) {
+          lastMunroPictureId = profileState.profilePhotos.last.uid;
+        }
+
+        // Add munroPictures from database
+        profilePictures = await MunroPicturesDatabase.readProfilePictures(
+          context,
+          profileId: profileId,
+          lastPictureId: lastMunroPictureId,
+        );
+
+        // Filter pictures from blocked users
+        profilePictures =
+            profilePictures.where((profilePicture) => !blockedUsers.contains(profilePicture.authorId)).toList();
       }
 
-      // Add munroPictures from database
-      List<MunroPicture> newMunroPictures = await MunroPicturesDatabase.readProfilePictures(
-        context,
-        profileId: profileId,
-        lastPictureId: lastMunroPictureId,
-      );
-
-      profileState.addProfilePhotos = newMunroPictures;
+      profileState.addProfilePhotos = profilePictures;
       profileState.setPhotoStatus = ProfilePhotoStatus.loaded;
-      return newMunroPictures;
+      return profilePictures;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");

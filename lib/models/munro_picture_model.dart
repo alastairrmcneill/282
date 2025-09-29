@@ -29,6 +29,16 @@ class MunroPicture {
         postId: data[MunroPictureFields.postId] as String,
         privacy: data[MunroPictureFields.privacy] as String? ?? Privacy.public,
       );
+
+  factory MunroPicture.fromSupabase(Map<String, dynamic> data) => MunroPicture(
+        uid: data[MunroPictureFields.uid] as String,
+        munroId: (data[MunroPictureFields.munroIdSupbase] as int).toString(),
+        authorId: data[MunroPictureFields.authorIdSupbase] as String? ?? '',
+        imageUrl: data[MunroPictureFields.imageUrlSupbase] as String,
+        dateTime: Timestamp.fromDate(DateTime.parse(data[MunroPictureFields.dateTimeSupbase] as String)),
+        postId: data[MunroPictureFields.postIdSupbase] as String,
+        privacy: data[MunroPictureFields.privacy] as String? ?? Privacy.public,
+      );
 }
 
 class MunroPictureFields {
@@ -39,4 +49,10 @@ class MunroPictureFields {
   static const String dateTime = 'dateTime';
   static const String postId = 'postId';
   static const String privacy = 'privacy';
+
+  static const String munroIdSupbase = 'munro_id';
+  static const String authorIdSupbase = 'author_id';
+  static const String imageUrlSupbase = 'image_url';
+  static const String postIdSupbase = 'post_id';
+  static const String dateTimeSupbase = 'date_time_created';
 }
