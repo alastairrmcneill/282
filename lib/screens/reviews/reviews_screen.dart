@@ -24,11 +24,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           reviewsState.status != ReviewsStatus.paginating) {
-        if (reviewsState.source == ReviewsSource.munro) {
-          ReviewService.paginateMunroReviews(context);
-        } else {
-          ReviewService.paginateProfileReviews(context);
-        }
+        ReviewService.paginateMunroReviews(context);
       }
     });
     super.initState();
@@ -70,7 +66,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   Widget _buildScreen(BuildContext context, ReviewsState reviewsState) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(reviewsState.source == ReviewsSource.munro ? 'Munro Reviews' : 'Profile Reviews'),
+        title: Text('Munro Reviews'),
       ),
       body: ListView.builder(
         controller: _scrollController,

@@ -5,12 +5,10 @@ class ReviewsState extends ChangeNotifier {
   ReviewsStatus _status = ReviewsStatus.initial;
   Error _error = Error();
   List<Review> _reviews = [];
-  ReviewsSource _source = ReviewsSource.munro;
 
   ReviewsStatus get status => _status;
   Error get error => _error;
   List<Review> get reviews => _reviews;
-  ReviewsSource get source => _source;
 
   set setStatus(ReviewsStatus searchStatus) {
     _status = searchStatus;
@@ -33,11 +31,6 @@ class ReviewsState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setSource(ReviewsSource source) {
-    _source = source;
-    notifyListeners();
-  }
-
   set replaceReview(Review replaceReview) {
     int index = _reviews.indexWhere((review) => review.uid == replaceReview.uid);
 
@@ -54,5 +47,3 @@ class ReviewsState extends ChangeNotifier {
 }
 
 enum ReviewsStatus { initial, loading, loaded, paginating, error }
-
-enum ReviewsSource { munro, profile }

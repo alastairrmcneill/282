@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/munro_database_supabase.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -77,6 +76,10 @@ class MunroService {
   }
 
   static Future<void> loadAllAdditionalMunrosData(BuildContext context) async {
+    if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+      // Supabase handles this differently
+      return;
+    }
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     // Read all munro review data

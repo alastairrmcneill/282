@@ -35,6 +35,16 @@ class Review {
     };
   }
 
+  // To Supabase
+  Map<String, dynamic> toSupabase() {
+    return {
+      ReviewFields.munroIdSupabase: munroId,
+      ReviewFields.authorIdSupabase: authorId,
+      ReviewFields.rating: rating,
+      ReviewFields.text: text,
+    };
+  }
+
   // From JSON
   static Review fromJSON(Map<String, dynamic> json) {
     return Review(
@@ -44,6 +54,20 @@ class Review {
       authorDisplayName: json[ReviewFields.authorDisplayName] as String,
       authorProfilePictureURL: json[ReviewFields.authorProfilePictureURL] as String?,
       dateTime: (json[ReviewFields.dateTime] as Timestamp).toDate(),
+      rating: json[ReviewFields.rating] as int,
+      text: json[ReviewFields.text] as String,
+    );
+  }
+
+  // From Supabase
+  static Review fromSupabase(Map<String, dynamic> json) {
+    return Review(
+      uid: json[ReviewFields.uidSupabase] as String?,
+      munroId: (json[ReviewFields.munroIdSupabase] as int).toString(),
+      authorId: json[ReviewFields.authorIdSupabase] as String,
+      authorDisplayName: json[ReviewFields.authorDisplayNameSupabase] as String,
+      authorProfilePictureURL: json[ReviewFields.authorProfilePictureURLSupabase] as String?,
+      dateTime: DateTime.parse(json[ReviewFields.dateTimeSupabase] as String),
       rating: json[ReviewFields.rating] as int,
       text: json[ReviewFields.text] as String,
     );
@@ -82,4 +106,11 @@ class ReviewFields {
   static const String dateTime = 'dateTime';
   static const String rating = 'rating';
   static const String text = 'text';
+
+  static const String uidSupabase = 'id';
+  static const String munroIdSupabase = 'munro_id';
+  static const String authorIdSupabase = 'author_id';
+  static const String authorDisplayNameSupabase = 'author_display_name';
+  static const String authorProfilePictureURLSupabase = 'author_profile_picture_url';
+  static const String dateTimeSupabase = 'date_time_created';
 }
