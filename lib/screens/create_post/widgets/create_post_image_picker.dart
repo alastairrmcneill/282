@@ -5,21 +5,23 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/log_service.dart';
+import 'package:two_eight_two/helpers/image_picker_helper.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
   final String munroId;
   const CreatePostImagePicker({super.key, required this.munroId});
 
-  Future pickImage(CreatePostState createPostState) async {
+  Future pickImage(BuildContext context, CreatePostState createPostState) async {
     try {
-      final images = await ImagePicker().pickMultiImage();
-      for (var image in images) {
-        createPostState.addImage(munroId: munroId, image: File(image.path));
+      final images = await ImagePickerHelper.pickMultipleImages(context);
+      if (images.isNotEmpty) {
+        for (var image in images) {
+          createPostState.addImage(munroId: munroId, image: image);
+        }
       }
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -38,7 +40,7 @@ class CreatePostImagePicker extends StatelessWidget {
         width: double.infinity,
         child: InkWell(
           onTap: () async {
-            await pickImage(createPostState);
+            await pickImage(context, createPostState);
           },
           child: DottedBorder(
             borderType: BorderType.RRect,
@@ -152,7 +154,7 @@ class CreatePostImagePicker extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: InkWell(
                       onTap: () async {
-                        await pickImage(createPostState);
+                        await pickImage(context, createPostState);
                       },
                       child: DottedBorder(
                         borderType: BorderType.RRect,

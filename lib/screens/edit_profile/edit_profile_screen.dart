@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
+import 'package:two_eight_two/helpers/image_picker_helper.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -41,11 +41,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final File? image = await ImagePickerHelper.pickSingleImage(context);
       if (image == null) return;
 
       setState(() {
-        _image = File(image.path);
+        _image = image;
       });
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
