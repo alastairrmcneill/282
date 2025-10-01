@@ -14,7 +14,7 @@ class RemoteConfigService {
     await _remoteConfig.setDefaults(const {
       RCFields.feedbackSurveyNumber: 0,
       RCFields.latestAppVersion: "1.0.0",
-      RCFields.hardUpdateBuildNumber: 999,
+      RCFields.hardUpdateBuildNumber: 0,
       RCFields.whatsNew: "No new features this time. We are working hard to bring you new features soon.",
       RCFields.showPrivacyOption: true,
       RCFields.groupFilterNewIcon: true,
