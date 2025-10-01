@@ -105,10 +105,12 @@ class App extends StatelessWidget {
         navigatorKey: navigatorKey,
         navigatorObservers: [appRouteObserver],
         onGenerateRoute: AppRouter.generateRoute,
-        home: WhatsNewDialog(
-          child: AppUpdateDialog(
-            child: FeedbackSurvey(
-              child: HomeScreen(key: homeScreenKey),
+        home: HardAppUpdateDialog(
+          child: WhatsNewDialog(
+            child: AppUpdateDialog(
+              child: FeedbackSurvey(
+                child: HomeScreen(key: homeScreenKey),
+              ),
             ),
           ),
         ),
