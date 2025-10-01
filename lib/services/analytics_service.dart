@@ -112,6 +112,13 @@ class AnalyticsService {
     );
   }
 
+  static Future<void> logHardAppUpdateDialogShown() async {
+    await logEvent(
+      name: 'hard_app_update_dialog_shown',
+      parameters: {},
+    );
+  }
+
   static Future<void> logAppUpdateDialogUpdateNow() async {
     await logEvent(
       name: 'app_update_dialog_update_now',
