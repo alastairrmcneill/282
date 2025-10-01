@@ -19,7 +19,6 @@ class RemoteConfigService {
       RCFields.showPrivacyOption: true,
       RCFields.groupFilterNewIcon: true,
       RCFields.mapboxMapScreen: false,
-      RCFields.useSupabase: false,
     });
 
     try {
@@ -50,5 +49,4 @@ class RCFields {
   static const showPrivacyOption = "show_privacy_option";
   static const groupFilterNewIcon = "group_filter_new_icon";
   static const mapboxMapScreen = "mapbox_map_screen";
-  static const useSupabase = "use_supabase";
 }

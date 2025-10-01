@@ -17,11 +17,7 @@ class MunroService {
       // Load in munro data
       List<Munro> munroList = [];
 
-      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-        munroList = await MunroDatabaseSupabase.getMunroData(context);
-      } else {
-        munroList = await MunroDatabase.loadBasicMunroData(context);
-      }
+      munroList = await MunroDatabase.getMunroData(context);
 
       if (userState.currentUser != null) {
         // Add personal munro data
@@ -76,35 +72,36 @@ class MunroService {
   }
 
   static Future<void> loadAllAdditionalMunrosData(BuildContext context) async {
-    if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-      // Supabase handles this differently
-      return;
-    }
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    return;
+    // if (RemoteConfigService.getBool(RCFields.useSupabase)) {
+    //   // Supabase handles this differently
+    //   return;
+    // }
+    // MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
-    // Read all munro review data
-    Map<String, dynamic> munroData = await MunroDatabase.getAllAdditionalMunrosData(context);
-    List<Munro> tempMunroList = munroState.munroList;
+    // // Read all munro review data
+    // Map<String, dynamic> munroData = await MunroDatabase.getAllAdditionalMunrosData(context);
+    // List<Munro> tempMunroList = munroState.munroList;
 
-    // Loop through all munros and update their review data
-    munroData.forEach((munroId, data) {
-      int numberOfRatings = data[MunroFields.numberOfRatings] ?? 0;
-      double sumOfRatings = (data[MunroFields.sumOfRatings] as num?)?.toDouble() ?? 0.0;
+    // // Loop through all munros and update their review data
+    // munroData.forEach((munroId, data) {
+    //   int numberOfRatings = data[MunroFields.numberOfRatings] ?? 0;
+    //   double sumOfRatings = (data[MunroFields.sumOfRatings] as num?)?.toDouble() ?? 0.0;
 
-      // Calculate average rating
-      double averageRating = numberOfRatings > 0 ? sumOfRatings / numberOfRatings : 0.0;
+    //   // Calculate average rating
+    //   double averageRating = numberOfRatings > 0 ? sumOfRatings / numberOfRatings : 0.0;
 
-      // Find the index of the munro in the list
-      int index = tempMunroList.indexWhere((element) => element.id == munroId);
+    //   // Find the index of the munro in the list
+    //   int index = tempMunroList.indexWhere((element) => element.id == munroId);
 
-      if (index != -1) {
-        // Update the munro's average rating and review count
-        tempMunroList[index].averageRating = averageRating;
-        tempMunroList[index].reviewCount = numberOfRatings;
-      }
-    });
+    //   if (index != -1) {
+    //     // Update the munro's average rating and review count
+    //     tempMunroList[index].averageRating = averageRating;
+    //     tempMunroList[index].reviewCount = numberOfRatings;
+    //   }
+    // });
 
-    munroState.setMunroList = tempMunroList;
+    // munroState.setMunroList = tempMunroList;
   }
 
   static Future<void> markMunrosAsDone(

@@ -39,7 +39,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   void loadData() async {
     showTerrain = await SharedPreferencesService.getMapTerrain();
-    await MunroDatabase.loadBasicMunroData(context).then(
+    await MunroDatabase.getMunroData(context).then(
       (value) => setState(() => loading = false),
     );
   }

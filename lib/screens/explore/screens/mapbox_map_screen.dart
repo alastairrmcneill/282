@@ -67,7 +67,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     selectedIcon = await _loadMarker('assets/munro_selected.png');
 
     if (mounted) {
-      await MunroDatabase.loadBasicMunroData(context).then(
+      await MunroDatabase.getMunroData(context).then(
         (value) => setState(() => loading = false),
       );
     }

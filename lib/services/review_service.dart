@@ -26,13 +26,9 @@ class ReviewService {
         );
 
         // Upload to database
-        if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-          await ReviewDatabaseSupabase.create(context, review: review);
-          MunroService.loadMunroData(context);
-        } else {
-          await ReviewDatabase.create(context, review: review);
-          MunroService.loadAllAdditionalMunrosData(context);
-        }
+
+        await ReviewDatabase.create(context, review: review);
+        MunroService.loadMunroData(context);
       }
 
       createReviewState.setStatus = CreateReviewStatus.loaded;
@@ -61,13 +57,8 @@ class ReviewService {
       );
 
       // Send to database
-      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-        await ReviewDatabaseSupabase.update(context, review: newReview);
-        MunroService.loadMunroData(context);
-      } else {
-        await ReviewDatabase.update(context, review: newReview);
-        MunroService.loadAllAdditionalMunrosData(context);
-      }
+      await ReviewDatabase.update(context, review: newReview);
+      MunroService.loadMunroData(context);
 
       reviewsState.replaceReview = newReview;
       createReviewState.setStatus = CreateReviewStatus.loaded;
@@ -91,22 +82,12 @@ class ReviewService {
       reviewsState.setStatus = ReviewsStatus.loading;
       List<Review> reviews = [];
       // Get reviews
-      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-        reviews = await ReviewDatabaseSupabase.readReviewsFromMunro(
-          context,
-          munroId: munroState.selectedMunro?.id ?? "",
-          excludedAuthorIds: blockedUsers,
-          offset: 0,
-        );
-      } else {
-        reviews = await ReviewDatabase.readReviewsFromMunro(
-          context,
-          munroId: munroState.selectedMunro?.id ?? "",
-          lastReviewId: null,
-        );
-        // Filter reviews
-        reviews = reviews.where((review) => !blockedUsers.contains(review.authorId)).toList();
-      }
+      reviews = await ReviewDatabase.readReviewsFromMunro(
+        context,
+        munroId: munroState.selectedMunro?.id ?? "",
+        excludedAuthorIds: blockedUsers,
+        offset: 0,
+      );
 
       reviewsState.setReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
@@ -129,22 +110,12 @@ class ReviewService {
       List<Review> reviews = [];
       List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
 
-      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-        reviews = await ReviewDatabaseSupabase.readReviewsFromMunro(
-          context,
-          munroId: munroState.selectedMunro?.id ?? "",
-          excludedAuthorIds: blockedUsers,
-          offset: reviewsState.reviews.length,
-        );
-      } else {
-        reviews = await ReviewDatabase.readReviewsFromMunro(
-          context,
-          munroId: munroState.selectedMunro?.id ?? "",
-          lastReviewId: reviewsState.reviews.last.uid,
-        );
-        // Filter reviews
-        reviews = reviews.where((review) => !blockedUsers.contains(review.authorId)).toList();
-      }
+      reviews = await ReviewDatabase.readReviewsFromMunro(
+        context,
+        munroId: munroState.selectedMunro?.id ?? "",
+        excludedAuthorIds: blockedUsers,
+        offset: reviewsState.reviews.length,
+      );
 
       reviewsState.addReviews = reviews;
       reviewsState.setStatus = ReviewsStatus.loaded;
@@ -164,14 +135,8 @@ class ReviewService {
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
 
-      // Send to database
-      if (RemoteConfigService.getBool(RCFields.useSupabase)) {
-        await ReviewDatabaseSupabase.delete(context, uid: review.uid!);
-        MunroService.loadMunroData(context);
-      } else {
-        await ReviewDatabase.delete(context, uid: review.uid!);
-        MunroService.loadAllAdditionalMunrosData(context);
-      }
+      await ReviewDatabase.delete(context, uid: review.uid!);
+      MunroService.loadMunroData(context);
 
       reviewsState.removeReview(review);
       createReviewState.setStatus = CreateReviewStatus.loaded;
