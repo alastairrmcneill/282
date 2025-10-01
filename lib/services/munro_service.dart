@@ -25,7 +25,7 @@ class MunroService {
 
         // Iterate over the list of Munro objects and update them
         for (var munro in munroList) {
-          var correspondingDict = dictMap[munro.id];
+          var correspondingDict = dictMap[munro.id.toString()];
           if (correspondingDict != null) {
             List<dynamic> summitedDatesRaw = correspondingDict[MunroFields.summitedDates] ?? [];
             List<DateTime> summitedDates = [];
