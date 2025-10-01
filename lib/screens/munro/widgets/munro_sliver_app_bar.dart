@@ -39,7 +39,7 @@ class MunroSliverAppBar extends StatelessWidget {
           await DeepLinkService.shareMunro(
             context,
             munroState.selectedMunro?.name ?? "",
-            munroState.selectedMunro?.id ?? "",
+            munroState.selectedMunro?.id ?? 0,
           );
         },
       ),

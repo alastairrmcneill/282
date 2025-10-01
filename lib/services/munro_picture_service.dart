@@ -6,7 +6,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class MunroPictureService {
-  static Future getMunroPictures(BuildContext context, {required String munroId, int count = 18}) async {
+  static Future getMunroPictures(BuildContext context, {required int munroId, int count = 18}) async {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
@@ -32,7 +32,7 @@ class MunroPictureService {
     }
   }
 
-  static Future<List<MunroPicture>> paginateMunroPictures(BuildContext context, {required String munroId}) async {
+  static Future<List<MunroPicture>> paginateMunroPictures(BuildContext context, {required int munroId}) async {
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 

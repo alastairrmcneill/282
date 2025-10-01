@@ -11,8 +11,8 @@ class CreatePostState extends ChangeNotifier {
   DateTime? _summitedDate;
   TimeOfDay? _startTime;
   Duration? _duration;
-  Map<String, List<File>> _images = {};
-  Map<String, List<String>> _imageURLs = {};
+  Map<int, List<File>> _images = {};
+  Map<int, List<String>> _imageURLs = {};
   List<Munro> _selectedMunros = [];
   String? _postPrivacy;
   Post? _editingPost;
@@ -24,8 +24,8 @@ class CreatePostState extends ChangeNotifier {
   DateTime? get summitedDate => _summitedDate;
   TimeOfDay? get startTime => _startTime;
   Duration? get duration => _duration;
-  Map<String, List<File>> get images => _images;
-  Map<String, List<String>> get imagesURLs => _imageURLs;
+  Map<int, List<File>> get images => _images;
+  Map<int, List<String>> get imagesURLs => _imageURLs;
   List<Munro> get selectedMunros => _selectedMunros;
   String? get postPrivacy => _postPrivacy;
   bool get hasImage => images.values.any((element) => element.isNotEmpty);
@@ -72,7 +72,7 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  setImageURLs({required String munroId, required List<String> imageURLs}) {
+  setImageURLs({required int munroId, required List<String> imageURLs}) {
     if (_imageURLs[munroId] == null) _imageURLs[munroId] = [];
 
     _imageURLs[munroId] = imageURLs;
@@ -106,7 +106,7 @@ class CreatePostState extends ChangeNotifier {
     }
   }
 
-  addImage({required String munroId, required File image}) {
+  addImage({required int munroId, required File image}) {
     if (_images[munroId] == null) _images[munroId] = [];
 
     _images[munroId]!.add(image);
@@ -114,14 +114,14 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeImage({required String munroId, required int index}) {
+  removeImage({required int munroId, required int index}) {
     if (_images[munroId] == null) return;
 
     _images[munroId]!.removeAt(index);
     notifyListeners();
   }
 
-  removeImageURL({required String munroId, required String url}) {
+  removeImageURL({required int munroId, required String url}) {
     if (_imageURLs[munroId] == null) return;
     if (_imageURLs[munroId]!.contains(url)) {
       _imageURLs[munroId]!.remove(url);

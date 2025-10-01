@@ -61,7 +61,7 @@ class MunroTitle extends StatelessWidget {
               name: "Save Munro Button Clicked",
               parameters: {
                 "source": "Munro Tile",
-                "munro_id": munroState.selectedMunro?.id ?? "",
+                "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
                 "munro_name": munroState.selectedMunro?.name ?? "",
                 "user_id": user?.uid ?? "",
               },

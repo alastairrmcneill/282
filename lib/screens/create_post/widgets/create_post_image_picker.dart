@@ -12,7 +12,7 @@ import 'package:two_eight_two/services/log_service.dart';
 import 'package:two_eight_two/helpers/image_picker_helper.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
-  final String munroId;
+  final int munroId;
   const CreatePostImagePicker({super.key, required this.munroId});
 
   Future pickImage(BuildContext context, CreatePostState createPostState) async {

@@ -322,7 +322,7 @@ class AchievementService {
     // Get my list of summits from highest x number
     int numSummited = highestMunros.where((munro) {
       // Get the personal data for this munro
-      var personalMunroData = userState.currentUser?.personalMunroData?[int.parse(munro.id) - 1];
+      var personalMunroData = userState.currentUser?.personalMunroData?[munro.id - 1];
 
       // Check if the munro has been summited
       return personalMunroData?[MunroFields.summited] ?? false;
@@ -373,7 +373,7 @@ class AchievementService {
     // Get my list of summits from highest x number
     int numSummited = lowestMunros.where((munro) {
       // Get the personal data for this munro
-      var personalMunroData = userState.currentUser?.personalMunroData?[int.parse(munro.id) - 1];
+      var personalMunroData = userState.currentUser?.personalMunroData?[munro.id - 1];
 
       // Check if the munro has been summited
       return personalMunroData?[MunroFields.summited] ?? false;

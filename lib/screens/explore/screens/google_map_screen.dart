@@ -27,7 +27,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
-  String? _selectedMunroID;
+  int? _selectedMunroID;
   bool showTerrain = false;
 
   @override

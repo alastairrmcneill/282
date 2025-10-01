@@ -10,7 +10,7 @@ class MunroPicturesDatabase {
 
   static Future<List<MunroPicture>> readMunroPictures(
     BuildContext context, {
-    required String munroId,
+    required int munroId,
     required List<String> excludedAuthorIds,
     int offset = 0,
     int count = 18,
@@ -21,14 +21,14 @@ class MunroPicturesDatabase {
     try {
       response = await _munroPicturesRef
           .select()
-          .eq(MunroPictureFields.munroIdSupbase, munroId)
-          .not(MunroPictureFields.authorIdSupbase, 'in', excludedAuthorIds)
+          .eq(MunroPictureFields.munroId, munroId)
+          .not(MunroPictureFields.authorId, 'in', excludedAuthorIds)
           .eq(MunroPictureFields.privacy, Privacy.public)
-          .order(MunroPictureFields.dateTimeSupbase, ascending: false)
+          .order(MunroPictureFields.dateTime, ascending: false)
           .range(offset, offset + count - 1);
 
       for (var doc in response) {
-        MunroPicture munroPicture = MunroPicture.fromSupabase(doc);
+        MunroPicture munroPicture = MunroPicture.fromJSON(doc);
         munroPictures.add(munroPicture);
       }
       return munroPictures;
@@ -52,14 +52,14 @@ class MunroPicturesDatabase {
     try {
       response = await _munroPicturesRef
           .select()
-          .eq(MunroPictureFields.authorIdSupbase, profileId)
-          .not(MunroPictureFields.authorIdSupbase, 'in', excludedAuthorIds)
+          .eq(MunroPictureFields.authorId, profileId)
+          .not(MunroPictureFields.authorId, 'in', excludedAuthorIds)
           .eq(MunroPictureFields.privacy, Privacy.public)
-          .order(MunroPictureFields.dateTimeSupbase, ascending: false)
+          .order(MunroPictureFields.dateTime, ascending: false)
           .range(offset, offset + count - 1);
 
       for (var doc in response) {
-        MunroPicture munroPicture = MunroPicture.fromSupabase(doc);
+        MunroPicture munroPicture = MunroPicture.fromJSON(doc);
         munroPictures.add(munroPicture);
       }
       return munroPictures;

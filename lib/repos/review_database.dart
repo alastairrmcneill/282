@@ -12,7 +12,7 @@ class ReviewDatabase {
   // Create Review
   static Future<void> create(BuildContext context, {required Review review}) async {
     try {
-      await _reviewsRef.insert(review.toSupabase());
+      await _reviewsRef.insert(review.toJSON());
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error creating your review.");
@@ -22,7 +22,7 @@ class ReviewDatabase {
   // Update Review
   static Future<void> update(BuildContext context, {required Review review}) async {
     try {
-      await _reviewsRef.update(review.toSupabase()).eq(ReviewFields.uidSupabase, review.uid ?? "").select().single();
+      await _reviewsRef.update(review.toJSON()).eq(ReviewFields.uid, review.uid ?? "").select().single();
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error updating your review.");
@@ -32,7 +32,7 @@ class ReviewDatabase {
   // Read reviews from munro
   static Future<List<Review>> readReviewsFromMunro(
     BuildContext context, {
-    required String munroId,
+    required int munroId,
     required List<String> excludedAuthorIds,
     int offset = 0,
   }) async {
@@ -43,13 +43,13 @@ class ReviewDatabase {
     try {
       response = await _reviewsViewRef
           .select()
-          .not(ReviewFields.authorIdSupabase, 'in', excludedAuthorIds)
-          .eq(ReviewFields.munroIdSupabase, munroId)
-          .order(ReviewFields.dateTimeSupabase, ascending: false)
+          .not(ReviewFields.authorId, 'in', excludedAuthorIds)
+          .eq(ReviewFields.munroId, munroId)
+          .order(ReviewFields.dateTime, ascending: false)
           .range(offset, offset + pageSize - 1);
 
       for (var doc in response) {
-        Review review = Review.fromSupabase(doc);
+        Review review = Review.fromJSON(doc);
         reviews.add(review);
       }
       return reviews;
@@ -63,7 +63,7 @@ class ReviewDatabase {
   // Delete Review
   static Future<void> delete(BuildContext context, {required String uid}) async {
     try {
-      await _reviewsRef.delete().eq(ReviewFields.uidSupabase, uid);
+      await _reviewsRef.delete().eq(ReviewFields.uid, uid);
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error deleting your review.");

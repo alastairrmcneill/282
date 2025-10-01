@@ -11,9 +11,9 @@ class Post {
   final Duration? duration;
   final String title;
   final String? description;
-  final Map<String, List<String>> imageUrlsMap;
+  final Map<int, List<String>> imageUrlsMap;
   final List<Munro> includedMunros;
-  final List<String> includedMunroIds;
+  final List<int> includedMunroIds;
   final int likes;
   final String privacy;
 
@@ -37,7 +37,7 @@ class Post {
   // To JSON
   Map<String, dynamic> toJSON() {
     List<Map<String, dynamic>> includedMunrosMaps = [];
-    List<String> includedMunroIds = [];
+    List<int> includedMunroIds = [];
     for (var munro in includedMunros) {
       includedMunrosMaps.add(munro.toJSON());
       includedMunroIds.add(munro.id);
@@ -70,19 +70,19 @@ class Post {
       inlcudedMunrosList.add(Munro.fromJSON(munro));
     }
 
-    List<String> newIncludedMunroIds = List<String>.empty();
+    List<int> newIncludedMunroIds = List<int>.empty();
 
     if (json.containsKey(PostFields.includedMunroIds)) {
       List<dynamic> includedMunroIds = json[PostFields.includedMunroIds];
-      newIncludedMunroIds = List<String>.from(includedMunroIds);
+      newIncludedMunroIds = List<int>.from(includedMunroIds);
     } else {
       newIncludedMunroIds = inlcudedMunrosList.map((Munro munro) => munro.id).toList();
     }
 
-    Map<String, List<String>> newImageURLsMap = {};
+    Map<int, List<String>> newImageURLsMap = {};
     if (json.containsKey(PostFields.imageUrlsMap)) {
-      Map<String, dynamic> imageUrlsMap = json[PostFields.imageUrlsMap];
-      for (String key in imageUrlsMap.keys) {
+      Map<int, dynamic> imageUrlsMap = json[PostFields.imageUrlsMap];
+      for (int key in imageUrlsMap.keys) {
         List<dynamic> imageURLs = imageUrlsMap[key];
         List<String> newImageURLs = List<String>.from(imageURLs);
 
@@ -123,11 +123,11 @@ class Post {
     DateTime? dateTime,
     DateTime? summitedDateTime,
     Duration? duration,
-    Map<String, List<String>>? imageUrlsMap,
+    Map<int, List<String>>? imageUrlsMap,
     String? title,
     String? description,
     List<Munro>? includedMunros,
-    List<String>? includedMunroIds,
+    List<int>? includedMunroIds,
     int? likes,
     String? privacy,
   }) {

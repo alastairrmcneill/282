@@ -21,7 +21,7 @@ class _MunroScreenState extends State<MunroScreen> {
   void initState() {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     AnalyticsService.logMunroViewed(
-      munroId: munroState.selectedMunro?.id ?? "",
+      munroId: (munroState.selectedMunro?.id ?? 0).toString(),
       munroName: munroState.selectedMunro?.name ?? "",
     );
     super.initState();

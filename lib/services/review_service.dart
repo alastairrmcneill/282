@@ -84,7 +84,7 @@ class ReviewService {
       // Get reviews
       reviews = await ReviewDatabase.readReviewsFromMunro(
         context,
-        munroId: munroState.selectedMunro?.id ?? "",
+        munroId: munroState.selectedMunro?.id ?? 0,
         excludedAuthorIds: blockedUsers,
         offset: 0,
       );
@@ -112,7 +112,7 @@ class ReviewService {
 
       reviews = await ReviewDatabase.readReviewsFromMunro(
         context,
-        munroId: munroState.selectedMunro?.id ?? "",
+        munroId: munroState.selectedMunro?.id ?? 0,
         excludedAuthorIds: blockedUsers,
         offset: reviewsState.reviews.length,
       );

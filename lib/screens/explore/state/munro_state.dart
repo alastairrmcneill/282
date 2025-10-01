@@ -7,7 +7,7 @@ class MunroState extends ChangeNotifier {
   MunroStatus _status = MunroStatus.initial;
   Error _error = Error();
   List<Munro> _munroList = [];
-  String? _selectedMunroId;
+  int? _selectedMunroId;
   Munro? _selectedMunro;
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
@@ -29,7 +29,7 @@ class MunroState extends ChangeNotifier {
   LatLngBounds? get latLngBounds => _latLngBounds;
   FilterOptions get filterOptions => _filterOptions;
   bool get isFilterOptionsSet => _isFilterOptionsSet;
-  String? get selectedMunroId => _selectedMunroId;
+  int? get selectedMunroId => _selectedMunroId;
   Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;
@@ -56,13 +56,13 @@ class MunroState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setSelectedMunroId(String? selectedMunroId) {
+  set setSelectedMunroId(int? selectedMunroId) {
     _selectedMunroId = selectedMunroId;
     notifyListeners();
   }
 
   updateMunro({
-    required String munroId,
+    required int munroId,
     bool? summited,
     DateTime? summitedDate,
     bool? saved,
@@ -84,7 +84,7 @@ class MunroState extends ChangeNotifier {
   }
 
   void removeMunroCompletion({
-    required String munroId,
+    required int munroId,
     required DateTime dateTime,
   }) {
     int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);

@@ -41,14 +41,14 @@ showSaveMunroDialog(BuildContext context) {
                                       await SavedListService.addMunroToSavedList(
                                         context,
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? "",
+                                        munroId: munroState.selectedMunro?.id ?? 0,
                                       );
                                       setState(() {});
                                     } else {
                                       await SavedListService.removeMunroFromSavedList(
                                         context,
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? "",
+                                        munroId: munroState.selectedMunro?.id ?? 0,
                                       );
                                       setState(() {});
                                     }

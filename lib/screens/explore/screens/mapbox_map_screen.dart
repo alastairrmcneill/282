@@ -22,12 +22,12 @@ class MapboxMapScreen extends StatefulWidget {
 class _MapboxMapScreenState extends State<MapboxMapScreen> {
   bool loading = true;
   late MapboxMap _mapboxMap;
-  Map<String, PointAnnotation?> allAnnotations = {};
+  Map<int, PointAnnotation?> allAnnotations = {};
   String scotlandRegionId = "scotland-tile-region";
   String styleUri = "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v";
 
   PointAnnotation? selectedAnnotation;
-  String? selectedMunroId;
+  int? selectedMunroId;
   late PointAnnotationManager _annotationManager;
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
     bounds: CoordinateBounds(
@@ -201,12 +201,12 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   void handleMapTap(ScreenCoordinate tapScreenPoint) async {
     const double threshold = 40.0;
 
-    String? closestMunroId;
+    int? closestMunroId;
     PointAnnotation? closestAnnotation;
     double minDist = double.infinity;
 
     for (final entry in allAnnotations.entries) {
-      final String munroId = entry.key;
+      final int munroId = entry.key;
       final PointAnnotation? annotation = entry.value;
 
       if (annotation == null) continue;
@@ -250,7 +250,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     }
   }
 
-  Future<void> selectAnnotation(String munroId, PointAnnotation tappedAnnotation) async {
+  Future<void> selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
     final MunroState munroState = Provider.of<MunroState>(context, listen: false);
     final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,

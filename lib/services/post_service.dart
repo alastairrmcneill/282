@@ -18,9 +18,9 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
+      Map<int, List<String>> imageURLsMap = createPostState.imagesURLs;
 
-      for (String munroId in createPostState.images.keys) {
+      for (int munroId in createPostState.images.keys) {
         for (File image in createPostState.images[munroId]!) {
           String imageURL = await StorageService.uploadPostImage(image);
           if (imageURLsMap[munroId] == null) {
@@ -114,9 +114,9 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Upload picture and get url
-      Map<String, List<String>> imageURLsMap = createPostState.imagesURLs;
+      Map<int, List<String>> imageURLsMap = createPostState.imagesURLs;
 
-      for (String munroId in createPostState.images.keys) {
+      for (int munroId in createPostState.images.keys) {
         for (File image in createPostState.images[munroId]!) {
           String imageURL = await StorageService.uploadPostImage(image);
           if (imageURLsMap[munroId] == null) {

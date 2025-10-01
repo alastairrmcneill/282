@@ -12,7 +12,7 @@ class MunroDatabase {
     List<Munro> munroList = [];
     try {
       final response = await _munrosRef.select();
-      munroList = response.map((item) => Munro.fromSupabase(item)).toList();
+      munroList = response.map((item) => Munro.fromJSON(item)).toList();
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error fetching munro data.");

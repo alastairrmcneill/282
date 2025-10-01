@@ -99,7 +99,7 @@ class SavedListService {
   static Future addMunroToSavedList(
     BuildContext context, {
     required SavedList savedList,
-    required String munroId,
+    required int munroId,
   }) async {
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
     print("Adding Munro to saved list");
@@ -122,7 +122,7 @@ class SavedListService {
   static Future removeMunroFromSavedList(
     BuildContext context, {
     required SavedList savedList,
-    required String munroId,
+    required int munroId,
   }) async {
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
     print("Removing Munro from saved list");

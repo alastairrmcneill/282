@@ -2,7 +2,7 @@ class SavedList {
   final String? uid;
   final String name;
   final String userId;
-  final List<String> munroIds;
+  final List<int> munroIds;
 
   SavedList({
     this.uid,
@@ -25,7 +25,7 @@ class SavedList {
       uid: json[SavedListFields.uid] as String?,
       name: json[SavedListFields.name] as String,
       userId: json[SavedListFields.userId] as String,
-      munroIds: List<String>.from(json[SavedListFields.munroIds] as List<dynamic>),
+      munroIds: List<int>.from(json[SavedListFields.munroIds] as List<dynamic>),
     );
   }
 
@@ -33,7 +33,7 @@ class SavedList {
     String? uid,
     String? name,
     String? userId,
-    List<String>? munroIds,
+    List<int>? munroIds,
   }) {
     return SavedList(
       uid: uid ?? this.uid,
