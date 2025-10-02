@@ -81,6 +81,7 @@ class ReviewService {
     try {
       reviewsState.setStatus = ReviewsStatus.loading;
       List<Review> reviews = [];
+
       // Get reviews
       reviews = await ReviewDatabase.readReviewsFromMunro(
         context,

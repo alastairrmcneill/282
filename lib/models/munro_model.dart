@@ -103,6 +103,39 @@ class Munro {
     );
   }
 
+  static Munro fromPost(Map<String, dynamic> json) {
+    List<dynamic> summitedDatesRaw = json[MunroFields.summitedDates] ?? [];
+    List<DateTime> summitedDates = [];
+    for (var date in summitedDatesRaw) {
+      summitedDates.add((date as Timestamp).toDate());
+    }
+
+    return Munro(
+      id: int.parse(json[MunroFields.id] as String),
+      name: json[MunroFields.name] as String? ?? "",
+      extra: json[MunroFields.extra] as String? ?? "",
+      area: json[MunroFields.area] as String? ?? "",
+      meters: json[MunroFields.maters] as int? ?? 0,
+      section: json[MunroFields.section] as String? ?? "",
+      region: json[MunroFields.region] as String? ?? "",
+      feet: json[MunroFields.feet] as int? ?? 0,
+      lat: json[MunroFields.lat] as double? ?? 0.0,
+      lng: json[MunroFields.lng] as double? ?? 0.0,
+      link: json[MunroFields.link] as String? ?? "",
+      description: json[MunroFields.description] as String? ?? "",
+      pictureURL: json[MunroFields.pictureURL] as String? ?? "",
+      startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
+      summited: (json[MunroFields.summited] ?? false) as bool,
+      summitedDate:
+          json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
+      summitedDates: summitedDates,
+      saved: json[MunroFields.saved] as bool? ?? false,
+      averageRating:
+          json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
+      reviewCount: json[MunroFields.reviewCount] as int?,
+    );
+  }
+
   Munro copy({
     int? id,
     String? name,

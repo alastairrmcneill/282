@@ -45,21 +45,20 @@ class CommentsService {
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     if (userState.currentUser == null) return;
+    List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
 
     try {
       // Set Status
       commentsState.setStatus = CommentsStatus.loading;
+      List<Comment> comments = [];
 
       // Read comments for post
-      List<Comment> comments = await CommentsDatabase.readPostComments(
+      comments = await CommentsDatabase.readPostComments(
         context,
         postId: commentsState.postId,
-        lastCommentId: null,
+        excludedAuthorIds: blockedUsers,
+        offset: 0,
       );
-
-      // Filter comments
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
-      comments = comments.where((comment) => !blockedUsers.contains(comment.authorId)).toList();
 
       // Set comments
       commentsState.setComments = comments;
@@ -71,8 +70,10 @@ class CommentsService {
       commentsState.setStatus = CommentsStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      commentsState.setError =
-          Error(code: error.toString(), message: "There was an issue retreiving the comments. Please try again.");
+      commentsState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue retreiving the comments. Please try again.",
+      );
     }
   }
 
@@ -84,23 +85,16 @@ class CommentsService {
 
     try {
       commentsState.setStatus = CommentsStatus.paginating;
-
-      // Find last user ID
-      String? lastCommentId;
-      if (commentsState.comments.isNotEmpty) {
-        lastCommentId = commentsState.comments.last.uid!;
-      }
+      List<Comment> comments = [];
+      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
 
       // Add posts from database
-      List<Comment> comments = await CommentsDatabase.readPostComments(
+      comments = await CommentsDatabase.readPostComments(
         context,
         postId: commentsState.postId,
-        lastCommentId: lastCommentId,
+        excludedAuthorIds: blockedUsers,
+        offset: commentsState.comments.length,
       );
-
-      // Filter comments
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
-      comments = comments.where((comment) => !blockedUsers.contains(comment.authorId)).toList();
 
       // Add comments to comments list
       commentsState.addComments = comments;

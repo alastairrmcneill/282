@@ -67,26 +67,26 @@ class Post {
 
     List<Munro> inlcudedMunrosList = [];
     for (var munro in includedMunrosMaps) {
-      inlcudedMunrosList.add(Munro.fromJSON(munro));
+      inlcudedMunrosList.add(Munro.fromPost(munro));
     }
 
     List<int> newIncludedMunroIds = List<int>.empty();
 
     if (json.containsKey(PostFields.includedMunroIds)) {
       List<dynamic> includedMunroIds = json[PostFields.includedMunroIds];
-      newIncludedMunroIds = List<int>.from(includedMunroIds);
+      newIncludedMunroIds = List<String>.from(includedMunroIds).map((e) => int.parse(e)).toList();
     } else {
       newIncludedMunroIds = inlcudedMunrosList.map((Munro munro) => munro.id).toList();
     }
 
     Map<int, List<String>> newImageURLsMap = {};
     if (json.containsKey(PostFields.imageUrlsMap)) {
-      Map<int, dynamic> imageUrlsMap = json[PostFields.imageUrlsMap];
-      for (int key in imageUrlsMap.keys) {
+      Map<String, dynamic> imageUrlsMap = json[PostFields.imageUrlsMap];
+      for (String key in imageUrlsMap.keys) {
         List<dynamic> imageURLs = imageUrlsMap[key];
         List<String> newImageURLs = List<String>.from(imageURLs);
 
-        newImageURLsMap[key] = newImageURLs;
+        newImageURLsMap[int.parse(key)] = newImageURLs;
       }
     } else {
       List<dynamic> imageURLs = json[PostFields.imageURLs];
