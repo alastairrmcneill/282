@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
@@ -55,58 +54,43 @@ class AppUser {
   Map<String, dynamic> toJSON() {
     return <String, dynamic>{
       AppUserFields.uid: uid,
-      AppUserFields.displayName: displayName,
-      AppUserFields.searchName: searchName,
       AppUserFields.firstName: firstName,
       AppUserFields.lastName: lastName,
-      AppUserFields.profilePictureURL: profilePictureURL,
-      AppUserFields.followersCount: followersCount,
-      AppUserFields.followingCount: followingCount,
+      // AppUserFields.displayName: displayName,
+      // AppUserFields.searchName: searchName,
       AppUserFields.bio: bio,
+      AppUserFields.profilePictureURL: profilePictureURL,
+      // AppUserFields.followersCount: followersCount,
+      // AppUserFields.followingCount: followingCount,
       AppUserFields.fcmToken: fcmToken,
-      AppUserFields.blockedUsers: blockedUsers,
-      AppUserFields.personalMunroData: personalMunroDataAsString,
-      AppUserFields.achievements: achievements,
+      // AppUserFields.blockedUsers: blockedUsers,
+      // AppUserFields.personalMunroData: personalMunroDataAsString,
+      // AppUserFields.achievements: achievements,
       AppUserFields.appVersion: appVersion,
       AppUserFields.platform: platform,
       AppUserFields.signInMethod: signInMethod,
-      AppUserFields.dateCreated: dateCreated,
+      // AppUserFields.dateCreated: (dateCreated ?? DateTime.now()).toIso8601String(),
       AppUserFields.profileVisibility: profileVisibility,
     };
   }
 
   static AppUser fromJSON(Map<String, dynamic> json) {
-    List<dynamic> personalMunroData = json[AppUserFields.personalMunroData];
-    List<Map<String, dynamic>> listPersonalMunroData = List<Map<String, dynamic>>.from(personalMunroData);
-
-    List<Map<String, dynamic>> listPersonalMunroDataWithString = listPersonalMunroData.map((munroData) {
-      if (munroData['id'] is int) {
-        return {...munroData, 'id': munroData['id'].toString()};
-      }
-      return munroData;
-    }).toList();
-
-    List<dynamic>? rawBlockedUsers = json[AppUserFields.blockedUsers] as List<dynamic>?;
-    List<String> blockedUsers = List<String>.from(rawBlockedUsers ?? []);
-
     return AppUser(
       uid: json[AppUserFields.uid] as String?,
-      displayName: json[AppUserFields.displayName] as String?,
-      searchName: json[AppUserFields.searchName] as String?,
       firstName: json[AppUserFields.firstName] as String?,
       lastName: json[AppUserFields.lastName] as String?,
-      profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
-      followersCount: json[AppUserFields.followersCount] as int? ?? 0,
-      followingCount: json[AppUserFields.followingCount] as int? ?? 0,
+      displayName: json[AppUserFields.displayName] as String?,
+      searchName: json[AppUserFields.searchName] as String?,
       bio: json[AppUserFields.bio] as String?,
+      profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
       fcmToken: json[AppUserFields.fcmToken] as String?,
-      blockedUsers: blockedUsers,
-      personalMunroData: listPersonalMunroDataWithString,
-      achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
+      // followersCount: json[AppUserFields.followersCount] as int? ?? 0,
+      // followingCount: json[AppUserFields.followingCount] as int? ?? 0,
+      // achievements: json[AppUserFields.achievements] as Map<String, dynamic>? ?? {},
       appVersion: json[AppUserFields.appVersion] as String?,
       platform: json[AppUserFields.platform] as String?,
       signInMethod: json[AppUserFields.signInMethod] as String?,
-      dateCreated: (json[AppUserFields.dateCreated] as Timestamp?)?.toDate(),
+      dateCreated: DateTime.parse(json[AppUserFields.dateCreated] as String? ?? DateTime.now().toUtc().toString()),
       profileVisibility: json[AppUserFields.profileVisibility] as String?,
     );
   }
@@ -184,25 +168,25 @@ class AppUser {
 }
 
 class AppUserFields {
-  static String uid = 'uid';
-  static String displayName = 'displayName';
-  static String searchName = 'searchName';
-  static String firstName = 'firstName';
-  static String lastName = 'lastName';
-  static String profilePictureURL = 'profilePictureURL';
-  static String personalMunroData = 'personalMunroData';
-  static String followingCount = 'followingCount';
-  static String followersCount = 'followersCount';
+  static String uid = 'id';
+  static String displayName = 'display_name';
+  static String searchName = 'search_name';
+  static String firstName = 'first_name';
+  static String lastName = 'last_name';
+  static String profilePictureURL = 'profile_picture_url';
+  static String personalMunroData = 'personal_munro_data';
+  static String followingCount = 'following_count';
+  static String followersCount = 'followers_count';
   static String bio = 'bio';
-  static String fcmToken = 'fcmToken';
-  static String blockedUsers = 'blockedUsers';
-  static String munroChallenges = 'munroChallenges';
+  static String fcmToken = 'fcm_token';
+  static String blockedUsers = 'blocked_users';
+  static String munroChallenges = 'munro_challenges';
   static String achievements = 'achievements';
-  static String appVersion = 'appVersion';
+  static String appVersion = 'app_version';
   static String platform = 'platform';
-  static String signInMethod = 'signInMethod';
-  static String dateCreated = 'dateCreated';
-  static String profileVisibility = 'profileVisibility';
+  static String signInMethod = 'sign_in_method';
+  static String dateCreated = 'date_created';
+  static String profileVisibility = 'profile_visibility';
 }
 
 const List<Map<String, dynamic>> personalMunroDataExample = [
