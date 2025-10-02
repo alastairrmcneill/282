@@ -20,14 +20,6 @@ class UserDatabase {
       if (response == null) {
         await _userRef.insert(appUser.toJSON());
       }
-
-      AnalyticsService.logDatabaseRead(
-        method: "UserDatabase.create",
-        collection: "users",
-        documentCount: 1,
-        userId: appUser.uid,
-        documentId: null,
-      );
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error creating your account.");

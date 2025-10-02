@@ -5,10 +5,12 @@ class UserState extends ChangeNotifier {
   UserStatus _status = UserStatus.initial;
   Error _error = Error();
   AppUser? _currentUser;
+  List<String> _blockedUsers = [];
 
   UserStatus get status => _status;
   Error get error => _error;
   AppUser? get currentUser => _currentUser;
+  List<String> get blockedUsers => _blockedUsers;
 
   set setStatus(UserStatus searchStatus) {
     _status = searchStatus;
@@ -26,10 +28,16 @@ class UserState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setBlockedUsers(List<String> blockedUsers) {
+    _blockedUsers = blockedUsers;
+    notifyListeners();
+  }
+
   reset() {
     _status = UserStatus.initial;
     _error = Error();
     _currentUser = null;
+    _blockedUsers = [];
     notifyListeners();
   }
 

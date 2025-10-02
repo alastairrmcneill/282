@@ -70,6 +70,7 @@ class AuthService {
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
+        profileVisibility: Privacy.public,
       );
 
       await UserService.createUser(context, appUser: appUser);
@@ -254,6 +255,7 @@ class AuthService {
         appVersion: appVersion,
         dateCreated: DateTime.now(),
         signInMethod: "apple sign in",
+        profileVisibility: Privacy.public,
       );
       await UserService.createUser(context, appUser: appUser);
 
@@ -331,6 +333,7 @@ class AuthService {
         appVersion: appVersion,
         dateCreated: DateTime.now(),
         signInMethod: "google sign in",
+        profileVisibility: Privacy.public,
       );
 
       await UserService.createUser(context, appUser: appUser);
@@ -428,15 +431,15 @@ class AuthService {
       MunroState munroState = Provider.of<MunroState>(context, listen: false);
       AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
 
-      bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
-      munroState.setFilterString = "";
+      // bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+      // munroState.setFilterString = "";
 
-      var munroChallenge = userState.currentUser?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
+      // var munroChallenge = userState.currentUser?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
 
-      Achievement achievement = Achievement.fromJSON(munroChallenge);
+      // Achievement achievement = Achievement.fromJSON(munroChallenge);
 
-      achievementsState.reset();
-      achievementsState.setCurrentAchievement = achievement;
+      // achievementsState.reset();
+      // achievementsState.setCurrentAchievement = achievement;
 
       Navigator.of(context).pushNamedAndRemoveUntil(
         InAppOnboarding.route,
