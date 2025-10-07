@@ -120,14 +120,14 @@ class PostService {
       // Get the original post
       Post originalPost = createPostState.editingPost!;
       Map<int, List<String>> originalImageURLsMap = originalPost.imageUrlsMap;
-      
+
       // Start with existing URLs
       Map<int, List<String>> finalImageURLsMap = Map.from(createPostState.imagesURLs);
-      
+
       // Process each munro's images
       for (int munroId in createPostState.images.keys) {
         List<File> newImages = createPostState.images[munroId]!;
-        
+
         if (newImages.isNotEmpty) {
           // Upload new images for this munro
           List<String> newImageURLs = [];
@@ -135,13 +135,13 @@ class PostService {
             String imageURL = await StorageService.uploadPostImage(image);
             newImageURLs.add(imageURL);
           }
-          
+
           // Replace the images for this munro with new ones
           finalImageURLsMap[munroId] = [
             ...(finalImageURLsMap[munroId] ?? []), // Keep existing URLs that weren't changed
             ...newImageURLs // Add new URLs
           ];
-          
+
           // Delete old images for this munro from storage
           if (originalImageURLsMap.containsKey(munroId)) {
             for (String oldImageURL in originalImageURLsMap[munroId]!) {
@@ -153,7 +153,7 @@ class PostService {
           }
         }
       }
-      
+
       // Handle munros that were completely removed
       for (int originalMunroId in originalImageURLsMap.keys) {
         if (!createPostState.selectedMunroIds.contains(originalMunroId)) {
