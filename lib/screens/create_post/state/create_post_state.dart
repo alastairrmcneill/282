@@ -13,7 +13,7 @@ class CreatePostState extends ChangeNotifier {
   Duration? _duration;
   Map<int, List<File>> _images = {};
   Map<int, List<String>> _imageURLs = {};
-  List<Munro> _selectedMunros = [];
+  List<int> _selectedMunroIds = [];
   String? _postPrivacy;
   Post? _editingPost;
 
@@ -26,7 +26,7 @@ class CreatePostState extends ChangeNotifier {
   Duration? get duration => _duration;
   Map<int, List<File>> get images => _images;
   Map<int, List<String>> get imagesURLs => _imageURLs;
-  List<Munro> get selectedMunros => _selectedMunros;
+  List<int> get selectedMunroIds => _selectedMunroIds;
   String? get postPrivacy => _postPrivacy;
   bool get hasImage => images.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
@@ -87,21 +87,21 @@ class CreatePostState extends ChangeNotifier {
     _duration = post.duration;
     _description = post.description;
     _imageURLs = post.imageUrlsMap;
-    _selectedMunros = post.includedMunros;
+    _selectedMunroIds = post.includedMunroIds;
     _postPrivacy = post.privacy;
     notifyListeners();
   }
 
-  addMunro(Munro munro) {
-    if (!_selectedMunros.contains(munro)) {
-      _selectedMunros.add(munro);
+  addMunro(int munroId) {
+    if (!_selectedMunroIds.contains(munroId)) {
+      _selectedMunroIds.add(munroId);
       notifyListeners();
     }
   }
 
-  removeMunro(Munro munro) {
-    if (_selectedMunros.contains(munro)) {
-      _selectedMunros.remove(munro);
+  removeMunro(int munroId) {
+    if (_selectedMunroIds.contains(munroId)) {
+      _selectedMunroIds.remove(munroId);
       notifyListeners();
     }
   }
@@ -138,7 +138,7 @@ class CreatePostState extends ChangeNotifier {
     _editingPost = null;
     _imageURLs = {};
     _images = {};
-    _selectedMunros = [];
+    _selectedMunroIds = [];
     _postPrivacy = null;
     _error = Error();
     _status = CreatePostStatus.initial;

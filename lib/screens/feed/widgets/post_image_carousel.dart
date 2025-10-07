@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class PostImagesCarousel extends StatefulWidget {
   final Post post;
@@ -16,10 +18,13 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
     List<String> imageUrls = widget.post.imageUrlsMap.values.expand((element) => element).toList();
 
     if (imageUrls.isEmpty) {
-      imageUrls = widget.post.includedMunros.map((munro) => munro.pictureURL).toList();
+      imageUrls = widget.post.includedMunroIds
+          .map((munroId) => munroState.munroList.firstWhere((m) => m.id == munroId).pictureURL)
+          .toList();
     }
 
     return Stack(

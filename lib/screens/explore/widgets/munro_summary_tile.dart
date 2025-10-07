@@ -166,7 +166,7 @@ class MunroSummaryTile extends StatelessWidget {
                             if (munroSummited) return;
                             munroState.setSelectedMunro = munro;
                             createPostState.reset();
-                            createPostState.addMunro(munro);
+                            createPostState.addMunro(munro.id);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.of(context).pushNamed(CreatePostScreen.route);

@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/screens/settings/state/settings_state.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -86,12 +83,12 @@ class PostHeader extends StatelessWidget {
                       Navigator.of(context).pushNamed(ProfileScreen.route);
                     },
                     child: Text(
-                      post.authorDisplayName,
+                      post.authorDisplayName ?? "",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   Text(
-                    post.dateTime.timeAgoLong(),
+                    post.dateTimeCreated.timeAgoLong(),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],

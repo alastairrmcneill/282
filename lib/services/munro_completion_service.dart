@@ -54,6 +54,7 @@ class MunroCompletionService {
     BuildContext context, {
     required List<Munro> munros,
     required DateTime summitDateTime,
+    String? postId,
   }) async {
     // State management
     UserState userState = Provider.of<UserState>(context, listen: false);
@@ -65,6 +66,7 @@ class MunroCompletionService {
         .map((m) => MunroCompletion(
               userId: userState.currentUser!.uid!,
               munroId: m.id,
+              postId: postId,
               dateTimeCompleted: summitDateTime,
             ))
         .toList();

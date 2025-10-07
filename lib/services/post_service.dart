@@ -12,10 +12,13 @@ import 'package:two_eight_two/services/services.dart';
 class PostService {
   static Future createPost(BuildContext context) async {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     try {
       createPostState.setStatus = CreatePostStatus.loading;
+
+      List<Munro> munros = munroState.munroList.where((m) => createPostState.selectedMunroIds.contains(m.id)).toList();
 
       // Upload picture and get url
       Map<int, List<String>> imageURLsMap = createPostState.imagesURLs;
@@ -63,20 +66,19 @@ class PostService {
         authorId: userState.currentUser?.uid ?? "",
         authorDisplayName: userState.currentUser?.displayName ?? "",
         authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTime: postDateTime,
+        dateTimeCreated: postDateTime,
         summitedDateTime: summitDateTime,
         duration: createPostState.duration,
         likes: 0,
         title: title,
         description: createPostState.description,
-        includedMunros: createPostState.selectedMunros,
-        includedMunroIds: createPostState.selectedMunros.map((Munro munro) => munro.id).toList(),
+        includedMunroIds: createPostState.selectedMunroIds,
         imageUrlsMap: imageURLsMap,
         privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
       // Send to database
-      await PostsDatabase.create(context, post: post);
+      String postId = await PostsDatabase.create(context, post: post);
 
       // Log event
       bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
@@ -89,8 +91,9 @@ class PostService {
       // Complete munros
       await MunroCompletionService.markMunrosAsCompleted(
         context,
-        munros: createPostState.selectedMunros,
+        munros: munros,
         summitDateTime: summitDateTime,
+        postId: postId,
       );
 
       // Check for achievements
@@ -108,21 +111,57 @@ class PostService {
 
   static Future editPost(BuildContext context) async {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     try {
       createPostState.setStatus = CreatePostStatus.loading;
 
-      // Upload picture and get url
-      Map<int, List<String>> imageURLsMap = createPostState.imagesURLs;
-
+      // Get the original post
+      Post originalPost = createPostState.editingPost!;
+      Map<int, List<String>> originalImageURLsMap = originalPost.imageUrlsMap;
+      
+      // Start with existing URLs
+      Map<int, List<String>> finalImageURLsMap = Map.from(createPostState.imagesURLs);
+      
+      // Process each munro's images
       for (int munroId in createPostState.images.keys) {
-        for (File image in createPostState.images[munroId]!) {
-          String imageURL = await StorageService.uploadPostImage(image);
-          if (imageURLsMap[munroId] == null) {
-            imageURLsMap[munroId] = [];
+        List<File> newImages = createPostState.images[munroId]!;
+        
+        if (newImages.isNotEmpty) {
+          // Upload new images for this munro
+          List<String> newImageURLs = [];
+          for (File image in newImages) {
+            String imageURL = await StorageService.uploadPostImage(image);
+            newImageURLs.add(imageURL);
           }
-          imageURLsMap[munroId]!.add(imageURL);
+          
+          // Replace the images for this munro with new ones
+          finalImageURLsMap[munroId] = [
+            ...(finalImageURLsMap[munroId] ?? []), // Keep existing URLs that weren't changed
+            ...newImageURLs // Add new URLs
+          ];
+          
+          // Delete old images for this munro from storage
+          if (originalImageURLsMap.containsKey(munroId)) {
+            for (String oldImageURL in originalImageURLsMap[munroId]!) {
+              // Only delete if it's not in the final map (i.e., it was removed)
+              if (!finalImageURLsMap[munroId]!.contains(oldImageURL)) {
+                await StorageService.deleteImage(oldImageURL);
+              }
+            }
+          }
+        }
+      }
+      
+      // Handle munros that were completely removed
+      for (int originalMunroId in originalImageURLsMap.keys) {
+        if (!createPostState.selectedMunroIds.contains(originalMunroId)) {
+          // This munro was removed from the post, delete all its images
+          for (String imageURL in originalImageURLsMap[originalMunroId]!) {
+            await StorageService.deleteImage(imageURL);
+          }
+          finalImageURLsMap.remove(originalMunroId);
         }
       }
 
@@ -142,8 +181,7 @@ class PostService {
         title: createPostState.title,
         description: createPostState.description,
         summitedDateTime: summitDateTime,
-        duration: createPostState.duration,
-        imageUrlsMap: imageURLsMap,
+        imageUrlsMap: finalImageURLsMap,
         privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
@@ -151,10 +189,19 @@ class PostService {
       await PostsDatabase.update(context, post: newPost);
 
       // Complete munros
+      // TODO: fix logic here for making sure we don't duplicate munro completions
+
+      List<int> previousMunroIds = post.includedMunroIds;
+      List<int> currentMunroIds = createPostState.selectedMunroIds;
+      List<int> newMunroIds = currentMunroIds.where((id) => !previousMunroIds.contains(id)).toList();
+
+      List<Munro> newMunros = munroState.munroList.where((m) => newMunroIds.contains(m.id)).toList();
+
       MunroCompletionService.markMunrosAsCompleted(
         context,
-        munros: createPostState.selectedMunros,
+        munros: newMunros,
         summitDateTime: newPost.summitedDateTime!,
+        postId: post.uid ?? "",
       );
 
       // Update state
@@ -175,7 +222,6 @@ class PostService {
       posts = await PostsDatabase.readPostsFromUserId(
         context,
         userId: profileState.user?.uid ?? "",
-        lastPostId: null,
       );
 
       // Check likes
@@ -196,17 +242,11 @@ class PostService {
     try {
       profileState.setStatus = ProfileStatus.paginating;
 
-      // Find last user ID
-      String? lastPostId;
-      if (profileState.posts.isNotEmpty) {
-        lastPostId = profileState.posts.last.uid!;
-      }
-
       // Add posts from database
       List<Post> newPosts = await PostsDatabase.readPostsFromUserId(
         context,
         userId: profileState.user?.uid ?? "",
-        lastPostId: lastPostId,
+        offset: profileState.posts.length,
       );
 
       // Check likes
@@ -230,21 +270,23 @@ class PostService {
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
     }
+
+    List<String> blockedUsers = userState.blockedUsers;
+
     try {
       feedState.setStatus = FeedStatus.loading;
 
       List<Post> posts = await PostsDatabase.getFriendsFeedFromUserId(
         context,
         userId: userState.currentUser?.uid ?? "",
-        lastPostId: null,
+        excludedAuthorIds: blockedUsers,
       );
 
       // Check likes
+      // TODO: how to do we do the likes?
       LikeService.clearLikedPosts(context);
       LikeService.getLikedPostIds(context, posts: posts);
 
-      // Filter posts
-      List<String> blockedUsers = userState.blockedUsers;
       posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.setFriendsPosts = posts;
@@ -269,25 +311,19 @@ class PostService {
     try {
       feedState.setStatus = FeedStatus.paginating;
 
-      // Find last user ID
-      String? lastPostId;
-      if (feedState.friendsPosts.isNotEmpty) {
-        lastPostId = feedState.friendsPosts.last.uid!;
-      }
+      List<String> blockedUsers = userState.blockedUsers;
 
       // Add posts from database
       List<Post> newPosts = await PostsDatabase.getFriendsFeedFromUserId(
         context,
         userId: userState.currentUser?.uid ?? "",
-        lastPostId: lastPostId,
+        excludedAuthorIds: blockedUsers,
+        offset: feedState.friendsPosts.length,
       );
 
       // Check likes
+      // TODO how do we do the likes?
       LikeService.getLikedPostIds(context, posts: newPosts);
-
-      // Filter posts
-      List<String> blockedUsers = userState.blockedUsers;
-      newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.addFriendsPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
@@ -307,19 +343,16 @@ class PostService {
     }
     try {
       feedState.setStatus = FeedStatus.loading;
+      List<String> blockedUsers = userState.blockedUsers;
 
       List<Post> posts = await PostsDatabase.getGlobalFeed(
         context,
-        lastPostId: null,
+        excludedAuthorIds: blockedUsers,
       );
 
       // Check likes
       LikeService.clearLikedPosts(context);
       LikeService.getLikedPostIds(context, posts: posts);
-
-      // Filter posts
-      List<String> blockedUsers = userState.blockedUsers;
-      posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.setGlobalPosts = posts;
       feedState.setStatus = FeedStatus.loaded;
@@ -343,24 +376,17 @@ class PostService {
     try {
       feedState.setStatus = FeedStatus.paginating;
 
-      // Find last user ID
-      String? lastPostId;
-      if (feedState.globalPosts.isNotEmpty) {
-        lastPostId = feedState.globalPosts.last.uid!;
-      }
+      List<String> blockedUsers = userState.blockedUsers;
 
       // Add posts from database
       List<Post> newPosts = await PostsDatabase.getGlobalFeed(
         context,
-        lastPostId: lastPostId,
+        excludedAuthorIds: blockedUsers,
+        offset: feedState.globalPosts.length,
       );
 
       // Check likes
       LikeService.getLikedPostIds(context, posts: newPosts);
-
-      // Filter posts
-      List<String> blockedUsers = userState.blockedUsers;
-      newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.addGlobalPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
