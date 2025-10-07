@@ -52,13 +52,13 @@ class ProfileService {
     required String profileUserId,
   }) async {
     try {
-      final querySnapshot = await FollowingRelationshipsDatabase.getRelationshipFromSourceAndTarget(
+      final relationshipExists = await FollowingRelationshipsDatabase.relationshipExists(
         context,
         sourceId: currentUserId,
         targetId: profileUserId,
       );
 
-      return querySnapshot.docs.isNotEmpty;
+      return relationshipExists;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       return false;

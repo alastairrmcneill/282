@@ -10,6 +10,8 @@ class GroupFilterService {
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
+    List<String> blockedUsers = userState.blockedUsers;
+
     if (userState.currentUser == null) return;
 
     try {
@@ -18,7 +20,7 @@ class GroupFilterService {
       groupFilterState.setFriends = await FollowingRelationshipsDatabase.getFollowingFromUid(
         context,
         sourceId: userId,
-        lastFollowingRelationshipID: null,
+        excludedUserIds: blockedUsers,
       );
 
       groupFilterState.setStatus = GroupFilterStatus.loaded;
@@ -43,7 +45,6 @@ class GroupFilterService {
         context,
         sourceId: userState.currentUser?.uid ?? "",
         searchTerm: query,
-        lastFollowingRelationshipID: null,
       );
 
       groupFilterState.setFriends = friends;
@@ -64,18 +65,12 @@ class GroupFilterService {
     try {
       groupFilterState.setStatus = GroupFilterStatus.paginating;
 
-      // Find last user ID
-      String lastUserId = "";
-      if (groupFilterState.friends.isNotEmpty) {
-        lastUserId = groupFilterState.friends.last.uid!;
-      }
-
       // Add posts from database
       List<FollowingRelationship> friends = await FollowingRelationshipsDatabase.searchFollowingByUid(
         context,
         sourceId: userState.currentUser?.uid ?? "",
         searchTerm: query.toLowerCase(),
-        lastFollowingRelationshipID: lastUserId,
+        offset: groupFilterState.friends.length,
       );
 
       groupFilterState.addFriends = friends;

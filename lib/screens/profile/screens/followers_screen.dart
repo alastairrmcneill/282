@@ -174,10 +174,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                             profilePictureURL: f.targetProfilePictureURL,
                             profileUid: f.targetId,
                           ),
-                          title: Text(f.targetDisplayName),
+                          title: Text(f.targetDisplayName ?? ""),
                           trailing: UserTrailingButton(
                             profileUserId: f.targetId,
-                            profileUserDisplayName: f.targetDisplayName,
+                            profileUserDisplayName: f.targetDisplayName ?? "",
                             profileUserPictureURL: f.targetProfilePictureURL ?? "",
                           ),
                           onTap: () {
@@ -203,10 +203,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                             profilePictureURL: f.sourceProfilePictureURL,
                             profileUid: f.sourceId,
                           ),
-                          title: Text(f.sourceDisplayName),
+                          title: Text(f.sourceDisplayName ?? ""),
                           trailing: UserTrailingButton(
                             profileUserId: f.sourceId,
-                            profileUserDisplayName: f.sourceDisplayName,
+                            profileUserDisplayName: f.sourceDisplayName ?? "",
                             profileUserPictureURL: f.sourceProfilePictureURL ?? "",
                           ),
                           onTap: () {
