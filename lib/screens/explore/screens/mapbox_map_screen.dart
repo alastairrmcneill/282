@@ -153,15 +153,19 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     );
   }
 
-  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState) async {
+  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
     _mapboxMap.setBounds(cameraBounds);
-    _addMunroSymbols(munroState: munroState);
+    _addMunroSymbols(
+      munroState: munroState,
+      completedMunros: munroCompletionState.munroCompletions,
+    );
   }
 
-  Future<void> _addMunroSymbols({required MunroState munroState}) async {
+  Future<void> _addMunroSymbols(
+      {required MunroState munroState, required List<MunroCompletion> completedMunros}) async {
     final List<Munro> munros = munroState.filteredMunroList;
 
     _annotationManager = await _mapboxMap.annotations.createPointAnnotationManager();
@@ -169,9 +173,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     List<PointAnnotationOptions> pointAnnotationOptions = [];
 
     for (var munro in munros) {
+      final summited = completedMunros.any((element) => element.munroId == munro.id);
       final icon = selectedMunroId == munro.id
           ? selectedIcon
-          : munro.summited
+          : summited
               ? completeIcon
               : incompleteIcon;
 
@@ -198,7 +203,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  void handleMapTap(ScreenCoordinate tapScreenPoint) async {
+  void handleMapTap(
+      ScreenCoordinate tapScreenPoint, MunroState munroState, MunroCompletionState munroCompletionState) async {
     const double threshold = 40.0;
 
     int? closestMunroId;
@@ -226,18 +232,21 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       }
     }
 
-    await deselectAnnotation();
+    await deselectAnnotation(munroState, munroCompletionState.munroCompletions);
     if (closestAnnotation != null && closestMunroId != null) {
       await selectAnnotation(closestMunroId, closestAnnotation);
     }
   }
 
-  Future<void> deselectAnnotation() async {
+  Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
     if (selectedAnnotation != null && selectedMunroId != null) {
-      final MunroState munroState = Provider.of<MunroState>(context, listen: false);
       final Munro munro = munroState.munroList.firstWhere((munro) => munro.id == selectedMunroId);
+      final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
       final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
-          geometry: selectedAnnotation!.geometry, image: munro.summited ? completeIcon : incompleteIcon, iconSize: 0.6);
+        geometry: selectedAnnotation!.geometry,
+        image: summited ? completeIcon : incompleteIcon,
+        iconSize: 0.6,
+      );
       await _annotationManager.delete(selectedAnnotation!);
       var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
       allAnnotations[selectedMunroId!] = oldAnnotation;
@@ -277,6 +286,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: true);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: true);
     return Scaffold(
       body: loading
           ? MapShimmerLoader()
@@ -290,12 +300,20 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
                   children: [
                     MapWidget(
                       key: const ValueKey("mapWidget"),
-                      onMapCreated: (MapboxMap mapboxMap) => _onMapCreated(mapboxMap, munroState),
+                      onMapCreated: (MapboxMap mapboxMap) => _onMapCreated(
+                        mapboxMap,
+                        munroState,
+                        munroCompletionState,
+                      ),
                       styleUri: styleUri,
                       cameraOptions: startingCamera,
                       onTapListener: (context) {
                         widget.searchFocusNode.unfocus();
-                        handleMapTap(context.touchPosition);
+                        handleMapTap(
+                          context.touchPosition,
+                          munroState,
+                          munroCompletionState,
+                        );
                       },
                     ),
                     Align(

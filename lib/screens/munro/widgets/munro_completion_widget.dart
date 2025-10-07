@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +10,8 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroCompletionWidget extends StatelessWidget {
   final int index;
-  final DateTime dateTime;
-  const MunroCompletionWidget({super.key, required this.index, required this.dateTime});
+  final MunroCompletion munroCompletion;
+  const MunroCompletionWidget({super.key, required this.index, required this.munroCompletion});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +21,9 @@ class MunroCompletionWidget extends StatelessWidget {
       MenuItem(
         text: 'Remove',
         onTap: () {
-          MunroService.removeMunroCompletion(
+          MunroCompletionService.removeMunroCompletion(
             context,
-            munro: munroState.selectedMunro!,
-            dateTime: dateTime,
+            munroCompletion: munroCompletion,
           );
         },
       ),
@@ -89,7 +87,7 @@ class MunroCompletionWidget extends StatelessWidget {
                             ),
                       const SizedBox(height: 10),
                       Text(
-                        'Summit #${index + 1} - ${DateFormat("dd/MM/yyyy").format(dateTime)}',
+                        'Summit #${index + 1} - ${DateFormat("dd/MM/yyyy").format(munroCompletion.dateTimeCompleted)}',
                         style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                       ),
                     ],

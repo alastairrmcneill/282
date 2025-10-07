@@ -32,7 +32,7 @@ class _MunroScreenState extends State<MunroScreen> {
     return Scaffold(
       floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
-        onRefresh: () => MunroService.loadAllAdditionalMunrosData(context),
+        onRefresh: () => MunroService.loadMunroData(context),
         child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),

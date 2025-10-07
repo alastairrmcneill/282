@@ -24,7 +24,7 @@ class SearchService {
       );
 
       // Filter users
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       users = users.where((user) => !blockedUsers.contains(user.uid)).toList();
 
       userSearchState.setUsers = users;
@@ -59,7 +59,7 @@ class SearchService {
       );
 
       // Filter users
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       users = users.where((user) => !blockedUsers.contains(user.uid)).toList();
 
       userSearchState.addUsers = users;

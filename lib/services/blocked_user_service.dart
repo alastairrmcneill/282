@@ -37,9 +37,5 @@ class BlockedUserService {
 
     // Update the state with the blocked users
     userState.setBlockedUsers = blockedUsers;
-
-    for (var blockedUserId in userState.blockedUsers) {
-      print("🎯 ~ BlockedUserService ~ for ~ blockedUserId: $blockedUserId");
-    }
   }
 }

@@ -136,9 +136,11 @@ class GroupFilterService {
 
     for (var user in selectedFriends) {
       for (var munro in user.personalMunroData ?? []) {
-        if (munro[MunroFields.summited] as bool == true) {
-          completedMunroIds.add(munro[MunroFields.id]);
-        }
+        // TODO fix
+
+        // if (munro[MunroFields.summited] as bool == true) {
+        //   completedMunroIds.add(munro[MunroFields.id]);
+        // }
       }
     }
 

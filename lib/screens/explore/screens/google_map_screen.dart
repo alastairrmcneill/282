@@ -48,9 +48,11 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     );
   }
 
-  Set<Marker> getMarkers({required MunroState munroState}) {
+  Set<Marker> getMarkers({required MunroState munroState, required List<MunroCompletion> completedMunros}) {
     Set<Marker> markers = {};
     for (var munro in munroState.filteredMunroList) {
+      var summited = completedMunros.any((element) => element.munroId == munro.id);
+
       markers.add(
         Marker(
           markerId: MarkerId(
@@ -61,7 +63,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           consumeTapEvents: true,
           icon: _selectedMunroID == munro.id
               ? _selectedIcon
-              : munro.summited
+              : summited
                   ? _completedIcon
                   : _incompletedIcon,
           anchor: const Offset(0.5, 0.7),
@@ -119,7 +121,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     }
   }
 
-  Widget _buildGoogleMap(MunroState munroState) {
+  Widget _buildGoogleMap(MunroState munroState, List<MunroCompletion> completedMunros) {
     return GoogleMap(
       onMapCreated: (controller) {
         _googleMapController = controller;
@@ -161,7 +163,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       zoomControlsEnabled: false,
       mapType: showTerrain ? MapType.terrain : MapType.hybrid,
       padding: const EdgeInsets.all(20),
-      markers: getMarkers(munroState: munroState),
+      markers: getMarkers(munroState: munroState, completedMunros: completedMunros),
       myLocationButtonEnabled: false,
       myLocationEnabled: false,
     );
@@ -170,12 +172,13 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: true);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: true);
     return Scaffold(
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
-                _buildGoogleMap(munroState),
+                _buildGoogleMap(munroState, munroCompletionState.munroCompletions),
                 Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: _selectedMunroID)),
               ],
             ),

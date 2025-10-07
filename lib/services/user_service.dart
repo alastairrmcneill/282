@@ -63,7 +63,7 @@ class UserService {
     required String? lastUserId,
   }) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
-    List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+    List<String> blockedUsers = userState.blockedUsers;
 
     try {
       List<AppUser> users = await UserDatabase.readUsersByName(

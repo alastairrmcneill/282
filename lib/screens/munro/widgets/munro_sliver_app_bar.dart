@@ -14,11 +14,18 @@ import 'package:url_launcher/url_launcher.dart';
 class MunroSliverAppBar extends StatelessWidget {
   const MunroSliverAppBar({super.key});
 
-  Widget _buildPopupMenu(BuildContext context, UserState userState, MunroState munroState) {
+  Widget _buildPopupMenu(
+    BuildContext context,
+    UserState userState,
+    MunroState munroState,
+    MunroCompletionState munroCompletionState,
+  ) {
     List<MenuItem> menuItems = [];
+    bool summited =
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).isNotEmpty;
 
     if (userState.currentUser != null) {
-      if (munroState.selectedMunro?.summitedDates?.isNotEmpty ?? false) {
+      if (summited) {
         menuItems.add(
           MenuItem(
             text: 'Unbag Munro',
@@ -67,6 +74,7 @@ class MunroSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context);
     Munro munro = munroState.selectedMunro!;
@@ -77,7 +85,7 @@ class MunroSliverAppBar extends StatelessWidget {
       floating: false,
       pinned: true,
       actions: [
-        _buildPopupMenu(context, userState, munroState),
+        _buildPopupMenu(context, userState, munroState, munroCompletionState),
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: CachedNetworkImage(

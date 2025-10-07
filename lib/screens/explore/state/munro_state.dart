@@ -20,6 +20,7 @@ class MunroState extends ChangeNotifier {
   List<Munro> _bulkMunroUpdateList = [];
   String _bulkMunroUpdateFilterString = '';
   List<String> _groupFilterMunroIds = [];
+  Set<int> _completedMunroIds = const {};
 
   MunroStatus get status => _status;
   Error get error => _error;
@@ -33,6 +34,13 @@ class MunroState extends ChangeNotifier {
   Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;
+
+  void syncCompletedIds(Set<int> ids) {
+    if (_completedMunroIds.length == ids.length && _completedMunroIds.containsAll(ids)) return;
+
+    _completedMunroIds = ids;
+    _filter();
+  }
 
   set setStatus(MunroStatus searchStatus) {
     _status = searchStatus;
@@ -58,39 +66,6 @@ class MunroState extends ChangeNotifier {
 
   set setSelectedMunroId(int? selectedMunroId) {
     _selectedMunroId = selectedMunroId;
-    notifyListeners();
-  }
-
-  updateMunro({
-    required int munroId,
-    bool? summited,
-    DateTime? summitedDate,
-    bool? saved,
-  }) {
-    int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);
-    if (munroIndex == -1) return;
-    _munroList[munroIndex].summited = summited ?? _munroList[munroIndex].summited;
-    _munroList[munroIndex].summitedDate = summitedDate ?? _munroList[munroIndex].summitedDate;
-    _munroList[munroIndex].saved = saved ?? _munroList[munroIndex].saved;
-
-    if (summitedDate != null) {
-      if (_munroList[munroIndex].summitedDates == null) {
-        _munroList[munroIndex].summitedDates = [summitedDate];
-      }
-      _munroList[munroIndex].summitedDates!.add(summitedDate);
-    }
-
-    notifyListeners();
-  }
-
-  void removeMunroCompletion({
-    required int munroId,
-    required DateTime dateTime,
-  }) {
-    int munroIndex = _munroList.indexWhere((munro) => munro.id == munroId);
-    if (munroIndex == -1) return;
-    _munroList[munroIndex].summitedDates!.remove(dateTime);
-    _munroList[munroIndex].summited = _munroList[munroIndex].summitedDates!.isNotEmpty;
     notifyListeners();
   }
 
@@ -280,15 +255,15 @@ class MunroState extends ChangeNotifier {
     }
 
     if (_filterOptions.completed.isNotEmpty) {
-      if (_filterOptions.completed.contains('Yes')) {
-        runningList = runningList.where((munro) {
-          return munro.summited;
-        }).toList();
-      }
-      if (_filterOptions.completed.contains('No')) {
-        runningList = runningList.where((munro) {
-          return !munro.summited;
-        }).toList();
+      final wantsYes = _filterOptions.completed.contains('Yes');
+      final wantsNo = _filterOptions.completed.contains('No');
+
+      if (wantsYes && !wantsNo) {
+        runningList = runningList.where((m) => _completedMunroIds.contains(m.id)).toList();
+      } else if (!wantsYes && wantsNo) {
+        runningList = runningList.where((m) => !_completedMunroIds.contains(m.id)).toList();
+      } else {
+        // both selected -> no-op (keep all)
       }
     }
 

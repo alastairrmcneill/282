@@ -45,7 +45,7 @@ class CommentsService {
     UserState userState = Provider.of<UserState>(context, listen: false);
 
     if (userState.currentUser == null) return;
-    List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+    List<String> blockedUsers = userState.blockedUsers;
 
     try {
       // Set Status
@@ -86,7 +86,7 @@ class CommentsService {
     try {
       commentsState.setStatus = CommentsStatus.paginating;
       List<Comment> comments = [];
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
 
       // Add posts from database
       comments = await CommentsDatabase.readPostComments(

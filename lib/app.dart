@@ -32,9 +32,6 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<NavigationState>(
           create: (_) => NavigationState(),
         ),
-        ChangeNotifierProvider<MunroState>(
-          create: (_) => MunroState(),
-        ),
         ChangeNotifierProvider<ProfileState>(
           create: (_) => ProfileState(),
         ),
@@ -97,6 +94,17 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<GroupFilterState>(
           create: (_) => GroupFilterState(),
+        ),
+        ChangeNotifierProvider<MunroCompletionState>(
+          create: (_) => MunroCompletionState(),
+        ),
+        ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
+          create: (_) => MunroState(),
+          update: (_, completions, munroState) {
+            munroState ??= MunroState();
+            munroState.syncCompletedIds(completions.completedMunroIds);
+            return munroState;
+          },
         ),
       ],
       child: MaterialApp(

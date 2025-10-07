@@ -24,8 +24,10 @@ class MunroSummaryTile extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     SettingsState settingsState = Provider.of<SettingsState>(context);
     SavedListState savedListState = Provider.of<SavedListState>(context);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
 
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
+    bool munroSummited = munroCompletionState.munroCompletions.any((mc) => mc.munroId == munro.id);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -161,7 +163,7 @@ class MunroSummaryTile extends StatelessWidget {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
-                            if (munro.summited) return;
+                            if (munroSummited) return;
                             munroState.setSelectedMunro = munro;
                             createPostState.reset();
                             createPostState.addMunro(munro);
@@ -170,7 +172,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.of(context).pushNamed(CreatePostScreen.route);
                           }
                         },
-                        child: Icon(munro.summited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
+                        child: Icon(munroSummited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
                       ),
                     ),
                   ],

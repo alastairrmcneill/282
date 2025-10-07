@@ -47,6 +47,7 @@ class HomeScreenState extends State<HomeScreen> {
     await SettingsSerivce.loadSettings(context);
     await UserService.readCurrentUser(context);
     MunroService.loadMunroData(context);
+    MunroCompletionService.getUserMunroCompletions(context);
     AchievementService.getUserAchievements(context);
     BlockedUserService.loadBlockedUsers(context);
     SavedListService.readUserSavedLists(context);

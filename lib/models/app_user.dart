@@ -11,7 +11,6 @@ class AppUser {
   int? followingCount;
   String? bio;
   String? fcmToken;
-  List<String>? blockedUsers;
   final List<Map<String, dynamic>>? personalMunroData;
   final Map<String, dynamic>? achievements;
   final String? appVersion;
@@ -31,7 +30,6 @@ class AppUser {
     this.followingCount,
     this.bio,
     this.fcmToken,
-    this.blockedUsers,
     this.personalMunroData = personalMunroDataExample,
     this.achievements,
     this.appVersion,
@@ -98,7 +96,6 @@ class AppUser {
     int? followingCount,
     String? bio,
     String? fcmToken,
-    List<String>? blockedUsers,
     List<Map<String, dynamic>>? personalMunroData,
     Map<String, dynamic>? achievements,
     String? appVersion,
@@ -118,7 +115,6 @@ class AppUser {
       followingCount: followingCount ?? this.followingCount,
       bio: bio ?? this.bio,
       fcmToken: fcmToken ?? this.fcmToken,
-      blockedUsers: blockedUsers ?? this.blockedUsers,
       personalMunroData: personalMunroData ?? this.personalMunroData,
       achievements: achievements ?? this.achievements,
       appVersion: appVersion ?? this.appVersion,
@@ -150,7 +146,6 @@ class AppUser {
       ${AppUserFields.achievements}: $achievements,
       ${AppUserFields.bio}: $bio,
       ${AppUserFields.fcmToken}:$fcmToken,
-      ${AppUserFields.blockedUsers}: $blockedUsers,
       ${AppUserFields.appVersion}: $appVersion,
       ${AppUserFields.platform}: $platform,
       ${AppUserFields.signInMethod}: $signInMethod,
@@ -171,7 +166,6 @@ class AppUserFields {
   static String followersCount = 'followers_count';
   static String bio = 'bio';
   static String fcmToken = 'fcm_token';
-  static String blockedUsers = 'blocked_users';
   static String munroChallenges = 'munro_challenges';
   static String achievements = 'achievements';
   static String appVersion = 'app_version';

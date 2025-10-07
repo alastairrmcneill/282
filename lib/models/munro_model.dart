@@ -15,9 +15,6 @@ class Munro {
   final String description;
   final String pictureURL;
   final String startingPointURL;
-  bool summited;
-  DateTime? summitedDate;
-  List<DateTime>? summitedDates;
   bool saved;
   double? averageRating;
   int? reviewCount;
@@ -37,9 +34,6 @@ class Munro {
     required this.description,
     required this.pictureURL,
     required this.startingPointURL,
-    required this.summited,
-    this.summitedDate,
-    this.summitedDates,
     this.saved = false,
     this.averageRating,
     this.reviewCount,
@@ -61,9 +55,6 @@ class Munro {
       MunroFields.description: description,
       MunroFields.pictureURL: pictureURL,
       MunroFields.startingPointURL: startingPointURL,
-      MunroFields.summited: summited,
-      MunroFields.summitedDate: summitedDate,
-      MunroFields.summitedDates: summitedDates,
       MunroFields.saved: saved,
       MunroFields.averageRating: averageRating,
       MunroFields.reviewCount: reviewCount,
@@ -71,12 +62,6 @@ class Munro {
   }
 
   static Munro fromJSON(Map<String, dynamic> json) {
-    List<dynamic> summitedDatesRaw = json[MunroFields.summitedDates] ?? [];
-    List<DateTime> summitedDates = [];
-    for (var date in summitedDatesRaw) {
-      summitedDates.add((date as Timestamp).toDate());
-    }
-
     return Munro(
       id: json[MunroFields.id] as int,
       name: json[MunroFields.name] as String,
@@ -92,10 +77,6 @@ class Munro {
       description: json[MunroFields.description] as String,
       pictureURL: json[MunroFields.pictureURL] as String,
       startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
-      summited: (json[MunroFields.summited] ?? false) as bool,
-      summitedDate:
-          json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
-      summitedDates: summitedDates,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating:
           json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
@@ -104,12 +85,6 @@ class Munro {
   }
 
   static Munro fromPost(Map<String, dynamic> json) {
-    List<dynamic> summitedDatesRaw = json[MunroFields.summitedDates] ?? [];
-    List<DateTime> summitedDates = [];
-    for (var date in summitedDatesRaw) {
-      summitedDates.add((date as Timestamp).toDate());
-    }
-
     return Munro(
       id: int.parse(json[MunroFields.id] as String),
       name: json[MunroFields.name] as String? ?? "",
@@ -125,10 +100,6 @@ class Munro {
       description: json[MunroFields.description] as String? ?? "",
       pictureURL: json[MunroFields.pictureURL] as String? ?? "",
       startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
-      summited: (json[MunroFields.summited] ?? false) as bool,
-      summitedDate:
-          json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
-      summitedDates: summitedDates,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating:
           json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
@@ -151,9 +122,6 @@ class Munro {
     String? description,
     String? pictureURL,
     String? startingPointURL,
-    bool? summited,
-    DateTime? summitedDate,
-    List<DateTime>? summitedDates,
     bool? saved,
     double? averageRating,
     int? reviewCount,
@@ -173,9 +141,6 @@ class Munro {
       description: description ?? this.description,
       pictureURL: pictureURL ?? this.pictureURL,
       startingPointURL: startingPointURL ?? this.startingPointURL,
-      summited: summited ?? this.summited,
-      summitedDate: summitedDate ?? this.summitedDate,
-      summitedDates: summitedDates ?? this.summitedDates,
       saved: saved ?? this.saved,
       averageRating: averageRating ?? this.averageRating,
       reviewCount: reviewCount ?? this.reviewCount,
@@ -198,9 +163,6 @@ class MunroFields {
   static String description = "description";
   static String pictureURL = "picture_url";
   static String startingPointURL = "starting_point_url";
-  static String summited = "summited";
-  static String summitedDate = "summited_date";
-  static String summitedDates = "summited_dates";
   static String saved = "saved";
   static String averageRating = "average_rating";
   static String reviewCount = "reviews_count";

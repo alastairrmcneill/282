@@ -12,7 +12,7 @@ class MunroPictureService {
 
     try {
       munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
-      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       List<MunroPicture> munroPictures = [];
 
       munroPictures = await MunroPicturesDatabase.readMunroPictures(
@@ -38,7 +38,7 @@ class MunroPictureService {
 
     try {
       munroDetailState.setGalleryStatus = MunroDetailStatus.paginating;
-      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       List<MunroPicture> newMunroPictures = [];
 
       newMunroPictures = await MunroPicturesDatabase.readMunroPictures(
@@ -66,7 +66,7 @@ class MunroPictureService {
 
     try {
       profileState.setPhotoStatus = ProfilePhotoStatus.loading;
-      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       List<MunroPicture> profilePictures = [];
 
       profilePictures = await MunroPicturesDatabase.readProfilePictures(
@@ -91,7 +91,7 @@ class MunroPictureService {
 
     try {
       profileState.setPhotoStatus = ProfilePhotoStatus.loading;
-      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       List<MunroPicture> profilePictures = [];
 
       profilePictures = await MunroPicturesDatabase.readProfilePictures(

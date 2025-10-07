@@ -76,7 +76,7 @@ class ReviewService {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
 
-    List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+    List<String> blockedUsers = userState.blockedUsers;
 
     try {
       reviewsState.setStatus = ReviewsStatus.loading;
@@ -109,7 +109,7 @@ class ReviewService {
     try {
       reviewsState.setStatus = ReviewsStatus.paginating;
       List<Review> reviews = [];
-      List<String> blockedUsers = userState.currentUser?.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
 
       reviews = await ReviewDatabase.readReviewsFromMunro(
         context,

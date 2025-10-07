@@ -76,24 +76,26 @@ class AchievementService {
       // Get total completed this year
       int completedThisYear = 0;
       List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
-      for (var element in personalMunroData) {
-        bool summited = element[MunroFields.summited] as bool;
-        if (!summited) continue;
 
-        int achievementYear = achievement.criteria[CriteriaFields.year] as int;
-        List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
-        for (var date in summitedDates) {
-          if (date is Timestamp) {
-            date = date.toDate();
-          }
-          int summitedYear = date.year;
+      // TODO fix
+      // for (var element in personalMunroData) {
+      //   bool summited = element[MunroFields.summited] as bool;
+      //   if (!summited) continue;
 
-          if (summitedYear == achievementYear) {
-            completedThisYear++;
-          }
-          continue;
-        }
-      }
+      //   int achievementYear = achievement.criteria[CriteriaFields.year] as int;
+      //   List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
+      //   for (var date in summitedDates) {
+      //     if (date is Timestamp) {
+      //       date = date.toDate();
+      //     }
+      //     int summitedYear = date.year;
+
+      //     if (summitedYear == achievementYear) {
+      //       completedThisYear++;
+      //     }
+      //     continue;
+      //   }
+      // }
       bool completed = completedThisYear >= achievement.criteria[CriteriaFields.count];
 
       Achievement newAchievement = achievement.copy(
@@ -206,8 +208,9 @@ class AchievementService {
     required AchievementsState achievementsState,
   }) {
     // Get total completed
-    int totalCompleted =
-        userState.currentUser?.personalMunroData?.where((element) => element[MunroFields.summited] as bool).length ?? 0;
+    // TODO fix
+    int totalCompleted = 0;
+    // userState.currentUser?.personalMunroData?.where((element) => element[MunroFields.summited] as bool).length ?? 0;
 
     // Goal count
     var countRaw = achievement.criteria[CriteriaFields.count];
@@ -249,24 +252,26 @@ class AchievementService {
     // Get total completed this year
     int completedThisYear = 0;
     List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
-    for (var element in personalMunroData) {
-      bool summited = element[MunroFields.summited] as bool;
-      if (!summited) continue;
 
-      int achievementYear = achievement.criteria[CriteriaFields.year] as int;
-      List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
-      for (var date in summitedDates) {
-        if (date is Timestamp) {
-          date = date.toDate();
-        }
-        int summitedYear = date.year;
+    // TODO fix
+    // for (var element in personalMunroData) {
+    //   bool summited = element[MunroFields.summited] as bool;
+    //   if (!summited) continue;
 
-        if (summitedYear == achievementYear) {
-          completedThisYear++;
-        }
-        continue;
-      }
-    }
+    //   int achievementYear = achievement.criteria[CriteriaFields.year] as int;
+    //   List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
+    //   for (var date in summitedDates) {
+    //     if (date is Timestamp) {
+    //       date = date.toDate();
+    //     }
+    //     int summitedYear = date.year;
+
+    //     if (summitedYear == achievementYear) {
+    //       completedThisYear++;
+    //     }
+    //     continue;
+    //   }
+    // }
 
     // Goal count
     var countRaw = achievement.criteria[CriteriaFields.count];
@@ -325,7 +330,9 @@ class AchievementService {
       var personalMunroData = userState.currentUser?.personalMunroData?[munro.id - 1];
 
       // Check if the munro has been summited
-      return personalMunroData?[MunroFields.summited] ?? false;
+      // TODO fix
+
+      return false; // personalMunroData?[MunroFields.summited] ?? false;
     }).length;
 
     // Compare to goal
@@ -376,7 +383,9 @@ class AchievementService {
       var personalMunroData = userState.currentUser?.personalMunroData?[munro.id - 1];
 
       // Check if the munro has been summited
-      return personalMunroData?[MunroFields.summited] ?? false;
+      // TODO fix
+
+      return false; // personalMunroData?[MunroFields.summited] ?? false;
     }).length;
 
     // Compare to goal
@@ -410,16 +419,17 @@ class AchievementService {
       for (var i = 1; i <= 12; i++) i: 0,
     };
 
-    userState.currentUser?.personalMunroData?.forEach((munroData) {
-      List<dynamic> munroList = munroData[MunroFields.summitedDates] as List<dynamic>;
-      for (var date in munroList) {
-        if (date is Timestamp) {
-          date = date.toDate();
-        }
-        int month = date.month;
-        monthCounts[month] = (monthCounts[month] ?? 0) + 1;
-      }
-    });
+    // TODO fix
+    // userState.currentUser?.personalMunroData?.forEach((munroData) {
+    //   List<dynamic> munroList = munroData[MunroFields.summitedDates] as List<dynamic>;
+    //   for (var date in munroList) {
+    //     if (date is Timestamp) {
+    //       date = date.toDate();
+    //     }
+    //     int month = date.month;
+    //     monthCounts[month] = (monthCounts[month] ?? 0) + 1;
+    //   }
+    // });
 
     int monthsWithCompletedMunro = monthCounts.values.where((int count) => count > 0).length;
 
@@ -452,21 +462,23 @@ class AchievementService {
     // Get multi munro days
     Map<DateTime, int> dateCounts = {};
 
-    List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
-    for (var element in personalMunroData) {
-      bool summited = element[MunroFields.summited] as bool;
-      if (!summited) continue;
+    // TODO fix
 
-      List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
-      for (var dateTime in summitedDates) {
-        if (dateTime is Timestamp) {
-          dateTime = dateTime.toDate();
-        }
-        DateTime date = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    // List<Map<String, dynamic>> personalMunroData = userState.currentUser!.personalMunroData!;
+    // for (var element in personalMunroData) {
+    //   bool summited = element[MunroFields.summited] as bool;
+    //   if (!summited) continue;
 
-        dateCounts[date] = (dateCounts[date] ?? 0) + 1;
-      }
-    }
+    //   List<dynamic> summitedDates = element[MunroFields.summitedDates] as List<dynamic>;
+    //   for (var dateTime in summitedDates) {
+    //     if (dateTime is Timestamp) {
+    //       dateTime = dateTime.toDate();
+    //     }
+    //     DateTime date = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+    //     dateCounts[date] = (dateCounts[date] ?? 0) + 1;
+    //   }
+    // }
 
     // Goal count
     var countRaw = achievement.criteria[CriteriaFields.count];
@@ -515,11 +527,14 @@ class AchievementService {
         [];
 
     // Get total completed
-    int totalCompletedInArea = combinedList
-        .where((element) => element[MunroFields.summited] as bool)
-        .where(
-            (element) => (element[MunroFields.area] as String) == (achievement.criteria[CriteriaFields.area] as String))
-        .length;
+    // TODO fix
+
+    int totalCompletedInArea = 0;
+    // combinedList
+    //     .where((element) => element[MunroFields.summited] as bool)
+    //     .where(
+    //         (element) => (element[MunroFields.area] as String) == (achievement.criteria[CriteriaFields.area] as String))
+    //     .length;
 
     // Goal count
     var countRaw = achievement.criteria[CriteriaFields.count];
@@ -573,14 +588,17 @@ class AchievementService {
     int totalCompleted = 0;
 
     for (String name in names) {
-      int totalCompletedWithName = combinedList
-          .where((element) => element[MunroFields.summited] as bool)
-          .where(
-            (element) => (element[MunroFields.name] as String).toLowerCase().contains(
-                  name.toLowerCase(),
-                ),
-          )
-          .length;
+      int totalCompletedWithName = 0;
+      // TODO fix
+
+      // combinedList
+      //     .where((element) => element[MunroFields.summited] as bool)
+      //     .where(
+      //       (element) => (element[MunroFields.name] as String).toLowerCase().contains(
+      //             name.toLowerCase(),
+      //           ),
+      //     )
+      //     .length;
       totalCompleted += totalCompletedWithName;
     }
     // Goal count

@@ -87,7 +87,7 @@ class PostService {
       );
 
       // Complete munros
-      await MunroService.markMunrosAsDone(
+      await MunroCompletionService.markMunrosAsCompleted(
         context,
         munros: createPostState.selectedMunros,
         summitDateTime: summitDateTime,
@@ -151,7 +151,7 @@ class PostService {
       await PostsDatabase.update(context, post: newPost);
 
       // Complete munros
-      MunroService.markMunrosAsDone(
+      MunroCompletionService.markMunrosAsCompleted(
         context,
         munros: createPostState.selectedMunros,
         summitDateTime: newPost.summitedDateTime!,
@@ -244,7 +244,7 @@ class PostService {
       LikeService.getLikedPostIds(context, posts: posts);
 
       // Filter posts
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.setFriendsPosts = posts;
@@ -286,7 +286,7 @@ class PostService {
       LikeService.getLikedPostIds(context, posts: newPosts);
 
       // Filter posts
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.addFriendsPosts = newPosts;
@@ -318,7 +318,7 @@ class PostService {
       LikeService.getLikedPostIds(context, posts: posts);
 
       // Filter posts
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.setGlobalPosts = posts;
@@ -359,7 +359,7 @@ class PostService {
       LikeService.getLikedPostIds(context, posts: newPosts);
 
       // Filter posts
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       newPosts = newPosts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
       feedState.addGlobalPosts = newPosts;
