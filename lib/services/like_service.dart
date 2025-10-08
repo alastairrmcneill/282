@@ -17,8 +17,11 @@ class LikeService {
       userId: userState.currentUser?.uid ?? "",
       userDisplayName: userState.currentUser?.displayName ?? "User",
       userProfilePictureURL: userState.currentUser?.profilePictureURL,
+      dateTimeCreated: DateTime.now(),
     );
+
     LikeDatabase.create(context, like: like);
+
     userLikeState.addRecentlyLikedPost = post.uid!;
     userLikeState.addLikedPosts = {post.uid!};
 
@@ -68,12 +71,15 @@ class LikeService {
   // Get likes for a given post
   static Future getPostLikes(BuildContext context) async {
     LikesState likesState = Provider.of<LikesState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     likesState.setStatus = LikesStatus.loading;
 
+    List<String> excludedUserIds = userState.blockedUsers;
+
     likesState.setLikes = await LikeDatabase.readPostLikes(
       postId: likesState.postId,
-      lastLikeId: null,
+      excludedUserIds: excludedUserIds,
     );
 
     likesState.setStatus = LikesStatus.loaded;
@@ -82,17 +88,16 @@ class LikeService {
   // Get likes for a given post
   static Future paginatePostLikes(BuildContext context) async {
     LikesState likesState = Provider.of<LikesState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
     likesState.setStatus = LikesStatus.paginating;
 
-    // Find last document
-    String? lastLikeId;
-    if (likesState.likes.isNotEmpty) {
-      lastLikeId = likesState.likes.last.uid!;
-    }
+    List<String> excludedUserIds = userState.blockedUsers;
+
     likesState.addLikes = await LikeDatabase.readPostLikes(
       postId: likesState.postId,
-      lastLikeId: lastLikeId,
+      excludedUserIds: excludedUserIds,
+      offset: likesState.likes.length,
     );
 
     likesState.setStatus = LikesStatus.loaded;

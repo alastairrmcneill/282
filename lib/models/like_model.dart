@@ -4,6 +4,7 @@ class Like {
   final String userId;
   final String? userProfilePictureURL;
   final String userDisplayName;
+  final DateTime dateTimeCreated;
 
   Like({
     this.uid,
@@ -11,14 +12,14 @@ class Like {
     required this.userId,
     required this.userProfilePictureURL,
     required this.userDisplayName,
+    required this.dateTimeCreated,
   });
+
   Map<String, dynamic> toJSON() {
     return {
-      LikeFields.uid: uid,
       LikeFields.postId: postId,
       LikeFields.userId: userId,
-      LikeFields.userProfilePictureURL: userProfilePictureURL,
-      LikeFields.userDisplayName: userDisplayName,
+      LikeFields.dateTimeCreated: dateTimeCreated.toIso8601String(),
     };
   }
 
@@ -28,7 +29,8 @@ class Like {
         postId: json[LikeFields.postId] as String,
         userId: json[LikeFields.userId] as String,
         userDisplayName: json[LikeFields.userDisplayName] as String? ?? "User",
-        userProfilePictureURL: json[LikeFields.userProfilePictureURL] as String?);
+        userProfilePictureURL: json[LikeFields.userProfilePictureURL] as String?,
+        dateTimeCreated: DateTime.parse(json[LikeFields.dateTimeCreated] as String));
   }
 
   Like copyWith({
@@ -37,6 +39,7 @@ class Like {
     String? userId,
     String? userDisplayName,
     String? userProfilePictureURL,
+    DateTime? dateTimeCreated,
   }) {
     return Like(
       uid: uid ?? this.uid,
@@ -44,14 +47,16 @@ class Like {
       userId: userId ?? this.userId,
       userProfilePictureURL: userProfilePictureURL ?? this.userProfilePictureURL,
       userDisplayName: userDisplayName ?? this.userDisplayName,
+      dateTimeCreated: dateTimeCreated ?? this.dateTimeCreated,
     );
   }
 }
 
 class LikeFields {
   static String uid = "uid";
-  static String postId = "postId";
-  static String userId = "userId";
-  static String userProfilePictureURL = "userProfilePictureURL";
-  static String userDisplayName = "userDisplayName";
+  static String postId = "post_id";
+  static String userId = "user_id";
+  static String userProfilePictureURL = "user_profile_picture_url";
+  static String userDisplayName = "user_display_name";
+  static String dateTimeCreated = "date_time_created";
 }
