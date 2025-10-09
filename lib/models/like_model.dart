@@ -4,7 +4,7 @@ class Like {
   final String userId;
   final String? userProfilePictureURL;
   final String userDisplayName;
-  final DateTime dateTimeCreated;
+  final DateTime? dateTimeCreated;
 
   Like({
     this.uid,
@@ -12,14 +12,13 @@ class Like {
     required this.userId,
     required this.userProfilePictureURL,
     required this.userDisplayName,
-    required this.dateTimeCreated,
+    this.dateTimeCreated,
   });
 
   Map<String, dynamic> toJSON() {
     return {
       LikeFields.postId: postId,
       LikeFields.userId: userId,
-      LikeFields.dateTimeCreated: dateTimeCreated.toIso8601String(),
     };
   }
 
