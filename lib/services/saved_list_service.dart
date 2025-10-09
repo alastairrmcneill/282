@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/models/saved_list_model.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
-import 'package:uuid/uuid.dart';
 
 class SavedListService {
   static Future createSavedList(BuildContext context, {required String name}) async {
@@ -23,15 +21,15 @@ class SavedListService {
       }
 
       SavedList savedList = SavedList(
-        uid: const Uuid().v4(),
         name: name,
         userId: userState.currentUser?.uid ?? "",
         munroIds: [],
+        dateTimeCreated: DateTime.now(),
       );
 
-      await SavedListDatabase.create(context, savedList: savedList);
+      SavedList newSavedList = await SavedListDatabase.create(context, savedList: savedList);
 
-      savedListState.addSavedList(savedList);
+      savedListState.addSavedList(newSavedList);
       savedListState.setStatus = SavedListStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -102,14 +100,18 @@ class SavedListService {
     required int munroId,
   }) async {
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
-    print("Adding Munro to saved list");
     try {
       if (savedList.munroIds.contains(munroId)) return;
 
       savedList.munroIds.add(munroId);
       savedListState.updateSavedList(savedList);
 
-      await SavedListDatabase.update(context, savedList: savedList);
+      SavedListMunro savedListMunro = SavedListMunro(
+        savedListId: savedList.uid ?? "",
+        munroId: munroId,
+      );
+
+      await SavedListMunroDatabase.create(context, savedListMunro: savedListMunro);
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       savedListState.setError = Error(
@@ -125,14 +127,17 @@ class SavedListService {
     required int munroId,
   }) async {
     SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
-    print("Removing Munro from saved list");
     try {
       if (!savedList.munroIds.contains(munroId)) return;
 
       savedList.munroIds.remove(munroId);
       savedListState.updateSavedList(savedList);
 
-      await SavedListDatabase.update(context, savedList: savedList);
+      await SavedListMunroDatabase.delete(
+        context,
+        savedListId: savedList.uid ?? "",
+        munroId: munroId,
+      );
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       savedListState.setError = Error(

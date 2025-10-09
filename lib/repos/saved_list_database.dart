@@ -1,104 +1,74 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class SavedListDatabase {
-  static final _db = FirebaseFirestore.instance;
-  static final CollectionReference _savedListsRef = _db.collection('savedLists');
+  static final _db = Supabase.instance.client;
+  static final SupabaseQueryBuilder _savedListsRef = _db.from('saved_lists');
+  static final SupabaseQueryBuilder _savedListsViewRef = _db.from('vu_saved_lists');
 
-  static Future create(BuildContext context, {required SavedList savedList}) async {
+  static Future<SavedList> create(BuildContext context, {required SavedList savedList}) async {
     try {
-      DocumentReference ref = _savedListsRef.doc(savedList.uid);
-
-      SavedList newSavedList = savedList.copy(uid: ref.id);
-
-      await ref.set(newSavedList.toJSON());
-    } on FirebaseException catch (error, stackTrace) {
+      Map<String, Object?> response = await _savedListsRef.insert(savedList.toJSON()).select().single();
+      SavedList newSavedList = SavedList.fromJSON(response);
+      return newSavedList;
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error creating your saved list.");
+      showErrorDialog(context, message: "There was an error creating your saved list.");
+      return savedList;
     }
   }
 
   static Future<SavedList?> readFromUid(BuildContext context, {required String uid}) async {
     try {
-      DocumentReference ref = _savedListsRef.doc(uid);
-      DocumentSnapshot documentSnapshot = await ref.get();
+      Map<String, Object?> response = await _savedListsViewRef.select().eq('uid', uid).single();
 
-      AnalyticsService.logDatabaseRead(
-        method: "SavedListDatabase.readFromUid",
-        collection: "savedLists",
-        documentCount: 1,
-        userId: null,
-        documentId: uid,
-      );
-
-      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
-
-      SavedList savedList = SavedList.fromJSON(data);
+      SavedList savedList = SavedList.fromJSON(response);
 
       return savedList;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error reading your saved lists.");
+      showErrorDialog(context, message: "There was an error reading your saved lists.");
       return null;
     }
   }
 
   static Future<List<SavedList>> readFromUserUid(BuildContext context, {required String userUid}) async {
+    List<Map<String, Object?>> response = [];
     List<SavedList> savedLists = [];
     try {
-      QuerySnapshot querySnapshot = await _savedListsRef.where(SavedListFields.userId, isEqualTo: userUid).get();
+      response = await _savedListsViewRef.select().eq(SavedListFields.userId, userUid);
 
-      AnalyticsService.logDatabaseRead(
-        method: "SavedListDatabase.readFromUserUid",
-        collection: "savedLists",
-        documentCount: savedLists.length,
-        userId: userUid,
-        documentId: null,
-      );
-
-      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-        SavedList savedList = SavedList.fromJSON(doc.data() as Map<String, Object?>);
+      for (var doc in response) {
+        SavedList savedList = SavedList.fromJSON(doc);
         savedLists.add(savedList);
       }
 
-      AnalyticsService.logDatabaseRead(
-        method: "SavedListDatabase.readFromUserUid",
-        collection: "savedLists",
-        documentCount: savedLists.length,
-        userId: userUid,
-        documentId: null,
-      );
-
       return savedLists;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error reading your saved lists.");
+      showErrorDialog(context, message: "There was an error reading your saved lists.");
       return [];
     }
   }
 
   static Future update(BuildContext context, {required SavedList savedList}) async {
     try {
-      DocumentReference ref = _savedListsRef.doc(savedList.uid);
-
-      await ref.update(savedList.toJSON());
-    } on FirebaseException catch (error, stackTrace) {
+      await _savedListsRef.update(savedList.toJSON()).eq(SavedListFields.uid, savedList.uid ?? "");
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error updating your saved list.");
+      showErrorDialog(context, message: "There was an error updating your saved list.");
     }
   }
 
   static Future deleteFromUid(BuildContext context, {required String uid}) async {
     try {
-      DocumentReference ref = _savedListsRef.doc(uid);
-
-      await ref.delete();
-    } on FirebaseException catch (error, stackTrace) {
+      await _savedListsRef.delete().eq(SavedListFields.uid, uid);
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error deleting your saved list.");
+      showErrorDialog(context, message: "There was an error deleting your saved list.");
     }
   }
 }
