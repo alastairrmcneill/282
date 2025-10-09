@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Notif {
   final String uid;
   final String? postId;
@@ -30,10 +28,8 @@ class Notif {
       NotifFields.postId: postId,
       NotifFields.targetId: targetId,
       NotifFields.sourceId: sourceId,
-      NotifFields.sourceDisplayName: sourceDisplayName,
-      NotifFields.sourceProfilePictureURL: sourceProfilePictureURL,
       NotifFields.type: type,
-      NotifFields.dateTime: dateTime,
+      NotifFields.dateTime: dateTime.toIso8601String(),
       NotifFields.read: read,
     };
   }
@@ -48,7 +44,7 @@ class Notif {
       sourceDisplayName: json[NotifFields.sourceDisplayName] as String,
       sourceProfilePictureURL: json[NotifFields.sourceProfilePictureURL] as String?,
       type: json[NotifFields.type] as String,
-      dateTime: (json[NotifFields.dateTime] as Timestamp).toDate(),
+      dateTime: DateTime.parse(json[NotifFields.dateTime] as String),
       read: json[NotifFields.read] as bool? ?? false,
     );
   }

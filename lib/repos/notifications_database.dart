@@ -6,6 +6,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationsDatabase {
   static final _db = Supabase.instance.client;
+  static final SupabaseQueryBuilder _notificationsRef = _db.from('notifications');
   static final SupabaseQueryBuilder _notificationsViewRef = _db.from('vu_notifications');
 
   static Future<List<Notif>> readUserNotifs(
@@ -42,7 +43,7 @@ class NotificationsDatabase {
 
   static Future updateNotif(BuildContext context, {required Notif notification}) async {
     try {
-      await _notificationsViewRef.update(notification.toJSON()).eq(NotifFields.uid, notification.uid);
+      await _notificationsRef.update(notification.toJSON()).eq(NotifFields.uid, notification.uid);
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error marking your notification as done.");
