@@ -128,16 +128,15 @@ class GroupFilterService {
     );
 
     selectedFriends.add(currentUser);
+    // TODO fix
+    // for (var user in selectedFriends) {
+    //   for (var munro in user.personalMunroData ?? []) {
 
-    for (var user in selectedFriends) {
-      for (var munro in user.personalMunroData ?? []) {
-        // TODO fix
-
-        // if (munro[MunroFields.summited] as bool == true) {
-        //   completedMunroIds.add(munro[MunroFields.id]);
-        // }
-      }
-    }
+    //     // if (munro[MunroFields.summited] as bool == true) {
+    //     //   completedMunroIds.add(munro[MunroFields.id]);
+    //     // }
+    //   }
+    // }
 
     // Send completed munros to munro state and filter out those munros
     munroState.setGroupFilterMunroIds = completedMunroIds.toList();

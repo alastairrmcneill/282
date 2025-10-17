@@ -30,7 +30,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
         ],
       );
     } else {
-      if (achievement.criteria[CriteriaFields.count] == 0) {
+      if (achievement.annualTarget == 0 || achievement.annualTarget == null) {
         return Column(
           children: [
             const SizedBox(height: 20),
@@ -85,7 +85,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
             ),
             achievement.type == AchievementTypes.multiMunroDay
                 ? const SizedBox()
-                : Text("Progress: ${achievement.progress}/${achievement.criteria["count"]}"),
+                : Text("Progress: ${achievement.progress}/${achievement.annualTarget}"),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,

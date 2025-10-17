@@ -79,7 +79,10 @@ class _MunroSelectorState extends State<MunroSelector> {
         return Column(
           children: [
             ...createPostState.selectedMunroIds.map((int munroId) {
-              final munro = munroState.munroList.firstWhere((m) => m.id == munroId);
+              final munro = munroState.munroList.firstWhere(
+                (m) => m.id == munroId,
+                orElse: () => Munro.empty,
+              );
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(

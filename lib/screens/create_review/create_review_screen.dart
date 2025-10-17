@@ -37,21 +37,11 @@ class CreateReviewsScreen extends StatelessWidget {
             );
           case CreateReviewStatus.loaded:
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
-              if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AchievementsCompletedScreen.route, // The name of the route you want to navigate to
-                  (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-                );
-              } else {
-                // Navigate back to where you were when it was called?
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  HomeScreen.route, // The name of the route you want to navigate to
-                  (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-                );
-              }
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomeScreen.route, // The name of the route you want to navigate to
+                (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+              );
             });
             return const SizedBox();
           default:

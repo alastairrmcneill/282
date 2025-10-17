@@ -240,7 +240,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
     if (selectedAnnotation != null && selectedMunroId != null) {
-      final Munro munro = munroState.munroList.firstWhere((munro) => munro.id == selectedMunroId);
+      final Munro munro = munroState.munroList.firstWhere(
+        (munro) => munro.id == selectedMunroId,
+        orElse: () => Munro.empty,
+      );
       final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
       final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
         geometry: selectedAnnotation!.geometry,

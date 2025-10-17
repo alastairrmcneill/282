@@ -96,10 +96,6 @@ class PostService {
         postId: postId,
       );
 
-      // Check for achievements
-      print("Checking achievements");
-      AchievementService.checkAchievements(context);
-
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error, stackTrace) {

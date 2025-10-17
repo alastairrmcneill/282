@@ -11,7 +11,7 @@ class ProfileState extends ChangeNotifier {
   bool _isCurrentUser = false;
   List<bool> _isCurrentUserHistory = [];
   List<Post> _posts = [];
-  List<List<Post>> _postsHisotry = [];
+  List<List<Post>> _postsHistory = [];
   List<MunroPicture> _profilePhotos = [];
   List<List<MunroPicture>> _profilePhotosHistory = [];
   Error _error = Error();
@@ -45,18 +45,18 @@ class ProfileState extends ChangeNotifier {
 
   void navigateBack() {
     if (_profileHistory.isNotEmpty &&
-        _postsHisotry.isNotEmpty &&
+        _postsHistory.isNotEmpty &&
         _profilePhotosHistory.isNotEmpty &&
         _isFollowingHistory.isNotEmpty &&
         _isCurrentUserHistory.isNotEmpty) {
       _profileHistory.removeAt(0);
-      _postsHisotry.removeAt(0);
+      _postsHistory.removeAt(0);
       _profilePhotosHistory.removeAt(0);
       _isFollowingHistory.removeAt(0);
       _isCurrentUserHistory.removeAt(0);
-      if (_profileHistory.isNotEmpty && _postsHisotry.isNotEmpty) {
+      if (_profileHistory.isNotEmpty && _postsHistory.isNotEmpty) {
         _user = _profileHistory[0];
-        _posts = _postsHisotry[0];
+        _posts = _postsHistory[0];
         _profilePhotos = _profilePhotosHistory[0];
         _isFollowing = _isFollowingHistory[0];
         _isCurrentUser = _isCurrentUserHistory[0];
@@ -76,7 +76,7 @@ class ProfileState extends ChangeNotifier {
     _profileHistory = [];
     _user = null;
     _posts = [];
-    _postsHisotry = [];
+    _postsHistory = [];
     _profilePhotos = [];
     _profilePhotosHistory = [];
     _isFollowing = false;
@@ -98,13 +98,13 @@ class ProfileState extends ChangeNotifier {
   }
 
   set setPosts(List<Post> posts) {
-    _postsHisotry.insert(0, posts);
+    _postsHistory.insert(0, posts);
     _posts = posts;
     notifyListeners();
   }
 
   set addPosts(List<Post> posts) {
-    _postsHisotry[0].addAll(posts);
+    _postsHistory[0].addAll(posts);
     notifyListeners();
   }
 
@@ -121,10 +121,10 @@ class ProfileState extends ChangeNotifier {
       _posts[index] = post;
     }
 
-    for (var i = 0; i < _postsHisotry.length; i++) {
-      int index = _postsHisotry[i].indexWhere((element) => element.uid == post.uid);
+    for (var i = 0; i < _postsHistory.length; i++) {
+      int index = _postsHistory[i].indexWhere((element) => element.uid == post.uid);
       if (index != -1) {
-        _postsHisotry[i][index] = post;
+        _postsHistory[i][index] = post;
       }
     }
     notifyListeners();
@@ -155,7 +155,7 @@ class ProfileState extends ChangeNotifier {
     _isFollowing = false;
     _isCurrentUser = false;
     _posts = [];
-    _postsHisotry = [];
+    _postsHistory = [];
     _error = Error();
   }
 }

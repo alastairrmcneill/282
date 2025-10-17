@@ -26,8 +26,10 @@ class PostWidget extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   // Handle the click event for each munro.name here
-                  munroState.setSelectedMunro =
-                      munroState.munroList.firstWhere((m) => m.id == post.includedMunroIds[i]);
+                  munroState.setSelectedMunro = munroState.munroList.firstWhere(
+                    (m) => m.id == post.includedMunroIds[i],
+                    orElse: () => Munro.empty,
+                  );
                   MunroPictureService.getMunroPictures(context, munroId: post.includedMunroIds[i], count: 4);
                   ReviewService.getMunroReviews(context);
                   Navigator.of(context).pushNamed(MunroScreen.route);
@@ -36,7 +38,12 @@ class PostWidget extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: munroState.munroList.firstWhere((m) => m.id == post.includedMunroIds[i]).name,
+                        text: munroState.munroList
+                            .firstWhere(
+                              (m) => m.id == post.includedMunroIds[i],
+                              orElse: () => Munro.empty,
+                            )
+                            .name,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
                       ),
                       if (i < post.includedMunroIds.length - 1)

@@ -15,23 +15,24 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     ProfileState profileState = Provider.of<ProfileState>(context);
     AchievementsState achievementsState = Provider.of<AchievementsState>(context);
-    var munroChallenge = profileState.user?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
+    //TODO fix
+    // var munroChallenge = profileState.user?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
 
-    if (munroChallenge == null) {
-      return const SizedBox();
-    }
+    // if (munroChallenge == null) {
+    //   return const SizedBox();
+    // }
 
-    Achievement achievement = Achievement.fromJSON(munroChallenge);
+    // Achievement achievement = Achievement.fromJSON(munroChallenge);
 
-    int year = achievement.criteria[CriteriaFields.year];
-    int count = achievement.criteria[CriteriaFields.count];
-    int progress = achievement.progress;
+    int year = 2025; //achievement.criteria[CriteriaFields.year];
+    int count = 10; //achievement.criteria[CriteriaFields.count];
+    int progress = 0; //achievement.progress;
 
     return ClickableStatBox(
       onTap: () {
         if (profileState.isCurrentUser) {
           achievementsState.reset();
-          achievementsState.setCurrentAchievement = achievement;
+          // achievementsState.setCurrentAchievement = achievement;
           Navigator.of(context).pushNamed(MunroChallengeDetailScreen.route);
         }
       },

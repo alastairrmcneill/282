@@ -43,6 +43,19 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _showCompletedAchievements() async {
+    Future.delayed(Duration(seconds: 1));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AchievementsCompletedScreen(),
+        );
+      }
+    });
+  }
+
   Future _loadData() async {
     await SettingsSerivce.loadSettings(context);
     await UserService.readCurrentUser(context);
@@ -56,6 +69,12 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+
+    if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
+      _showCompletedAchievements();
+    }
+
     return Consumer<UserState>(
       builder: (context, userState, child) {
         switch (userState.status) {

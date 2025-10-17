@@ -26,7 +26,7 @@ class MunroChallengeListScreen extends StatelessWidget {
                 .where((Achievement achievement) => achievement.type == AchievementTypes.annualGoal)
                 .toList();
 
-            sortedAchievements.sort((a, b) => b.uid.compareTo(a.uid));
+            sortedAchievements.sort((a, b) => b.achievementId.compareTo(a.achievementId));
 
             Achievement achievement = sortedAchievements[index];
 
@@ -34,7 +34,7 @@ class MunroChallengeListScreen extends StatelessWidget {
               title: Text(achievement.name),
               subtitle: Text(achievement.description),
               trailing: achievement.completed ? const Icon(Icons.check) : null,
-              onTap: achievement.criteria[CriteriaFields.year] == DateTime.now().year
+              onTap: int.parse(achievement.criteriaValue ?? "0") == DateTime.now().year
                   ? () {
                       achievementsState.reset();
                       achievementsState.setCurrentAchievement = achievement;

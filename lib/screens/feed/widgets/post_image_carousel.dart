@@ -23,7 +23,12 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
 
     if (imageUrls.isEmpty) {
       imageUrls = widget.post.includedMunroIds
-          .map((munroId) => munroState.munroList.firstWhere((m) => m.id == munroId).pictureURL)
+          .map((munroId) => munroState.munroList
+              .firstWhere(
+                (m) => m.id == munroId,
+                orElse: () => Munro.empty,
+              )
+              .pictureURL)
           .toList();
     }
 

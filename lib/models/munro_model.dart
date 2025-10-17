@@ -105,6 +105,28 @@ class Munro {
     );
   }
 
+  static Munro get empty {
+    return Munro(
+      id: 0,
+      name: "",
+      extra: "",
+      area: "",
+      meters: 0,
+      section: "",
+      region: "",
+      feet: 0,
+      lat: 0.0,
+      lng: 0.0,
+      link: "",
+      description: "",
+      pictureURL: "",
+      startingPointURL: "",
+      saved: false,
+      averageRating: null,
+      reviewCount: null,
+    );
+  }
+
   Munro copy({
     int? id,
     String? name,

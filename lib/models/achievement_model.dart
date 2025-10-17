@@ -1,86 +1,90 @@
 class Achievement {
-  final String uid;
-  final String name;
-  final String description;
-  final String type;
-  final bool completed;
-  final Map criteria;
-  final int progress;
+  String userId;
+  String achievementId;
+  DateTime dateTimeCreated;
+  String name;
+  String description;
+  String type;
+  String? criteriaValue;
+  int? criteriaCount;
+  int? annualTarget;
+  DateTime? acknowledgedAt;
+  int progress;
+  bool completed;
 
   Achievement({
-    required this.uid,
+    required this.userId,
+    required this.achievementId,
+    required this.dateTimeCreated,
     required this.name,
     required this.description,
     required this.type,
-    required this.completed,
-    required this.criteria,
+    this.criteriaValue,
+    this.criteriaCount,
+    this.annualTarget,
+    this.acknowledgedAt,
     required this.progress,
+    required this.completed,
   });
 
   Map<String, dynamic> toJSON() {
     return {
-      AchievementFields.uid: uid,
-      AchievementFields.name: name,
-      AchievementFields.description: description,
-      AchievementFields.type: type,
-      AchievementFields.completed: completed,
-      AchievementFields.criteria: criteria,
-      AchievementFields.progress: progress,
+      AchievementFields.userId: userId,
+      AchievementFields.achievementId: achievementId,
+      AchievementFields.annualTarget: annualTarget,
+      AchievementFields.acknowledgedAt: acknowledgedAt?.toIso8601String(),
     };
   }
 
   static Achievement fromJSON(Map<String, dynamic> data) {
     return Achievement(
-      uid: data[AchievementFields.uid] as String,
+      userId: data[AchievementFields.userId] as String,
+      achievementId: data[AchievementFields.achievementId] as String,
       name: data[AchievementFields.name] as String,
+      dateTimeCreated: DateTime.parse(data[AchievementFields.dateTimeCreated] as String),
       description: data[AchievementFields.description] as String,
       type: data[AchievementFields.type] as String,
-      completed: data[AchievementFields.completed] as bool? ?? false,
-      criteria: data[AchievementFields.criteria] as Map,
+      criteriaValue: data[AchievementFields.criteriaValue] as String?,
+      criteriaCount: data[AchievementFields.criteriaCount] as int?,
+      annualTarget: data[AchievementFields.annualTarget] as int?,
+      acknowledgedAt: data[AchievementFields.acknowledgedAt] != null
+          ? DateTime.parse(data[AchievementFields.acknowledgedAt] as String)
+          : null,
       progress: data[AchievementFields.progress] as int? ?? 0,
-    );
-  }
-
-  Achievement copy({
-    String? uid,
-    String? name,
-    String? description,
-    String? type,
-    bool? completed,
-    Map? criteria,
-    int? progress,
-  }) {
-    return Achievement(
-      uid: uid ?? this.uid,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      type: type ?? this.type,
-      completed: completed ?? this.completed,
-      criteria: criteria ?? this.criteria,
-      progress: progress ?? this.progress,
+      completed: data[AchievementFields.completed] as bool? ?? false,
     );
   }
 
   @override
   String toString() {
-    return """Achievement: ${AchievementFields.uid}: $uid, 
+    return """Achievement: ${AchievementFields.userId}: $userId, 
+                          ${AchievementFields.achievementId}: $achievementId,
                           ${AchievementFields.name}: $name, 
+                          ${AchievementFields.dateTimeCreated}: $dateTimeCreated,
                           ${AchievementFields.description}: $description, 
                           ${AchievementFields.type}: $type, 
-                          ${AchievementFields.completed}: 
-                          $completed, ${AchievementFields.criteria}: $criteria, 
-                          ${AchievementFields.progress}: $progress""";
+                          ${AchievementFields.criteriaValue}: $criteriaValue,
+                          ${AchievementFields.criteriaCount}: $criteriaCount,
+                          ${AchievementFields.annualTarget}: $annualTarget,
+                          ${AchievementFields.acknowledgedAt}: $acknowledgedAt,
+                          ${AchievementFields.progress}: $progress,
+                          ${AchievementFields.completed}: $completed""";
   }
 }
 
 class AchievementFields {
-  static const String uid = 'uid';
+  static const String userId = 'user_id';
+  static const String achievementId = 'achievement_id';
   static const String name = 'name';
   static const String description = 'description';
   static const String type = 'type';
-  static const String completed = 'completed';
-  static const String criteria = 'criteria';
+  static const String criteriaValue = 'criteria_value';
+  static const String criteriaCount = 'criteria_count';
+  static const String annualTarget = 'annual_target';
+  static const String acknowledgedAt = 'acknowledged_at';
   static const String progress = 'progress';
+  static const String completed = 'completed';
+  static const String dateTimeCreated = 'date_time_created';
 }
 
 class AchievementTypes {
@@ -92,18 +96,4 @@ class AchievementTypes {
   static const String multiMunroDay = "multiMunroDay";
   static const String areaGoal = "areaGoal";
   static const String nameGoal = "nameGoal";
-}
-
-class CriteriaFields {
-  static const String count = "count";
-  static const String status = "status";
-  static const String year = "year";
-  static const String area = "area";
-  static const String names = "names";
-}
-
-class AnnualGoalStatus {
-  static const String pending = "pending";
-  static const String inProgress = "InProgress";
-  static const String completed = "Completed";
 }

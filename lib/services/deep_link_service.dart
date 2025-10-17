@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -52,7 +53,10 @@ class DeepLinkService {
       await SavedListService.readUserSavedLists(context);
 
       munroState.setSelectedMunroId = munroId;
-      var munro = munroState.munroList.firstWhere((munro) => munro.id == munroId);
+      var munro = munroState.munroList.firstWhere(
+        (munro) => munro.id == munroId,
+        orElse: () => Munro.empty,
+      );
       munroState.setSelectedMunro = munro;
 
       navigatorKey.currentState!.pushNamed(

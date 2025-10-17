@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -41,19 +42,6 @@ class AuthService {
         },
       );
 
-      // Get achievements
-      List<Achievement> achievements = await AchievementService.getAchievements(context);
-      Map<String, dynamic> achievementData = {};
-
-      for (var doc in achievements) {
-        String achievementId = doc.uid;
-        achievementData[achievementId] = {
-          ...doc.toJSON(),
-          "completed": false,
-          "progress": 0,
-        };
-      }
-
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String appVersion = packageInfo.version;
@@ -65,7 +53,6 @@ class AuthService {
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
-        achievements: achievementData,
         signInMethod: "email",
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
@@ -229,19 +216,6 @@ class AuthService {
         firstName = names[0];
       }
 
-      // Get achievements
-      List<Achievement> achievements = await AchievementService.getAchievements(context);
-      Map<String, dynamic> achievementData = {};
-
-      for (var doc in achievements) {
-        String achievementId = doc.uid;
-        achievementData[achievementId] = {
-          ...doc.toJSON(),
-          "completed": false,
-          "progress": 0,
-        };
-      }
-
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String appVersion = packageInfo.version;
@@ -250,7 +224,6 @@ class AuthService {
         uid: _auth.currentUser?.uid,
         displayName: _auth.currentUser?.displayName ?? "New User",
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
-        achievements: achievementData,
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
@@ -304,19 +277,6 @@ class AuthService {
         firstName = names[0];
       }
 
-      // Get achievements
-      List<Achievement> achievements = await AchievementService.getAchievements(context);
-      Map<String, dynamic> achievementData = {};
-
-      for (var doc in achievements) {
-        String achievementId = doc.uid;
-        achievementData[achievementId] = {
-          ...doc.toJSON(),
-          "completed": false,
-          "progress": 0,
-        };
-      }
-
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String appVersion = packageInfo.version;
@@ -328,7 +288,6 @@ class AuthService {
         lastName: lastName,
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         profilePictureURL: _auth.currentUser?.photoURL,
-        achievements: achievementData,
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
@@ -431,15 +390,15 @@ class AuthService {
       MunroState munroState = Provider.of<MunroState>(context, listen: false);
       AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
 
+      //TODO: fix this
       // bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
-      // munroState.setFilterString = "";
+      munroState.setFilterString = "";
 
-      // var munroChallenge = userState.currentUser?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
+      Achievement? munroChallenge = await UserAchievementsDatabase.getLatestMunroChallengeAchievement(context,
+          userId: userState.currentUser!.uid ?? "");
 
-      // Achievement achievement = Achievement.fromJSON(munroChallenge);
-
-      // achievementsState.reset();
-      // achievementsState.setCurrentAchievement = achievement;
+      achievementsState.reset();
+      achievementsState.setCurrentAchievement = munroChallenge;
 
       Navigator.of(context).pushNamedAndRemoveUntil(
         InAppOnboarding.route,

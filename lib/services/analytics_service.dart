@@ -99,8 +99,8 @@ class AnalyticsService {
     await logEvent(
       name: 'survey_answers',
       parameters: {
-        'q1': {q1 == null || q1 == ""}.toString(),
-        'q2': {q2 == null || q2 == ""}.toString(),
+        'q1': {!(q1 == null || q1.trim() == "")}.toString(),
+        'q2': {!(q2 == null || q2.trim() == "")}.toString(),
       },
     );
   }
