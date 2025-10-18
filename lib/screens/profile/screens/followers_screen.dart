@@ -44,7 +44,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
       if (_followersScrollController.offset >= _followersScrollController.position.maxScrollExtent &&
           !_followersScrollController.position.outOfRange &&
           followersState.status != FollowersStatus.paginating) {
-        FollowingService.paginateFollowers(context, userId: profileState.user!.uid!);
+        FollowingService.paginateFollowers(context, userId: profileState.profile!.id!);
       }
     });
 
@@ -53,7 +53,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
       if (_followingScrollController.offset >= _followingScrollController.position.maxScrollExtent &&
           !_followingScrollController.position.outOfRange &&
           followersState.status != FollowersStatus.paginating) {
-        FollowingService.paginateFollowing(context, userId: profileState.user!.uid!);
+        FollowingService.paginateFollowing(context, userId: profileState.profile!.id!);
       }
     });
   }

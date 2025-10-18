@@ -8,7 +8,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/widgets/widgets.dart';
 
 class ProfileService {
   static Future loadUserFromUid(BuildContext context, {required String userId}) async {
@@ -18,7 +17,7 @@ class ProfileService {
     try {
       profileState.setStatus = ProfileStatus.loading;
       // Load user from database
-      profileState.setUser = await UserDatabase.readUserFromUid(context, uid: userId);
+      profileState.setProfile = await ProfileDatabase.getProfileFromUserId(userId: userId);
 
       // Check if this is current user
       profileState.setIsCurrentUser = userState.currentUser?.uid == userId;
@@ -65,34 +64,20 @@ class ProfileService {
     }
   }
 
-  static Future updateProfile(BuildContext context, {required AppUser appUser, File? profilePicture}) async {
+  static Future getProfileMunroCompletions(BuildContext context, {required String userId}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
-
     try {
-      startCircularProgressOverlay(context);
-      // Upload new profile picture
-      String? photoURL;
-      if (profilePicture != null) {
-        photoURL = await StorageService.uploadProfilePicture(profilePicture);
-        appUser.profilePictureURL = photoURL;
-      }
-
-      // TODO update relationships
-
-      // Update Auth
-      await AuthService.updateAuthUser(context, appUser: appUser);
-
-      // Update user database
-      await UserService.updateUser(context, appUser: appUser);
-
-      // Update profile
-      profileState.setUser = await UserDatabase.readUserFromUid(context, uid: appUser.uid!);
-      stopCircularProgressOverlay(context);
-      Navigator.pop(context);
+      final munroCompletions = await MunroCompletionsDatabase.getUserMunroCompletions(
+        context,
+        userId: userId,
+      );
+      profileState.setMunroCompletions = munroCompletions;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      stopCircularProgressOverlay(context);
-      showErrorDialog(context, message: "There was an issue updating the profile.");
+      profileState.setError = Error(
+        code: error.toString(),
+        message: "There was an issue loading the munros. Please try again.",
+      );
     }
   }
 }

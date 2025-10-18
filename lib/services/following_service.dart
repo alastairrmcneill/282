@@ -11,9 +11,7 @@ import 'package:two_eight_two/repos/repos.dart';
 class FollowingService {
   static Future followUser(
     BuildContext context, {
-    required String profileUserId,
-    required String profileUserDisplayName,
-    String? profileUserPictureURL,
+    required String targetUserId,
   }) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
@@ -26,24 +24,20 @@ class FollowingService {
 
       FollowingRelationship followingRelationship = FollowingRelationship(
         sourceId: userState.currentUser?.uid ?? "",
-        targetId: profileUserId,
-        targetDisplayName: profileUserDisplayName,
-        targetProfilePictureURL: profileUserPictureURL,
-        targetSearchName: profileUserDisplayName.toLowerCase(),
-        sourceDisplayName: userState.currentUser!.displayName!,
-        sourceProfilePictureURL: userState.currentUser!.profilePictureURL,
+        targetId: targetUserId,
       );
       // Create relationship
       await FollowingRelationshipsDatabase.create(context, followingRelationship: followingRelationship);
 
       // Update app state
-      if (profileState.user == null) {
+      if (profileState.profile == null) {
         profileState.setIsFollowing = true;
         stopCircularProgressOverlay(context);
         return;
       }
-      AppUser tempUser = profileState.user!.copyWith(followersCount: (profileState.user?.followersCount ?? 0) + 1);
-      profileState.setUser = tempUser;
+      Profile tempProfile =
+          profileState.profile!.copyWith(followersCount: (profileState.profile?.followersCount ?? 0) + 1);
+      profileState.setProfile = tempProfile;
       profileState.setIsFollowing = true;
       stopCircularProgressOverlay(context);
     } catch (error, stackTrace) {
@@ -75,9 +69,9 @@ class FollowingService {
       );
 
       // Update app state
-      if (profileState.user != null) {
-        AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! - 1);
-        profileState.setUser = tempUser;
+      if (profileState.profile != null) {
+        Profile tempProfile = profileState.profile!.copyWith(followersCount: profileState.profile!.followersCount! - 1);
+        profileState.setProfile = tempProfile;
         profileState.setIsFollowing = false;
       }
 

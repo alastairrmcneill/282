@@ -70,7 +70,7 @@ class UserDatabase {
     int offset = 0,
   }) async {
     List<AppUser> searchResult = [];
-    int pageSize = 10;
+    int pageSize = 30;
 
     try {
       final response = await _userRef

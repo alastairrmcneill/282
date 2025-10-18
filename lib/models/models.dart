@@ -18,3 +18,4 @@ export 'app_feedback_model.dart';
 export 'blocked_user_relationship.dart';
 export 'munro_completion_model.dart';
 export 'saved_list_munro_model.dart';
+export 'profile_model.dart';

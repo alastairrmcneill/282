@@ -31,7 +31,7 @@ class ProfileHeader extends StatelessWidget {
                 children: [
                   CircularProfilePicture(
                     radius: 50,
-                    profilePictureURL: profileState.user?.profilePictureURL,
+                    profilePictureURL: profileState.profile?.profilePictureURL,
                   ),
                   const SizedBox(width: 15),
                   Expanded(
@@ -40,11 +40,11 @@ class ProfileHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          profileState.user?.displayName ?? "Hello user!",
+                          profileState.profile?.displayName ?? "Hello user!",
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          profileState.user?.bio ?? "",
+                          profileState.profile?.bio ?? "",
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],
@@ -60,11 +60,11 @@ class ProfileHeader extends StatelessWidget {
                     children: [
                       ProfileStat(
                         text: "Following",
-                        stat: profileState.user?.followingCount.toString() ?? "0",
+                        stat: profileState.profile?.followingCount.toString() ?? "0",
                         onTap: () {
                           FollowingService.loadInitialFollowersAndFollowing(
                             context,
-                            userId: profileState.user!.uid!,
+                            userId: profileState.profile!.id!,
                           );
                           Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
                         },
@@ -72,11 +72,11 @@ class ProfileHeader extends StatelessWidget {
                       const SizedBox(width: 10),
                       ProfileStat(
                         text: "Followers",
-                        stat: profileState.user?.followersCount.toString() ?? "0",
+                        stat: profileState.profile?.followersCount.toString() ?? "0",
                         onTap: () {
                           FollowingService.loadInitialFollowersAndFollowing(
                             context,
-                            userId: profileState.user!.uid!,
+                            userId: profileState.profile!.id!,
                           );
                           Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
                         },
@@ -94,7 +94,7 @@ class ProfileHeader extends StatelessWidget {
                             )
                           : FollowingButton(
                               isFollowing: profileState.isFollowing,
-                              user: profileState.user,
+                              profile: profileState.profile,
                             ),
                       const SizedBox(width: 10),
                       SizedBox(

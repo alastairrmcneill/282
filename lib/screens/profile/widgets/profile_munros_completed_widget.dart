@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class ProfileMunrosCompletedWidget extends StatelessWidget {
   final double width;
@@ -11,14 +12,16 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
+    ProfileState profileState = Provider.of<ProfileState>(context);
 
-    // TODO: This will always show your completion. Need it to load for other users
     int count = 282;
-    int progress = munroCompletionState.munroCompletions.map((e) => e.munroId).toSet().length;
+    int progress = profileState.profile?.munrosCompleted ?? 0;
 
     return ClickableStatBox(
-      onTap: () => Navigator.of(context).pushNamed(MunrosCompletedScreen.route),
+      onTap: () async {
+        await ProfileService.getProfileMunroCompletions(context, userId: profileState.profile?.id ?? "");
+        Navigator.of(context).pushNamed(MunrosCompletedScreen.route);
+      },
       progress: progress.toString(),
       count: " / $count",
       subtitle: "Completed",

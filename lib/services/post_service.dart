@@ -217,7 +217,7 @@ class PostService {
       // Get posts
       posts = await PostsDatabase.readPostsFromUserId(
         context,
-        userId: profileState.user?.uid ?? "",
+        userId: profileState.profile?.id ?? "",
       );
 
       // Check likes
@@ -241,7 +241,7 @@ class PostService {
       // Add posts from database
       List<Post> newPosts = await PostsDatabase.readPostsFromUserId(
         context,
-        userId: profileState.user?.uid ?? "",
+        userId: profileState.profile?.id ?? "",
         offset: profileState.posts.length,
       );
 

@@ -23,7 +23,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           profileState.photoStatus != ProfilePhotoStatus.paginating) {
-        MunroPictureService.paginateProfilePictures(context, profileId: profileState.user?.uid ?? '');
+        MunroPictureService.paginateProfilePictures(context, profileId: profileState.profile?.id ?? '');
       }
     });
     super.initState();
@@ -41,7 +41,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Photos from ${profileState.user?.displayName ?? "user"}"),
+        title: Text("Photos from ${profileState.profile?.displayName ?? "user"}"),
       ),
       body: Column(
         children: [
@@ -63,7 +63,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                   initialIndex: index,
                   fetchMorePhotos: () async {
                     List<MunroPicture> newPhotos = await MunroPictureService.paginateProfilePictures(context,
-                        profileId: profileState.user?.uid ?? '');
+                        profileId: profileState.profile?.id ?? '');
                     return newPhotos;
                   },
                 );

@@ -28,15 +28,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
-    if (profileState.user == null) return;
+    if (userState.currentUser == null) return;
 
-    _firstNameController.text = profileState.user!.firstName ?? "";
-    _lastNameController.text = profileState.user!.lastName ?? "";
-    _bioController.text = profileState.user!.bio ?? "";
+    _firstNameController.text = userState.currentUser!.firstName ?? "";
+    _lastNameController.text = userState.currentUser!.lastName ?? "";
+    _bioController.text = userState.currentUser!.bio ?? "";
 
-    _photoURL = profileState.user?.profilePictureURL;
+    _photoURL = userState.currentUser?.profilePictureURL;
   }
 
   Future pickImage() async {
@@ -54,7 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
+    UserState userState = Provider.of<UserState>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -67,9 +67,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               }
               _formKey.currentState!.save();
 
-              if (profileState.user == null) return;
+              if (userState.currentUser == null) return;
 
-              AppUser appUser = profileState.user!;
+              AppUser appUser = userState.currentUser!;
 
               AppUser newAppUser = appUser.copyWith(
                 displayName: "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}",
@@ -79,7 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 bio: _bioController.text.trim(),
               );
 
-              await ProfileService.updateProfile(
+              await UserService.updateProfile(
                 context,
                 appUser: newAppUser,
                 profilePicture: _image,

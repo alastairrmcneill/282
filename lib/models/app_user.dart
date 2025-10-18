@@ -2,14 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
   final String? uid;
-  String? displayName;
-  String? searchName;
   String? firstName;
   String? lastName;
-  String? profilePictureURL;
-  int? followersCount;
-  int? followingCount;
+  String? displayName;
+  String? searchName;
   String? bio;
+  String? profilePictureURL;
   String? fcmToken;
   final String? appVersion;
   final String? platform;
@@ -24,8 +22,6 @@ class AppUser {
     this.firstName,
     this.lastName,
     this.profilePictureURL,
-    this.followersCount,
-    this.followingCount,
     this.bio,
     this.fcmToken,
     this.appVersion,
@@ -60,8 +56,6 @@ class AppUser {
       bio: json[AppUserFields.bio] as String?,
       profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
       fcmToken: json[AppUserFields.fcmToken] as String?,
-      followersCount: json[AppUserFields.followersCount] as int? ?? 0,
-      followingCount: json[AppUserFields.followingCount] as int? ?? 0,
       appVersion: json[AppUserFields.appVersion] as String?,
       platform: json[AppUserFields.platform] as String?,
       signInMethod: json[AppUserFields.signInMethod] as String?,
@@ -77,8 +71,6 @@ class AppUser {
     String? firstName,
     String? lastName,
     String? profilePictureURL,
-    int? followersCount,
-    int? followingCount,
     String? bio,
     String? fcmToken,
     String? appVersion,
@@ -94,8 +86,6 @@ class AppUser {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       profilePictureURL: profilePictureURL ?? this.profilePictureURL,
-      followersCount: followersCount ?? this.followersCount,
-      followingCount: followingCount ?? this.followingCount,
       bio: bio ?? this.bio,
       fcmToken: fcmToken ?? this.fcmToken,
       appVersion: appVersion ?? this.appVersion,
@@ -121,8 +111,6 @@ class AppUser {
       ${AppUserFields.firstName}: $firstName,
       ${AppUserFields.lastName}: $lastName,
       ${AppUserFields.profilePictureURL}: $profilePictureURL,
-      ${AppUserFields.followingCount}: $followersCount, 
-      ${AppUserFields.followersCount}: $followersCount, 
       ${AppUserFields.bio}: $bio,
       ${AppUserFields.fcmToken}:$fcmToken,
       ${AppUserFields.appVersion}: $appVersion,
@@ -140,8 +128,6 @@ class AppUserFields {
   static String firstName = 'first_name';
   static String lastName = 'last_name';
   static String profilePictureURL = 'profile_picture_url';
-  static String followingCount = 'following_count';
-  static String followersCount = 'followers_count';
   static String bio = 'bio';
   static String fcmToken = 'fcm_token';
   static String appVersion = 'app_version';

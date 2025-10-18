@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/achievement_model.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -15,29 +13,33 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     ProfileState profileState = Provider.of<ProfileState>(context);
     AchievementsState achievementsState = Provider.of<AchievementsState>(context);
-    //TODO fix
-    // var munroChallenge = profileState.user?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
 
-    // if (munroChallenge == null) {
-    //   return const SizedBox();
-    // }
+    String annualGoalId = profileState.profile?.annualGoalId ?? '';
+    int year = profileState.profile?.annualGoalYear ?? 2025;
+    int count = profileState.profile?.annualGoalTarget ?? 0;
+    int progress = profileState.profile?.annualGoalProgress ?? 0;
 
-    // Achievement achievement = Achievement.fromJSON(munroChallenge);
+    bool isCurrentUser = profileState.isCurrentUser;
 
-    int year = 2025; //achievement.criteria[CriteriaFields.year];
-    int count = 10; //achievement.criteria[CriteriaFields.count];
-    int progress = 0; //achievement.progress;
+    String getCountText(bool isCurrentUser, int count) {
+      if (isCurrentUser) {
+        return count == 0 ? "Click to set a goal for the year!" : " / $count";
+      } else {
+        return count == 0 ? "No goal set" : " / $count";
+      }
+    }
 
     return ClickableStatBox(
       onTap: () {
-        if (profileState.isCurrentUser) {
+        if (isCurrentUser) {
           achievementsState.reset();
-          // achievementsState.setCurrentAchievement = achievement;
+          achievementsState.setCurrentAchievement =
+              achievementsState.achievements.where((a) => a.achievementId == annualGoalId).first;
           Navigator.of(context).pushNamed(MunroChallengeDetailScreen.route);
         }
       },
       progress: count == 0 ? "" : progress.toString(),
-      count: count == 0 ? "Click to set a goal for the year!" : " / $count",
+      count: getCountText(isCurrentUser, count),
       subtitle: "$year Challenge",
     );
   }

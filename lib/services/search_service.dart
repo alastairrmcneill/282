@@ -20,7 +20,6 @@ class SearchService {
       List<AppUser> users = await UserService.searchUsers(
         context,
         searchTerm: query.toLowerCase(),
-        lastUserId: null,
       );
 
       // Filter users
@@ -45,17 +44,10 @@ class SearchService {
     try {
       userSearchState.setStatus = SearchStatus.paginating;
 
-      // Find last user ID
-      String lastUserId = "";
-      if (userSearchState.users.isNotEmpty) {
-        lastUserId = userSearchState.users.last.uid!;
-      }
-
       // Add posts from database
       List<AppUser> users = await UserService.searchUsers(
         context,
         searchTerm: query.toLowerCase(),
-        lastUserId: lastUserId,
       );
 
       // Filter users

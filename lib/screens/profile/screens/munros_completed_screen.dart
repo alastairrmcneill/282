@@ -47,9 +47,9 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
+    ProfileState profileState = Provider.of<ProfileState>(context);
 
-    final completedMunroIds = munroCompletionState.munroCompletions.map((mc) => mc.munroId).toSet();
+    final completedMunroIds = profileState.munroCompletions.map((mc) => mc.munroId).toSet();
 
     final completedMunros = munroState.munroList.where((munro) => completedMunroIds.contains(munro.id)).toList();
     final remainingMunros = munroState.munroList.where((munro) => !completedMunroIds.contains(munro.id)).toList();
