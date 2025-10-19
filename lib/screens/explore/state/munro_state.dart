@@ -19,7 +19,7 @@ class MunroState extends ChangeNotifier {
   String _createPostFilterString = '';
   List<Munro> _bulkMunroUpdateList = [];
   String _bulkMunroUpdateFilterString = '';
-  List<String> _groupFilterMunroIds = [];
+  List<int> _groupFilterMunroIds = [];
   Set<int> _completedMunroIds = const {};
 
   MunroStatus get status => _status;
@@ -91,7 +91,7 @@ class MunroState extends ChangeNotifier {
     _filter();
   }
 
-  set setGroupFilterMunroIds(List<String> groupFilterMunroIds) {
+  set setGroupFilterMunroIds(List<int> groupFilterMunroIds) {
     _groupFilterMunroIds = groupFilterMunroIds;
     _filter();
   }

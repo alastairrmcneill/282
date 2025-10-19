@@ -115,30 +115,16 @@ class GroupFilterService {
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
-    // Set to store all climbed Munro IDs
-    Set<String> completedMunroIds = {};
-
     AppUser? currentUser = userState.currentUser;
 
     if (currentUser == null) return;
 
-    List<AppUser> selectedFriends = await UserDatabase.readUsersFromUids(
+    List<MunroCompletion> munroCompletions = await MunroCompletionsDatabase.getMunroCompletionsFromUserList(
       context,
-      uids: groupFilterState.selectedFriendsUids,
+      userIds: [...groupFilterState.selectedFriendsUids, currentUser.uid ?? ''],
     );
 
-    selectedFriends.add(currentUser);
-    // TODO fix
-    // for (var user in selectedFriends) {
-    //   for (var munro in user.personalMunroData ?? []) {
-
-    //     // if (munro[MunroFields.summited] as bool == true) {
-    //     //   completedMunroIds.add(munro[MunroFields.id]);
-    //     // }
-    //   }
-    // }
-
     // Send completed munros to munro state and filter out those munros
-    munroState.setGroupFilterMunroIds = completedMunroIds.toList();
+    munroState.setGroupFilterMunroIds = munroCompletions.map((mc) => mc.munroId).toSet().toList();
   }
 }

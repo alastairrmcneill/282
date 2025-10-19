@@ -38,6 +38,27 @@ class MunroCompletionsDatabase {
     }
   }
 
+  static Future<List<MunroCompletion>> getMunroCompletionsFromUserList(
+    BuildContext context, {
+    required List<String> userIds,
+  }) async {
+    List<MunroCompletion> munroCompletions = [];
+    List<Map<String, dynamic>> response = [];
+    try {
+      response = await _munroCompletionsRef.select().inFilter(MunroCompletionFields.userId, userIds);
+
+      for (var doc in response) {
+        munroCompletions.add(MunroCompletion.fromJSON(doc));
+      }
+      return munroCompletions;
+    } catch (error, stackTrace) {
+      // Log the error and show a dialog
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: "There was an error loading munro completions.");
+      return munroCompletions;
+    }
+  }
+
   static Future delete(BuildContext context, {required String munroCompletionId}) async {
     try {
       await _munroCompletionsRef.delete().eq(MunroCompletionFields.id, munroCompletionId);
