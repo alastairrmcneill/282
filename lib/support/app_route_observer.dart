@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/analytics_service.dart';
