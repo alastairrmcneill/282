@@ -12,6 +12,16 @@ class MunroSummaryTile extends StatelessWidget {
   final int? munroId;
   const MunroSummaryTile({super.key, required this.munroId});
 
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) return false;
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && uri.host.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (munroId == null) {
@@ -53,22 +63,34 @@ class MunroSummaryTile extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12),
                   ),
-                  child: CachedNetworkImage(
-                    imageUrl: munro.pictureURL,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/post_image_placeholder.png',
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
-                    ),
-                    fadeInDuration: Duration.zero,
-                    errorWidget: (context, url, error) {
-                      return const Icon(Icons.error);
-                    },
-                  ),
+                  child: _isValidUrl(munro.pictureURL)
+                      ? CachedNetworkImage(
+                          imageUrl: munro.pictureURL,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Image.asset(
+                            'assets/images/post_image_placeholder.png',
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
+                          ),
+                          fadeInDuration: Duration.zero,
+                          errorWidget: (context, url, error) {
+                            return Image.asset(
+                              'assets/images/post_image_placeholder.png',
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/images/post_image_placeholder.png',
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
                 ),
                 Expanded(
                   flex: 1,

@@ -77,6 +77,10 @@ class PostWidget extends StatelessWidget {
     UserLikeState userLikeState = Provider.of<UserLikeState>(context);
     LikesState likesState = Provider.of<LikesState>(context);
 
+    if (post.includedMunroIds.isEmpty) {
+      return const SizedBox();
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Container(

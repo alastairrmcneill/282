@@ -155,7 +155,7 @@ class AuthService {
         UserService.updateUser(context, appUser: newAppUser);
       }
 
-      await resetAppData(context);
+      resetAppData(context);
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
@@ -358,7 +358,7 @@ class AuthService {
     }
   }
 
-  static Future resetAppData(BuildContext context) async {
+  static resetAppData(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
     userState.reset();
 
@@ -374,9 +374,8 @@ class AuthService {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     commentsState.reset();
 
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    munroState.reset();
-    await MunroService.loadMunroData(context);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
+    munroCompletionState.reset();
   }
 
   static Future _afterSignInNavigation(BuildContext context) async {
@@ -389,9 +388,11 @@ class AuthService {
       UserState userState = Provider.of<UserState>(context, listen: false);
       MunroState munroState = Provider.of<MunroState>(context, listen: false);
       AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+      MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
 
-      //TODO: fix this
-      // bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+      await MunroCompletionService.getUserMunroCompletions(context);
+
+      bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
       munroState.setFilterString = "";
 
       Achievement? munroChallenge = await UserAchievementsDatabase.getLatestMunroChallengeAchievement(context,

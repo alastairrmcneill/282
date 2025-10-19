@@ -26,6 +26,13 @@ class MunroCompletionState extends ChangeNotifier {
     _error = error;
     notifyListeners();
   }
+
+  void reset() {
+    _status = MunroCompletionsStatus.initial;
+    _error = Error();
+    _munroCompletions = [];
+    notifyListeners();
+  }
 }
 
 enum MunroCompletionsStatus { initial, loading, loaded, error }
