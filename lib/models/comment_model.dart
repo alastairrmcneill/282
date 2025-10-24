@@ -20,12 +20,8 @@ class Comment {
   // To JSON
   Map<String, dynamic> toJSON() {
     return {
-      CommentFields.uid: uid,
       CommentFields.postId: postId,
       CommentFields.authorId: authorId,
-      CommentFields.authorDisplayName: authorDisplayName,
-      CommentFields.authorProfilePictureURL: authorProfilePictureURL,
-      CommentFields.dateTime: dateTime,
       CommentFields.commentText: commentText,
     };
   }

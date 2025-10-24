@@ -36,7 +36,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
           Form(
             key: args.formKey,
             child: TextFormFieldBase(
-              initialValue: achievementsState.currentAchievement?.annualTarget.toString() ?? '0',
+              initialValue: achievementsState.currentAchievement?.annualTarget?.toString() ?? '0',
               labelText: "Number of Munros",
               textInputAction: TextInputAction.done,
               fillColor: Colors.white,

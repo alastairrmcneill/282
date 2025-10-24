@@ -1,9 +1,9 @@
 import 'package:two_eight_two/models/models.dart';
 
 class Post {
-  final String? uid;
+  final String uid;
   final String authorId;
-  final String? authorDisplayName;
+  final String authorDisplayName;
   final String? authorProfilePictureURL;
   final DateTime dateTimeCreated;
   final DateTime? summitedDateTime;
@@ -16,20 +16,27 @@ class Post {
   final String privacy;
 
   Post({
-    this.uid,
+    String? uid,
     required this.authorId,
-    this.authorDisplayName,
+    String? authorDisplayName,
     this.authorProfilePictureURL,
-    required this.dateTimeCreated,
-    required this.summitedDateTime,
+    DateTime? dateTimeCreated,
+    this.summitedDateTime,
     this.duration,
-    required this.imageUrlsMap,
-    required this.title,
+    String? title,
     this.description,
-    required this.includedMunroIds,
-    required this.likes,
-    required this.privacy,
-  });
+    Map<int, List<String>>? imageUrlsMap,
+    List<int>? includedMunroIds,
+    int? likes,
+    String? privacy,
+  })  : uid = uid ?? '',
+        authorDisplayName = authorDisplayName ?? '',
+        dateTimeCreated = dateTimeCreated ?? DateTime.now(),
+        title = title ?? '',
+        imageUrlsMap = imageUrlsMap ?? {},
+        includedMunroIds = includedMunroIds ?? [],
+        likes = likes ?? 0,
+        privacy = privacy ?? Privacy.public;
 
   // To JSON
   Map<String, dynamic> toJSON() {

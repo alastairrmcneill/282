@@ -27,7 +27,7 @@ class PostsDatabase {
   // Update Post
   static Future update(BuildContext context, {required Post post}) async {
     try {
-      await _postsTableRef.update(post.toJSON()).eq(PostFields.uid, post.uid ?? "");
+      await _postsTableRef.update(post.toJSON()).eq(PostFields.uid, post.uid);
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: "There was an error updating your post.");
@@ -64,7 +64,7 @@ class PostsDatabase {
     int pageSize = 10;
 
     try {
-      response = await _postsViewRef // TODO: add one in for my profile vs others to ensure privacy?
+      response = await _postsViewRef
           .select()
           .eq(PostFields.authorId, userId)
           .order(PostFields.dateTimeCreated, ascending: false)

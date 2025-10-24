@@ -32,9 +32,11 @@ Deno.serve(async (req) => {
     // Get target user’s FCM token
     const { data: targetUser, error: targetError } = await supabase
       .from("users")
-      .select("fcm_token")
+      .select("*")
       .eq("id", notification.target_id)
       .single();
+
+    console.log("📱 ~ targetUser:", targetUser);
 
     if (targetError) {
       console.error("Error fetching target user:", targetError);
@@ -49,9 +51,11 @@ Deno.serve(async (req) => {
     // Get source user’s display name
     const { data: sourceUser, error: sourceError } = await supabase
       .from("users")
-      .select("display_name")
+      .select("*")
       .eq("id", notification.source_id)
       .single();
+
+    console.log("📱 ~ sourceUser:", sourceUser);
 
     if (sourceError) {
       console.error("Error fetching source user:", sourceError);

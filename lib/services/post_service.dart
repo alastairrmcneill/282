@@ -21,15 +21,15 @@ class PostService {
       List<Munro> munros = munroState.munroList.where((m) => createPostState.selectedMunroIds.contains(m.id)).toList();
 
       // Upload picture and get url
-      Map<int, List<String>> imageURLsMap = createPostState.imagesURLs;
+      Map<int, List<String>> addedImageUrlsMap = {};
 
-      for (int munroId in createPostState.images.keys) {
-        for (File image in createPostState.images[munroId]!) {
+      for (int munroId in createPostState.addedImages.keys) {
+        for (File image in createPostState.addedImages[munroId]!) {
           String imageURL = await StorageService.uploadPostImage(image);
-          if (imageURLsMap[munroId] == null) {
-            imageURLsMap[munroId] = [];
+          if (addedImageUrlsMap[munroId] == null) {
+            addedImageUrlsMap[munroId] = [];
           }
-          imageURLsMap[munroId]!.add(imageURL);
+          addedImageUrlsMap[munroId]!.add(imageURL);
         }
       }
 
@@ -64,16 +64,9 @@ class PostService {
       // Create post object
       Post post = Post(
         authorId: userState.currentUser?.uid ?? "",
-        authorDisplayName: userState.currentUser?.displayName ?? "",
-        authorProfilePictureURL: userState.currentUser?.profilePictureURL,
-        dateTimeCreated: postDateTime,
-        summitedDateTime: summitDateTime,
-        duration: createPostState.duration,
-        likes: 0,
         title: title,
         description: createPostState.description,
-        includedMunroIds: createPostState.selectedMunroIds,
-        imageUrlsMap: imageURLsMap,
+        dateTimeCreated: postDateTime,
         privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
@@ -96,6 +89,14 @@ class PostService {
         postId: postId,
       );
 
+      // Upload munro pictures
+      await MunroPictureService.uploadMunroPictures(
+        context,
+        postId: postId,
+        imageURLsMap: addedImageUrlsMap,
+        privacy: post.privacy,
+      );
+
       // Update state
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error, stackTrace) {
@@ -114,50 +115,15 @@ class PostService {
       createPostState.setStatus = CreatePostStatus.loading;
 
       // Get the original post
-      Post originalPost = createPostState.editingPost!;
-      Map<int, List<String>> originalImageURLsMap = originalPost.imageUrlsMap;
+      Map<int, List<String>> addedImageUrlsMap = {};
 
-      // Start with existing URLs
-      Map<int, List<String>> finalImageURLsMap = Map.from(createPostState.imagesURLs);
-
-      // Process each munro's images
-      for (int munroId in createPostState.images.keys) {
-        List<File> newImages = createPostState.images[munroId]!;
-
-        if (newImages.isNotEmpty) {
-          // Upload new images for this munro
-          List<String> newImageURLs = [];
-          for (File image in newImages) {
-            String imageURL = await StorageService.uploadPostImage(image);
-            newImageURLs.add(imageURL);
+      for (int munroId in createPostState.addedImages.keys) {
+        for (File image in createPostState.addedImages[munroId]!) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (addedImageUrlsMap[munroId] == null) {
+            addedImageUrlsMap[munroId] = [];
           }
-
-          // Replace the images for this munro with new ones
-          finalImageURLsMap[munroId] = [
-            ...(finalImageURLsMap[munroId] ?? []), // Keep existing URLs that weren't changed
-            ...newImageURLs // Add new URLs
-          ];
-
-          // Delete old images for this munro from storage
-          if (originalImageURLsMap.containsKey(munroId)) {
-            for (String oldImageURL in originalImageURLsMap[munroId]!) {
-              // Only delete if it's not in the final map (i.e., it was removed)
-              if (!finalImageURLsMap[munroId]!.contains(oldImageURL)) {
-                await StorageService.deleteImage(oldImageURL);
-              }
-            }
-          }
-        }
-      }
-
-      // Handle munros that were completely removed
-      for (int originalMunroId in originalImageURLsMap.keys) {
-        if (!createPostState.selectedMunroIds.contains(originalMunroId)) {
-          // This munro was removed from the post, delete all its images
-          for (String imageURL in originalImageURLsMap[originalMunroId]!) {
-            await StorageService.deleteImage(imageURL);
-          }
-          finalImageURLsMap.remove(originalMunroId);
+          addedImageUrlsMap[munroId]!.add(imageURL);
         }
       }
 
@@ -177,7 +143,6 @@ class PostService {
         title: createPostState.title,
         description: createPostState.description,
         summitedDateTime: summitDateTime,
-        imageUrlsMap: finalImageURLsMap,
         privacy: createPostState.postPrivacy ?? Privacy.public,
       );
 
@@ -185,24 +150,44 @@ class PostService {
       await PostsDatabase.update(context, post: newPost);
 
       // Complete munros
-      // TODO: fix logic here for making sure we don't duplicate munro completions
-
-      List<int> previousMunroIds = post.includedMunroIds;
-      List<int> currentMunroIds = createPostState.selectedMunroIds;
-      List<int> newMunroIds = currentMunroIds.where((id) => !previousMunroIds.contains(id)).toList();
-
-      List<Munro> newMunros = munroState.munroList.where((m) => newMunroIds.contains(m.id)).toList();
+      List<Munro> addedMunros =
+          munroState.munroList.where((m) => createPostState.addedMunroIds.contains(m.id)).toList();
 
       MunroCompletionService.markMunrosAsCompleted(
         context,
-        munros: newMunros,
+        munros: addedMunros,
         summitDateTime: newPost.summitedDateTime!,
-        postId: post.uid ?? "",
+        postId: post.uid,
       );
 
+      MunroCompletionService.removeMunroCompletions(
+        context,
+        munroIds: createPostState.deletedMunroIds.toList(),
+        postId: post.uid,
+      );
+
+      await MunroPictureService.uploadMunroPictures(
+        context,
+        postId: post.uid,
+        imageURLsMap: addedImageUrlsMap,
+        privacy: newPost.privacy,
+      );
+
+      // Delete images that aren't needed anymore
+      await MunroPictureService.deleteMunroPictures(
+        context,
+        postId: post.uid,
+        imageURLs: createPostState.deletedImages.toList(),
+      );
+
+      // Update post in state
+      Map<int, List<String>> updatedImageURLsMap = {...createPostState.existingImages, ...addedImageUrlsMap};
+
+      Post newPostState = newPost.copyWith(imageUrlsMap: updatedImageURLsMap);
+
       // Update state
-      profileState.updatePost(newPost);
-      feedState.updatePost(newPost);
+      profileState.updatePost(newPostState);
+      feedState.updatePost(newPostState);
       createPostState.setStatus = CreatePostStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -279,7 +264,6 @@ class PostService {
       );
 
       // Check likes
-      // TODO: how to do we do the likes?
       LikeService.clearLikedPosts(context);
       LikeService.getLikedPostIds(context, posts: posts);
 
@@ -318,7 +302,6 @@ class PostService {
       );
 
       // Check likes
-      // TODO how do we do the likes?
       LikeService.getLikedPostIds(context, posts: newPosts);
 
       feedState.addFriendsPosts = newPosts;
@@ -400,7 +383,7 @@ class PostService {
       profileState.removePost(post);
       feedState.removePost(post);
 
-      PostsDatabase.deletePostWithUID(context, uid: post.uid ?? "");
+      PostsDatabase.deletePostWithUID(context, uid: post.uid);
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue deleting your post. Please try again.");

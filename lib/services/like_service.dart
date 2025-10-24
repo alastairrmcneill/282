@@ -13,7 +13,7 @@ class LikeService {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
     Like like = Like(
-      postId: post.uid ?? "",
+      postId: post.uid,
       userId: userState.currentUser?.uid ?? "",
       userDisplayName: userState.currentUser?.displayName ?? "User",
       userProfilePictureURL: userState.currentUser?.profilePictureURL,
@@ -22,8 +22,8 @@ class LikeService {
 
     LikeDatabase.create(context, like: like);
 
-    userLikeState.addRecentlyLikedPost = post.uid!;
-    userLikeState.addLikedPosts = {post.uid!};
+    userLikeState.addRecentlyLikedPost = post.uid;
+    userLikeState.addLikedPosts = {post.uid};
 
     Post newPost = post.copyWith(likes: post.likes + 1);
     if (inFeed) {
@@ -40,8 +40,8 @@ class LikeService {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
 
-    LikeDatabase.delete(context, postId: post.uid ?? "", userId: userState.currentUser?.uid ?? "");
-    userLikeState.removePost(post.uid!);
+    LikeDatabase.delete(context, postId: post.uid, userId: userState.currentUser?.uid ?? "");
+    userLikeState.removePost(post.uid);
 
     Post newPost = post.copyWith(likes: post.likes - 1);
     if (inFeed) {

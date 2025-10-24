@@ -108,4 +108,21 @@ class MunroCompletionService {
       showErrorDialog(context, message: "There was an issue removing your munro completion");
     }
   }
+
+  static Future<void> removeMunroCompletions(
+    BuildContext context, {
+    required List<int> munroIds,
+    required String postId,
+  }) async {
+    try {
+      await MunroCompletionsDatabase.deleteByMunroIdsAndPostId(
+        context,
+        munroIds: munroIds,
+        postId: postId,
+      );
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: "There was an issue removing your munro completions");
+    }
+  }
 }

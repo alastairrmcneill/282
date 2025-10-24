@@ -44,7 +44,7 @@ class PostHeader extends StatelessWidget {
         MenuItem(
           text: 'Report',
           onTap: () {
-            reportState.setContentId = post.uid ?? "";
+            reportState.setContentId = post.uid;
             reportState.setType = "post";
             Navigator.of(context).pushNamed(ReportScreen.route);
           },
@@ -83,7 +83,7 @@ class PostHeader extends StatelessWidget {
                       Navigator.of(context).pushNamed(ProfileScreen.route);
                     },
                     child: Text(
-                      post.authorDisplayName ?? "",
+                      post.authorDisplayName,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),

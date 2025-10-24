@@ -110,4 +110,45 @@ class MunroPictureService {
       return [];
     }
   }
+
+  static Future uploadMunroPictures(
+    BuildContext context, {
+    required String postId,
+    required Map<int, List<String>> imageURLsMap,
+    required String privacy,
+  }) async {
+    // State management
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    if (userState.currentUser == null) return;
+
+    List<MunroPicture> munroPictures = [];
+
+    imageURLsMap.forEach((munroId, imageURLs) async {
+      for (String imageURL in imageURLs) {
+        munroPictures.add(MunroPicture(
+          uid: "",
+          munroId: munroId,
+          authorId: userState.currentUser!.uid!,
+          imageUrl: imageURL,
+          postId: postId,
+          privacy: privacy,
+        ));
+      }
+    });
+
+    await MunroPicturesDatabase.createMunroPictures(context, munroPictures: munroPictures);
+  }
+
+  static Future deleteMunroPictures(
+    BuildContext context, {
+    required String postId,
+    required List<String> imageURLs,
+  }) async {
+    await MunroPicturesDatabase.deleteMunroPicturesByUrls(context, imageURLs: imageURLs);
+
+    for (String imageURL in imageURLs) {
+      await StorageService.deleteImage(imageURL);
+    }
+  }
 }

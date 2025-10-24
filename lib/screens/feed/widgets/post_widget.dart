@@ -112,13 +112,13 @@ class PostWidget extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            if (userLikeState.likedPosts.contains(post.uid!)) {
+                            if (userLikeState.likedPosts.contains(post.uid)) {
                               LikeService.unLikePost(context, post: post, inFeed: inFeed);
                             } else {
                               LikeService.likePost(context, post: post, inFeed: inFeed);
                             }
                           },
-                          child: userLikeState.likedPosts.contains(post.uid!)
+                          child: userLikeState.likedPosts.contains(post.uid)
                               ? const Icon(CupertinoIcons.heart_fill)
                               : const Icon(CupertinoIcons.heart),
                         ),
@@ -126,7 +126,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             likesState.reset();
-                            likesState.setPostId = post.uid!;
+                            likesState.setPostId = post.uid;
                             LikeService.getPostLikes(context);
                             Navigator.of(context).pushNamed(LikesScreen.route);
                           },
@@ -139,7 +139,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             commentsState.reset();
-                            commentsState.setPostId = post.uid!;
+                            commentsState.setPostId = post.uid;
                             CommentsService.getPostComments(context);
                             Navigator.of(context).pushNamed(CommentsScreen.route);
                           },

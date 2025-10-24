@@ -68,4 +68,21 @@ class MunroCompletionsDatabase {
       showErrorDialog(context, message: "There was an error deleting the munro completion.");
     }
   }
+
+  static Future<void> deleteByMunroIdsAndPostId(
+    BuildContext context, {
+    required List<int> munroIds,
+    required String postId,
+  }) async {
+    try {
+      await _munroCompletionsRef
+          .delete()
+          .eq(MunroCompletionFields.postId, postId)
+          .inFilter(MunroCompletionFields.munroId, munroIds);
+    } catch (error, stackTrace) {
+      // Log the error and show a dialog
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: "There was an error deleting the munro completion.");
+    }
+  }
 }

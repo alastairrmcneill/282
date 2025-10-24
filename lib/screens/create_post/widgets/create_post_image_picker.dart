@@ -32,7 +32,8 @@ class CreatePostImagePicker extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     double height = 100;
 
-    if ((createPostState.images[munroId]?.isEmpty ?? true) && (createPostState.imagesURLs[munroId]?.isEmpty ?? true)) {
+    if ((createPostState.addedImages[munroId]?.isEmpty ?? true) &&
+        (createPostState.existingImages[munroId]?.isEmpty ?? true)) {
       return SizedBox(
         height: height,
         width: double.infinity,
@@ -70,7 +71,7 @@ class CreatePostImagePicker extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: [
-            ...createPostState.imagesURLs[munroId]?.map((imageURL) {
+            ...createPostState.existingImages[munroId]?.map((imageURL) {
                   return Stack(
                     children: [
                       Padding(
@@ -97,7 +98,7 @@ class CreatePostImagePicker extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          createPostState.removeImageURL(munroId: munroId, url: imageURL);
+                          createPostState.removeExistingImage(munroId: munroId, url: imageURL);
                         },
                         child: Container(
                           decoration: const BoxDecoration(
@@ -115,8 +116,8 @@ class CreatePostImagePicker extends StatelessWidget {
                   );
                 }) ??
                 [],
-            ...createPostState.images[munroId]?.map((image) {
-                  int index = createPostState.images[munroId]?.indexOf(image) ?? 0;
+            ...createPostState.addedImages[munroId]?.map((image) {
+                  int index = createPostState.addedImages[munroId]?.indexOf(image) ?? 0;
                   return Stack(
                     children: [
                       Padding(
@@ -146,7 +147,9 @@ class CreatePostImagePicker extends StatelessWidget {
                   );
                 }) ??
                 [],
-            (createPostState.images[munroId]?.length ?? 0) + (createPostState.imagesURLs[munroId]?.length ?? 0) > 10
+            (createPostState.addedImages[munroId]?.length ?? 0) +
+                        (createPostState.existingImages[munroId]?.length ?? 0) >
+                    10
                 ? const SizedBox()
                 : Padding(
                     padding: const EdgeInsets.all(8),

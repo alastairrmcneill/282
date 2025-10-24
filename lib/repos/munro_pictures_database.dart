@@ -69,4 +69,22 @@ class MunroPicturesDatabase {
       return munroPictures;
     }
   }
+
+  static Future<void> createMunroPictures(BuildContext context, {required List<MunroPicture> munroPictures}) async {
+    try {
+      await _munroPicturesRef.insert(munroPictures.map((e) => e.toJSON()).toList());
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: "There was an error uploading munro pictures.");
+    }
+  }
+
+  static Future deleteMunroPicturesByUrls(BuildContext context, {required List<String> imageURLs}) async {
+    try {
+      await _munroPicturesRef.delete().inFilter(MunroPictureFields.imageUrl, imageURLs);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      showErrorDialog(context, message: "There was an error deleting munro pictures.");
+    }
+  }
 }

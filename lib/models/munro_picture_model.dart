@@ -1,20 +1,20 @@
 import 'package:two_eight_two/models/models.dart';
 
 class MunroPicture {
-  final String uid;
+  final String? uid;
   final int munroId;
   final String authorId;
   final String imageUrl;
-  final DateTime dateTime;
+  final DateTime? dateTime;
   final String postId;
   final String privacy;
 
   MunroPicture({
-    required this.uid,
+    this.uid,
     required this.munroId,
     required this.authorId,
     required this.imageUrl,
-    required this.dateTime,
+    this.dateTime,
     required this.postId,
     required this.privacy,
   });
@@ -28,6 +28,14 @@ class MunroPicture {
         postId: data[MunroPictureFields.postId] as String,
         privacy: data[MunroPictureFields.privacy] as String? ?? Privacy.public,
       );
+
+  Map<String, dynamic> toJSON() => {
+        MunroPictureFields.munroId: munroId,
+        MunroPictureFields.authorId: authorId,
+        MunroPictureFields.imageUrl: imageUrl,
+        MunroPictureFields.postId: postId,
+        MunroPictureFields.privacy: privacy,
+      };
 }
 
 class MunroPictureFields {
