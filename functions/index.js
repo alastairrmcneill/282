@@ -29,17 +29,11 @@ const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 const { FieldValue } = require("firebase-admin/firestore");
 const { user } = require("firebase-functions/v1/auth");
-const base64 = require("base-64");
 const fs = require("fs");
 
-// Decode the Base64 encoded service account key
-const serviceAccount = JSON.parse(base64.decode(functions.config().service_account.key));
-
-// Initialize Firebase Admin SDK
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://prod-81998.firebaseio.com",
-});
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
 
 exports.onUserCreated = functions.firestore.document("users/{userId}").onCreate(async (snapshot, context) => {
   const userId = context.params.userId;
@@ -715,7 +709,6 @@ exports.onNotificationCreated = functions.firestore
   .document("/notifications/{notificationId}")
   .onCreate(async (snapshot, context) => {
     console.log("Notification Created");
-    console.log(`Service Account: ${serviceAccount.private_key}`);
 
     const targetId = snapshot.get("targetId");
 
@@ -1125,3 +1118,8 @@ exports.scheduledRecalculateMunroRatings = functions.pubsub
       return null;
     }
   });
+
+exports.beforecreated = require("./authTriggers").beforecreated;
+exports.beforesignedin = require("./authTriggers").beforesignedin;
+
+exports.setAllUserClaims = require("./setClaims").setAllUserClaims;

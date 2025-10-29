@@ -42,6 +42,8 @@ class AuthService {
         },
       );
 
+      await _auth.currentUser!.getIdToken();
+
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String appVersion = packageInfo.version;
@@ -96,6 +98,8 @@ class AuthService {
 
       if (_auth.currentUser == null) return;
 
+      await _auth.currentUser!.getIdToken(true);
+
       // Fetch database detail
       await UserService.readCurrentUser(context);
 
@@ -145,7 +149,6 @@ class AuthService {
     startCircularProgressOverlay(context);
 
     try {
-      await _auth.signOut();
       stopCircularProgressOverlay(context);
 
       // Remove FCM Token
@@ -156,6 +159,8 @@ class AuthService {
       }
 
       resetAppData(context);
+
+      await _auth.signOut();
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
@@ -205,6 +210,8 @@ class AuthService {
           },
         );
       }
+
+      await _auth.currentUser?.getIdToken(true);
 
       List<String> names = _auth.currentUser?.displayName?.split(" ") ?? [];
       String firstName = "";
@@ -266,6 +273,8 @@ class AuthService {
       );
 
       UserCredential credential = await _auth.signInWithCredential(googleCredential);
+
+      await _auth.currentUser?.getIdToken(true);
 
       List<String> names = googleUser.displayName?.split(" ") ?? [];
       String firstName = "";
@@ -342,8 +351,8 @@ class AuthService {
 
   static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
     try {
-      await _auth.currentUser?.delete();
       await UserService.deleteUser(context, appUser: appUser);
+      await _auth.currentUser?.delete();
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, HomeScreen.route);

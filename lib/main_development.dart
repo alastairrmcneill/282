@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +23,10 @@ main() async {
   await Supabase.initialize(
     url: dotenv.env["SUPABASE_URL"] ?? "",
     anonKey: dotenv.env["SUPABASE_PUBLISHABLE_KEY"] ?? "",
+    accessToken: () async => FirebaseAuth.instance.currentUser?.getIdToken(false),
   );
+
+  await FirebaseAuth.instance.currentUser?.getIdToken(true);
 
   await SentryFlutter.init(
     (options) {
