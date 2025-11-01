@@ -10,3 +10,5 @@ LEFT JOIN saved_list_munros m
   ON m.saved_list_id = l.id
 GROUP BY l.id
 ORDER BY l.date_time_created;
+
+ALTER VIEW vu_saved_lists SET (security_invoker = true, security_barrier = true);

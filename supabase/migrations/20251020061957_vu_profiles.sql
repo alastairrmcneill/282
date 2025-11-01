@@ -38,3 +38,5 @@ LEFT JOIN LATERAL (
   FROM munro_completions m
   WHERE m.user_id = u.id
 ) mc ON true;
+
+ALTER VIEW vu_profiles SET (security_invoker = true, security_barrier = true);

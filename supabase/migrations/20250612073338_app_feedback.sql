@@ -9,3 +9,15 @@ CREATE TABLE app_feedbacks (
   app_version TEXT,
   platform TEXT
 );
+
+ALTER TABLE app_feedbacks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE app_feedbacks FORCE ROW LEVEL SECURITY;
+
+CREATE POLICY "app_feedbacks_insert"
+ON app_feedbacks
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (true);
+
+REVOKE ALL ON TABLE app_feedbacks FROM anon, authenticated;
+GRANT INSERT ON TABLE app_feedbacks TO anon, authenticated;

@@ -35,3 +35,4 @@ GROUP BY
   imgs.image_urls
 ORDER BY p.date_time_created DESC;
 
+ALTER VIEW vu_posts SET (security_invoker = true, security_barrier = true);

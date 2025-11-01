@@ -10,3 +10,5 @@ GROUP BY
   m.id
 ORDER BY
   m.id;
+
+ALTER VIEW vu_munros SET (security_invoker = true, security_barrier = true);

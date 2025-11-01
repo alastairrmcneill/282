@@ -6,3 +6,5 @@ FROM followers f
 JOIN vu_posts vp
   ON vp.author_id = f.target_id
 WHERE vp.privacy IN ('public', 'friends');
+
+ALTER VIEW vu_friends_feed SET (security_invoker = true, security_barrier = true);

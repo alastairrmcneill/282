@@ -95,3 +95,5 @@ SELECT
     FALSE
   ) AS completed
 FROM progressed p;
+
+ALTER VIEW vu_user_achievement_progress SET (security_invoker = true, security_barrier = true);

@@ -6,3 +6,5 @@ SELECT
 FROM comments c
 LEFT JOIN users u ON u.id = c.author_id
 ORDER BY c.date_time_created DESC;
+
+ALTER VIEW vu_post_comments SET (security_invoker = true, security_barrier = true);

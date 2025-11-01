@@ -7,3 +7,4 @@ FROM likes l
 LEFT JOIN users u ON l.user_id = u.id
 ORDER BY l.date_time_created DESC;
 
+ALTER VIEW vu_likes SET (security_invoker = true, security_barrier = true);

@@ -9,3 +9,5 @@ LEFT JOIN users u
   ON u.id = r.author_id
 ORDER BY 
   r.date_time_created DESC, id ASC;
+
+ALTER VIEW vu_munro_reviews SET (security_invoker = true, security_barrier = true);

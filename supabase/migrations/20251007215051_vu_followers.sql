@@ -9,3 +9,5 @@ SELECT
 FROM followers f
 LEFT JOIN users s ON s.id = f.source_id
 LEFT JOIN users t ON t.id = f.target_id;
+
+ALTER VIEW vu_followers SET (security_invoker = true, security_barrier = true);

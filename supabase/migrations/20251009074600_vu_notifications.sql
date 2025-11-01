@@ -6,3 +6,5 @@ SELECT
 FROM notifications n
 LEFT JOIN users u ON u.id = n.source_id
 ORDER BY n.date_time_created DESC;
+
+ALTER VIEW vu_notifications SET (security_invoker = true, security_barrier = true);
