@@ -24,7 +24,7 @@ CREATE POLICY "users_self_select"
 ON users
 FOR SELECT
 TO authenticated
-USING (profile_visibility = 'public') OR (id = (auth.jwt() ->> 'sub'));
+USING ((profile_visibility = 'public') OR (id = (auth.jwt() ->> 'sub')));
 
 CREATE POLICY "users_self_insert"
 ON users
