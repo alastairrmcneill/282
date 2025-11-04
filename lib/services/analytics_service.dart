@@ -7,9 +7,9 @@ class AnalyticsService {
   static FirebaseAnalytics? _analytics;
   static Mixpanel? mixpanel;
 
-  static Future<void> init({required String flavor}) async {
+  static Future<void> init() async {
     // Once you've called this method once, you can access `mixpanel` throughout the rest of your application.
-    String token = dotenv.env['MIXPANEL_TOKEN_${flavor.toUpperCase()}'] ?? "";
+    String token = dotenv.env['MIXPANEL_TOKEN'] ?? "";
     mixpanel = await Mixpanel.init(token, trackAutomaticEvents: true);
 
     _analytics = FirebaseAnalytics.instance;

@@ -15,8 +15,8 @@ main() async {
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
   await RemoteConfigService.init();
-  await dotenv.load();
-  await AnalyticsService.init(flavor: "Development");
+  await dotenv.load(fileName: '.env.dev');
+  await AnalyticsService.init();
   await DeepLinkService.initBranchLinks(flavor: "Development", navigatorKey: navigatorKey);
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
   MapboxOptions.setAccessToken(dotenv.env["MAPBOX_TOKEN"] ?? "");
