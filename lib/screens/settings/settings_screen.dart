@@ -95,8 +95,12 @@ class SettingsScreen extends StatelessWidget {
               ? ListTile(
                   onTap: () async {
                     FirebaseMessaging _messaging = FirebaseMessaging.instance;
-                    String? token = await _messaging.getToken();
-                    print(token);
+                    try {
+                      String? token = await _messaging.getToken();
+                      print(token);
+                    } catch (e) {
+                      print("Error fetching FCM token: $e");
+                    }
                   },
                   title: const Text("FCM"),
                 )

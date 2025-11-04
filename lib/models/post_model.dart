@@ -67,17 +67,17 @@ class Post {
 
     return Post(
       uid: json[PostFields.uid] as String?,
-      authorId: json[PostFields.authorId] as String,
-      authorDisplayName: json[PostFields.authorDisplayName] as String,
-      authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
-      dateTimeCreated: DateTime.parse(json[PostFields.dateTimeCreated] as String),
+      authorId: json[PostFields.authorId] as String? ?? "",
+      authorDisplayName: json[PostFields.authorDisplayName] as String? ?? "",
+      authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String? ?? "",
+      dateTimeCreated: DateTime.parse(json[PostFields.dateTimeCreated] as String? ?? DateTime.now().toIso8601String()),
       summitedDateTime:
           DateTime.parse(json[PostFields.summitedDateTime] as String? ?? DateTime.now().toIso8601String()),
       imageUrlsMap: newImageUrlsMap,
-      title: json[PostFields.title] as String,
-      description: json[PostFields.description] as String?,
+      title: json[PostFields.title] as String? ?? "",
+      description: json[PostFields.description] as String? ?? "",
       includedMunroIds: newIncludedMunroIds,
-      likes: json[PostFields.likes] as int,
+      likes: json[PostFields.likes] as int? ?? 0,
       privacy: json[PostFields.privacy] as String? ?? Privacy.public,
     );
   }
