@@ -39,7 +39,10 @@ class SavedListDatabase {
     List<Map<String, Object?>> response = [];
     List<SavedList> savedLists = [];
     try {
-      response = await _savedListsViewRef.select().eq(SavedListFields.userId, userUid);
+      response = await _savedListsViewRef
+          .select()
+          .eq(SavedListFields.userId, userUid)
+          .order(SavedListFields.dateTimeCreated, ascending: false);
 
       for (var doc in response) {
         SavedList savedList = SavedList.fromJSON(doc);

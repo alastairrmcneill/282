@@ -13,7 +13,8 @@ CREATE TABLE munros (
   link TEXT NOT NULL,
   description TEXT NOT NULL,
   picture_url TEXT NOT NULL,
-  starting_point_url TEXT NOT NULL
+  starting_point_url TEXT NOT NULL,
+  height_rank INT NOT NULL
 );
 
 ALTER TABLE munros ENABLE ROW LEVEL SECURITY;

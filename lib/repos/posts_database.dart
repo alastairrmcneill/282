@@ -100,7 +100,8 @@ class PostsDatabase {
           .not(PostFields.authorId, 'in', excludedAuthorIds)
           .eq(PostFields.userId, userId)
           .order(PostFields.dateTimeCreated, ascending: false)
-          .range(offset, offset + pageSize - 1);
+          .range(offset, offset + pageSize - 1)
+          .timeout(Duration(seconds: 30));
 
       for (var doc in response) {
         Post post = Post.fromJSON(doc);
@@ -130,7 +131,8 @@ class PostsDatabase {
           .select()
           .not(PostFields.authorId, 'in', excludedAuthorIds)
           .order(PostFields.dateTimeCreated, ascending: false)
-          .range(offset, offset + pageSize - 1);
+          .range(offset, offset + pageSize - 1)
+          .timeout(Duration(seconds: 30));
 
       for (var doc in response) {
         Post post = Post.fromJSON(doc);

@@ -41,16 +41,16 @@ progressed AS (
       WHEN 'tallestMunros' THEN (
         SELECT COUNT(DISTINCT mc.munro_id)
         FROM munro_completions mc
-        JOIN vu_munros_by_height h ON h.id = mc.munro_id
+        JOIN munros m ON m.id = mc.munro_id
         WHERE mc.user_id = b.user_id
-          AND h.height_rank_desc <= b.criteria_count
+          AND m.height_rank <= b.criteria_count
       )
       WHEN 'lowestMunros' THEN (
         SELECT COUNT(DISTINCT mc.munro_id)
         FROM munro_completions mc
-        JOIN vu_munros_by_height h ON h.id = mc.munro_id
+        JOIN munros m ON m.id = mc.munro_id
         WHERE mc.user_id = b.user_id
-          AND h.height_rank_asc <= b.criteria_count
+          AND m.height_rank >= (283 - b.criteria_count)
       )
       WHEN 'monthlyMunro' THEN (
         SELECT COUNT(DISTINCT DATE_TRUNC('month', mc.date_time_completed))

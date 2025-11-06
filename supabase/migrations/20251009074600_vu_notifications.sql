@@ -4,7 +4,6 @@ SELECT
   u.display_name AS source_display_name,
   u.profile_picture_url AS source_profile_picture_url 
 FROM notifications n
-LEFT JOIN users u ON u.id = n.source_id
-ORDER BY n.date_time_created DESC;
+LEFT JOIN users u ON u.id = n.source_id;
 
 ALTER VIEW vu_notifications SET (security_invoker = true, security_barrier = true);
