@@ -8,18 +8,18 @@ import 'package:two_eight_two/screens/screens.dart';
 
 class FollowingButton extends StatelessWidget {
   final bool isFollowing;
-  final AppUser? user;
+  final Profile? profile;
   const FollowingButton({
     super.key,
     required this.isFollowing,
-    required this.user,
+    required this.profile,
   });
 
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<AppUser?>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
-    if (user == null) return const SizedBox();
+    if (profile == null) return const SizedBox();
 
     return ElevatedButton(
       onPressed: () async {
@@ -30,14 +30,12 @@ class FollowingButton extends StatelessWidget {
           if (isFollowing) {
             await FollowingService.unfollowUser(
               context,
-              profileUserId: user!.uid!,
+              profileUserId: profile!.id!,
             );
           } else {
             await FollowingService.followUser(
               context,
-              profileUserId: user!.uid!,
-              profileUserDisplayName: user!.displayName ?? "282 User",
-              profileUserPictureURL: user!.profilePictureURL,
+              targetUserId: profile!.id!,
             );
           }
         }

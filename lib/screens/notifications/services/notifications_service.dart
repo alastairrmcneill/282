@@ -16,11 +16,13 @@ class NotificationsService {
       // Set Status
       notificationsState.setStatus = NotificationsStatus.loading;
 
+      List<String> blockedUsers = userState.blockedUsers;
+
       // Read comments for post
       notificationsState.setNotifications = await NotificationsDatabase.readUserNotifs(
         context,
         userId: userState.currentUser?.uid ?? "",
-        lastNotificationId: null,
+        excludedSourceIds: blockedUsers,
       );
 
       // Update status
@@ -41,17 +43,14 @@ class NotificationsService {
     try {
       notificationsState.setStatus = NotificationsStatus.paginating;
 
-      // Find last user ID
-      String? lastNotificationId;
-      if (notificationsState.notifications.isNotEmpty) {
-        lastNotificationId = notificationsState.notifications.last.uid;
-      }
+      List<String> blockedUsers = userState.blockedUsers;
 
       // Add posts from database
       notificationsState.addNotifications = await NotificationsDatabase.readUserNotifs(
         context,
         userId: userState.currentUser?.uid ?? "",
-        lastNotificationId: lastNotificationId,
+        excludedSourceIds: blockedUsers,
+        offset: notificationsState.notifications.length,
       );
 
       notificationsState.setStatus = NotificationsStatus.loaded;

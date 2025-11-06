@@ -92,7 +92,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                           ? ElevatedButton(
                               onPressed: () async {
                                 AchievementService.setMunroChallenge(context);
-                                MunroService.bulkUpdateMunros(context);
+                                MunroCompletionService.bulkUpdateMunros(context);
                                 SharedPreferencesService.setShowBulkMunroDialog(false);
                                 AnalyticsService.logOnboardingCompleted();
                                 Navigator.pushNamedAndRemoveUntil(

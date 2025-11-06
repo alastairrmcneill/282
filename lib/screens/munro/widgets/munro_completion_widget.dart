@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +10,18 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroCompletionWidget extends StatelessWidget {
   final int index;
-  final DateTime dateTime;
-  const MunroCompletionWidget({super.key, required this.index, required this.dateTime});
+  final MunroCompletion munroCompletion;
+  const MunroCompletionWidget({super.key, required this.index, required this.munroCompletion});
+
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) return false;
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && uri.host.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +31,9 @@ class MunroCompletionWidget extends StatelessWidget {
       MenuItem(
         text: 'Remove',
         onTap: () {
-          MunroService.removeMunroCompletion(
+          MunroCompletionService.removeMunroCompletion(
             context,
-            munro: munroState.selectedMunro!,
-            dateTime: dateTime,
+            munroCompletion: munroCompletion,
           );
         },
       ),
@@ -49,22 +57,34 @@ class MunroCompletionWidget extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   bottomLeft: Radius.circular(12),
                 ),
-                child: CachedNetworkImage(
-                  imageUrl: munro.pictureURL,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Image.asset(
-                    'assets/images/post_image_placeholder.png',
-                    fit: BoxFit.cover,
-                    width: MediaQuery.of(context).size.width,
-                    height: 300,
-                  ),
-                  fadeInDuration: Duration.zero,
-                  errorWidget: (context, url, error) {
-                    return const Icon(Icons.error);
-                  },
-                ),
+                child: _isValidUrl(munro.pictureURL)
+                    ? CachedNetworkImage(
+                        imageUrl: munro.pictureURL,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Image.asset(
+                          'assets/images/post_image_placeholder.png',
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
+                        fadeInDuration: Duration.zero,
+                        errorWidget: (context, url, error) {
+                          return Image.asset(
+                            'assets/images/post_image_placeholder.png',
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/images/post_image_placeholder.png',
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 100,
+                      ),
               ),
               Expanded(
                 flex: 1,
@@ -89,7 +109,7 @@ class MunroCompletionWidget extends StatelessWidget {
                             ),
                       const SizedBox(height: 10),
                       Text(
-                        'Summit #${index + 1} - ${DateFormat("dd/MM/yyyy").format(dateTime)}',
+                        'Summit #${index + 1} - ${DateFormat("dd/MM/yyyy").format(munroCompletion.dateTimeCompleted)}',
                         style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
                       ),
                     ],

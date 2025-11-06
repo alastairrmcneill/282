@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -11,19 +12,22 @@ class MunroSummitsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
-    int summitCount = munroState.selectedMunro!.summitedDates?.length ?? 0;
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
+
+    List<MunroCompletion> munroCompletions =
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Summits'),
       ),
-      body: summitCount == 0
+      body: munroCompletions.isEmpty
           ? const CenterText(text: "You haven't summited this Munro yet.")
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  ...munroState.selectedMunro!.summitedDates!.map(
-                    (e) =>
-                        MunroCompletionWidget(index: munroState.selectedMunro!.summitedDates!.indexOf(e), dateTime: e),
+                  ...munroCompletions.map(
+                    (mc) => MunroCompletionWidget(index: munroCompletions.indexOf(mc), munroCompletion: mc),
                   ),
                 ],
               ),

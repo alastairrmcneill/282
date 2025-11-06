@@ -48,7 +48,10 @@ class EditReviewScreen extends StatelessWidget {
 
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    Munro munro = munroState.munroList.firstWhere((element) => element.id == createReviewState.editingReview!.munroId);
+    Munro munro = munroState.munroList.firstWhere(
+      (element) => element.id == createReviewState.editingReview!.munroId,
+      orElse: () => Munro.empty,
+    );
 
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     return Scaffold(

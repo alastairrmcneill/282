@@ -8,11 +8,11 @@ class MunroChallengeWidget extends StatelessWidget {
   const MunroChallengeWidget({super.key});
 
   Widget _buildText(Achievement achievement) {
-    if (achievement.criteria[CriteriaFields.count] == 0) {
+    if (achievement.annualTarget == 0) {
       return const Text("You haven't set a target for this year yet.");
     } else {
       return Text(
-        "Your goal for ${achievement.criteria[CriteriaFields.year]} is ${achievement.criteria[CriteriaFields.count]} munro${achievement.criteria[CriteriaFields.count] == 1 ? "" : "s"}. So far you’ve climbed ${achievement.progress}.",
+        "Your goal for ${achievement.criteriaValue} is ${achievement.annualTarget} munro${achievement.annualTarget == 1 ? "" : "s"}. So far you’ve climbed ${achievement.progress}.",
       );
     }
   }
@@ -24,18 +24,21 @@ class MunroChallengeWidget extends StatelessWidget {
     Achievement achievement = achievementsState.achievements.firstWhere(
         (Achievement achievement) =>
             achievement.type == AchievementTypes.annualGoal &&
-            achievement.criteria[CriteriaFields.year] == DateTime.now().year,
+            int.parse(achievement.criteriaValue ?? "0") == DateTime.now().year,
         orElse: () => Achievement(
-              uid: "",
               name: "",
               description: "",
               type: AchievementTypes.totalCount,
               completed: false,
-              criteria: {},
               progress: 0,
+              annualTarget: 0,
+              criteriaValue: DateTime.now().year.toString(),
+              achievementId: "",
+              userId: "",
+              dateTimeCreated: DateTime.now(),
             ));
 
-    if (achievement.criteria[CriteriaFields.year] != DateTime.now().year) return const SizedBox();
+    if (int.parse(achievement.criteriaValue ?? "0") != DateTime.now().year) return const SizedBox();
     return Container(
       width: double.infinity,
       height: 150,

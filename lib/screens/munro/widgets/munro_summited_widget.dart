@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
@@ -8,8 +9,10 @@ class MunroSummitedWidget extends StatelessWidget {
   const MunroSummitedWidget({super.key});
 
   Widget _buildBody(
-      BuildContext context, int count, UserState userState, MunroState munroState, NavigationState navigationState) {
-    if (count == 0) {
+    BuildContext context,
+    List<MunroCompletion> completions,
+  ) {
+    if (completions.isEmpty) {
       return RichText(
         text: TextSpan(
           text: "You have not bagged this Munro yet.",
@@ -17,8 +20,8 @@ class MunroSummitedWidget extends StatelessWidget {
         ),
       );
     }
-    if (count == 1) {
-      DateTime date = munroState.selectedMunro?.summitedDates?.first ?? DateTime.now();
+    if (completions.length == 1) {
+      DateTime date = completions.first.dateTimeCompleted;
 
       return RichText(
         text: TextSpan(
@@ -33,7 +36,7 @@ class MunroSummitedWidget extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18, height: 1.45),
           children: <TextSpan>[
             TextSpan(
-              text: " $count",
+              text: " ${completions.length}",
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium!
@@ -53,8 +56,11 @@ class MunroSummitedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
     MunroState munroState = Provider.of<MunroState>(context);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    int count = munroState.selectedMunro?.summitedDates?.length ?? 0;
+
+    List<MunroCompletion> completions =
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).toList();
 
     return InkWell(
       onTap: () {
@@ -69,7 +75,7 @@ class MunroSummitedWidget extends StatelessWidget {
       },
       child: Container(
         color: Colors.transparent,
-        child: _buildBody(context, count, userState, munroState, navigationState),
+        child: _buildBody(context, completions),
       ),
     );
   }

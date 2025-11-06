@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -41,18 +42,7 @@ class AuthService {
         },
       );
 
-      // Get achievements
-      List<Achievement> achievements = await AchievementService.getAchievements(context);
-      Map<String, dynamic> achievementData = {};
-
-      for (var doc in achievements) {
-        String achievementId = doc.uid;
-        achievementData[achievementId] = {
-          ...doc.toJSON(),
-          "completed": false,
-          "progress": 0,
-        };
-      }
+      await _auth.currentUser!.getIdToken();
 
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -65,11 +55,11 @@ class AuthService {
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
-        achievements: achievementData,
         signInMethod: "email",
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
+        profileVisibility: Privacy.public,
       );
 
       await UserService.createUser(context, appUser: appUser);
@@ -107,6 +97,8 @@ class AuthService {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       if (_auth.currentUser == null) return;
+
+      await _auth.currentUser!.getIdToken(true);
 
       // Fetch database detail
       await UserService.readCurrentUser(context);
@@ -157,7 +149,6 @@ class AuthService {
     startCircularProgressOverlay(context);
 
     try {
-      await _auth.signOut();
       stopCircularProgressOverlay(context);
 
       // Remove FCM Token
@@ -167,7 +158,9 @@ class AuthService {
         UserService.updateUser(context, appUser: newAppUser);
       }
 
-      await resetAppData(context);
+      resetAppData(context);
+
+      await _auth.signOut();
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, HomeScreen.route);
     } on FirebaseAuthException catch (error, stackTrace) {
@@ -218,6 +211,8 @@ class AuthService {
         );
       }
 
+      await _auth.currentUser?.getIdToken(true);
+
       List<String> names = _auth.currentUser?.displayName?.split(" ") ?? [];
       String firstName = "";
       String lastName = "";
@@ -228,19 +223,6 @@ class AuthService {
         firstName = names[0];
       }
 
-      // Get achievements
-      List<Achievement> achievements = await AchievementService.getAchievements(context);
-      Map<String, dynamic> achievementData = {};
-
-      for (var doc in achievements) {
-        String achievementId = doc.uid;
-        achievementData[achievementId] = {
-          ...doc.toJSON(),
-          "completed": false,
-          "progress": 0,
-        };
-      }
-
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String appVersion = packageInfo.version;
@@ -249,11 +231,11 @@ class AuthService {
         uid: _auth.currentUser?.uid,
         displayName: _auth.currentUser?.displayName ?? "New User",
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
-        achievements: achievementData,
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
         signInMethod: "apple sign in",
+        profileVisibility: Privacy.public,
       );
       await UserService.createUser(context, appUser: appUser);
 
@@ -292,6 +274,8 @@ class AuthService {
 
       UserCredential credential = await _auth.signInWithCredential(googleCredential);
 
+      await _auth.currentUser?.getIdToken(true);
+
       List<String> names = googleUser.displayName?.split(" ") ?? [];
       String firstName = "";
       String lastName = "";
@@ -300,19 +284,6 @@ class AuthService {
         lastName = names.sublist(1).join(" ");
       } else if (names.length == 1) {
         firstName = names[0];
-      }
-
-      // Get achievements
-      List<Achievement> achievements = await AchievementService.getAchievements(context);
-      Map<String, dynamic> achievementData = {};
-
-      for (var doc in achievements) {
-        String achievementId = doc.uid;
-        achievementData[achievementId] = {
-          ...doc.toJSON(),
-          "completed": false,
-          "progress": 0,
-        };
       }
 
       bool isIOS = Platform.isIOS;
@@ -326,11 +297,11 @@ class AuthService {
         lastName: lastName,
         searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
         profilePictureURL: _auth.currentUser?.photoURL,
-        achievements: achievementData,
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
         signInMethod: "google sign in",
+        profileVisibility: Privacy.public,
       );
 
       await UserService.createUser(context, appUser: appUser);
@@ -380,8 +351,8 @@ class AuthService {
 
   static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
     try {
-      await _auth.currentUser?.delete();
       await UserService.deleteUser(context, appUser: appUser);
+      await _auth.currentUser?.delete();
 
       // Navigate to the right place
       Navigator.pushReplacementNamed(context, HomeScreen.route);
@@ -396,7 +367,7 @@ class AuthService {
     }
   }
 
-  static Future resetAppData(BuildContext context) async {
+  static resetAppData(BuildContext context) {
     UserState userState = Provider.of<UserState>(context, listen: false);
     userState.reset();
 
@@ -412,9 +383,8 @@ class AuthService {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     commentsState.reset();
 
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    munroState.reset();
-    await MunroService.loadMunroData(context);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
+    munroCompletionState.reset();
   }
 
   static Future _afterSignInNavigation(BuildContext context) async {
@@ -427,16 +397,18 @@ class AuthService {
       UserState userState = Provider.of<UserState>(context, listen: false);
       MunroState munroState = Provider.of<MunroState>(context, listen: false);
       AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+      MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
 
-      bulkMunroUpdateState.setBulkMunroUpdateList = userState.currentUser!.personalMunroData!;
+      await MunroCompletionService.getUserMunroCompletions(context);
+
+      bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
       munroState.setFilterString = "";
 
-      var munroChallenge = userState.currentUser?.achievements?["${AchievementTypes.annualGoal}${DateTime.now().year}"];
-
-      Achievement achievement = Achievement.fromJSON(munroChallenge);
+      Achievement? munroChallenge = await UserAchievementsDatabase.getLatestMunroChallengeAchievement(context,
+          userId: userState.currentUser!.uid ?? "");
 
       achievementsState.reset();
-      achievementsState.setCurrentAchievement = achievement;
+      achievementsState.setCurrentAchievement = munroChallenge;
 
       Navigator.of(context).pushNamedAndRemoveUntil(
         InAppOnboarding.route,

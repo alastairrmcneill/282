@@ -1,86 +1,63 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class UserDatabase {
-  static final _db = FirebaseFirestore.instance;
-  static final CollectionReference _userRef = _db.collection('users');
+  static final _db = Supabase.instance.client;
+  static final SupabaseQueryBuilder _userRef = _db.from('users');
 
   // Create user
   static Future create(BuildContext context, {required AppUser appUser}) async {
     try {
       // see if this user already exists
+      final response = await _userRef.select().eq(AppUserFields.uid, appUser.uid ?? "").maybeSingle();
 
-      final DocumentReference userDocRef = _userRef.doc(appUser.uid);
-      final DocumentSnapshot userDocSnapshot = await userDocRef.get();
-
-      if (!userDocSnapshot.exists) {
-        await userDocRef.set(appUser.toJSON());
+      if (response == null) {
+        await _userRef.insert(appUser.toJSON());
       }
-
-      AnalyticsService.logDatabaseRead(
-        method: "UserDatabase.create",
-        collection: "users",
-        documentCount: 1,
-        userId: appUser.uid,
-        documentId: null,
-      );
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error creating your account.");
+      showErrorDialog(context, message: "There was an error creating your account.");
     }
   }
 
   // Update user
   static Future update(BuildContext context, {required AppUser appUser}) async {
     try {
-      DocumentReference ref = _userRef.doc(appUser.uid);
-
-      await ref.update(appUser.toJSON());
-    } on FirebaseException catch (error, stackTrace) {
+      await _userRef.update(appUser.toJSON()).eq(AppUserFields.uid, appUser.uid ?? "");
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error updating your account.");
+      showErrorDialog(context, message: "There was an error updating your account.");
     }
   }
 
   // Delete user
   static Future deleteUserWithUID(BuildContext context, {required String uid}) async {
     try {
-      DocumentReference ref = _userRef.doc(uid);
-
-      await ref.delete();
-    } on FirebaseException catch (error, stackTrace) {
+      await _userRef.delete().eq(AppUserFields.uid, uid);
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error deleting your account");
+      showErrorDialog(context, message: "There was an error deleting your account");
     }
   }
 
   // Read single user
   static Future<AppUser?> readUserFromUid(BuildContext context, {required String uid}) async {
     try {
-      DocumentReference ref = _userRef.doc(uid);
-      DocumentSnapshot documentSnapshot = await ref.get();
+      final response = await _userRef.select().eq(AppUserFields.uid, uid).single();
 
-      AnalyticsService.logDatabaseRead(
-        method: "UserDatabase.readUserFromUid",
-        collection: "users",
-        documentCount: 1,
-        userId: null,
-        documentId: uid,
-      );
-
-      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
-
-      AppUser appUser = AppUser.fromJSON(data);
+      AppUser appUser = AppUser.fromJSON(response);
 
       return appUser;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
+      FirebaseAuth.instance.signOut();
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your account.");
+      showErrorDialog(context, message: "There was an error getting your account.");
       return null;
     }
   }
@@ -89,60 +66,27 @@ class UserDatabase {
   static Future<List<AppUser>> readUsersByName(
     BuildContext context, {
     required String searchTerm,
-    required String? lastUserId,
+    required List<String> excludedAuthorIds,
+    int offset = 0,
   }) async {
     List<AppUser> searchResult = [];
-    QuerySnapshot<Map<String, dynamic>> userSnap;
+    int pageSize = 30;
 
     try {
-      if (lastUserId == null) {
-        // Carry out first search
+      final response = await _userRef
+          .select()
+          .ilike(AppUserFields.searchName, '%$searchTerm%')
+          .not(AppUserFields.uid, 'in', excludedAuthorIds)
+          .eq(AppUserFields.profileVisibility, Privacy.public)
+          .order(AppUserFields.searchName, ascending: true)
+          .range(offset, offset + pageSize - 1);
 
-        userSnap = await _db
-            .collection('users')
-            .where(AppUserFields.profileVisibility, isEqualTo: Privacy.public)
-            .orderBy(AppUserFields.searchName, descending: false)
-            .startAt([searchTerm])
-            .endAt(["$searchTerm\uf8ff"])
-            .limit(20)
-            .get();
-
-        AnalyticsService.logDatabaseRead(
-          method: "UserDatabase.readUsersByName.firstBatch",
-          collection: "users",
-          documentCount: userSnap.docs.length,
-          userId: null,
-          documentId: null,
-        );
-      } else {
-        // Carry out paginated search
-        final lastUserDoc = await _db.collection('users').doc(lastUserId).get();
-
-        if (!lastUserDoc.exists) return [];
-        userSnap = await _db
-            .collection('users')
-            .where(AppUserFields.profileVisibility, isEqualTo: Privacy.public)
-            .orderBy(AppUserFields.searchName, descending: false)
-            .startAfterDocument(lastUserDoc)
-            .endAt(["$searchTerm\uf8ff"])
-            .limit(20)
-            .get();
-
-        AnalyticsService.logDatabaseRead(
-          method: "UserDatabase.readUsersByName.paginate",
-          collection: "users",
-          documentCount: userSnap.docs.length,
-          userId: null,
-          documentId: null,
-        );
-      }
-
-      for (var doc in userSnap.docs) {
-        searchResult.add(AppUser.fromJSON(doc.data()));
+      for (var doc in response) {
+        searchResult.add(AppUser.fromJSON(doc));
       }
 
       return searchResult;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.toString());
       return searchResult;
@@ -151,40 +95,21 @@ class UserDatabase {
 
   static Future<List<AppUser>> readUsersFromUids(BuildContext context, {required List<String> uids}) async {
     List<AppUser> users = [];
+    List<Map<String, dynamic>> response = [];
 
     try {
-      // Split UIDs into chunks of 10 (since Firestore 'in' query supports max 10 items)
-      const int chunkSize = 10;
-      List<List<String>> chunks = [];
-      for (var i = 0; i < uids.length; i += chunkSize) {
-        chunks.add(uids.sublist(i, i + chunkSize > uids.length ? uids.length : i + chunkSize));
+      if (uids.isEmpty) {
+        return users;
       }
 
-      // Perform queries in parallel
-      List<Future<QuerySnapshot>> futures = chunks.map((chunk) {
-        return _userRef.where(AppUserFields.uid, whereIn: chunk).get();
-      }).toList();
+      response = await _userRef.select().inFilter(AppUserFields.uid, uids);
 
-      // Wait for all futures to complete
-      List<QuerySnapshot> querySnapshots = await Future.wait(futures);
-
-      // Collect all the documents from the query users
-      for (QuerySnapshot snapshot in querySnapshots) {
-        for (var doc in snapshot.docs) {
-          users.add(AppUser.fromJSON(doc.data() as Map<String, dynamic>));
-        }
+      for (var doc in response) {
+        users.add(AppUser.fromJSON(doc));
       }
-
-      AnalyticsService.logDatabaseRead(
-        method: "UserDatabase.readUsersFromUids",
-        collection: "users",
-        documentCount: users.length,
-        userId: null,
-        documentId: null,
-      );
 
       return users;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       showErrorDialog(context, message: error.toString());
       return users;

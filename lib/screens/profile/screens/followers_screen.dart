@@ -44,7 +44,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
       if (_followersScrollController.offset >= _followersScrollController.position.maxScrollExtent &&
           !_followersScrollController.position.outOfRange &&
           followersState.status != FollowersStatus.paginating) {
-        FollowingService.paginateFollowers(context, userId: profileState.user!.uid!);
+        FollowingService.paginateFollowers(context, userId: profileState.profile!.id!);
       }
     });
 
@@ -53,7 +53,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
       if (_followingScrollController.offset >= _followingScrollController.position.maxScrollExtent &&
           !_followingScrollController.position.outOfRange &&
           followersState.status != FollowersStatus.paginating) {
-        FollowingService.paginateFollowing(context, userId: profileState.user!.uid!);
+        FollowingService.paginateFollowing(context, userId: profileState.profile!.id!);
       }
     });
   }
@@ -174,10 +174,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                             profilePictureURL: f.targetProfilePictureURL,
                             profileUid: f.targetId,
                           ),
-                          title: Text(f.targetDisplayName),
+                          title: Text(f.targetDisplayName ?? ""),
                           trailing: UserTrailingButton(
                             profileUserId: f.targetId,
-                            profileUserDisplayName: f.targetDisplayName,
+                            profileUserDisplayName: f.targetDisplayName ?? "",
                             profileUserPictureURL: f.targetProfilePictureURL ?? "",
                           ),
                           onTap: () {
@@ -203,10 +203,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                             profilePictureURL: f.sourceProfilePictureURL,
                             profileUid: f.sourceId,
                           ),
-                          title: Text(f.sourceDisplayName),
+                          title: Text(f.sourceDisplayName ?? ""),
                           trailing: UserTrailingButton(
                             profileUserId: f.sourceId,
-                            profileUserDisplayName: f.sourceDisplayName,
+                            profileUserDisplayName: f.sourceDisplayName ?? "",
                             profileUserPictureURL: f.sourceProfilePictureURL ?? "",
                           ),
                           onTap: () {

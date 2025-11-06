@@ -21,13 +21,11 @@ class AppFeedback {
 
   Map<String, dynamic> toJSON() {
     return {
-      'uid': uid,
-      'userId': userId,
-      'dateProvided': dateProvided,
-      'surveyNumber': surveyNumber,
-      'feedback1': feedback1,
-      'feedback2': feedback2,
-      'version': version,
+      'user_id': userId,
+      'survey_number': surveyNumber,
+      'answer_1': feedback1,
+      'answer_2': feedback2,
+      'app_version': version,
       'platform': platform,
     };
   }

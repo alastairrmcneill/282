@@ -43,17 +43,38 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _showCompletedAchievements() async {
+    Future.delayed(Duration(seconds: 1));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AchievementsCompletedScreen(),
+        );
+      }
+    });
+  }
+
   Future _loadData() async {
     await SettingsSerivce.loadSettings(context);
     await UserService.readCurrentUser(context);
     MunroService.loadMunroData(context);
+    MunroCompletionService.getUserMunroCompletions(context);
     AchievementService.getUserAchievements(context);
+    BlockedUserService.loadBlockedUsers(context);
     SavedListService.readUserSavedLists(context);
     PushNotificationService.checkAndUpdateFCMToken(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+
+    if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
+      _showCompletedAchievements();
+    }
+
     return Consumer<UserState>(
       builder: (context, userState, child) {
         switch (userState.status) {

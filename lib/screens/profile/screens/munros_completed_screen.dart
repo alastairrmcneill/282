@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
@@ -47,13 +46,13 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
 
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context);
+    ProfileState profileState = Provider.of<ProfileState>(context);
 
-    final completedMunros =
-        profileState.user?.personalMunroData?.where((munro) => munro[MunroFields.summited]).toList() ?? [];
+    final completedMunroIds = profileState.munroCompletions.map((mc) => mc.munroId).toSet();
 
-    final remainingMunros =
-        profileState.user?.personalMunroData?.where((munro) => !munro[MunroFields.summited]).toList() ?? [];
+    final completedMunros = munroState.munroList.where((munro) => completedMunroIds.contains(munro.id)).toList();
+    final remainingMunros = munroState.munroList.where((munro) => !completedMunroIds.contains(munro.id)).toList();
 
     return DefaultTabController(
       length: 2,
@@ -78,7 +77,7 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
                     child: CenterText(text: "No Munros completed."),
                   )
                 : ListView(
-                    children: completedMunros.map((munro) => MunroSummaryTile(munroId: munro[MunroFields.id])).toList(),
+                    children: completedMunros.map((munro) => MunroSummaryTile(munroId: munro.id)).toList(),
                   ),
             remainingMunros.isEmpty
                 ? const Padding(
@@ -86,7 +85,7 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
                     child: CenterText(text: "You have completed all Munros!"),
                   )
                 : ListView(
-                    children: remainingMunros.map((munro) => MunroSummaryTile(munroId: munro[MunroFields.id])).toList(),
+                    children: remainingMunros.map((munro) => MunroSummaryTile(munroId: munro.id)).toList(),
                   ),
           ],
         ),

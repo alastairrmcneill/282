@@ -1,29 +1,25 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/services/log_service.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class LikeDatabase {
-  static final _db = FirebaseFirestore.instance;
-  static final CollectionReference _likesRef = _db.collection('likes');
+  static final _db = Supabase.instance.client;
+  static final _likesRef = _db.from('likes');
+  static final _likesViewRef = _db.from('vu_likes');
 
   static Future create(
     BuildContext context, {
     required Like like,
   }) async {
     try {
-      DocumentReference ref = _likesRef.doc();
-
-      Like newLike = like.copyWith(uid: ref.id);
-
-      await ref.set(newLike.toJSON());
-    } on FirebaseException catch (error, stackTrace) {
+      await _likesRef.insert(like.toJSON());
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error creating the like.");
+      showErrorDialog(context, message: "There was an error liking this post.");
     }
   }
 
@@ -33,24 +29,10 @@ class LikeDatabase {
     required String userId,
   }) async {
     try {
-      QuerySnapshot<Object?> querySnapshot = await _likesRef
-          .where(LikeFields.postId, isEqualTo: postId)
-          .where(LikeFields.userId, isEqualTo: userId)
-          .limit(1) // We only need to check if at least one document exists
-          .get();
-
-      AnalyticsService.logDatabaseRead(
-        method: "LikeDatabase.delete",
-        collection: "likes",
-        documentCount: querySnapshot.docs.length,
-        userId: userId,
-        documentId: postId,
-      );
-
-      await querySnapshot.docs[0].reference.delete();
-    } on FirebaseException catch (error, stackTrace) {
+      await _likesRef.delete().eq(LikeFields.postId, postId).eq(LikeFields.userId, userId);
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error deleting the like.");
+      showErrorDialog(context, message: "There was an error unliking this post.");
     }
   }
 
@@ -61,30 +43,15 @@ class LikeDatabase {
     final Set<String> postIds = {};
 
     try {
-      for (final Post post in posts) {
-        final likeDocs = await _likesRef
-            .where(LikeFields.postId, isEqualTo: post.uid)
-            .where(LikeFields.userId, isEqualTo: userId)
-            .limit(1)
-            .get();
+      final postIdList = posts.map((post) => post.uid).toList();
+      final response = await _likesRef.select().inFilter(LikeFields.postId, postIdList).eq(LikeFields.userId, userId);
 
-        await AnalyticsService.logDatabaseRead(
-          method: "LikeDatabase.getLikedPostIds",
-          collection: "likes",
-          documentCount: likeDocs.docs.length,
-          userId: userId,
-          documentId: post.uid,
-        );
-
-        if (likeDocs.docs.isNotEmpty) {
-          if (likeDocs.docs[0].exists) {
-            postIds.add(post.uid!);
-          }
-        }
+      for (final row in response) {
+        postIds.add(row[LikeFields.postId]);
       }
 
       return postIds;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       return postIds;
     }
@@ -92,56 +59,29 @@ class LikeDatabase {
 
   static Future<List<Like>> readPostLikes({
     required String postId,
-    required String? lastLikeId,
+    required List<String>? excludedUserIds,
+    int offset = 0,
   }) async {
+    List<Map<String, dynamic>> response = [];
     List<Like> likes = [];
-    QuerySnapshot querySnapshot;
+    int pageSize = 30;
 
     try {
-      if (lastLikeId == null) {
-        // Load first batch
-        querySnapshot = await _likesRef
-            .where(LikeFields.postId, isEqualTo: postId)
-            .orderBy(LikeFields.userDisplayName, descending: true)
-            .limit(30)
-            .get();
+      response = await _likesViewRef
+          .select()
+          .eq(LikeFields.postId, postId)
+          .not(LikeFields.userId, 'in', excludedUserIds)
+          .order(LikeFields.dateTimeCreated, ascending: false)
+          .range(offset, offset + pageSize - 1);
 
-        AnalyticsService.logDatabaseRead(
-          method: "LikeDatabase.readPostLikes.firstBatch",
-          collection: "likes",
-          documentCount: querySnapshot.docs.length,
-          userId: null,
-          documentId: postId,
-        );
-      } else {
-        final lastLikeDoc = await _likesRef.doc(lastLikeId).get();
-
-        if (!lastLikeDoc.exists) return [];
-
-        querySnapshot = await _likesRef
-            .where(LikeFields.postId, isEqualTo: postId)
-            .orderBy(LikeFields.userDisplayName, descending: true)
-            .startAfterDocument(lastLikeDoc)
-            .limit(30)
-            .get();
-
-        AnalyticsService.logDatabaseRead(
-          method: "LikeDatabase.readPostLikes.paginate",
-          collection: "likes",
-          documentCount: querySnapshot.docs.length,
-          userId: null,
-          documentId: postId,
-        );
-      }
-
-      for (var doc in querySnapshot.docs) {
-        Like like = Like.fromJSON(doc.data() as Map<String, dynamic>);
+      for (var doc in response) {
+        Like like = Like.fromJSON(doc);
 
         likes.add(like);
       }
 
       return likes;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       return likes;
     }

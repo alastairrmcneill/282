@@ -88,9 +88,7 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
                     } else {
                       FollowingService.followUser(
                         context,
-                        profileUserId: widget.profileUserId,
-                        profileUserDisplayName: widget.profileUserDisplayName,
-                        profileUserPictureURL: widget.profileUserPictureURL,
+                        targetUserId: widget.profileUserId,
                       );
                       setState(() {
                         following = true;

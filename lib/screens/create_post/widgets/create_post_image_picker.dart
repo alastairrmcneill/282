@@ -1,25 +1,25 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/log_service.dart';
+import 'package:two_eight_two/helpers/image_picker_helper.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
-  final String munroId;
+  final int munroId;
   const CreatePostImagePicker({super.key, required this.munroId});
 
-  Future pickImage(CreatePostState createPostState) async {
+  Future pickImage(BuildContext context, CreatePostState createPostState) async {
     try {
-      final images = await ImagePicker().pickMultiImage();
-      for (var image in images) {
-        createPostState.addImage(munroId: munroId, image: File(image.path));
+      final images = await ImagePickerHelper.pickMultipleImages(context);
+      if (images.isNotEmpty) {
+        for (var image in images) {
+          createPostState.addImage(munroId: munroId, image: image);
+        }
       }
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -32,13 +32,14 @@ class CreatePostImagePicker extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     double height = 100;
 
-    if ((createPostState.images[munroId]?.isEmpty ?? true) && (createPostState.imagesURLs[munroId]?.isEmpty ?? true)) {
+    if ((createPostState.addedImages[munroId]?.isEmpty ?? true) &&
+        (createPostState.existingImages[munroId]?.isEmpty ?? true)) {
       return SizedBox(
         height: height,
         width: double.infinity,
         child: InkWell(
           onTap: () async {
-            await pickImage(createPostState);
+            await pickImage(context, createPostState);
           },
           child: DottedBorder(
             borderType: BorderType.RRect,
@@ -70,7 +71,7 @@ class CreatePostImagePicker extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: [
-            ...createPostState.imagesURLs[munroId]?.map((imageURL) {
+            ...createPostState.existingImages[munroId]?.map((imageURL) {
                   return Stack(
                     children: [
                       Padding(
@@ -97,7 +98,7 @@ class CreatePostImagePicker extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          createPostState.removeImageURL(munroId: munroId, url: imageURL);
+                          createPostState.removeExistingImage(munroId: munroId, url: imageURL);
                         },
                         child: Container(
                           decoration: const BoxDecoration(
@@ -115,8 +116,8 @@ class CreatePostImagePicker extends StatelessWidget {
                   );
                 }) ??
                 [],
-            ...createPostState.images[munroId]?.map((image) {
-                  int index = createPostState.images[munroId]?.indexOf(image) ?? 0;
+            ...createPostState.addedImages[munroId]?.map((image) {
+                  int index = createPostState.addedImages[munroId]?.indexOf(image) ?? 0;
                   return Stack(
                     children: [
                       Padding(
@@ -146,13 +147,15 @@ class CreatePostImagePicker extends StatelessWidget {
                   );
                 }) ??
                 [],
-            (createPostState.images[munroId]?.length ?? 0) + (createPostState.imagesURLs[munroId]?.length ?? 0) > 10
+            (createPostState.addedImages[munroId]?.length ?? 0) +
+                        (createPostState.existingImages[munroId]?.length ?? 0) >
+                    10
                 ? const SizedBox()
                 : Padding(
                     padding: const EdgeInsets.all(8),
                     child: InkWell(
                       onTap: () async {
-                        await pickImage(createPostState);
+                        await pickImage(context, createPostState);
                       },
                       child: DottedBorder(
                         borderType: BorderType.RRect,

@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             context,
             message: "Are you sure you want to block this user?",
             onConfirm: () async {
-              await BlockUserService.blockUser(context, userId: profileState.user?.uid ?? "");
+              await BlockedUserService.blockUser(context, userId: profileState.profile?.id ?? "");
               Navigator.of(context).pop();
             },
           );
@@ -64,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       MenuItem(
         text: 'Report',
         onTap: () {
-          reportState.setContentId = profileState.user?.uid ?? "";
+          reportState.setContentId = profileState.profile?.id ?? "";
           reportState.setType = "user";
           Navigator.of(context).pushNamed(ReportScreen.route);
         },
@@ -157,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            ProfileService.loadUserFromUid(context, userId: profileState.user?.uid ?? "");
+            ProfileService.loadUserFromUid(context, userId: profileState.profile?.id ?? "");
           },
           child: SingleChildScrollView(
             controller: _scrollController,

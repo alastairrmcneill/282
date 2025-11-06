@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +21,22 @@ class PushNotificationService {
     NotificationSettings result = await _messaging.requestPermission();
 
     if (result.authorizationStatus == AuthorizationStatus.authorized) {
-      final String? token = await _messaging.getToken();
-      if (userState.currentUser != null) {
+      String? token;
+      try {
+        // On iOS, try to ensure APNS token is available
+        if (Platform.isIOS) {
+          await _ensureAPNSToken();
+        }
+
+        token = await _messaging.getToken();
+      } catch (e) {
+        print("Error getting FCM token (this is expected if APNS token unavailable): $e");
+        // Continue without token - don't interrupt user flow
+      }
+
+      if (userState.currentUser != null && token != null) {
         AppUser appUser = userState.currentUser!;
         AppUser newAppUser = appUser.copyWith(fcmToken: token);
-
         await UserService.updateUser(context, appUser: newAppUser);
       }
     }
@@ -38,6 +50,23 @@ class PushNotificationService {
 
     FirebaseMessaging.onMessageOpenedApp.listen(handleBackgroundNotificaiton);
     FirebaseMessaging.onBackgroundMessage(handleBackgroundNotificaiton);
+  }
+
+  static Future<void> _ensureAPNSToken() async {
+    // Wait up to 10 seconds for APNS token
+    for (int i = 0; i < 20; i++) {
+      try {
+        String? apnsToken = await _messaging.getAPNSToken();
+        if (apnsToken != null) {
+          return;
+        }
+      } catch (e) {
+        // Continue waiting
+      }
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    // Don't throw exception - let the caller handle it gracefully
+    print('APNS token not available after timeout - FCM token retrieval may fail');
   }
 
   static Future<void> handleBackgroundNotificaiton(RemoteMessage? message) async {
@@ -54,19 +83,29 @@ class PushNotificationService {
     SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
 
     if (userState.currentUser == null) return;
-
     if (!settingsState.enablePushNotifications) return;
 
     NotificationSettings result = await _messaging.requestPermission();
-
     if (result.authorizationStatus != AuthorizationStatus.authorized) return;
-    final String? token = await _messaging.getToken();
-    AppUser appUser = userState.currentUser!;
 
-    if (appUser.fcmToken == token) return;
+    try {
+      // On iOS, try to ensure APNS token is available
+      if (Platform.isIOS) {
+        await _ensureAPNSToken();
+      }
 
-    AppUser newAppUser = appUser.copyWith(fcmToken: token);
-    await UserService.updateUser(context, appUser: newAppUser);
+      final String? token = await _messaging.getToken();
+      if (token == null) return; // No token available, exit gracefully
+
+      AppUser appUser = userState.currentUser!;
+      if (appUser.fcmToken == token) return;
+
+      AppUser newAppUser = appUser.copyWith(fcmToken: token);
+      await UserService.updateUser(context, appUser: newAppUser);
+    } catch (e) {
+      print("Error updating FCM token: $e");
+      // Continue without updating token - don't interrupt user flow
+    }
   }
 
   static Future applyFCMToken(BuildContext context) async {
@@ -75,11 +114,21 @@ class PushNotificationService {
     NotificationSettings result = await _messaging.requestPermission();
 
     if (result.authorizationStatus == AuthorizationStatus.authorized) {
-      final String? token = await _messaging.getToken();
-      if (userState.currentUser != null) {
-        AppUser appUser = userState.currentUser!;
-        AppUser newAppUser = appUser.copyWith(fcmToken: token);
-        await UserService.updateUser(context, appUser: newAppUser);
+      try {
+        // On iOS, try to ensure APNS token is available
+        if (Platform.isIOS) {
+          await _ensureAPNSToken();
+        }
+
+        final String? token = await _messaging.getToken();
+        if (userState.currentUser != null && token != null) {
+          AppUser appUser = userState.currentUser!;
+          AppUser newAppUser = appUser.copyWith(fcmToken: token);
+          await UserService.updateUser(context, appUser: newAppUser);
+        }
+      } catch (e) {
+        print("Error applying FCM token: $e");
+        // Continue without token - don't interrupt user flow
       }
     }
   }

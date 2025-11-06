@@ -9,8 +9,18 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class MunroSummaryTile extends StatelessWidget {
-  final String? munroId;
+  final int? munroId;
   const MunroSummaryTile({super.key, required this.munroId});
+
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) return false;
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && uri.host.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +34,10 @@ class MunroSummaryTile extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
     SettingsState settingsState = Provider.of<SettingsState>(context);
     SavedListState savedListState = Provider.of<SavedListState>(context);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
 
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
+    bool munroSummited = munroCompletionState.munroCompletions.any((mc) => mc.munroId == munro.id);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -51,22 +63,34 @@ class MunroSummaryTile extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12),
                   ),
-                  child: CachedNetworkImage(
-                    imageUrl: munro.pictureURL,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/post_image_placeholder.png',
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
-                    ),
-                    fadeInDuration: Duration.zero,
-                    errorWidget: (context, url, error) {
-                      return const Icon(Icons.error);
-                    },
-                  ),
+                  child: _isValidUrl(munro.pictureURL)
+                      ? CachedNetworkImage(
+                          imageUrl: munro.pictureURL,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Image.asset(
+                            'assets/images/post_image_placeholder.png',
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
+                          ),
+                          fadeInDuration: Duration.zero,
+                          errorWidget: (context, url, error) {
+                            return Image.asset(
+                              'assets/images/post_image_placeholder.png',
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/images/post_image_placeholder.png',
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
                 ),
                 Expanded(
                   flex: 1,
@@ -137,7 +161,7 @@ class MunroSummaryTile extends StatelessWidget {
                             name: "Save Munro Button Clicked",
                             parameters: {
                               "source": "Munro Summary Tile",
-                              "munro_id": munroState.selectedMunro?.id ?? "",
+                              "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
                               "munro_name": munroState.selectedMunro?.name ?? "",
                               "user_id": user?.uid ?? "",
                             },
@@ -161,16 +185,16 @@ class MunroSummaryTile extends StatelessWidget {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
-                            if (munro.summited) return;
+                            if (munroSummited) return;
                             munroState.setSelectedMunro = munro;
                             createPostState.reset();
-                            createPostState.addMunro(munro);
+                            createPostState.addMunro(munro.id);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.of(context).pushNamed(CreatePostScreen.route);
                           }
                         },
-                        child: Icon(munro.summited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
+                        child: Icon(munroSummited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
                       ),
                     ),
                   ],

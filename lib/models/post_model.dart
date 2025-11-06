@@ -1,115 +1,83 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class Post {
-  final String? uid;
+  final String uid;
   final String authorId;
   final String authorDisplayName;
   final String? authorProfilePictureURL;
-  final DateTime dateTime;
+  final DateTime dateTimeCreated;
   final DateTime? summitedDateTime;
   final Duration? duration;
   final String title;
   final String? description;
-  final Map<String, List<String>> imageUrlsMap;
-  final List<Munro> includedMunros;
-  final List<String> includedMunroIds;
+  final Map<int, List<String>> imageUrlsMap;
+  final List<int> includedMunroIds;
   final int likes;
   final String privacy;
 
   Post({
-    this.uid,
+    String? uid,
     required this.authorId,
-    required this.authorDisplayName,
-    required this.authorProfilePictureURL,
-    required this.dateTime,
-    required this.summitedDateTime,
-    required this.duration,
-    required this.imageUrlsMap,
-    required this.title,
+    String? authorDisplayName,
+    this.authorProfilePictureURL,
+    DateTime? dateTimeCreated,
+    this.summitedDateTime,
+    this.duration,
+    String? title,
     this.description,
-    required this.includedMunros,
-    required this.includedMunroIds,
-    required this.likes,
-    required this.privacy,
-  });
+    Map<int, List<String>>? imageUrlsMap,
+    List<int>? includedMunroIds,
+    int? likes,
+    String? privacy,
+  })  : uid = uid ?? '',
+        authorDisplayName = authorDisplayName ?? '',
+        dateTimeCreated = dateTimeCreated ?? DateTime.now(),
+        title = title ?? '',
+        imageUrlsMap = imageUrlsMap ?? {},
+        includedMunroIds = includedMunroIds ?? [],
+        likes = likes ?? 0,
+        privacy = privacy ?? Privacy.public;
 
   // To JSON
   Map<String, dynamic> toJSON() {
-    List<Map<String, dynamic>> includedMunrosMaps = [];
-    List<String> includedMunroIds = [];
-    for (var munro in includedMunros) {
-      includedMunrosMaps.add(munro.toJSON());
-      includedMunroIds.add(munro.id);
-    }
-
     return {
-      PostFields.uid: uid,
       PostFields.authorId: authorId,
-      PostFields.authorDisplayName: authorDisplayName,
-      PostFields.authorProfilePictureURL: authorProfilePictureURL,
-      PostFields.dateTime: dateTime,
-      PostFields.summitedDateTime: summitedDateTime,
-      PostFields.duration: duration?.inMilliseconds,
-      PostFields.imageUrlsMap: imageUrlsMap,
       PostFields.title: title,
       PostFields.description: description,
-      PostFields.includedMunros: includedMunrosMaps,
-      PostFields.includedMunroIds: includedMunroIds,
-      PostFields.likes: likes,
+      PostFields.dateTimeCreated: dateTimeCreated.toIso8601String(),
       PostFields.privacy: privacy,
     };
   }
 
   // From JSON
   static Post fromJSON(Map<String, dynamic> json) {
-    List<dynamic> includedMunrosMaps = json[PostFields.includedMunros];
-
-    List<Munro> inlcudedMunrosList = [];
-    for (var munro in includedMunrosMaps) {
-      inlcudedMunrosList.add(Munro.fromJSON(munro));
-    }
-
-    List<String> newIncludedMunroIds = List<String>.empty();
-
-    if (json.containsKey(PostFields.includedMunroIds)) {
-      List<dynamic> includedMunroIds = json[PostFields.includedMunroIds];
-      newIncludedMunroIds = List<String>.from(includedMunroIds);
-    } else {
-      newIncludedMunroIds = inlcudedMunrosList.map((Munro munro) => munro.id).toList();
-    }
-
-    Map<String, List<String>> newImageURLsMap = {};
-    if (json.containsKey(PostFields.imageUrlsMap)) {
-      Map<String, dynamic> imageUrlsMap = json[PostFields.imageUrlsMap];
-      for (String key in imageUrlsMap.keys) {
-        List<dynamic> imageURLs = imageUrlsMap[key];
-        List<String> newImageURLs = List<String>.from(imageURLs);
-
-        newImageURLsMap[key] = newImageURLs;
+    List<dynamic> includedMunroIds = json[PostFields.includedMunroIds] as List<dynamic>? ?? [];
+    List<int> newIncludedMunroIds = [];
+    for (var includedMunroId in includedMunroIds) {
+      if (includedMunroId != null) {
+        newIncludedMunroIds.add(includedMunroId);
       }
-    } else {
-      List<dynamic> imageURLs = json[PostFields.imageURLs];
-      List<String> newImageURLs = List<String>.from(imageURLs);
-
-      newImageURLsMap[newIncludedMunroIds[0]] = newImageURLs;
     }
+
+    Map<String, dynamic> imageUrls = (json[PostFields.imageUrlsMap] as Map<String, dynamic>?) ?? {};
+    Map<int, List<String>> newImageUrlsMap = {};
+    imageUrls.forEach((key, value) {
+      newImageUrlsMap[int.parse(key)] = List<String>.from(value);
+    });
 
     return Post(
       uid: json[PostFields.uid] as String?,
-      authorId: json[PostFields.authorId] as String,
-      authorDisplayName: json[PostFields.authorDisplayName] as String,
-      authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String?,
-      dateTime: (json[PostFields.dateTime] as Timestamp).toDate(),
+      authorId: json[PostFields.authorId] as String? ?? "",
+      authorDisplayName: json[PostFields.authorDisplayName] as String? ?? "",
+      authorProfilePictureURL: json[PostFields.authorProfilePictureURL] as String? ?? "",
+      dateTimeCreated: DateTime.parse(json[PostFields.dateTimeCreated] as String? ?? DateTime.now().toIso8601String()),
       summitedDateTime:
-          (json[PostFields.summitedDateTime] as Timestamp? ?? json[PostFields.dateTime] as Timestamp).toDate(),
-      duration: Duration(milliseconds: json[PostFields.duration] as int? ?? 0),
-      imageUrlsMap: newImageURLsMap,
-      title: json[PostFields.title] as String,
-      description: json[PostFields.description] as String?,
-      includedMunros: inlcudedMunrosList,
+          DateTime.parse(json[PostFields.summitedDateTime] as String? ?? DateTime.now().toIso8601String()),
+      imageUrlsMap: newImageUrlsMap,
+      title: json[PostFields.title] as String? ?? "",
+      description: json[PostFields.description] as String? ?? "",
       includedMunroIds: newIncludedMunroIds,
-      likes: json[PostFields.likes] as int,
+      likes: json[PostFields.likes] as int? ?? 0,
       privacy: json[PostFields.privacy] as String? ?? Privacy.public,
     );
   }
@@ -120,14 +88,13 @@ class Post {
     String? authorId,
     String? authorDisplayName,
     String? authorProfilePictureURL,
-    DateTime? dateTime,
+    DateTime? dateTimeCreated,
     DateTime? summitedDateTime,
-    Duration? duration,
-    Map<String, List<String>>? imageUrlsMap,
+    Map<int, List<String>>? imageUrlsMap,
     String? title,
     String? description,
     List<Munro>? includedMunros,
-    List<String>? includedMunroIds,
+    List<int>? includedMunroIds,
     int? likes,
     String? privacy,
   }) {
@@ -136,13 +103,11 @@ class Post {
       authorId: authorId ?? this.authorId,
       authorDisplayName: authorDisplayName ?? this.authorDisplayName,
       authorProfilePictureURL: authorProfilePictureURL ?? this.authorProfilePictureURL,
-      dateTime: dateTime ?? this.dateTime,
+      dateTimeCreated: dateTimeCreated ?? this.dateTimeCreated,
       summitedDateTime: summitedDateTime ?? this.summitedDateTime,
-      duration: duration ?? this.duration,
       imageUrlsMap: imageUrlsMap ?? this.imageUrlsMap,
       title: title ?? this.title,
       description: description ?? this.description,
-      includedMunros: includedMunros ?? this.includedMunros,
       includedMunroIds: includedMunroIds ?? this.includedMunroIds,
       likes: likes ?? this.likes,
       privacy: privacy ?? this.privacy,
@@ -151,21 +116,19 @@ class Post {
 }
 
 class PostFields {
-  static String uid = "uid";
-  static String authorId = "authorId";
-  static String authorDisplayName = "authorDisplayName";
-  static String authorProfilePictureURL = "authorProfilePictureURL";
-  static String dateTime = "dateTime";
-  static String summitedDateTime = "summitedDateTime";
-  static String duration = "duration";
-  static String imageURLs = "imageURLs";
-  static String imageUrlsMap = "imageUrlsMap";
+  static String uid = "id";
+  static String authorId = "author_id";
+  static String authorDisplayName = "author_display_name";
+  static String authorProfilePictureURL = "author_profile_picture_url";
+  static String dateTimeCreated = "date_time_created";
+  static String summitedDateTime = "summited_date_time";
+  static String imageUrlsMap = "image_urls";
   static String title = "title";
   static String description = "description";
-  static String includedMunros = "includedMunros";
-  static String includedMunroIds = "includedMunroIds";
+  static String includedMunroIds = "included_munro_ids";
   static String likes = "likes";
   static String privacy = "privacy";
+  static String userId = "user_id";
 }
 
 class Privacy {

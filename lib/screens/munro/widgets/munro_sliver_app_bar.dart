@@ -14,11 +14,28 @@ import 'package:url_launcher/url_launcher.dart';
 class MunroSliverAppBar extends StatelessWidget {
   const MunroSliverAppBar({super.key});
 
-  Widget _buildPopupMenu(BuildContext context, UserState userState, MunroState munroState) {
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) return false;
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && uri.host.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Widget _buildPopupMenu(
+    BuildContext context,
+    UserState userState,
+    MunroState munroState,
+    MunroCompletionState munroCompletionState,
+  ) {
     List<MenuItem> menuItems = [];
+    bool summited =
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).isNotEmpty;
 
     if (userState.currentUser != null) {
-      if (munroState.selectedMunro?.summitedDates?.isNotEmpty ?? false) {
+      if (summited) {
         menuItems.add(
           MenuItem(
             text: 'Unbag Munro',
@@ -39,7 +56,7 @@ class MunroSliverAppBar extends StatelessWidget {
           await DeepLinkService.shareMunro(
             context,
             munroState.selectedMunro?.name ?? "",
-            munroState.selectedMunro?.id ?? "",
+            munroState.selectedMunro?.id ?? 0,
           );
         },
       ),
@@ -67,6 +84,7 @@ class MunroSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context);
     Munro munro = munroState.selectedMunro!;
@@ -77,23 +95,35 @@ class MunroSliverAppBar extends StatelessWidget {
       floating: false,
       pinned: true,
       actions: [
-        _buildPopupMenu(context, userState, munroState),
+        _buildPopupMenu(context, userState, munroState, munroCompletionState),
       ],
       flexibleSpace: FlexibleSpaceBar(
-        background: CachedNetworkImage(
-          imageUrl: munro.pictureURL,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Image.asset(
-            'assets/images/post_image_placeholder.png',
-            fit: BoxFit.cover,
-            width: MediaQuery.of(context).size.width,
-            height: 300,
-          ),
-          fadeInDuration: Duration.zero,
-          errorWidget: (context, url, error) {
-            return const Icon(Icons.photo_rounded);
-          },
-        ),
+        background: _isValidUrl(munro.pictureURL)
+            ? CachedNetworkImage(
+                imageUrl: munro.pictureURL,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Image.asset(
+                  'assets/images/post_image_placeholder.png',
+                  fit: BoxFit.cover,
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                ),
+                fadeInDuration: Duration.zero,
+                errorWidget: (context, url, error) {
+                  return Image.asset(
+                    'assets/images/post_image_placeholder.png',
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                  );
+                },
+              )
+            : Image.asset(
+                'assets/images/post_image_placeholder.png',
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+              ),
       ),
     );
   }

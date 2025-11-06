@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -12,26 +12,31 @@ class BulkMunroUpdateListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
     BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context);
+    UserState userState = Provider.of<UserState>(context, listen: false);
 
-    // Find element element in bulkMunroUpdateList
-    Map<String, dynamic> e =
-        bulkMunroUpdateState.bulkMunroUpdateList.firstWhere((element) => element[MunroFields.id] == munro.id);
+    List<DateTime> alreadySummitedDates = munroCompletionState.munroCompletions
+        .where((mc) => mc.munroId == munro.id)
+        .map((mc) => mc.dateTimeCompleted)
+        .toList();
 
-    // Get summited dates from this element
-    List<dynamic> summitedDates = e[MunroFields.summitedDates] as List<dynamic>;
+    var alreadySummited = alreadySummitedDates.isNotEmpty;
 
-    // Figure out what the first summited date is
-    var firstSummitedDate = summitedDates.isEmpty ? null : summitedDates[0];
-    if (firstSummitedDate != null) {
-      if (firstSummitedDate is Timestamp) {
-        firstSummitedDate = (firstSummitedDate).toDate();
-      }
-    } else {
-      firstSummitedDate = DateTime.now();
+    if (alreadySummited) {
+      print("Already summited munro: ${munro.name} on ${alreadySummitedDates[0]}");
+      return AlreadySummitedMunroListTile(munro: munro, summitedDate: alreadySummitedDates[0]);
     }
 
-    // Write that date into the date controller
+    List<DateTime> summitedDates = bulkMunroUpdateState.bulkMunroUpdateList
+        .where((mc) => mc.munroId == munro.id)
+        .map((mc) => mc.dateTimeCompleted)
+        .toList();
+
+    var summited = summitedDates.isNotEmpty;
+
+    var firstSummitedDate = summitedDates.isNotEmpty ? summitedDates[0] : DateTime.now();
+
     TextEditingController dateController =
         TextEditingController(text: DateFormat('dd/MM/yy').format(firstSummitedDate));
 
@@ -40,8 +45,8 @@ class BulkMunroUpdateListTile extends StatelessWidget {
     return ListTile(
       title: Text(munro.name),
       subtitle: Text("${munro.extra == null || munro.extra!.isEmpty ? "" : "${munro.extra} · "}${munro.area}"),
-      leading: e[MunroFields.summited] ? const Icon(Icons.check) : const SizedBox(),
-      trailing: e[MunroFields.summited]
+      leading: summited ? const Icon(Icons.check) : const SizedBox(),
+      trailing: summited
           ? SizedBox(
               width: 100,
               child: TextFormFieldBase(
@@ -57,15 +62,18 @@ class BulkMunroUpdateListTile extends StatelessWidget {
 
                   if (pickedStartDate != null) {
                     DateTime date = pickedStartDate!.add(const Duration(hours: 12));
-                    if (munro.summitedDates!.isEmpty) {
-                      munro.summitedDates!.add(date);
+                    if (summitedDates.isEmpty) {
+                      summitedDates.add(date);
                     } else {
-                      munro.summitedDates![0] = date;
+                      summitedDates[0] = date;
                     }
-                    bulkMunroUpdateState.setMunro = {
-                      MunroFields.id: munro.id,
-                      MunroFields.summitedDates: munro.summitedDates,
-                    };
+                    MunroCompletion mc = MunroCompletion(
+                      userId: userState.currentUser?.uid ?? "",
+                      munroId: munro.id,
+                      dateTimeCompleted: date,
+                    );
+
+                    bulkMunroUpdateState.updateMunroCompleted(mc);
                   }
                 },
                 validator: (value) {
@@ -78,22 +86,18 @@ class BulkMunroUpdateListTile extends StatelessWidget {
             )
           : null,
       onTap: () {
-        if (e[MunroFields.summited]) {
-          bulkMunroUpdateState.setMunro = {
-            MunroFields.id: munro.id,
-            MunroFields.summited: !e[MunroFields.summited],
-            MunroFields.summitedDate: null,
-            MunroFields.summitedDates: []
-          };
+        if (summited) {
+          bulkMunroUpdateState.removeMunroCompletion(munro.id);
         } else {
           DateTime now = DateTime.now();
           DateTime today = DateTime(now.year, now.month, now.day, 12, 0, 0, 0, 0);
-          bulkMunroUpdateState.setMunro = {
-            MunroFields.id: munro.id,
-            MunroFields.summited: !e[MunroFields.summited],
-            MunroFields.summitedDate: today,
-            MunroFields.summitedDates: munro.summitedDates!.isEmpty ? [today] : munro.summitedDates!
-          };
+          MunroCompletion mc = MunroCompletion(
+            userId: userState.currentUser?.uid ?? "",
+            munroId: munro.id,
+            dateTimeCompleted: today,
+          );
+
+          bulkMunroUpdateState.addMunroCompleted(mc);
         }
       },
     );

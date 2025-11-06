@@ -11,9 +11,12 @@ class CreatePostState extends ChangeNotifier {
   DateTime? _summitedDate;
   TimeOfDay? _startTime;
   Duration? _duration;
-  Map<String, List<File>> _images = {};
-  Map<String, List<String>> _imageURLs = {};
-  List<Munro> _selectedMunros = [];
+  Map<int, List<String>> _existingImages = {};
+  Map<int, List<File>> _addedImages = {};
+  Set<String> _deletedImages = {};
+  Set<int> _existingMunroIds = {};
+  Set<int> _addedMunroIds = {};
+  Set<int> _deletedMunroIds = {};
   String? _postPrivacy;
   Post? _editingPost;
 
@@ -24,11 +27,17 @@ class CreatePostState extends ChangeNotifier {
   DateTime? get summitedDate => _summitedDate;
   TimeOfDay? get startTime => _startTime;
   Duration? get duration => _duration;
-  Map<String, List<File>> get images => _images;
-  Map<String, List<String>> get imagesURLs => _imageURLs;
-  List<Munro> get selectedMunros => _selectedMunros;
+  Map<int, List<String>> get existingImages => _existingImages;
+  Map<int, List<File>> get addedImages => _addedImages;
+  Set<String> get deletedImages => _deletedImages;
+  Set<int> get existingMunroIds => _existingMunroIds;
+  Set<int> get addedMunroIds => _addedMunroIds;
+  Set<int> get deletedMunroIds => _deletedMunroIds;
+  Set<int> get selectedMunroIds => _existingMunroIds.union(_addedMunroIds);
   String? get postPrivacy => _postPrivacy;
-  bool get hasImage => images.values.any((element) => element.isNotEmpty);
+  bool get hasImage =>
+      _addedImages.values.any((element) => element.isNotEmpty) ||
+      _existingImages.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
 
   set setStatus(CreatePostStatus searchStatus) {
@@ -72,13 +81,6 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  setImageURLs({required String munroId, required List<String> imageURLs}) {
-    if (_imageURLs[munroId] == null) _imageURLs[munroId] = [];
-
-    _imageURLs[munroId] = imageURLs;
-    notifyListeners();
-  }
-
   set loadPost(Post post) {
     _editingPost = post;
     _title = post.title;
@@ -86,46 +88,64 @@ class CreatePostState extends ChangeNotifier {
     _startTime = TimeOfDay.fromDateTime(post.summitedDateTime ?? DateTime(0, 0, 0, 12, 0));
     _duration = post.duration;
     _description = post.description;
-    _imageURLs = post.imageUrlsMap;
-    _selectedMunros = post.includedMunros;
+    _existingImages = post.imageUrlsMap;
+    _addedImages = {};
+    _deletedImages = {};
+    _existingMunroIds = post.includedMunroIds.toSet();
+    _addedMunroIds = {};
+    _deletedMunroIds = {};
     _postPrivacy = post.privacy;
     notifyListeners();
   }
 
-  addMunro(Munro munro) {
-    if (!_selectedMunros.contains(munro)) {
-      _selectedMunros.add(munro);
-      notifyListeners();
-    }
+  addMunro(int munroId) {
+    _addedMunroIds.add(munroId);
+    notifyListeners();
   }
 
-  removeMunro(Munro munro) {
-    if (_selectedMunros.contains(munro)) {
-      _selectedMunros.remove(munro);
-      notifyListeners();
+  removeMunro(int munroId) {
+    if (_existingMunroIds.contains(munroId)) {
+      _existingMunroIds.remove(munroId);
+      _deletedMunroIds.add(munroId);
     }
-  }
+    if (_addedMunroIds.contains(munroId)) {
+      _addedMunroIds.remove(munroId);
+      _deletedMunroIds.add(munroId);
+    }
 
-  addImage({required String munroId, required File image}) {
-    if (_images[munroId] == null) _images[munroId] = [];
+    if (_existingImages.keys.contains(munroId)) {
+      _deletedImages.addAll(_existingImages[munroId]!);
+      _existingImages.remove(munroId);
+    }
 
-    _images[munroId]!.add(image);
+    if (_addedImages.keys.contains(munroId)) {
+      _addedImages.remove(munroId);
+    }
 
     notifyListeners();
   }
 
-  removeImage({required String munroId, required int index}) {
-    if (_images[munroId] == null) return;
+  addImage({required int munroId, required File image}) {
+    if (_addedImages[munroId] == null) _addedImages[munroId] = [];
 
-    _images[munroId]!.removeAt(index);
+    _addedImages[munroId]!.add(image);
+
     notifyListeners();
   }
 
-  removeImageURL({required String munroId, required String url}) {
-    if (_imageURLs[munroId] == null) return;
-    if (_imageURLs[munroId]!.contains(url)) {
-      _imageURLs[munroId]!.remove(url);
+  removeImage({required int munroId, required int index}) {
+    if (_addedImages[munroId] == null) return;
+
+    _addedImages[munroId]!.removeAt(index);
+    notifyListeners();
+  }
+
+  removeExistingImage({required int munroId, required String url}) {
+    if (_existingImages[munroId] == null) return;
+    if (_existingImages[munroId]!.contains(url)) {
+      _existingImages[munroId]!.remove(url);
     }
+    _deletedImages.add(url);
     notifyListeners();
   }
 
@@ -136,9 +156,12 @@ class CreatePostState extends ChangeNotifier {
     _startTime = null;
     _duration = null;
     _editingPost = null;
-    _imageURLs = {};
-    _images = {};
-    _selectedMunros = [];
+    _existingImages = {};
+    _addedImages = {};
+    _deletedImages = {};
+    _existingMunroIds = {};
+    _addedMunroIds = {};
+    _deletedMunroIds = {};
     _postPrivacy = null;
     _error = Error();
     _status = CreatePostStatus.initial;

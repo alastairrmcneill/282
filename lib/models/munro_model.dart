@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Munro {
-  final String id;
+  final int id;
   final String name;
   final String? extra;
   final String area;
@@ -15,9 +13,6 @@ class Munro {
   final String description;
   final String pictureURL;
   final String startingPointURL;
-  bool summited;
-  DateTime? summitedDate;
-  List<DateTime>? summitedDates;
   bool saved;
   double? averageRating;
   int? reviewCount;
@@ -37,9 +32,6 @@ class Munro {
     required this.description,
     required this.pictureURL,
     required this.startingPointURL,
-    required this.summited,
-    this.summitedDate,
-    this.summitedDates,
     this.saved = false,
     this.averageRating,
     this.reviewCount,
@@ -61,9 +53,6 @@ class Munro {
       MunroFields.description: description,
       MunroFields.pictureURL: pictureURL,
       MunroFields.startingPointURL: startingPointURL,
-      MunroFields.summited: summited,
-      MunroFields.summitedDate: summitedDate,
-      MunroFields.summitedDates: summitedDates,
       MunroFields.saved: saved,
       MunroFields.averageRating: averageRating,
       MunroFields.reviewCount: reviewCount,
@@ -71,14 +60,8 @@ class Munro {
   }
 
   static Munro fromJSON(Map<String, dynamic> json) {
-    List<dynamic> summitedDatesRaw = json[MunroFields.summitedDates] ?? [];
-    List<DateTime> summitedDates = [];
-    for (var date in summitedDatesRaw) {
-      summitedDates.add((date as Timestamp).toDate());
-    }
-
     return Munro(
-      id: json[MunroFields.id] as String,
+      id: json[MunroFields.id] as int,
       name: json[MunroFields.name] as String,
       extra: json[MunroFields.extra] as String,
       area: json[MunroFields.area] as String,
@@ -92,10 +75,6 @@ class Munro {
       description: json[MunroFields.description] as String,
       pictureURL: json[MunroFields.pictureURL] as String,
       startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
-      summited: (json[MunroFields.summited] as bool),
-      summitedDate:
-          json[MunroFields.summitedDate] != null ? (json[MunroFields.summitedDate] as Timestamp).toDate() : null,
-      summitedDates: summitedDates,
       saved: json[MunroFields.saved] as bool? ?? false,
       averageRating:
           json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
@@ -103,8 +82,53 @@ class Munro {
     );
   }
 
+  static Munro fromPost(Map<String, dynamic> json) {
+    return Munro(
+      id: int.parse(json[MunroFields.id] as String),
+      name: json[MunroFields.name] as String? ?? "",
+      extra: json[MunroFields.extra] as String? ?? "",
+      area: json[MunroFields.area] as String? ?? "",
+      meters: json[MunroFields.maters] as int? ?? 0,
+      section: json[MunroFields.section] as String? ?? "",
+      region: json[MunroFields.region] as String? ?? "",
+      feet: json[MunroFields.feet] as int? ?? 0,
+      lat: json[MunroFields.lat] as double? ?? 0.0,
+      lng: json[MunroFields.lng] as double? ?? 0.0,
+      link: json[MunroFields.link] as String? ?? "",
+      description: json[MunroFields.description] as String? ?? "",
+      pictureURL: json[MunroFields.pictureURL] as String? ?? "",
+      startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
+      saved: json[MunroFields.saved] as bool? ?? false,
+      averageRating:
+          json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
+      reviewCount: json[MunroFields.reviewCount] as int?,
+    );
+  }
+
+  static Munro get empty {
+    return Munro(
+      id: 0,
+      name: "",
+      extra: "",
+      area: "",
+      meters: 0,
+      section: "",
+      region: "",
+      feet: 0,
+      lat: 0.0,
+      lng: 0.0,
+      link: "",
+      description: "",
+      pictureURL: "",
+      startingPointURL: "",
+      saved: false,
+      averageRating: null,
+      reviewCount: null,
+    );
+  }
+
   Munro copy({
-    String? id,
+    int? id,
     String? name,
     String? extra,
     String? area,
@@ -118,9 +142,6 @@ class Munro {
     String? description,
     String? pictureURL,
     String? startingPointURL,
-    bool? summited,
-    DateTime? summitedDate,
-    List<DateTime>? summitedDates,
     bool? saved,
     double? averageRating,
     int? reviewCount,
@@ -140,9 +161,6 @@ class Munro {
       description: description ?? this.description,
       pictureURL: pictureURL ?? this.pictureURL,
       startingPointURL: startingPointURL ?? this.startingPointURL,
-      summited: summited ?? this.summited,
-      summitedDate: summitedDate ?? this.summitedDate,
-      summitedDates: summitedDates ?? this.summitedDates,
       saved: saved ?? this.saved,
       averageRating: averageRating ?? this.averageRating,
       reviewCount: reviewCount ?? this.reviewCount,
@@ -163,15 +181,12 @@ class MunroFields {
   static String lng = "lng";
   static String link = "link";
   static String description = "description";
-  static String pictureURL = "pictureURL";
-  static String startingPointURL = "startingPointURL";
-  static String summited = "summited";
-  static String summitedDate = "summitedDate";
-  static String summitedDates = "summitedDates";
+  static String pictureURL = "picture_url";
+  static String startingPointURL = "starting_point_url";
   static String saved = "saved";
-  static String averageRating = "averageRating";
-  static String reviewCount = "reviewCount";
-  static String numberOfRatings = "numberOfRatings";
-  static String sumOfRatings = "sumOfRatings";
+  static String averageRating = "average_rating";
+  static String reviewCount = "reviews_count";
+  static String numberOfRatings = "number_of_ratings";
+  static String sumOfRatings = "sum_of_ratings";
   static String ratings = "ratings";
 }
