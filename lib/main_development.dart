@@ -15,7 +15,7 @@ main() async {
   await Firebase.initializeApp();
   await PushNotificationService.initPushNotificaitons();
   await RemoteConfigService.init();
-  await dotenv.load(fileName: '.env.dev');
+  await dotenv.load();
   await AnalyticsService.init();
   await DeepLinkService.initBranchLinks(flavor: "Development", navigatorKey: navigatorKey);
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
