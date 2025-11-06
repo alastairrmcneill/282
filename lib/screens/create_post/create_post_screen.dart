@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -36,8 +37,12 @@ class CreatePostScreen extends StatelessWidget {
                 if (createPostState.editingPost == null) {
                   // Send to review page
                   CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+                  MunroState munroState = Provider.of<MunroState>(context, listen: false);
                   createReviewState.reset();
-                  createReviewState.setMunrosToReview = createPostState.selectedMunros;
+                  List<Munro> selectedMunros = munroState.munroList
+                      .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
+                      .toList();
+                  createReviewState.setMunrosToReview = selectedMunros;
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     HomeScreen.route,
@@ -247,7 +252,7 @@ class CreatePostScreen extends StatelessWidget {
                 }
               },
               label: Text(
-                'Bag Munro${createPostState.selectedMunros.length > 1 ? 's' : ''}',
+                'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
               ),
               icon: const Icon(Icons.hiking_rounded),

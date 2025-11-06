@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:two_eight_two/services/log_service.dart';
 
 class StorageService {
   static final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -77,5 +78,17 @@ class StorageService {
       },
     );
     return downloadUrl;
+  }
+
+  /// Deletes an image from Firebase Storage using its download URL
+  static Future<void> deleteImage(String imageURL) async {
+    try {
+      // Extract the file path from the URL and delete from Firebase Storage
+      final ref = _storage.refFromURL(imageURL);
+      await ref.delete();
+    } catch (e) {
+      Log.error("Failed to delete image: $imageURL", stackTrace: StackTrace.current);
+      // Don't throw - we don't want to fail the entire edit operation if image deletion fails
+    }
   }
 }

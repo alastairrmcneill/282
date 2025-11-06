@@ -1,0 +1,9 @@
+CREATE OR REPLACE VIEW vu_likes AS
+SELECT 
+  l.*,
+  u.display_name AS user_display_name,
+  u.profile_picture_url AS user_profile_picture_url
+FROM likes l
+LEFT JOIN users u ON l.user_id = u.id;
+
+ALTER VIEW vu_likes SET (security_invoker = true, security_barrier = true);

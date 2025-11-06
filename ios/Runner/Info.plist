@@ -45,6 +45,10 @@
 		<string>$(PRODUCT_NAME) would like access to your camera so you can add stunning photos of your Munro bagging adventures to your posts.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>$(PRODUCT_NAME) would like access to your photo library so you can add stunning photos of your Munro bagging adventures to your posts.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>$(PRODUCT_NAME) would like to save photos to your photo library.</string>
+		<key>NSPhotoLibraryLimitedUsageDescription</key>
+		<string>$(PRODUCT_NAME) would like access to selected photos from your library to add to your Munro posts.</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>FirebaseAppDelegateProxyEnabled</key>

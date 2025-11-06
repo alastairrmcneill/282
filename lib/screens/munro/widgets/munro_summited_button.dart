@@ -24,7 +24,7 @@ class MunroSummitedButton extends StatelessWidget {
           } else {
             createPostState.reset();
             if (munroState.selectedMunro != null) {
-              createPostState.addMunro(munroState.selectedMunro!);
+              createPostState.addMunro(munroState.selectedMunro!.id);
               createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
               navigationState.setNavigateToRoute = HomeScreen.route;
               Navigator.of(context).pushNamed(CreatePostScreen.route);

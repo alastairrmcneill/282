@@ -9,6 +9,16 @@ class MunroCardPicture extends StatelessWidget {
   final double width;
   const MunroCardPicture({super.key, required this.munro, required this.width});
 
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) return false;
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && uri.host.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -20,22 +30,34 @@ class MunroCardPicture extends StatelessWidget {
         height: width,
         child: Stack(
           children: [
-            CachedNetworkImage(
-              imageUrl: munro.pictureURL,
-              width: width,
-              height: width,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Image.asset(
-                'assets/images/post_image_placeholder.png',
-                fit: BoxFit.cover,
-                width: width,
-                height: width,
-              ),
-              fadeInDuration: Duration.zero,
-              errorWidget: (context, url, error) {
-                return const Icon(Icons.error);
-              },
-            ),
+            _isValidUrl(munro.pictureURL)
+                ? CachedNetworkImage(
+                    imageUrl: munro.pictureURL,
+                    width: width,
+                    height: width,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                      'assets/images/post_image_placeholder.png',
+                      fit: BoxFit.cover,
+                      width: width,
+                      height: width,
+                    ),
+                    fadeInDuration: Duration.zero,
+                    errorWidget: (context, url, error) {
+                      return Image.asset(
+                        'assets/images/post_image_placeholder.png',
+                        fit: BoxFit.cover,
+                        width: width,
+                        height: width,
+                      );
+                    },
+                  )
+                : Image.asset(
+                    'assets/images/post_image_placeholder.png',
+                    fit: BoxFit.cover,
+                    width: width,
+                    height: width,
+                  ),
             Align(
               alignment: Alignment.topRight,
               child: MunroSaveButton(munro: munro),

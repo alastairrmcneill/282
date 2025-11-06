@@ -33,18 +33,19 @@ class _MunroSelectorState extends State<MunroSelector> {
                               style: const TextStyle(fontSize: 14),
                             ),
                             subtitle: munro.extra == "" ? Text(munro.area) : Text("${munro.extra} - ${munro.area}"),
-                            trailing: createPostState.selectedMunros.contains(munro) ? Icon(Icons.check_rounded) : null,
+                            trailing:
+                                createPostState.selectedMunroIds.contains(munro.id) ? Icon(Icons.check_rounded) : null,
                             dense: true,
                             visualDensity: VisualDensity.compact,
                             onTap: () {
-                              if (createPostState.selectedMunros.contains(munro)) {
-                                createPostState.removeMunro(munro);
+                              if (createPostState.selectedMunroIds.contains(munro.id)) {
+                                createPostState.removeMunro(munro.id);
                               } else {
-                                createPostState.addMunro(munro);
+                                createPostState.addMunro(munro.id);
                               }
                               setState(() {});
                               setModalState(() {});
-                              formState.didChange(createPostState.selectedMunros);
+                              formState.didChange(createPostState.selectedMunroIds);
                             },
                           ),
                           Divider(),
@@ -67,7 +68,7 @@ class _MunroSelectorState extends State<MunroSelector> {
     MunroState munroState = Provider.of<MunroState>(context);
     return FormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      initialValue: createPostState.selectedMunros,
+      initialValue: createPostState.selectedMunroIds,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Select at least one munro.";
@@ -77,8 +78,12 @@ class _MunroSelectorState extends State<MunroSelector> {
       builder: (FormFieldState formState) {
         return Column(
           children: [
-            ...createPostState.selectedMunros.map(
-              (Munro munro) => Padding(
+            ...createPostState.selectedMunroIds.map((int munroId) {
+              final munro = munroState.munroList.firstWhere(
+                (m) => m.id == munroId,
+                orElse: () => Munro.empty,
+              );
+              return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,8 +100,8 @@ class _MunroSelectorState extends State<MunroSelector> {
                     CreatePostImagePicker(munroId: munro.id),
                   ],
                 ),
-              ),
-            ),
+              );
+            }),
             if (formState.hasError)
               Text(
                 'Select at least one munro',

@@ -17,17 +17,20 @@ class PostWidget extends StatelessWidget {
 
   Widget _buildIncludedMunroText(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    if (post.includedMunros.isEmpty) return const SizedBox();
+    if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
         alignment: Alignment.centerLeft,
         child: Wrap(
           children: [
-            for (int i = 0; i < post.includedMunros.length; i++) ...[
+            for (int i = 0; i < post.includedMunroIds.length; i++) ...[
               GestureDetector(
                 onTap: () {
                   // Handle the click event for each munro.name here
-                  munroState.setSelectedMunro = post.includedMunros[i];
-                  MunroPictureService.getMunroPictures(context, munroId: post.includedMunros[i].id, count: 4);
+                  munroState.setSelectedMunro = munroState.munroList.firstWhere(
+                    (m) => m.id == post.includedMunroIds[i],
+                    orElse: () => Munro.empty,
+                  );
+                  MunroPictureService.getMunroPictures(context, munroId: post.includedMunroIds[i], count: 4);
                   ReviewService.getMunroReviews(context);
                   Navigator.of(context).pushNamed(MunroScreen.route);
                 },
@@ -35,10 +38,15 @@ class PostWidget extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: post.includedMunros[i].name,
+                        text: munroState.munroList
+                            .firstWhere(
+                              (m) => m.id == post.includedMunroIds[i],
+                              orElse: () => Munro.empty,
+                            )
+                            .name,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
                       ),
-                      if (i < post.includedMunros.length - 1)
+                      if (i < post.includedMunroIds.length - 1)
                         TextSpan(
                           text: ', ',
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(height: 1.2),
@@ -68,6 +76,10 @@ class PostWidget extends StatelessWidget {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     UserLikeState userLikeState = Provider.of<UserLikeState>(context);
     LikesState likesState = Provider.of<LikesState>(context);
+
+    if (post.includedMunroIds.isEmpty) {
+      return const SizedBox();
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -100,13 +112,13 @@ class PostWidget extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            if (userLikeState.likedPosts.contains(post.uid!)) {
+                            if (userLikeState.likedPosts.contains(post.uid)) {
                               LikeService.unLikePost(context, post: post, inFeed: inFeed);
                             } else {
                               LikeService.likePost(context, post: post, inFeed: inFeed);
                             }
                           },
-                          child: userLikeState.likedPosts.contains(post.uid!)
+                          child: userLikeState.likedPosts.contains(post.uid)
                               ? const Icon(CupertinoIcons.heart_fill)
                               : const Icon(CupertinoIcons.heart),
                         ),
@@ -114,7 +126,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             likesState.reset();
-                            likesState.setPostId = post.uid!;
+                            likesState.setPostId = post.uid;
                             LikeService.getPostLikes(context);
                             Navigator.of(context).pushNamed(LikesScreen.route);
                           },
@@ -127,7 +139,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             commentsState.reset();
-                            commentsState.setPostId = post.uid!;
+                            commentsState.setPostId = post.uid;
                             CommentsService.getPostComments(context);
                             Navigator.of(context).pushNamed(CommentsScreen.route);
                           },

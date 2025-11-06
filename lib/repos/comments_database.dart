@@ -1,161 +1,61 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsDatabase {
-  static final _db = FirebaseFirestore.instance;
-  static final CollectionReference _commentsRef = _db.collection('comments');
+  static final _db = Supabase.instance.client;
+  static final SupabaseQueryBuilder _commentsRef = _db.from('comments');
+  static final SupabaseQueryBuilder _commentsViewRef = _db.from('vu_post_comments');
 
   // Create Comment
   static Future create(BuildContext context, {required Comment comment}) async {
     try {
-      DocumentReference ref = _commentsRef.doc(comment.postId).collection('postComments').doc();
-
-      Comment newComment = comment.copyWith(uid: ref.id);
-
-      await ref.set(newComment.toJSON());
-    } on FirebaseException catch (error, stackTrace) {
+      await _commentsRef.insert(comment.toJSON());
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error creating your comment.");
-    } on Exception catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.toString());
+      showErrorDialog(context, message: "There was an error saving your comment.");
     }
   }
 
   // Update Comment
   static Future update(BuildContext context, {required Comment comment}) async {
     try {
-      DocumentReference ref = _commentsRef.doc(comment.postId).collection('postComments').doc(comment.uid);
-
-      await ref.update(comment.toJSON());
-    } on FirebaseException catch (error, stackTrace) {
+      await _commentsRef.update(comment.toJSON());
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error updating your comment.");
-    } on Exception catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.toString());
+      showErrorDialog(context, message: "There was an error updating your comment.");
     }
   }
 
-  // Read comment
-  static Future<Comment?> readCommentFromUid(
-    BuildContext context, {
-    required String postId,
-    required String commentId,
-  }) async {
-    try {
-      DocumentReference ref = _commentsRef.doc(postId).collection('postComments').doc(commentId);
-      DocumentSnapshot documentSnapshot = await ref.get();
-
-      Map<String, Object?> data = documentSnapshot.data() as Map<String, Object?>;
-
-      Comment comment = Comment.fromJSON(data);
-
-      AnalyticsService.logDatabaseRead(
-        method: "CommentsDatabase.readCommentFromUid",
-        collection: "comments",
-        documentCount: 1,
-        userId: null,
-        documentId: commentId,
-        additionalData: null,
-      );
-
-      return comment;
-    } on FirebaseException catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
-      return null;
-    }
-  }
-
-  // Read comments
-  static Future<List<Comment>> readAllPostComment(BuildContext context, {required String postId}) async {
-    List<Comment> comments = [];
-    try {
-      QuerySnapshot querySnapshot = await _commentsRef.doc(postId).collection('postComments').get();
-
-      for (var doc in querySnapshot.docs) {
-        Comment comment = Comment.fromJSON(doc.data() as Map<String, dynamic>);
-
-        comments.add(comment);
-      }
-
-      AnalyticsService.logDatabaseRead(
-        method: "CommentsDatabase.readAllPostComment",
-        collection: "comments",
-        documentCount: querySnapshot.docs.length,
-        userId: null,
-        documentId: postId,
-        additionalData: null,
-      );
-
-      return comments;
-    } on FirebaseException catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
-      return comments;
-    }
-  }
-
+  // Read comments from post
   static Future<List<Comment>> readPostComments(
     BuildContext context, {
     required String postId,
-    required String? lastCommentId,
+    required List<String> excludedAuthorIds,
+    int offset = 0,
   }) async {
     List<Comment> comments = [];
-    QuerySnapshot querySnapshot;
+    List<Map<String, dynamic>> response = [];
+    int pageSize = 20;
 
     try {
-      if (lastCommentId == null) {
-        // Load first bathc
-        querySnapshot = await _commentsRef
-            .doc(postId)
-            .collection('postComments')
-            .orderBy(PostFields.dateTime, descending: true)
-            .limit(15)
-            .get();
+      response = await _commentsViewRef
+          .select()
+          .not(CommentFields.authorId, 'in', excludedAuthorIds)
+          .eq(CommentFields.postId, postId)
+          .order(CommentFields.dateTime, ascending: false)
+          .range(offset, offset + pageSize - 1);
 
-        AnalyticsService.logDatabaseRead(
-          method: "CommentsDatabase.readPostComments.firstBatch",
-          collection: "comments",
-          documentCount: querySnapshot.docs.length,
-          userId: null,
-          documentId: postId,
-        );
-      } else {
-        final lastCommentDoc = await _commentsRef.doc(postId).collection('postComments').doc(lastCommentId).get();
-
-        if (!lastCommentDoc.exists) return [];
-
-        querySnapshot = await _commentsRef
-            .doc(postId)
-            .collection('postComments')
-            .orderBy(PostFields.dateTime, descending: true)
-            .startAfterDocument(lastCommentDoc)
-            .limit(15)
-            .get();
-
-        AnalyticsService.logDatabaseRead(
-          method: "CommentsDatabase.readPostComments.paginate",
-          collection: "comments",
-          documentCount: querySnapshot.docs.length,
-          userId: null,
-          documentId: postId,
-        );
-      }
-
-      for (var doc in querySnapshot.docs) {
-        Comment comment = Comment.fromJSON(doc.data() as Map<String, dynamic>);
-
+      for (var doc in response) {
+        Comment comment = Comment.fromJSON(doc);
         comments.add(comment);
       }
       return comments;
-    } on FirebaseException catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error fetching your comment.");
+      showErrorDialog(context, message: "There was an error getting your comments.");
       return comments;
     }
   }
@@ -163,12 +63,10 @@ class CommentsDatabase {
   // Delete comment
   static Future deleteComment(BuildContext context, {required Comment comment}) async {
     try {
-      DocumentReference ref = _commentsRef.doc(comment.postId).collection('postComments').doc(comment.uid!);
-
-      await ref.delete();
-    } on FirebaseException catch (error, stackTrace) {
+      await _commentsRef.delete().eq(CommentFields.uid, comment.uid ?? "");
+    } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message ?? "There was an error deleting your comment");
+      showErrorDialog(context, message: "There was an error deleting your comment");
     }
   }
 }

@@ -43,7 +43,7 @@ class ExploreHeaderFilterButton extends StatelessWidget {
               ),
             ),
           ),
-          if (munroState.isFilterOptionsSet) // TODO: change what this is checking for
+          if (munroState.isFilterOptionsSet)
             Positioned(
               right: 7,
               top: 7,

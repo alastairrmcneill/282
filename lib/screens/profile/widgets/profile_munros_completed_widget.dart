@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class ProfileMunrosCompletedWidget extends StatelessWidget {
   final double width;
@@ -15,10 +15,13 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
     ProfileState profileState = Provider.of<ProfileState>(context);
 
     int count = 282;
-    int progress = profileState.user?.personalMunroData?.where((munro) => munro[MunroFields.summited]).length ?? 0;
+    int progress = profileState.profile?.munrosCompleted ?? 0;
 
     return ClickableStatBox(
-      onTap: () => Navigator.of(context).pushNamed(MunrosCompletedScreen.route),
+      onTap: () async {
+        await ProfileService.getProfileMunroCompletions(context, userId: profileState.profile?.id ?? "");
+        Navigator.of(context).pushNamed(MunrosCompletedScreen.route);
+      },
       progress: progress.toString(),
       count: " / $count",
       subtitle: "Completed",

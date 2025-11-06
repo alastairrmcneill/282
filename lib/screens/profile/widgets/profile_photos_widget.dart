@@ -20,7 +20,7 @@ class ProfilePhotosWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              MunroPictureService.getProfilePictures(context, profileId: profileState.user?.uid ?? '');
+              MunroPictureService.getProfilePictures(context, profileId: profileState.profile?.id ?? '');
               Navigator.of(context).pushNamed(ProfilePhotoGallery.route);
             },
             child: Container(
@@ -71,7 +71,7 @@ class ProfilePhotosWidget extends StatelessWidget {
                                 fetchMorePhotos: () async {
                                   List<MunroPicture> newPhotos = await MunroPictureService.paginateProfilePictures(
                                     context,
-                                    profileId: profileState.user?.uid ?? '',
+                                    profileId: profileState.profile?.id ?? '',
                                   );
                                   return newPhotos;
                                 }),

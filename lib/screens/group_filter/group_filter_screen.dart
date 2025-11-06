@@ -116,7 +116,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                             profilePictureURL: followingRelationship.targetProfilePictureURL,
                             profileUid: followingRelationship.targetId,
                           ),
-                          title: Text(followingRelationship.targetDisplayName),
+                          title: Text(followingRelationship.targetDisplayName ?? ""),
                           trailing: groupFilterState.selectedFriendsUids.contains(followingRelationship.targetId)
                               ? const Icon(Icons.check)
                               : null,

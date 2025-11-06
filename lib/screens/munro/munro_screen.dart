@@ -21,7 +21,7 @@ class _MunroScreenState extends State<MunroScreen> {
   void initState() {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     AnalyticsService.logMunroViewed(
-      munroId: munroState.selectedMunro?.id ?? "",
+      munroId: (munroState.selectedMunro?.id ?? 0).toString(),
       munroName: munroState.selectedMunro?.name ?? "",
     );
     super.initState();
@@ -32,7 +32,7 @@ class _MunroScreenState extends State<MunroScreen> {
     return Scaffold(
       floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
-        onRefresh: () => MunroService.loadAllAdditionalMunrosData(context),
+        onRefresh: () => MunroService.loadMunroData(context),
         child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),

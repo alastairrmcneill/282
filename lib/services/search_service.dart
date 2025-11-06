@@ -20,11 +20,10 @@ class SearchService {
       List<AppUser> users = await UserService.searchUsers(
         context,
         searchTerm: query.toLowerCase(),
-        lastUserId: null,
       );
 
       // Filter users
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       users = users.where((user) => !blockedUsers.contains(user.uid)).toList();
 
       userSearchState.setUsers = users;
@@ -45,21 +44,14 @@ class SearchService {
     try {
       userSearchState.setStatus = SearchStatus.paginating;
 
-      // Find last user ID
-      String lastUserId = "";
-      if (userSearchState.users.isNotEmpty) {
-        lastUserId = userSearchState.users.last.uid!;
-      }
-
       // Add posts from database
       List<AppUser> users = await UserService.searchUsers(
         context,
         searchTerm: query.toLowerCase(),
-        lastUserId: lastUserId,
       );
 
       // Filter users
-      List<String> blockedUsers = userState.currentUser!.blockedUsers ?? [];
+      List<String> blockedUsers = userState.blockedUsers;
       users = users.where((user) => !blockedUsers.contains(user.uid)).toList();
 
       userSearchState.addUsers = users;

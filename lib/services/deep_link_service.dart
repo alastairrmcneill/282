@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -30,17 +31,17 @@ class DeepLinkService {
   }
 
   static void _handleBranchLinkData(Map<dynamic, dynamic> data, GlobalKey<NavigatorState> navigatorKey) async {
-    final String? munroId = data['munroId']?.toString();
+    final int? munroId = data['munroId'];
 
     // Log data
     AnalyticsService.logEvent(
       name: 'branch_link_clicked',
       parameters: {
-        'munro_id': munroId ?? 'null',
+        'munro_id': (munroId ?? 0).toString(),
       },
     );
 
-    if (munroId == null || munroId.isEmpty) return;
+    if (munroId == null || munroId == 0) return;
 
     final BuildContext context = navigatorKey.currentContext!;
     final MunroState munroState = Provider.of<MunroState>(context, listen: false);
@@ -52,7 +53,10 @@ class DeepLinkService {
       await SavedListService.readUserSavedLists(context);
 
       munroState.setSelectedMunroId = munroId;
-      var munro = munroState.munroList.firstWhere((munro) => munro.id == munroId);
+      var munro = munroState.munroList.firstWhere(
+        (munro) => munro.id == munroId,
+        orElse: () => Munro.empty,
+      );
       munroState.setSelectedMunro = munro;
 
       navigatorKey.currentState!.pushNamed(
@@ -84,12 +88,12 @@ class DeepLinkService {
     }
   }
 
-  static Future<void> shareMunro(BuildContext context, String munroName, String munroId) async {
+  static Future<void> shareMunro(BuildContext context, String munroName, int munroId) async {
     // Log share event
     AnalyticsService.logEvent(
       name: 'munro_shared',
       parameters: {
-        'munro_id': munroId,
+        'munro_id': munroId.toString(),
         'munro_name': munroName,
       },
     );

@@ -1,40 +1,31 @@
 class FollowingRelationship {
-  final String? uid;
   final String sourceId;
   final String targetId;
-  final String targetDisplayName;
+  final String? targetDisplayName;
   final String? targetProfilePictureURL;
-  final String targetSearchName;
-  final String sourceDisplayName;
+  final String? targetSearchName;
+  final String? sourceDisplayName;
   final String? sourceProfilePictureURL;
 
   FollowingRelationship({
-    this.uid,
     required this.sourceId,
     required this.targetId,
-    required this.targetDisplayName,
-    required this.targetProfilePictureURL,
-    required this.targetSearchName,
-    required this.sourceDisplayName,
-    required this.sourceProfilePictureURL,
+    this.targetDisplayName,
+    this.targetProfilePictureURL,
+    this.targetSearchName,
+    this.sourceDisplayName,
+    this.sourceProfilePictureURL,
   });
 
   Map<String, dynamic> toJSON() {
     return {
-      FollowingRelationshipFields.uid: uid,
       FollowingRelationshipFields.sourceId: sourceId,
       FollowingRelationshipFields.targetId: targetId,
-      FollowingRelationshipFields.targetDisplayName: targetDisplayName,
-      FollowingRelationshipFields.targetProfilePictureURL: targetProfilePictureURL,
-      FollowingRelationshipFields.targetSearchName: targetSearchName,
-      FollowingRelationshipFields.sourceDisplayName: sourceDisplayName,
-      FollowingRelationshipFields.sourceProfilePictureURL: sourceProfilePictureURL,
     };
   }
 
   static FollowingRelationship fromJSON(Map<String, dynamic> json) {
     return FollowingRelationship(
-      uid: json[FollowingRelationshipFields.uid] as String?,
       sourceId: json[FollowingRelationshipFields.sourceId] as String,
       targetId: json[FollowingRelationshipFields.targetId] as String,
       targetDisplayName: json[FollowingRelationshipFields.targetDisplayName] as String,
@@ -47,7 +38,6 @@ class FollowingRelationship {
   }
 
   FollowingRelationship copyWith({
-    String? uid,
     String? sourceId,
     String? targetId,
     String? targetDisplayName,
@@ -57,7 +47,6 @@ class FollowingRelationship {
     String? sourceProfilePictureURL,
   }) {
     return FollowingRelationship(
-      uid: uid ?? this.uid,
       sourceId: sourceId ?? this.sourceId,
       targetId: targetId ?? this.targetId,
       targetDisplayName: targetDisplayName ?? this.targetDisplayName,
@@ -70,16 +59,15 @@ class FollowingRelationship {
 
   @override
   String toString() =>
-      'FollowingRelationship(uid: $uid, sourceId: $sourceId, targetId: $targetId, targetDisplayName: $targetDisplayName, targetSearchName: $targetSearchName, targetProfilePictureURL: $targetProfilePictureURL, sourceDisplayName: $sourceDisplayName, sourceProfilePictureURL: $sourceProfilePictureURL)';
+      'FollowingRelationship(sourceId: $sourceId, targetId: $targetId, targetDisplayName: $targetDisplayName, targetSearchName: $targetSearchName, targetProfilePictureURL: $targetProfilePictureURL, sourceDisplayName: $sourceDisplayName, sourceProfilePictureURL: $sourceProfilePictureURL)';
 }
 
 class FollowingRelationshipFields {
-  static String uid = "uid";
-  static String sourceId = "sourceId";
-  static String targetId = "targetId";
-  static String targetDisplayName = "targetDisplayName";
-  static String targetProfilePictureURL = "targetProfilePictureURL";
-  static String targetSearchName = "targetSearchName";
-  static String sourceDisplayName = 'sourceDisplayName';
-  static String sourceProfilePictureURL = 'sourceProfilePictureURL';
+  static String sourceId = "source_id";
+  static String targetId = "target_id";
+  static String targetDisplayName = "target_display_name";
+  static String targetProfilePictureURL = "target_profile_picture_url";
+  static String targetSearchName = "target_search_name";
+  static String sourceDisplayName = 'source_display_name';
+  static String sourceProfilePictureURL = 'source_profile_picture_url';
 }

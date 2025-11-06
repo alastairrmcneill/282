@@ -16,10 +16,8 @@ class ReportService {
       Report report = Report(
         contentId: reportState.contentId,
         reporterId: userState.currentUser?.uid ?? "",
-        dateTime: DateTime.now().toUtc(),
         comment: reportState.comment,
         type: reportState.type,
-        completed: false,
       );
 
       // Upload report

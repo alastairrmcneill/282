@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -37,7 +36,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
           Form(
             key: args.formKey,
             child: TextFormFieldBase(
-              initialValue: achievementsState.currentAchievement?.criteria[CriteriaFields.count].toString() ?? '0',
+              initialValue: achievementsState.currentAchievement?.annualTarget?.toString() ?? '0',
               labelText: "Number of Munros",
               textInputAction: TextInputAction.done,
               fillColor: Colors.white,
@@ -52,7 +51,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
                 return null;
               },
               onSaved: (value) {
-                achievementsState.currentAchievement?.criteria[CriteriaFields.count] = int.parse(value!);
+                achievementsState.setAchievementFormCount = int.parse(value!);
               },
             ),
           ),

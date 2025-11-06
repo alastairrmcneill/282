@@ -4,25 +4,27 @@ import 'package:two_eight_two/models/models.dart';
 class ProfileState extends ChangeNotifier {
   ProfileStatus _status = ProfileStatus.initial;
   ProfilePhotoStatus _photoStatus = ProfilePhotoStatus.initial;
-  AppUser? _user;
-  List<AppUser> _profileHistory = [];
+  Profile? _profile;
+  List<Profile> _profileHistory = [];
   bool _isFollowing = false;
   List<bool> _isFollowingHistory = [];
   bool _isCurrentUser = false;
   List<bool> _isCurrentUserHistory = [];
   List<Post> _posts = [];
-  List<List<Post>> _postsHisotry = [];
+  List<List<Post>> _postsHistory = [];
   List<MunroPicture> _profilePhotos = [];
   List<List<MunroPicture>> _profilePhotosHistory = [];
+  List<MunroCompletion> _munroCompletions = [];
   Error _error = Error();
 
-  AppUser? get user => _user;
+  Profile? get profile => _profile;
   ProfileStatus get status => _status;
   ProfilePhotoStatus get photoStatus => _photoStatus;
   bool get isFollowing => _isFollowing;
   bool get isCurrentUser => _isCurrentUser;
   List<Post> get posts => _posts;
   List<MunroPicture> get profilePhotos => _profilePhotos;
+  List<MunroCompletion> get munroCompletions => _munroCompletions;
   Error get error => _error;
 
   set setStatus(ProfileStatus profileStatus) {
@@ -35,33 +37,33 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setUser(AppUser? user) {
-    if (user != null) {
-      _profileHistory.insert(0, user);
+  set setProfile(Profile? profile) {
+    if (profile != null) {
+      _profileHistory.insert(0, profile);
     }
-    _user = user;
+    _profile = profile;
     notifyListeners();
   }
 
   void navigateBack() {
     if (_profileHistory.isNotEmpty &&
-        _postsHisotry.isNotEmpty &&
+        _postsHistory.isNotEmpty &&
         _profilePhotosHistory.isNotEmpty &&
         _isFollowingHistory.isNotEmpty &&
         _isCurrentUserHistory.isNotEmpty) {
       _profileHistory.removeAt(0);
-      _postsHisotry.removeAt(0);
+      _postsHistory.removeAt(0);
       _profilePhotosHistory.removeAt(0);
       _isFollowingHistory.removeAt(0);
       _isCurrentUserHistory.removeAt(0);
-      if (_profileHistory.isNotEmpty && _postsHisotry.isNotEmpty) {
-        _user = _profileHistory[0];
-        _posts = _postsHisotry[0];
+      if (_profileHistory.isNotEmpty && _postsHistory.isNotEmpty) {
+        _profile = _profileHistory[0];
+        _posts = _postsHistory[0];
         _profilePhotos = _profilePhotosHistory[0];
         _isFollowing = _isFollowingHistory[0];
         _isCurrentUser = _isCurrentUserHistory[0];
       } else {
-        _user = null;
+        _profile = null;
         _posts = [];
         _profilePhotos = [];
         _isFollowing = false;
@@ -74,20 +76,26 @@ class ProfileState extends ChangeNotifier {
 
   void clear() {
     _profileHistory = [];
-    _user = null;
+    _profile = null;
     _posts = [];
-    _postsHisotry = [];
+    _postsHistory = [];
     _profilePhotos = [];
     _profilePhotosHistory = [];
     _isFollowing = false;
     _isFollowingHistory = [];
     _isCurrentUser = false;
     _isCurrentUserHistory = [];
+    _munroCompletions = [];
   }
 
   set setIsFollowing(bool isFollowing) {
     _isFollowingHistory.insert(0, isFollowing);
     _isFollowing = isFollowing;
+    notifyListeners();
+  }
+
+  set setMunroCompletions(List<MunroCompletion> munroCompletions) {
+    _munroCompletions = munroCompletions;
     notifyListeners();
   }
 
@@ -98,13 +106,13 @@ class ProfileState extends ChangeNotifier {
   }
 
   set setPosts(List<Post> posts) {
-    _postsHisotry.insert(0, posts);
+    _postsHistory.insert(0, posts);
     _posts = posts;
     notifyListeners();
   }
 
   set addPosts(List<Post> posts) {
-    _postsHisotry[0].addAll(posts);
+    _postsHistory[0].addAll(posts);
     notifyListeners();
   }
 
@@ -121,10 +129,10 @@ class ProfileState extends ChangeNotifier {
       _posts[index] = post;
     }
 
-    for (var i = 0; i < _postsHisotry.length; i++) {
-      int index = _postsHisotry[i].indexWhere((element) => element.uid == post.uid);
+    for (var i = 0; i < _postsHistory.length; i++) {
+      int index = _postsHistory[i].indexWhere((element) => element.uid == post.uid);
       if (index != -1) {
-        _postsHisotry[i][index] = post;
+        _postsHistory[i][index] = post;
       }
     }
     notifyListeners();
@@ -150,12 +158,13 @@ class ProfileState extends ChangeNotifier {
   reset() {
     _status = ProfileStatus.initial;
     _photoStatus = ProfilePhotoStatus.initial;
-    _user = null;
+    _profile = null;
     _profileHistory = [];
     _isFollowing = false;
     _isCurrentUser = false;
     _posts = [];
-    _postsHisotry = [];
+    _postsHistory = [];
+    _munroCompletions = [];
     _error = Error();
   }
 }

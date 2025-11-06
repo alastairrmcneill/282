@@ -34,7 +34,7 @@ class MunroSaveButton extends StatelessWidget {
             name: "Save Munro Button Clicked",
             parameters: {
               "source": "Munro Page",
-              "munro_id": munroState.selectedMunro?.id ?? "",
+              "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
               "munro_name": munroState.selectedMunro?.name ?? "",
               "user_id": user?.uid ?? "",
             },

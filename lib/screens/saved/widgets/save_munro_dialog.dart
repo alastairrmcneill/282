@@ -8,8 +8,6 @@ showSaveMunroDialog(BuildContext context) {
   MunroState munroState = Provider.of<MunroState>(context, listen: false);
   SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
 
-  Future submitForm() async {}
-
   AlertDialog alert = AlertDialog(
     scrollable: true,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -41,14 +39,14 @@ showSaveMunroDialog(BuildContext context) {
                                       await SavedListService.addMunroToSavedList(
                                         context,
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? "",
+                                        munroId: munroState.selectedMunro?.id ?? 0,
                                       );
                                       setState(() {});
                                     } else {
                                       await SavedListService.removeMunroFromSavedList(
                                         context,
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? "",
+                                        munroId: munroState.selectedMunro?.id ?? 0,
                                       );
                                       setState(() {});
                                     }

@@ -70,7 +70,7 @@ class AchievementDetailScreen extends StatelessWidget {
             ),
             achievement.type == AchievementTypes.multiMunroDay
                 ? const SizedBox()
-                : Text("Progress: ${achievement.progress}/${achievement.criteria["count"]}"),
+                : Text("Progress: ${achievement.progress}/${achievement.criteriaCount}"),
           ],
         ),
       ),

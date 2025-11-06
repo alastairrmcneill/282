@@ -38,7 +38,7 @@ class MunroDescription extends StatelessWidget {
                     AnalyticsService.logEvent(
                       name: "Walk Highlands Munro Link Clicked",
                       parameters: {
-                        "munro_id": munroState.selectedMunro?.id ?? "",
+                        "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
                         "munro_name": munroState.selectedMunro?.name ?? "",
                       },
                     );

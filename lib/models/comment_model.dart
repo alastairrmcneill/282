@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Comment {
   final String? uid;
   final String postId;
@@ -22,12 +20,8 @@ class Comment {
   // To JSON
   Map<String, dynamic> toJSON() {
     return {
-      CommentFields.uid: uid,
       CommentFields.postId: postId,
       CommentFields.authorId: authorId,
-      CommentFields.authorDisplayName: authorDisplayName,
-      CommentFields.authorProfilePictureURL: authorProfilePictureURL,
-      CommentFields.dateTime: dateTime,
       CommentFields.commentText: commentText,
     };
   }
@@ -40,7 +34,7 @@ class Comment {
       authorId: json[CommentFields.authorId] as String,
       authorDisplayName: json[CommentFields.authorDisplayName] as String,
       authorProfilePictureURL: json[CommentFields.authorProfilePictureURL] as String?,
-      dateTime: (json[CommentFields.dateTime] as Timestamp).toDate(),
+      dateTime: DateTime.parse(json[CommentFields.dateTime] as String),
       commentText: json[CommentFields.commentText] as String,
     );
   }
@@ -68,12 +62,12 @@ class Comment {
 }
 
 class CommentFields {
-  static String uid = "uid";
-  static String authorId = "authorId";
-  static String authorDisplayName = "authorDisplayName";
-  static String authorProfilePictureURL = "authorProfilePictureURL";
-  static String dateTime = "dateTime";
-  static String pictureURL = "pictureURL";
-  static String commentText = "commentText";
-  static String postId = "postId";
+  static String uid = "id";
+  static String authorId = "author_id";
+  static String authorDisplayName = "author_display_name";
+  static String authorProfilePictureURL = "author_profile_picture_url";
+  static String dateTime = "date_time_created";
+  static String pictureURL = "picture_url";
+  static String commentText = "text";
+  static String postId = "post_id";
 }

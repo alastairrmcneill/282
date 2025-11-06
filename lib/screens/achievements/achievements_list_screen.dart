@@ -25,7 +25,7 @@ class AchievementListScreen extends StatelessWidget {
                 .where((Achievement achievement) => achievement.type != AchievementTypes.annualGoal)
                 .toList();
 
-            sortedAchievements.sort((a, b) => a.uid.compareTo(b.uid));
+            sortedAchievements.sort((a, b) => a.achievementId.compareTo(b.achievementId));
 
             Achievement achievement = sortedAchievements[index];
 

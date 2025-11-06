@@ -22,3 +22,4 @@ export 'bulk_munro_updates/state/bulk_munro_update_state.dart';
 export 'report/state/report_state.dart';
 export 'nav/state/layout_state.dart';
 export 'group_filter/state/group_filter_state.dart';
+export 'nav/state/munro_completions_state.dart';

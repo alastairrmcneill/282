@@ -11,9 +11,7 @@ import 'package:two_eight_two/repos/repos.dart';
 class FollowingService {
   static Future followUser(
     BuildContext context, {
-    required String profileUserId,
-    required String profileUserDisplayName,
-    String? profileUserPictureURL,
+    required String targetUserId,
   }) async {
     UserState userState = Provider.of<UserState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
@@ -26,24 +24,20 @@ class FollowingService {
 
       FollowingRelationship followingRelationship = FollowingRelationship(
         sourceId: userState.currentUser?.uid ?? "",
-        targetId: profileUserId,
-        targetDisplayName: profileUserDisplayName,
-        targetProfilePictureURL: profileUserPictureURL,
-        targetSearchName: profileUserDisplayName.toLowerCase(),
-        sourceDisplayName: userState.currentUser!.displayName!,
-        sourceProfilePictureURL: userState.currentUser!.profilePictureURL,
+        targetId: targetUserId,
       );
       // Create relationship
       await FollowingRelationshipsDatabase.create(context, followingRelationship: followingRelationship);
 
       // Update app state
-      if (profileState.user == null) {
+      if (profileState.profile == null) {
         profileState.setIsFollowing = true;
         stopCircularProgressOverlay(context);
         return;
       }
-      AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! + 1);
-      profileState.setUser = tempUser;
+      Profile tempProfile =
+          profileState.profile!.copyWith(followersCount: (profileState.profile?.followersCount ?? 0) + 1);
+      profileState.setProfile = tempProfile;
       profileState.setIsFollowing = true;
       stopCircularProgressOverlay(context);
     } catch (error, stackTrace) {
@@ -75,9 +69,9 @@ class FollowingService {
       );
 
       // Update app state
-      if (profileState.user != null) {
-        AppUser tempUser = profileState.user!.copyWith(followersCount: profileState.user!.followersCount! - 1);
-        profileState.setUser = tempUser;
+      if (profileState.profile != null) {
+        Profile tempProfile = profileState.profile!.copyWith(followersCount: profileState.profile!.followersCount! - 1);
+        profileState.setProfile = tempProfile;
         profileState.setIsFollowing = false;
       }
 
@@ -92,18 +86,22 @@ class FollowingService {
 
   static Future loadInitialFollowersAndFollowing(BuildContext context, {required String userId}) async {
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    List<String> blockedUsers = userState.blockedUsers;
+
     try {
       followersState.setStatus = FollowersStatus.loading;
       followersState.setFollowers = await FollowingRelationshipsDatabase.getFollowersFromUid(
         context,
         targetId: userId,
-        lastFollowingRelationshipID: null,
+        excludedUserIds: blockedUsers,
       );
 
       followersState.setFollowing = await FollowingRelationshipsDatabase.getFollowingFromUid(
         context,
         sourceId: userId,
-        lastFollowingRelationshipID: null,
+        excludedUserIds: blockedUsers,
       );
 
       followersState.setStatus = FollowersStatus.loaded;
@@ -115,21 +113,21 @@ class FollowingService {
 
   static Future paginateFollowers(BuildContext context, {required String userId}) async {
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    List<String> blockedUsers = userState.blockedUsers;
+
     try {
       followersState.setStatus = FollowersStatus.paginating;
-
-      // Find last followingRelationship ID
-      String lastFollowingRelationshipID = "";
-      if (followersState.followers.isNotEmpty) {
-        lastFollowingRelationshipID = followersState.followers.last.uid!;
-      }
 
       // Add followers from database
       followersState.addFollowers = await FollowingRelationshipsDatabase.getFollowersFromUid(
         context,
         targetId: userId,
-        lastFollowingRelationshipID: lastFollowingRelationshipID,
+        excludedUserIds: blockedUsers,
+        offset: followersState.followers.length,
       );
+
       followersState.setStatus = FollowersStatus.loaded;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
@@ -139,20 +137,19 @@ class FollowingService {
 
   static Future paginateFollowing(BuildContext context, {required String userId}) async {
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
+    UserState userState = Provider.of<UserState>(context, listen: false);
+
+    List<String> blockedUsers = userState.blockedUsers;
+
     try {
       followersState.setStatus = FollowersStatus.paginating;
-
-      // Find last followingRelationship ID
-      String lastFollowingRelationshipID = "";
-      if (followersState.following.isNotEmpty) {
-        lastFollowingRelationshipID = followersState.following.last.uid!;
-      }
 
       // Add followers from database
       followersState.addFollowing = await FollowingRelationshipsDatabase.getFollowingFromUid(
         context,
         sourceId: userId,
-        lastFollowingRelationshipID: lastFollowingRelationshipID,
+        excludedUserIds: blockedUsers,
+        offset: followersState.following.length,
       );
       followersState.setStatus = FollowersStatus.loaded;
     } catch (error, stackTrace) {
