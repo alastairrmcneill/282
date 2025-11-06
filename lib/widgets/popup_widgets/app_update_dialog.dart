@@ -72,6 +72,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     // Compare each component
     for (int i = 0; i < v1.length; i++) {
       if (v1[i] < v2[i]) return true; // version1 is older
+      if (v1[i] > v2[i]) return false; // version1 is newer
     }
     return false;
   }
