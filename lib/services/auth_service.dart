@@ -17,10 +17,18 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final GoogleSignIn _googleSignIn = GoogleSignIn();
+  static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  static bool _isGoogleSignInInitialized = false;
 
   static Stream<AppUser?> get appUserStream {
     return _auth.authStateChanges().map((User? user) => user != null ? AppUser.appUserFromFirebaseUser(user) : null);
+  }
+
+  static Future<void> _initializeGoogleSignIn() async {
+    if (!_isGoogleSignInInitialized) {
+      await _googleSignIn.initialize();
+      _isGoogleSignInInitialized = true;
+    }
   }
 
   // Current user id
@@ -177,12 +185,14 @@ class AuthService {
   static Future signInWithApple(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     try {
+      startCircularProgressOverlay(context);
       final appleIdCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.fullName,
           AppleIDAuthorizationScopes.email,
         ],
       );
+
       final OAuthProvider oAuthProvider = OAuthProvider('apple.com');
       OAuthCredential appleCredential = oAuthProvider.credential(
         idToken: appleIdCredential.identityToken,
@@ -191,55 +201,80 @@ class AuthService {
 
       UserCredential credential = await _auth.signInWithCredential(appleCredential);
 
-      if (credential.user?.displayName == null) {
-        await credential.user
-            ?.updateDisplayName(
-          "${appleIdCredential.givenName ?? ""} ${appleIdCredential.familyName ?? ""}",
-        )
-            .whenComplete(
-          () async {
-            await credential.user?.reload();
-          },
-        );
+      // Handle name information carefully
+      String displayName = "";
+      String firstName = "";
+      String lastName = "";
+
+      // First check if Apple provided name information (only available on first sign-in)
+      if (appleIdCredential.givenName != null || appleIdCredential.familyName != null) {
+        firstName = appleIdCredential.givenName ?? "";
+        lastName = appleIdCredential.familyName ?? "";
+        displayName = "$firstName $lastName".trim();
+
+        // Update Firebase user's display name if we got name info from Apple
+        if (displayName.isNotEmpty && (credential.user?.displayName == null || credential.user!.displayName!.isEmpty)) {
+          await credential.user?.updateDisplayName(displayName).whenComplete(
+            () async {
+              await credential.user?.reload();
+            },
+          );
+        }
       }
 
-      if (credential.user?.email == null) {
-        await credential.user?.updateEmail(appleIdCredential.email ?? "").whenComplete(
-          () async {
-            await credential.user?.reload();
-          },
-        );
+      // If no name from Apple, try existing Firebase user display name
+      if (displayName.isEmpty) {
+        displayName = _auth.currentUser?.displayName ?? "";
+        if (displayName.isNotEmpty) {
+          // Parse existing display name into first/last names
+          List<String> names = displayName.split(" ");
+          if (names.length > 1) {
+            firstName = names[0];
+            lastName = names.sublist(1).join(" ");
+          } else if (names.length == 1) {
+            firstName = names[0];
+          }
+        }
+      }
+
+      // Final fallback - use a generic name if still empty
+      if (displayName.isEmpty) {
+        displayName = "Apple User";
+        firstName = "Apple";
+        lastName = "User";
       }
 
       await _auth.currentUser?.getIdToken(true);
-
-      List<String> names = _auth.currentUser?.displayName?.split(" ") ?? [];
-      String firstName = "";
-      String lastName = "";
-      if (names.length > 1) {
-        firstName = names[0];
-        lastName = names.sublist(1).join(" ");
-      } else if (names.length == 1) {
-        firstName = names[0];
-      }
 
       bool isIOS = Platform.isIOS;
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String appVersion = packageInfo.version;
 
+      // Check if this is a new user or returning user
+      bool isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
+
+      // TODO: if this is a new user then only create user record otherwise skip over? Test this
       AppUser appUser = AppUser(
         uid: _auth.currentUser?.uid,
-        displayName: _auth.currentUser?.displayName ?? "New User",
-        searchName: _auth.currentUser?.displayName?.toLowerCase() ?? "new user",
+        displayName: displayName,
+        searchName: displayName.toLowerCase(),
+        firstName: firstName,
+        lastName: lastName,
         platform: isIOS ? "iOS" : "Android",
         appVersion: appVersion,
         dateCreated: DateTime.now(),
         signInMethod: "apple sign in",
         profileVisibility: Privacy.public,
       );
+
       await UserService.createUser(context, appUser: appUser);
 
-      AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
+      // Only log as sign-up if it's actually a new user
+      if (isNewUser) {
+        AnalyticsService.logSignUp(method: "apple", platform: isIOS ? "iOS" : "Android");
+      }
+
+      stopCircularProgressOverlay(context);
 
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
@@ -248,31 +283,51 @@ class AuthService {
       await _afterSignInNavigation(context);
     } on SignInWithAppleAuthorizationException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      showErrorDialog(context, message: error.message);
+      stopCircularProgressOverlay(context);
+      // Don't show error if user canceled
+      if (error.code != AuthorizationErrorCode.canceled) {
+        showErrorDialog(context, message: error.message);
+      }
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.message ?? "There was an error signing in.");
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.toString());
     }
   }
 
   static Future signInWithGoogle(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    startCircularProgressOverlay(context);
+
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // Initialize Google Sign In if not already done
+      await _initializeGoogleSignIn();
 
-      if (googleUser == null) return;
+      // Check if we can use authenticate() or need platform-specific approach
+      GoogleSignInAccount? googleUser;
+      if (_googleSignIn.supportsAuthenticate()) {
+        googleUser = await _googleSignIn.authenticate();
+      } else {
+        // Fallback for platforms that don't support authenticate()
+        // This would typically be web, which requires special handling
+        throw Exception("Platform doesn't support authenticate(). Use platform-specific sign-in method.");
+      }
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      // Obtain the auth details from the request
+      // Note: In 7.x, authentication property is accessed directly from the user
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      final OAuthCredential googleCredential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+      // Create a new credential - in 7.x, only idToken is available
+      final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
 
-      UserCredential credential = await _auth.signInWithCredential(googleCredential);
+      // Once signed in, get the UserCredential
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
 
       await _auth.currentUser?.getIdToken(true);
 
@@ -308,16 +363,26 @@ class AuthService {
 
       AnalyticsService.logSignUp(method: "google", platform: isIOS ? "iOS" : "Android");
 
+      stopCircularProgressOverlay(context);
+
       // Check for push notifications
       await PushNotificationService.initNotifications(context);
 
       // Navigate to the right place
       await _afterSignInNavigation(context);
+    } on GoogleSignInException catch (error, stackTrace) {
+      Log.error("Google Sign In Error: ${error.toString()}", stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
+      if (error.code != GoogleSignInExceptionCode.canceled) {
+        showErrorDialog(context, message: "There was an error signing in with Google.");
+      }
     } on FirebaseAuthException catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.message ?? "There was an error signing in.");
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
+      stopCircularProgressOverlay(context);
       showErrorDialog(context, message: error.toString());
     }
   }
