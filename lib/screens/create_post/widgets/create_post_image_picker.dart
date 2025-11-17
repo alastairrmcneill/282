@@ -42,11 +42,12 @@ class CreatePostImagePicker extends StatelessWidget {
             await pickImage(context, createPostState);
           },
           child: DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(10),
-            dashPattern: const [5, 5],
-            color: Colors.green,
-            strokeWidth: 1,
+            options: RoundedRectDottedBorderOptions(
+              radius: const Radius.circular(10),
+              dashPattern: const [5, 5],
+              color: Colors.green,
+              strokeWidth: 1,
+            ),
             child: const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -158,11 +159,12 @@ class CreatePostImagePicker extends StatelessWidget {
                         await pickImage(context, createPostState);
                       },
                       child: DottedBorder(
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(10),
-                        dashPattern: const [5, 5],
-                        color: Colors.green,
-                        strokeWidth: 1,
+                        options: RoundedRectDottedBorderOptions(
+                          radius: const Radius.circular(10),
+                          dashPattern: const [5, 5],
+                          color: Colors.green,
+                          strokeWidth: 1,
+                        ),
                         child: SizedBox(
                           width: height,
                           height: height,
