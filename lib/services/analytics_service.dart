@@ -1,19 +1,14 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:two_eight_two/services/shared_preferences_service.dart';
 
 class AnalyticsService {
-  static FirebaseAnalytics? _analytics;
   static Mixpanel? mixpanel;
 
   static Future<void> init() async {
     // Once you've called this method once, you can access `mixpanel` throughout the rest of your application.
     String token = dotenv.env['MIXPANEL_TOKEN'] ?? "";
     mixpanel = await Mixpanel.init(token, trackAutomaticEvents: true);
-
-    _analytics = FirebaseAnalytics.instance;
-    await _analytics?.setAnalyticsCollectionEnabled(true);
   }
 
   static Future<void> logEvent({
@@ -21,7 +16,6 @@ class AnalyticsService {
     Map<String, String>? parameters,
   }) async {
     print("🚀 ~ AnalyticsService ~ logEvent: $name : $parameters");
-    await _analytics?.logEvent(name: name, parameters: parameters);
     await mixpanel?.track(
       name,
       properties: parameters,

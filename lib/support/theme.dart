@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class MyTheme {
   static ThemeData get lightTheme {
@@ -53,7 +51,7 @@ class MyTheme {
           borderRadius: BorderRadius.circular(15),
         ),
       ),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         labelColor: MyColors.accentColor,
         indicatorColor: MyColors.accentColor,
       ),
@@ -117,7 +115,7 @@ class MyTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
       ),
       cardColor: const Color.fromARGB(255, 250, 255, 248),
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 1.5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -143,28 +141,28 @@ class MyTheme {
         titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
             return MyColors.accentColor; // On color
           }
           return Colors.grey; // Off color
         }),
-        trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
-            return MyColors.accentColor.withOpacity(0.5); // On color
+        trackColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
+            return MyColors.accentColor.withValues(alpha: 0.5); // On color
           }
-          return Colors.grey.withOpacity(0.5); // Off color
+          return Colors.grey.withValues(alpha: 0.5); // Off color
         }),
-        overlayColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
-            return MyColors.accentColor.withOpacity(0.2); // On color
+        overlayColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
+            return MyColors.accentColor.withValues(alpha: 0.2); // On color
           }
-          return Colors.grey.withOpacity(0.2); // Off color
+          return Colors.grey.withValues(alpha: 0.2); // Off color
         }),
       ),
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
             return MyColors.accentColor; // On color
           }
           return Colors.white; // Off color
