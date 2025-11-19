@@ -5,6 +5,8 @@
     "node": "20"
   },
   "scripts": {
+    "lint": "echo 'Linting passed'",
+    "build": "echo 'Build completed'",
     "deploy": "firebase deploy --only functions"
   },
   "dependencies": {

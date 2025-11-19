@@ -1,0 +1,9 @@
+{
+  "APP_ENV": "dev or prod",
+  "WEATHER_API_KEY": "your_weather_api_key",
+  "MIXPANEL_TOKEN": "your_mixpanel_token",
+  "MAPBOX_TOKEN": "your_mapbox_token",
+  "SUPABASE_URL": "your_supabase_url",
+  "SUPABASE_ANON": "your_supabase_anon_key",
+  "SENTRY_DSN": "your_sentry_dsn"
+}

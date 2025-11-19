@@ -40,7 +40,6 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   sentry_flutter: ^9.8.0
   http: ^1.6.0
-  flutter_dotenv: ^6.0.0
   package_info_plus: ^9.0.0
   rate_my_app: ^2.3.2
   readmore: ^3.0.0
@@ -96,7 +95,6 @@ flutter:
     - assets/documents/
     - assets/weather/
     - assets/icons/
-    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -6,24 +6,40 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_development.dart",
-      "args": ["--flavor", "development", "--target", "lib/main_development.dart"],
-      "preLaunchTask": "Copy Dev Env"
+      "args": [
+        "--flavor",
+        "development",
+        "--target",
+        "lib/main_development.dart",
+        "--dart-define-from-file=config/dev.json"
+      ]
     },
     {
       "name": "Launch Production - Device",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_production.dart",
-      "args": ["--flavor", "production", "--target", "lib/main_production.dart", "--profile"],
-      "preLaunchTask": "Copy Prod Env"
+      "args": [
+        "--flavor",
+        "production",
+        "--target",
+        "lib/main_production.dart",
+        "--profile",
+        "--dart-define-from-file=config/prod.json"
+      ]
     },
     {
       "name": "Launch Production - Simulator",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_production.dart",
-      "args": ["--flavor", "production", "--target", "lib/main_production.dart"],
-      "preLaunchTask": "Copy Prod Env"
+      "args": [
+        "--flavor",
+        "production",
+        "--target",
+        "lib/main_production.dart",
+        "--dart-define-from-file=config/prod.json"
+      ]
     }
   ]
 }

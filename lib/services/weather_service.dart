@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:http/http.dart' as http;
@@ -25,9 +25,10 @@ class WeatherService {
       double lat = munroState.selectedMunro!.lat;
       double long = munroState.selectedMunro!.lng;
       String metric = settingsState.metricTemperature ? 'metric' : 'imperial';
+      String apiKey = AppConfig.fromEnvironment().weatherApiKey;
 
       String url =
-          'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$long&exclude=minutely,hourly,alerts&appid=${dotenv.env['WEATHER_API_KEY']}&units=$metric';
+          'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$long&exclude=minutely,hourly,alerts&appid=$apiKey&units=$metric';
       // Make the request
       var response = await http.get(Uri.parse(url));
 
