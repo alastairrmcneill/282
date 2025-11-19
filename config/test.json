@@ -1,9 +1,0 @@
-{
-  "APP_ENV": "dev",
-  "WEATHER_API_KEY": "56fa8bb7e86c901357ae141e9c192643",
-  "MIXPANEL_TOKEN": "883b6c76f333637c8d85b499ca6ba1ec",
-  "MAPBOX_TOKEN": "pk.eyJ1IjoiYWxhc3RhaXJtOTQiLCJhIjoiY205NnB4Y2ZhMWJ3OTJscXRjMHM5Y2pxYSJ9.mxTH8fIIZlYQKjnG3APolw",
-  "SUPABASE_URL": "https://pqgaczyxzxopkgyjqudk.supabase.co",
-  "SUPABASE_ANON": "sb_publishable_pGGXqmWNoVcTo_PqwOTZ8A_irKECPhS",
-  "SENTRY_DSN": "https://bfa467006bce072639aca5c3a7474f3c@o4506950554353664.ingest.us.sentry.io/4506950555664384"
-}
