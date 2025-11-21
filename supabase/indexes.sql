@@ -69,6 +69,7 @@ CREATE INDEX CONCURRENTLY mv_post_card_author_created
 REFRESH MATERIALIZED VIEW CONCURRENTLY mv_post_card;
 
 -- run every minute
+CREATE EXTENSION IF NOT EXISTS pg_cron;
 SELECT cron.schedule('refresh_mv_post_card_every_min',
                      '*/1 * * * *',
                      $$ REFRESH MATERIALIZED VIEW CONCURRENTLY mv_post_card; $$);

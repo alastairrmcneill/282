@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/config/app_config.dart';
 
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -91,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
             },
             title: Text('Bulk Munro Update'),
           ),
-          flavorState.flavor == "Development"
+          flavorState.environment == AppEnvironment.dev
               ? ListTile(
                   onTap: () async {
                     FirebaseMessaging _messaging = FirebaseMessaging.instance;

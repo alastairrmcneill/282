@@ -1,14 +1,12 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:two_eight_two/services/shared_preferences_service.dart';
 
 class AnalyticsService {
   static Mixpanel? mixpanel;
 
-  static Future<void> init() async {
+  static Future<void> init(String mixpanelToken) async {
     // Once you've called this method once, you can access `mixpanel` throughout the rest of your application.
-    String token = dotenv.env['MIXPANEL_TOKEN'] ?? "";
-    mixpanel = await Mixpanel.init(token, trackAutomaticEvents: true);
+    mixpanel = await Mixpanel.init(mixpanelToken, trackAutomaticEvents: true);
   }
 
   static Future<void> logEvent({

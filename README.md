@@ -13,10 +13,15 @@ Are you bagging all 282 munros in Scotland? Are you wanting to see what mountain
 
 Email alastair.r.mcneill@gmail.com for support on this app.
 
-## Getting Started
+## How to contribute
 
-1. Clone repo
-2. Add Google-Info.plist files to ios>config
-3. Add Google API to AppDelegate.swift
-4. Add Google-Services.json files to android>app>src>development and production
-5. Update AndroidManifest.xml to include google API
+Contributions to this project are welcome!
+
+If you want to contribute, please read the [contributing guide](./CONTRIBUTING.md).
+
+## Releasing
+
+Only for project owner.
+
+1. Bump the pubspec.yaml version number. This can be in a PR making a change or a separate PR. Use semantic versioning to determine which part to increment. The version number after the + should also be incremented. For example 0.3.3+20 with a patch should become 0.3.4+21.
+2. Merge into main

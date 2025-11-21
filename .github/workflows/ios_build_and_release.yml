@@ -34,12 +34,15 @@ jobs:
         run: |
           echo "${{ secrets.IOS_APP_DELEGATE_BASE64 }}" | base64 --decode > ios/Runner/AppDelegate.swift
 
-      - name: Decode .env file
-        run: echo "${{ secrets.DOT_ENV_BASE_64 }}" | base64 --decode > .env
+      - name: Decode prod.json file
+        run: echo "${{ secrets.PROD_CONFIG_BASE_64 }}" | base64 --decode > config/prod.json
+
+      - name: Decode branch-config.json file
+        run: echo "${{ secrets.BRANCH_CONFIG_BASE_64 }}" | base64 --decode > assets/branch-config.json
 
       - uses: cedvdb/action-flutter-build-ios@v1
         with:
-          build-cmd: flutter build ipa --release --flavor production --target=lib/main_production.dart --export-options-plist=ios/GithubActionsExportOptions.plist
+          build-cmd: flutter build ipa --release --flavor production --target=lib/main.dart --dart-define-from-file=config/prod.json --export-options-plist=ios/GithubActionsExportOptions.plist
           certificate-base64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
           certificate-password: ${{ secrets.IOS_P12_PASSWORD }}
           provisioning-profile-base64: ${{ secrets.IOS_MOBILE_PROVISIONING_BASE_64 }}
