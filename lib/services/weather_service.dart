@@ -48,7 +48,7 @@ class WeatherService {
         // Log the error
         Log.error("Error fetching weather data: ${jsonDecode(response.body)}");
         weatherState.setError = Error(
-          code: jsonDecode(response.body),
+          code: "API_ERROR_${response.statusCode}",
           message: "There was an error fetching the weather data.",
         );
 
