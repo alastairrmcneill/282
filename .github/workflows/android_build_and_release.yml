@@ -39,6 +39,9 @@ jobs:
       - name: Decode AndroidManifest.xml
         run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
 
+      - name: Decode branch-config.json file
+        run: echo "${{ secrets.BRANCH_CONFIG_BASE_64 }}" | base64 --decode > assets/branch-config.json
+
       - name: Decode google sign in files
         run: |
           echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_1_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_1_FILE_PATH }}

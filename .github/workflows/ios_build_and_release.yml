@@ -37,6 +37,9 @@ jobs:
       - name: Decode prod.json file
         run: echo "${{ secrets.PROD_CONFIG_BASE_64 }}" | base64 --decode > config/prod.json
 
+      - name: Decode branch-config.json file
+        run: echo "${{ secrets.BRANCH_CONFIG_BASE_64 }}" | base64 --decode > assets/branch-config.json
+
       - uses: cedvdb/action-flutter-build-ios@v1
         with:
           build-cmd: flutter build ipa --release --flavor production --target=lib/main.dart --dart-define-from-file=config/prod.json --export-options-plist=ios/GithubActionsExportOptions.plist
