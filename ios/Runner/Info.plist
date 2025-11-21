@@ -70,8 +70,6 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
-		<key>branch_key</key>
-		<string>key_live_dEuikc8s8YiZzyQpsEd5LcmjEuouBy6b</string>
 		<key>branch_app_domain</key>
 		<string>282.app.link</string>
 		<key>BranchURI</key>

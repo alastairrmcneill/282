@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -13,9 +14,9 @@ final navigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<HomeScreenState> homeScreenKey = GlobalKey<HomeScreenState>();
 
 class App extends StatelessWidget {
-  final String flavor;
+  final AppEnvironment environment;
 
-  const App({super.key, required this.flavor});
+  const App({super.key, required this.environment});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,7 @@ class App extends StatelessWidget {
           create: (_) => SettingsState(),
         ),
         ChangeNotifierProvider<FlavorState>(
-          create: (_) => FlavorState(flavor),
+          create: (_) => FlavorState(environment),
         ),
         ChangeNotifierProvider<LikesState>(
           create: (_) => LikesState(),
@@ -108,7 +109,7 @@ class App extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: flavor == "Development",
+        debugShowCheckedModeBanner: environment != AppEnvironment.prod,
         theme: MyTheme.lightTheme,
         navigatorKey: navigatorKey,
         navigatorObservers: [appRouteObserver],

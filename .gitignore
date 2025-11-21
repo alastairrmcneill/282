@@ -60,3 +60,5 @@ app.*.map.json
 functions/prod-81998-firebase-adminsdk-jx7qx-97f185bbac.json
 functions/firebase-admin.txt
 config/prod.json
+config/dev.json
+assets/branch-config.json

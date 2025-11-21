@@ -12,32 +12,33 @@ import 'package:two_eight_two/support/theme.dart';
 
 main() async {
   SentryWidgetsFlutterBinding.ensureInitialized();
+
   final config = AppConfig.fromEnvironment();
   print("🚀 ~ main ~ config: ${config.toString()}");
   await Firebase.initializeApp();
+
   await PushNotificationService.initPushNotificaitons();
   await RemoteConfigService.init();
   await AnalyticsService.init(config.mixpanelToken);
-  await DeepLinkService.initBranchLinks(flavor: "Production", navigatorKey: navigatorKey);
+  await DeepLinkService.initBranchLinks(flavor: config.env, navigatorKey: navigatorKey);
   FlutterError.onError = (FlutterErrorDetails details) => Log.fatal(details);
   MapboxOptions.setAccessToken(config.mapboxToken);
   await Supabase.initialize(
     url: config.supabaseUrl,
     anonKey: config.supabaseAnonKey,
-    accessToken: () async => await FirebaseAuth.instance.currentUser?.getIdToken(false),
+    accessToken: () async => FirebaseAuth.instance.currentUser?.getIdToken(false),
   );
 
   await FirebaseAuth.instance.currentUser?.getIdToken(true);
-
   await SentryFlutter.init(
     (options) {
       options.dsn = config.sentryDsn;
       options.tracesSampleRate = 1.0;
-      options.environment = "Prod";
+      options.environment = config.env == AppEnvironment.prod ? "Prod" : "Dev";
       options.attachScreenshot = true;
       options.enableNativeCrashHandling = true;
     },
-    appRunner: () => runApp(App(flavor: "Production")),
+    appRunner: () => runApp(App(environment: config.env)),
   );
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

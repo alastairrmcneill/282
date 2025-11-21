@@ -30,8 +30,8 @@ jobs:
       - name: Decode Android key properties
         run: echo "${{ secrets.ANDROID_KEY_PROPERTIES_BASE_64 }}" | base64 --decode > android/key.properties
 
-      - name: Decode .env file
-        run: echo "${{ secrets.DOT_ENV_BASE_64 }}" | base64 --decode > .env
+      - name: Decode prod.json file
+        run: echo "${{ secrets.PROD_CONFIG_BASE_64 }}" | base64 --decode > config/prod.json
 
       - name: Decode google-services.json
         run: echo "${{ secrets.ANDROID_GOOGLE_SERVICES_JSON_BASE_64 }}" | base64 --decode > android/app/google-services.json
@@ -49,7 +49,7 @@ jobs:
         run: flutter pub get
 
       - name: Build aab
-        run: flutter build appbundle --flavor production --target lib/main_production.dart
+        run: flutter build appbundle --flavor production --target lib/main.dart --dart-define-from-file=config/prod.json
 
       - name: Upload generated aab to the artifacts
         uses: actions/upload-artifact@v4
