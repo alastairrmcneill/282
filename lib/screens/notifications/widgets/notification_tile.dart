@@ -66,8 +66,9 @@ class NotificationTile extends StatelessWidget {
           // Navigate to the comments page of the post
           // Load in post
           commentsState.reset();
+          // TODO: Get post here too and set it as selected post
           commentsState.setPostId = notification.postId!;
-          CommentsService.getPostComments(context);
+          commentsState.getPostComments(context);
           Navigator.of(context).pushNamed(CommentsScreen.route);
         } else if (notification.type == "follow") {
           // Navigate to the user post

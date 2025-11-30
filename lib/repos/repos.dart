@@ -1,4 +1,4 @@
-export 'comments_database.dart';
+export 'comments_repository.dart';
 export 'following_relationships_database.dart';
 export 'munro_repository.dart';
 export 'posts_database.dart';

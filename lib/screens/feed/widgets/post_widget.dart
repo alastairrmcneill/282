@@ -140,7 +140,7 @@ class PostWidget extends StatelessWidget {
                           onTap: () {
                             commentsState.reset();
                             commentsState.setPostId = post.uid;
-                            CommentsService.getPostComments(context);
+                            commentsState.getPostComments(context);
                             Navigator.of(context).pushNamed(CommentsScreen.route);
                           },
                           child: const Icon(CupertinoIcons.chat_bubble, size: 22),

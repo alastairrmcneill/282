@@ -26,7 +26,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           commentsState.status != CommentsStatus.paginating) {
-        CommentsService.paginatePostComments(context);
+        commentsState.paginatePostComments();
       }
     });
     super.initState();
@@ -80,6 +80,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   Widget _buildScreen(BuildContext context, CommentsState commentsState) {
     LikesState likesState = Provider.of<LikesState>(context);
+    CommentsState commentsState = context.read<CommentsState>();
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -89,7 +91,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               flex: 1,
               child: RefreshIndicator(
                 onRefresh: () async {
-                  CommentsService.getPostComments(context);
+                  await commentsState.getPostComments(context);
                 },
                 child: ListView(
                   controller: _scrollController,

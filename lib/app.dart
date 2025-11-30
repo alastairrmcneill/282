@@ -38,6 +38,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => BlockedUserRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => CommentsRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -68,7 +71,10 @@ class App extends StatelessWidget {
           create: (_) => FeedState(),
         ),
         ChangeNotifierProvider<CommentsState>(
-          create: (_) => CommentsState(),
+          create: (ctx) => CommentsState(
+            ctx.read<CommentsRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<UserLikeState>(
           create: (_) => UserLikeState(),

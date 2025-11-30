@@ -18,13 +18,14 @@ class CommentTile extends StatelessWidget {
     required Comment comment,
     required UserState userState,
   }) {
+    final commentsState = context.read<CommentsState>();
     List<MenuItem> menuItems = [];
     if (comment.authorId == userState.currentUser?.uid) {
       menuItems = [
         MenuItem(
           text: 'Delete',
           onTap: () {
-            CommentsService.deleteComment(context, comment: comment);
+            commentsState.deleteComment(comment: comment);
           },
         ),
       ];
