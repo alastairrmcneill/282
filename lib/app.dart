@@ -41,6 +41,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => CommentsRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => FeedbackRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,

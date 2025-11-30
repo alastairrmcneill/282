@@ -48,7 +48,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     });
   }
 
-  void _submit(int surveyNumber) async {
+  void _submit(FeedbackRepository repository, int surveyNumber) async {
     final user = Provider.of<AppUser?>(context, listen: false);
     String response1 = _feedbackController1.text;
     String response2 = _feedbackController2.text;
@@ -72,13 +72,15 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     if (response1.isEmpty && response2.isEmpty) {
       return;
     }
-    await FeedbackDatabase.create(context, feedback: feedback);
+    await repository.create(feedback: feedback);
 
     showSnackBar(context, "Thank you for your feedback! 🙏");
   }
 
   void _showSurveyDialog(BuildContext context, {required int surveyNumber}) {
+    final feedbackRepository = context.read<FeedbackRepository>();
     AnalyticsService.logSurveyShown();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -146,7 +148,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        _submit(surveyNumber);
+                        _submit(feedbackRepository, surveyNumber);
                         Navigator.of(context).pop();
                       },
                       child: const Text('Submit'),
