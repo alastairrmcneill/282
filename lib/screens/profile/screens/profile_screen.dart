@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             context,
             message: "Are you sure you want to block this user?",
             onConfirm: () async {
-              await BlockedUserService.blockUser(context, userId: profileState.profile?.id ?? "");
+              await context.read<UserState>().blockUser(userId: profileState.profile?.id ?? "");
               Navigator.of(context).pop();
             },
           );

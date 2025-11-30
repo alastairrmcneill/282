@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
@@ -62,14 +61,15 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   void loadData() async {
+    MunroState munroState = context.read<MunroState>();
     incompleteIcon = await _loadMarker('assets/munro_incomplete.png');
     completeIcon = await _loadMarker('assets/munro_complete.png');
     selectedIcon = await _loadMarker('assets/munro_selected.png');
 
     if (mounted) {
-      await MunroDatabase.getMunroData(context).then(
-        (value) => setState(() => loading = false),
-      );
+      await munroState.loadMunros().then(
+            (value) => setState(() => loading = false),
+          );
     }
   }
 

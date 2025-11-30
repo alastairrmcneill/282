@@ -10,6 +10,7 @@ class ReviewService {
     // Create review
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
@@ -28,7 +29,7 @@ class ReviewService {
         // Upload to database
 
         await ReviewDatabase.create(context, review: review);
-        MunroService.loadMunroData(context);
+        munroState.loadMunros();
       }
 
       createReviewState.setStatus = CreateReviewStatus.loaded;
@@ -44,6 +45,7 @@ class ReviewService {
   static Future editReview(BuildContext context) async {
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
     ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
@@ -58,7 +60,7 @@ class ReviewService {
 
       // Send to database
       await ReviewDatabase.update(context, review: newReview);
-      MunroService.loadMunroData(context);
+      munroState.loadMunros();
 
       reviewsState.replaceReview = newReview;
       createReviewState.setStatus = CreateReviewStatus.loaded;
@@ -132,12 +134,13 @@ class ReviewService {
   static Future deleteReview(BuildContext context, {required Review review}) async {
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
     ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
+    MunroState munroState = Provider.of<MunroState>(context, listen: false);
 
     try {
       createReviewState.setStatus = CreateReviewStatus.loading;
 
       await ReviewDatabase.delete(context, uid: review.uid!);
-      MunroService.loadMunroData(context);
+      munroState.loadMunros();
 
       reviewsState.removeReview(review);
       createReviewState.setStatus = CreateReviewStatus.loaded;

@@ -114,13 +114,12 @@ class GroupFilterService {
     UserState userState = Provider.of<UserState>(context, listen: false);
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
-
+    final munroCompletionRepository = context.read<MunroCompletionsRepository>();
     AppUser? currentUser = userState.currentUser;
 
     if (currentUser == null) return;
 
-    List<MunroCompletion> munroCompletions = await MunroCompletionsDatabase.getMunroCompletionsFromUserList(
-      context,
+    List<MunroCompletion> munroCompletions = await munroCompletionRepository.getMunroCompletionsFromUserList(
       userIds: [...groupFilterState.selectedFriendsUids, currentUser.uid ?? ''],
     );
 

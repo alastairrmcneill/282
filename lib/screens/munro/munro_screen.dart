@@ -29,10 +29,11 @@ class _MunroScreenState extends State<MunroScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MunroState munroState = Provider.of<MunroState>(context);
     return Scaffold(
       floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
-        onRefresh: () => MunroService.loadMunroData(context),
+        onRefresh: () => munroState.loadMunros(),
         child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 
@@ -36,6 +38,8 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
 
   @override
   Widget build(BuildContext context) {
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
+    BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -92,7 +96,8 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                           ? ElevatedButton(
                               onPressed: () async {
                                 AchievementService.setMunroChallenge(context);
-                                MunroCompletionService.bulkUpdateMunros(context);
+                                munroCompletionState.addBulkCompletions(
+                                    munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList);
                                 SharedPreferencesService.setShowBulkMunroDialog(false);
                                 AnalyticsService.logOnboardingCompleted();
                                 Navigator.pushNamedAndRemoveUntil(

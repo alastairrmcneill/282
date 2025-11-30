@@ -38,6 +38,7 @@ class AuthService {
 
   static Future registerWithEmail(BuildContext context, {required RegistrationData registrationData}) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    final userState = context.read<UserState>();
     startCircularProgressOverlay(context);
     try {
       // Setup auth user
@@ -70,7 +71,7 @@ class AuthService {
         profileVisibility: Privacy.public,
       );
 
-      await UserService.createUser(context, appUser: appUser);
+      await userState.createUser(appUser: appUser);
 
       AnalyticsService.logSignUp(method: "email", platform: isIOS ? "iOS" : "Android");
 
@@ -98,6 +99,7 @@ class AuthService {
     required String password,
   }) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    UserState userState = context.read<UserState>();
     startCircularProgressOverlay(context);
 
     try {
@@ -109,7 +111,7 @@ class AuthService {
       await _auth.currentUser!.getIdToken(true);
 
       // Fetch database detail
-      await UserService.readCurrentUser(context);
+      await userState.readCurrentUser();
 
       // Save to a provider
 
@@ -153,7 +155,7 @@ class AuthService {
 
   static Future signOut(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    UserState userState = context.read<UserState>();
     startCircularProgressOverlay(context);
 
     try {
@@ -163,7 +165,7 @@ class AuthService {
       AppUser? appUser = userState.currentUser;
       if (appUser != null) {
         AppUser newAppUser = appUser.copyWith(fcmToken: "");
-        UserService.updateUser(context, appUser: newAppUser);
+        userState.updateUser(appUser: newAppUser);
       }
 
       resetAppData(context);
@@ -184,6 +186,8 @@ class AuthService {
 
   static Future signInWithApple(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    UserState userState = context.read<UserState>();
+
     try {
       startCircularProgressOverlay(context);
       final appleIdCredential = await SignInWithApple.getAppleIDCredential(
@@ -267,7 +271,7 @@ class AuthService {
         profileVisibility: Privacy.public,
       );
 
-      await UserService.createUser(context, appUser: appUser);
+      await userState.createUser(appUser: appUser);
 
       // Only log as sign-up if it's actually a new user
       if (isNewUser) {
@@ -301,6 +305,8 @@ class AuthService {
 
   static Future signInWithGoogle(BuildContext context) async {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    UserState userState = context.read<UserState>();
+
     startCircularProgressOverlay(context);
 
     try {
@@ -359,7 +365,7 @@ class AuthService {
         profileVisibility: Privacy.public,
       );
 
-      await UserService.createUser(context, appUser: appUser);
+      await userState.createUser(appUser: appUser);
 
       AnalyticsService.logSignUp(method: "google", platform: isIOS ? "iOS" : "Android");
 
@@ -415,8 +421,10 @@ class AuthService {
   }
 
   static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
+    UserState userState = context.read<UserState>();
+
     try {
-      await UserService.deleteUser(context, appUser: appUser);
+      await userState.deleteUser(appUser: appUser);
       await _auth.currentUser?.delete();
 
       // Navigate to the right place
@@ -456,15 +464,15 @@ class AuthService {
     bool showInAppOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
 
     if (showInAppOnboarding) {
-      await UserService.readCurrentUser(context);
+      UserState userState = context.read<UserState>();
+      await userState.readCurrentUser();
 
       BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
-      UserState userState = Provider.of<UserState>(context, listen: false);
       MunroState munroState = Provider.of<MunroState>(context, listen: false);
       AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
       MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
 
-      await MunroCompletionService.getUserMunroCompletions(context);
+      await munroCompletionState.loadUserMunroCompletions();
 
       bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
       munroState.setFilterString = "";

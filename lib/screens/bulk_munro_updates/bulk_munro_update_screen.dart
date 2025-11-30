@@ -25,6 +25,8 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
+    BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context);
 
     print("Building BulkMunroUpdateScreen");
     print("Filtered Munro List Length: ${munroState.filteredMunroList.length}");
@@ -35,7 +37,10 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              MunroCompletionService.bulkUpdateMunros(context);
+
+              munroCompletionState.addBulkCompletions(
+                munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList,
+              );
             },
             child: const Text("Save"),
           ),

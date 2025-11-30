@@ -14,6 +14,7 @@ class PostService {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
 
     try {
       createPostState.setStatus = CreatePostStatus.loading;
@@ -82,8 +83,7 @@ class PostService {
       );
 
       // Complete munros
-      await MunroCompletionService.markMunrosAsCompleted(
-        context,
+      await munroCompletionState.markMunrosAsCompleted(
         munros: munros,
         summitDateTime: summitDateTime,
         postId: postId,
@@ -111,6 +111,7 @@ class PostService {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
     try {
       createPostState.setStatus = CreatePostStatus.loading;
 
@@ -153,15 +154,13 @@ class PostService {
       List<Munro> addedMunros =
           munroState.munroList.where((m) => createPostState.addedMunroIds.contains(m.id)).toList();
 
-      MunroCompletionService.markMunrosAsCompleted(
-        context,
+      munroCompletionState.markMunrosAsCompleted(
         munros: addedMunros,
         summitDateTime: newPost.summitedDateTime!,
         postId: post.uid,
       );
 
-      MunroCompletionService.removeMunroCompletions(
-        context,
+      munroCompletionState.removeCompletionsByMunroIdsAndPost(
         munroIds: createPostState.deletedMunroIds.toList(),
         postId: post.uid,
       );

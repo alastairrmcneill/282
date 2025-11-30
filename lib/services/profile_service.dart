@@ -64,9 +64,9 @@ class ProfileService {
 
   static Future getProfileMunroCompletions(BuildContext context, {required String userId}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    final munroCompletionsRepository = context.read<MunroCompletionsRepository>();
     try {
-      final munroCompletions = await MunroCompletionsDatabase.getUserMunroCompletions(
-        context,
+      final munroCompletions = await munroCompletionsRepository.getUserMunroCompletions(
         userId: userId,
       );
       profileState.setMunroCompletions = munroCompletions;

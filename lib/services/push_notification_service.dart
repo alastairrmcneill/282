@@ -16,7 +16,7 @@ class PushNotificationService {
   static final _messaging = FirebaseMessaging.instance;
 
   static Future initNotifications(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    UserState userState = context.read<UserState>();
 
     NotificationSettings result = await _messaging.requestPermission();
 
@@ -37,7 +37,7 @@ class PushNotificationService {
       if (userState.currentUser != null && token != null) {
         AppUser appUser = userState.currentUser!;
         AppUser newAppUser = appUser.copyWith(fcmToken: token);
-        await UserService.updateUser(context, appUser: newAppUser);
+        await userState.updateUser(appUser: newAppUser);
       }
     }
 
@@ -101,7 +101,7 @@ class PushNotificationService {
       if (appUser.fcmToken == token) return;
 
       AppUser newAppUser = appUser.copyWith(fcmToken: token);
-      await UserService.updateUser(context, appUser: newAppUser);
+      await userState.updateUser(appUser: newAppUser);
     } catch (e) {
       print("Error updating FCM token: $e");
       // Continue without updating token - don't interrupt user flow
@@ -109,7 +109,7 @@ class PushNotificationService {
   }
 
   static Future applyFCMToken(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    UserState userState = context.read<UserState>();
 
     NotificationSettings result = await _messaging.requestPermission();
 
@@ -124,7 +124,7 @@ class PushNotificationService {
         if (userState.currentUser != null && token != null) {
           AppUser appUser = userState.currentUser!;
           AppUser newAppUser = appUser.copyWith(fcmToken: token);
-          await UserService.updateUser(context, appUser: newAppUser);
+          await userState.updateUser(appUser: newAppUser);
         }
       } catch (e) {
         print("Error applying FCM token: $e");
@@ -134,13 +134,13 @@ class PushNotificationService {
   }
 
   static Future removeFCMToken(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    UserState userState = context.read<UserState>();
 
     if (userState.currentUser != null) {
       AppUser appUser = userState.currentUser!;
       if (appUser.fcmToken != null) {
         AppUser newAppUser = appUser.copyWith(fcmToken: "");
-        await UserService.updateUser(context, appUser: newAppUser);
+        await userState.updateUser(appUser: newAppUser);
       }
     }
   }

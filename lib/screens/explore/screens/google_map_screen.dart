@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -38,14 +37,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   }
 
   void loadData() async {
-    showTerrain = await SharedPreferencesService.getMapTerrain();
-    await MunroDatabase.getMunroData(context).then(
-      (value) {
-        if (mounted) {
-          setState(() => loading = false);
-        }
-      },
-    );
+    SharedPreferencesService.getMapTerrain().then((value) => setState(() {
+          showTerrain = value;
+          loading = false;
+        }));
   }
 
   Set<Marker> getMarkers({required MunroState munroState, required List<MunroCompletion> completedMunros}) {

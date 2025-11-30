@@ -49,11 +49,11 @@ class DeepLinkService {
 
     final BuildContext context = navigatorKey.currentContext!;
     final MunroState munroState = Provider.of<MunroState>(context, listen: false);
-
+    final UserState userState = context.read<UserState>();
     try {
       // Load necessary data
       await SettingsSerivce.loadSettings(context);
-      await UserService.readCurrentUser(context);
+      await userState.readCurrentUser();
       await SavedListService.readUserSavedLists(context);
 
       munroState.setSelectedMunroId = munroId;

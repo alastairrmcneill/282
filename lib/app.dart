@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -23,12 +25,29 @@ class App extends StatelessWidget {
     AnalyticsService.logOpen();
     return MultiProvider(
       providers: [
+        // DB layer
+        Provider(
+          create: (_) => MunroRepository(Supabase.instance.client),
+        ),
+        Provider(
+          create: (_) => MunroCompletionsRepository(Supabase.instance.client),
+        ),
+        Provider(
+          create: (_) => UserRepository(Supabase.instance.client),
+        ),
+        Provider(
+          create: (_) => BlockedUserRepository(Supabase.instance.client),
+        ),
+
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
           initialData: null,
         ),
         ChangeNotifierProvider<UserState>(
-          create: (_) => UserState(),
+          create: (ctx) => UserState(
+            ctx.read<UserRepository>(),
+            ctx.read<BlockedUserRepository>(),
+          ),
         ),
         ChangeNotifierProvider<NavigationState>(
           create: (_) => NavigationState(),
@@ -97,12 +116,15 @@ class App extends StatelessWidget {
           create: (_) => GroupFilterState(),
         ),
         ChangeNotifierProvider<MunroCompletionState>(
-          create: (_) => MunroCompletionState(),
+          create: (ctx) => MunroCompletionState(
+            ctx.read<MunroCompletionsRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
-          create: (_) => MunroState(),
-          update: (_, completions, munroState) {
-            munroState ??= MunroState();
+          create: (ctx) => MunroState(ctx.read<MunroRepository>()),
+          update: (ctx, completions, munroState) {
+            munroState ??= MunroState(ctx.read<MunroRepository>());
             munroState.syncCompletedIds(completions.completedMunroIds);
             return munroState;
           },

@@ -58,11 +58,12 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future _loadData() async {
     await SettingsSerivce.loadSettings(context);
-    await UserService.readCurrentUser(context);
-    MunroService.loadMunroData(context);
-    MunroCompletionService.getUserMunroCompletions(context);
+    await context.read<UserState>().readCurrentUser();
+
+    await context.read<MunroState>().loadMunros();
+    await context.read<MunroCompletionState>().loadUserMunroCompletions();
     AchievementService.getUserAchievements(context);
-    BlockedUserService.loadBlockedUsers(context);
+    context.read<UserState>().loadBlockedUsers();
     SavedListService.readUserSavedLists(context);
     PushNotificationService.checkAndUpdateFCMToken(context);
   }
@@ -120,7 +121,7 @@ class HomeScreenState extends State<HomeScreen> {
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
 
     return Scaffold(
       body: _screens[_currentIndex],

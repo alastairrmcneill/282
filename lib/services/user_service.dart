@@ -3,74 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/profile_database.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class UserService {
-  static Future createUser(BuildContext context, {required AppUser appUser}) async {
-    try {
-      await UserDatabase.create(context, appUser: appUser);
-    } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-    }
-  }
-
-  static Future updateUser(BuildContext context, {required AppUser appUser}) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    try {
-      await UserDatabase.update(context, appUser: appUser);
-      userState.setCurrentUser = appUser;
-    } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-    }
-  }
-
-  static Future readCurrentUser(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    try {
-      userState.setStatus = UserStatus.loading;
-
-      String? uid = AuthService.currentUserId;
-      if (uid == null) {
-        userState.setStatus = UserStatus.loaded;
-        return;
-      }
-
-      AppUser? appUser = await UserDatabase.readUserFromUid(context, uid: uid);
-
-      userState.setCurrentUser = appUser;
-
-      userState.setStatus = UserStatus.loaded;
-    } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      userState.setError = Error(code: error.toString(), message: "There was an error fetching the account.");
-    }
-  }
-
-  static Future deleteUser(BuildContext context, {required AppUser appUser}) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    try {
-      await UserDatabase.deleteUserWithUID(context, uid: appUser.uid!);
-      userState.setCurrentUser = null;
-    } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
-      userState.setError = Error(code: error.toString(), message: "There was an error deleting the account.");
-    }
-  }
-
   static Future<List<AppUser>> searchUsers(
     BuildContext context, {
     required String searchTerm,
   }) async {
+    UserRepository repo = context.read<UserRepository>();
     UserState userState = Provider.of<UserState>(context, listen: false);
     List<String> blockedUsers = userState.blockedUsers;
-
     try {
-      List<AppUser> users = await UserDatabase.readUsersByName(
-        context,
+      List<AppUser> users = await repo.readUsersByName(
         searchTerm: searchTerm,
         excludedAuthorIds: blockedUsers,
         offset: 0,
@@ -84,17 +31,16 @@ class UserService {
   }
 
   static Future updateProfileVisibility(BuildContext context, String newValue) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    AppUser? currentUser = userState.currentUser;
-    if (currentUser == null) return;
+    final userState = context.read<UserState>();
+    if (userState.currentUser == null) return;
 
-    AppUser updatedUser = currentUser.copyWith(profileVisibility: newValue);
-    UserService.updateUser(context, appUser: updatedUser);
+    AppUser updatedUser = userState.currentUser!.copyWith(profileVisibility: newValue);
+    userState.updateUser(appUser: updatedUser);
   }
 
   static Future updateProfile(BuildContext context, {required AppUser appUser, File? profilePicture}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
-
+    UserState userState = context.read<UserState>();
     try {
       startCircularProgressOverlay(context);
       // Upload new profile picture
@@ -108,7 +54,7 @@ class UserService {
       await AuthService.updateAuthUser(context, appUser: appUser);
 
       // Update user database
-      await UserService.updateUser(context, appUser: appUser);
+      await userState.updateUser(appUser: appUser);
 
       // Update profile
       profileState.setProfile = await ProfileDatabase.getProfileFromUserId(userId: appUser.uid!);
