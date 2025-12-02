@@ -5,7 +5,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/log_service.dart';
 
 class FollowersState extends ChangeNotifier {
-  final FollowingRelationshipsRepository _repository;
+  final FollowersRepository _repository;
   final UserState _userState;
   final ProfileState _profileState;
   FollowersState(

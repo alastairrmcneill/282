@@ -48,10 +48,9 @@ class ProfileService {
     required String currentUserId,
     required String profileUserId,
   }) async {
-    final FollowingRelationshipsRepository followingRelationshipsRepository =
-        context.read<FollowingRelationshipsRepository>();
+    final FollowersRepository followersRepository = context.read<FollowersRepository>();
     try {
-      final relationshipExists = await followingRelationshipsRepository.relationshipExists(
+      final relationshipExists = await followersRepository.relationshipExists(
         sourceId: currentUserId,
         targetId: profileUserId,
       );

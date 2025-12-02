@@ -1,9 +1,9 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/models/models.dart';
 
-class FollowingRelationshipsRepository {
+class FollowersRepository {
   final SupabaseClient _db;
-  FollowingRelationshipsRepository(this._db);
+  FollowersRepository(this._db);
 
   SupabaseQueryBuilder get _table => _db.from('followers');
   SupabaseQueryBuilder get _view => _db.from('vu_followers');

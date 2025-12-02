@@ -45,7 +45,7 @@ class App extends StatelessWidget {
           create: (_) => FeedbackRepository(Supabase.instance.client),
         ),
         Provider(
-          create: (_) => FollowingRelationshipsRepository(Supabase.instance.client),
+          create: (_) => FollowersRepository(Supabase.instance.client),
         ),
 
         StreamProvider<AppUser?>.value(
@@ -66,7 +66,7 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<FollowersState>(
           create: (ctx) => FollowersState(
-            ctx.read<FollowingRelationshipsRepository>(),
+            ctx.read<FollowersRepository>(),
             ctx.read<UserState>(),
             ctx.read<ProfileState>(),
           ),
