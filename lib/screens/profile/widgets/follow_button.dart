@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class FollowingButton extends StatelessWidget {
@@ -19,6 +18,7 @@ class FollowingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<AppUser?>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
+    final FollowersState followersState = context.read<FollowersState>();
     if (profile == null) return const SizedBox();
 
     return ElevatedButton(
@@ -28,13 +28,11 @@ class FollowingButton extends StatelessWidget {
           Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
           if (isFollowing) {
-            await FollowingService.unfollowUser(
-              context,
-              profileUserId: profile!.id!,
+            await followersState.unfollowUser(
+              targetUserId: profile!.id!,
             );
           } else {
-            await FollowingService.followUser(
-              context,
+            await followersState.followUser(
               targetUserId: profile!.id!,
             );
           }

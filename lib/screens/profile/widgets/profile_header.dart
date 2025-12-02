@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/profile/widgets/profile_stat.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/screens/profile/screens/screens.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -14,6 +11,7 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProfileState profileState = Provider.of<ProfileState>(context);
+    final followersState = context.read<FollowersState>();
 
     return SafeArea(
       top: true,
@@ -62,8 +60,7 @@ class ProfileHeader extends StatelessWidget {
                         text: "Following",
                         stat: profileState.profile?.followingCount.toString() ?? "0",
                         onTap: () {
-                          FollowingService.loadInitialFollowersAndFollowing(
-                            context,
+                          followersState.loadInitialFollowersAndFollowing(
                             userId: profileState.profile!.id!,
                           );
                           Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
@@ -74,8 +71,7 @@ class ProfileHeader extends StatelessWidget {
                         text: "Followers",
                         stat: profileState.profile?.followersCount.toString() ?? "0",
                         onTap: () {
-                          FollowingService.loadInitialFollowersAndFollowing(
-                            context,
+                          followersState.loadInitialFollowersAndFollowing(
                             userId: profileState.profile!.id!,
                           );
                           Navigator.of(context).pushNamed(FollowersFollowingScreen.route);

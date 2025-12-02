@@ -1,5 +1,5 @@
 export 'comments_repository.dart';
-export 'following_relationships_database.dart';
+export 'following_relationships_repository.dart';
 export 'munro_repository.dart';
 export 'posts_database.dart';
 export 'user_repository.dart';
@@ -10,7 +10,7 @@ export 'saved_list_database.dart';
 export 'munro_pictures_database.dart';
 export 'report_database.dart';
 export 'user_achievements_database.dart';
-export 'feedback_database.dart';
+export 'feedback_repository.dart';
 export 'blocked_user_repository.dart';
 export 'munro_completions_repository.dart';
 export 'saved_list_munro_database.dart';

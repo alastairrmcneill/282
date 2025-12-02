@@ -9,6 +9,8 @@ class GroupFilterService {
   static Future getInitialFriends(BuildContext context, {required String userId}) async {
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    FollowingRelationshipsRepository followingRelationshipsRepository =
+        context.read<FollowingRelationshipsRepository>();
 
     List<String> blockedUsers = userState.blockedUsers;
 
@@ -17,8 +19,7 @@ class GroupFilterService {
     try {
       groupFilterState.setStatus = GroupFilterStatus.loading;
 
-      groupFilterState.setFriends = await FollowingRelationshipsDatabase.getFollowingFromUid(
-        context,
+      groupFilterState.setFriends = await followingRelationshipsRepository.getFollowingFromUid(
         sourceId: userId,
         excludedUserIds: blockedUsers,
       );
@@ -33,6 +34,8 @@ class GroupFilterService {
   static Future search(BuildContext context, {required String query}) async {
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    FollowingRelationshipsRepository followingRelationshipsRepository =
+        context.read<FollowingRelationshipsRepository>();
 
     if (userState.currentUser == null) return;
 
@@ -41,8 +44,7 @@ class GroupFilterService {
       groupFilterState.setStatus = GroupFilterStatus.loading;
 
       // Search
-      List<FollowingRelationship> friends = await FollowingRelationshipsDatabase.searchFollowingByUid(
-        context,
+      List<FollowingRelationship> friends = await followingRelationshipsRepository.searchFollowing(
         sourceId: userState.currentUser?.uid ?? "",
         searchTerm: query,
       );
@@ -59,6 +61,8 @@ class GroupFilterService {
   static Future paginateSearch(BuildContext context, {required String query}) async {
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    FollowingRelationshipsRepository followingRelationshipsRepository =
+        context.read<FollowingRelationshipsRepository>();
 
     if (userState.currentUser == null) return;
 
@@ -66,8 +70,7 @@ class GroupFilterService {
       groupFilterState.setStatus = GroupFilterStatus.paginating;
 
       // Add posts from database
-      List<FollowingRelationship> friends = await FollowingRelationshipsDatabase.searchFollowingByUid(
-        context,
+      List<FollowingRelationship> friends = await followingRelationshipsRepository.searchFollowing(
         sourceId: userState.currentUser?.uid ?? "",
         searchTerm: query.toLowerCase(),
         offset: groupFilterState.friends.length,

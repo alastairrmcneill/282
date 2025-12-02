@@ -52,6 +52,7 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AppUser?>(context, listen: false);
+    final followersState = context.read<FollowersState>();
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     return isCurrentUser
         ? const SizedBox()
@@ -65,9 +66,8 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
                       navigationState.setNavigateToRoute = ProfileTab.route;
                       Navigator.of(context).pushNamed(AuthHomeScreen.route);
                     } else {
-                      FollowingService.unfollowUser(
-                        context,
-                        profileUserId: widget.profileUserId,
+                      followersState.unfollowUser(
+                        targetUserId: widget.profileUserId,
                       );
                       setState(() {
                         following = false;
@@ -86,8 +86,7 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
                       navigationState.setNavigateToRoute = ProfileTab.route;
                       Navigator.of(context).pushNamed(AuthHomeScreen.route);
                     } else {
-                      FollowingService.followUser(
-                        context,
+                      followersState.followUser(
                         targetUserId: widget.profileUserId,
                       );
                       setState(() {
