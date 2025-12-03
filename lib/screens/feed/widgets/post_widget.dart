@@ -113,9 +113,9 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             if (userLikeState.likedPosts.contains(post.uid)) {
-                              LikeService.unLikePost(context, post: post, inFeed: inFeed);
+                              userLikeState.unLikePost(post: post, inFeed: inFeed);
                             } else {
-                              LikeService.likePost(context, post: post, inFeed: inFeed);
+                              userLikeState.likePost(post: post, inFeed: inFeed);
                             }
                           },
                           child: userLikeState.likedPosts.contains(post.uid)
@@ -127,7 +127,7 @@ class PostWidget extends StatelessWidget {
                           onTap: () {
                             likesState.reset();
                             likesState.setPostId = post.uid;
-                            LikeService.getPostLikes(context);
+                            likesState.getPostLikes();
                             Navigator.of(context).pushNamed(LikesScreen.route);
                           },
                           child: Text(

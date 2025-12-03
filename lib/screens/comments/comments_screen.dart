@@ -5,7 +5,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/likes_screen.dart';
 import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsScreen extends StatefulWidget {
@@ -79,8 +78,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, CommentsState commentsState) {
-    LikesState likesState = Provider.of<LikesState>(context);
-    CommentsState commentsState = context.read<CommentsState>();
+    LikesState likesState = context.read<LikesState>();
+    CommentsState commentsState = context.watch<CommentsState>();
 
     return Scaffold(
       appBar: AppBar(),
@@ -147,7 +146,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       onTap: () {
                         likesState.reset();
                         likesState.setPostId = commentsState.postId;
-                        LikeService.getPostLikes(context);
+                        likesState.getPostLikes();
                         Navigator.of(context).pushNamed(LikesScreen.route);
                       },
                       child: Padding(

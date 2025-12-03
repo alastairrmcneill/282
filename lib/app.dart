@@ -47,6 +47,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => FollowersRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => LikesRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -87,7 +90,12 @@ class App extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<UserLikeState>(
-          create: (_) => UserLikeState(),
+          create: (ctx) => UserLikeState(
+            ctx.read<LikesRepository>(),
+            ctx.read<UserState>(),
+            ctx.read<FeedState>(),
+            ctx.read<ProfileState>(),
+          ),
         ),
         ChangeNotifierProvider<NotificationsState>(
           create: (_) => NotificationsState(),
@@ -99,7 +107,10 @@ class App extends StatelessWidget {
           create: (_) => FlavorState(environment),
         ),
         ChangeNotifierProvider<LikesState>(
-          create: (_) => LikesState(),
+          create: (ctx) => LikesState(
+            ctx.read<LikesRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<MunroDetailState>(
           create: (_) => MunroDetailState(),

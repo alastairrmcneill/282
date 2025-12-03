@@ -1,9 +1,9 @@
 export 'comments_repository.dart';
-export 'following_relationships_repository.dart';
+export 'followers_repository.dart';
 export 'munro_repository.dart';
 export 'posts_database.dart';
 export 'user_repository.dart';
-export 'like_database.dart';
+export 'likes_repository.dart';
 export 'notifications_database.dart';
 export 'review_database.dart';
 export 'saved_list_database.dart';

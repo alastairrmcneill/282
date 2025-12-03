@@ -196,6 +196,8 @@ class PostService {
 
   static Future<List<Post>> getProfilePosts(BuildContext context) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    UserLikeState userLikeState = context.read<UserLikeState>();
+
     List<Post> posts = [];
     try {
       // Get posts
@@ -205,8 +207,8 @@ class PostService {
       );
 
       // Check likes
-      LikeService.clearLikedPosts(context);
-      LikeService.getLikedPostIds(context, posts: posts);
+      userLikeState.reset();
+      userLikeState.getLikedPostIds(posts: posts);
 
       return posts;
     } catch (error, stackTrace) {
@@ -218,6 +220,7 @@ class PostService {
 
   static Future paginateProfilePosts(BuildContext context) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    UserLikeState userLikeState = context.read<UserLikeState>();
 
     try {
       profileState.setStatus = ProfileStatus.paginating;
@@ -230,7 +233,7 @@ class PostService {
       );
 
       // Check likes
-      LikeService.getLikedPostIds(context, posts: newPosts);
+      userLikeState.getLikedPostIds(posts: newPosts);
 
       // Set state
       profileState.addPosts = newPosts;
@@ -245,6 +248,8 @@ class PostService {
   static Future getFriendsFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    UserLikeState userLikeState = context.read<UserLikeState>();
+
     if (userState.currentUser == null) {
       // Not logged in
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
@@ -263,8 +268,8 @@ class PostService {
       );
 
       // Check likes
-      LikeService.clearLikedPosts(context);
-      LikeService.getLikedPostIds(context, posts: posts);
+      userLikeState.reset();
+      userLikeState.getLikedPostIds(posts: posts);
 
       posts = posts.where((post) => !blockedUsers.contains(post.authorId)).toList();
 
@@ -282,6 +287,8 @@ class PostService {
   static Future paginateFriendsFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    UserLikeState userLikeState = context.read<UserLikeState>();
+
     if (userState.currentUser == null) {
       // Not logged in
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
@@ -301,7 +308,7 @@ class PostService {
       );
 
       // Check likes
-      LikeService.getLikedPostIds(context, posts: newPosts);
+      userLikeState.getLikedPostIds(posts: newPosts);
 
       feedState.addFriendsPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
@@ -314,6 +321,8 @@ class PostService {
   static Future getGlobalFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    UserLikeState userLikeState = context.read<UserLikeState>();
+
     if (userState.currentUser == null) {
       // Not logged in
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
@@ -329,8 +338,8 @@ class PostService {
       );
 
       // Check likes
-      LikeService.clearLikedPosts(context);
-      LikeService.getLikedPostIds(context, posts: posts);
+      userLikeState.reset();
+      userLikeState.getLikedPostIds(posts: posts);
 
       feedState.setGlobalPosts = posts;
       feedState.setStatus = FeedStatus.loaded;
@@ -346,6 +355,8 @@ class PostService {
   static Future paginateGlobalFeed(BuildContext context) async {
     FeedState feedState = Provider.of<FeedState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    UserLikeState userLikeState = context.read<UserLikeState>();
+
     if (userState.currentUser == null) {
       // Not logged in
       feedState.setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
@@ -364,7 +375,7 @@ class PostService {
       );
 
       // Check likes
-      LikeService.getLikedPostIds(context, posts: newPosts);
+      userLikeState.getLikedPostIds(posts: newPosts);
 
       feedState.addGlobalPosts = newPosts;
       feedState.setStatus = FeedStatus.loaded;
