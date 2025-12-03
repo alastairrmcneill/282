@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart' show UserState;
+import 'package:two_eight_two/services/services.dart';
 
 class ProfileState extends ChangeNotifier {
+  final MunroPicturesRepository _munroPicturesRepository;
+  final UserState _userState;
+  ProfileState(this._munroPicturesRepository, this._userState);
+
   ProfileStatus _status = ProfileStatus.initial;
   ProfilePhotoStatus _photoStatus = ProfilePhotoStatus.initial;
   Profile? _profile;
@@ -26,6 +33,52 @@ class ProfileState extends ChangeNotifier {
   List<MunroPicture> get profilePhotos => _profilePhotos;
   List<MunroCompletion> get munroCompletions => _munroCompletions;
   Error get error => _error;
+
+  Future<void> getMunroPictures({required String profileId, int count = 18}) async {
+    try {
+      _photoStatus = ProfilePhotoStatus.loading;
+      notifyListeners();
+      final blockedUsers = _userState.blockedUsers;
+      List<MunroPicture> pictures = await _munroPicturesRepository.readProfilePictures(
+        profileId: profileId,
+        excludedAuthorIds: blockedUsers,
+        offset: 0,
+        count: count,
+      );
+
+      _profilePhotosHistory.insert(0, pictures);
+      _profilePhotos = pictures;
+
+      _photoStatus = ProfilePhotoStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
+    }
+  }
+
+  Future<List<MunroPicture>> paginateMunroPictures({required String profileId}) async {
+    try {
+      _photoStatus = ProfilePhotoStatus.paginating;
+      notifyListeners();
+      final blockedUsers = _userState.blockedUsers;
+      List<MunroPicture> pictures = await _munroPicturesRepository.readProfilePictures(
+        profileId: profileId,
+        excludedAuthorIds: blockedUsers,
+        offset: _profilePhotos.length,
+      );
+
+      _profilePhotos.addAll(pictures);
+
+      _photoStatus = ProfilePhotoStatus.loaded;
+      notifyListeners();
+      return pictures;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
+      return [];
+    }
+  }
 
   set setStatus(ProfileStatus profileStatus) {
     _status = profileStatus;

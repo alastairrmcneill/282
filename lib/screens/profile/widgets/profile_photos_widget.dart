@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/clickable_image.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -20,7 +19,7 @@ class ProfilePhotosWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              MunroPictureService.getProfilePictures(context, profileId: profileState.profile?.id ?? '');
+              profileState.getMunroPictures(profileId: profileState.profile?.id ?? '');
               Navigator.of(context).pushNamed(ProfilePhotoGallery.route);
             },
             child: Container(
@@ -69,8 +68,7 @@ class ProfilePhotosWidget extends StatelessWidget {
                                 munroPictures: profileState.profilePhotos,
                                 initialIndex: index,
                                 fetchMorePhotos: () async {
-                                  List<MunroPicture> newPhotos = await MunroPictureService.paginateProfilePictures(
-                                    context,
+                                  List<MunroPicture> newPhotos = await profileState.paginateMunroPictures(
                                     profileId: profileState.profile?.id ?? '',
                                   );
                                   return newPhotos;

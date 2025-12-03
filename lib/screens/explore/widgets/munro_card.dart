@@ -13,6 +13,7 @@ class MunroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context);
+    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
 
     double width = MediaQuery.of(context).size.width - 60;
 
@@ -21,7 +22,7 @@ class MunroCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           munroState.setSelectedMunro = munro;
-          MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
+          munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
           ReviewService.getMunroReviews(context);
           Navigator.of(context).pushNamed(MunroScreen.route);
         },

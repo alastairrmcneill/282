@@ -50,6 +50,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => LikesRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => MunroPicturesRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -65,7 +68,10 @@ class App extends StatelessWidget {
           create: (_) => NavigationState(),
         ),
         ChangeNotifierProvider<ProfileState>(
-          create: (_) => ProfileState(),
+          create: (ctx) => ProfileState(
+            ctx.read<MunroPicturesRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<FollowersState>(
           create: (ctx) => FollowersState(
@@ -113,7 +119,10 @@ class App extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<MunroDetailState>(
-          create: (_) => MunroDetailState(),
+          create: (ctx) => MunroDetailState(
+            ctx.read<MunroPicturesRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<CreateReviewState>(
           create: (_) => CreateReviewState(),

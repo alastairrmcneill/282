@@ -90,7 +90,7 @@ class PostService {
       );
 
       // Upload munro pictures
-      await MunroPictureService.uploadMunroPictures(
+      await uploadMunroPictures(
         context,
         postId: postId,
         imageURLsMap: addedImageUrlsMap,
@@ -165,7 +165,7 @@ class PostService {
         postId: post.uid,
       );
 
-      await MunroPictureService.uploadMunroPictures(
+      await uploadMunroPictures(
         context,
         postId: post.uid,
         imageURLsMap: addedImageUrlsMap,
@@ -173,7 +173,7 @@ class PostService {
       );
 
       // Delete images that aren't needed anymore
-      await MunroPictureService.deleteMunroPictures(
+      await deleteMunroPictures(
         context,
         postId: post.uid,
         imageURLs: createPostState.deletedImages.toList(),
@@ -397,6 +397,50 @@ class PostService {
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       profileState.setError = Error(message: "There was an issue deleting your post. Please try again.");
+    }
+  }
+
+  static Future uploadMunroPictures(
+    BuildContext context, {
+    required String postId,
+    required Map<int, List<String>> imageURLsMap,
+    required String privacy,
+  }) async {
+    // State management
+    UserState userState = Provider.of<UserState>(context, listen: false);
+    MunroPicturesRepository munroPicturesRepository = context.read<MunroPicturesRepository>();
+
+    if (userState.currentUser == null) return;
+
+    List<MunroPicture> munroPictures = [];
+
+    imageURLsMap.forEach((munroId, imageURLs) async {
+      for (String imageURL in imageURLs) {
+        munroPictures.add(MunroPicture(
+          uid: "",
+          munroId: munroId,
+          authorId: userState.currentUser!.uid!,
+          imageUrl: imageURL,
+          postId: postId,
+          privacy: privacy,
+        ));
+      }
+    });
+
+    await munroPicturesRepository.createMunroPictures(munroPictures: munroPictures);
+  }
+
+  static Future deleteMunroPictures(
+    BuildContext context, {
+    required String postId,
+    required List<String> imageURLs,
+  }) async {
+    MunroPicturesRepository munroPicturesRepository = context.read<MunroPicturesRepository>();
+
+    await munroPicturesRepository.deleteMunroPicturesByUrls(imageURLs: imageURLs);
+
+    for (String imageURL in imageURLs) {
+      await StorageService.deleteImage(imageURL);
     }
   }
 }

@@ -35,6 +35,7 @@ class MunroSummaryTile extends StatelessWidget {
     SettingsState settingsState = Provider.of<SettingsState>(context);
     SavedListState savedListState = Provider.of<SavedListState>(context);
     MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
+    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
 
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
     bool munroSummited = munroCompletionState.munroCompletions.any((mc) => mc.munroId == munro.id);
@@ -47,7 +48,7 @@ class MunroSummaryTile extends StatelessWidget {
         child: InkWell(
           onTap: () {
             munroState.setSelectedMunro = munro;
-            MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
+            munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
             ReviewService.getMunroReviews(context);
             Navigator.of(context).pushNamed(MunroScreen.route);
           },

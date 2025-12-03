@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/clickable_image.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -19,7 +18,7 @@ class MunroPictureGallery extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            MunroPictureService.getMunroPictures(context, munroId: munroState.selectedMunro!.id);
+            munroDetailState.loadMunroPictures(munroId: munroState.selectedMunro!.id, count: 4);
             Navigator.of(context).pushNamed(MunroPhotoGallery.route);
           },
           child: Container(
@@ -68,8 +67,7 @@ class MunroPictureGallery extends StatelessWidget {
                             munroPictures: munroDetailState.munroPictures,
                             initialIndex: index,
                             fetchMorePhotos: () async {
-                              List<MunroPicture> newPhotos = await MunroPictureService.paginateMunroPictures(
-                                context,
+                              List<MunroPicture> newPhotos = await munroDetailState.paginateMunroPictures(
                                 munroId: munroState.selectedMunro!.id,
                               );
                               return newPhotos;

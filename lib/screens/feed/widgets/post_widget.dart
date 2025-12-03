@@ -17,6 +17,7 @@ class PostWidget extends StatelessWidget {
 
   Widget _buildIncludedMunroText(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
     if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
         alignment: Alignment.centerLeft,
@@ -30,7 +31,7 @@ class PostWidget extends StatelessWidget {
                     (m) => m.id == post.includedMunroIds[i],
                     orElse: () => Munro.empty,
                   );
-                  MunroPictureService.getMunroPictures(context, munroId: post.includedMunroIds[i], count: 4);
+                  munroDetailState.loadMunroPictures(munroId: post.includedMunroIds[i], count: 4);
                   ReviewService.getMunroReviews(context);
                   Navigator.of(context).pushNamed(MunroScreen.route);
                 },

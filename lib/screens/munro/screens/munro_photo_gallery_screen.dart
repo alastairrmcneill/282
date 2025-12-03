@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/notifiers.dart";
-import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
 class MunroPhotoGallery extends StatefulWidget {
@@ -24,7 +23,7 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           munroDetailState.galleryStatus != MunroDetailStatus.paginating) {
-        MunroPictureService.paginateMunroPictures(context, munroId: munroState.selectedMunro!.id);
+        munroDetailState.paginateMunroPictures(munroId: munroState.selectedMunro!.id);
       }
     });
     super.initState();
@@ -65,7 +64,7 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
                   initialIndex: index,
                   fetchMorePhotos: () async {
                     List<MunroPicture> newPhotos =
-                        await MunroPictureService.paginateMunroPictures(context, munroId: munroState.selectedMunro!.id);
+                        await munroDetailState.paginateMunroPictures(munroId: munroState.selectedMunro!.id);
                     return newPhotos;
                   },
                 );
