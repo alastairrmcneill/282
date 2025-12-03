@@ -53,6 +53,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => MunroPicturesRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => NotificationsRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -104,7 +107,10 @@ class App extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<NotificationsState>(
-          create: (_) => NotificationsState(),
+          create: (ctx) => NotificationsState(
+            ctx.read<NotificationsRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<SettingsState>(
           create: (_) => SettingsState(),

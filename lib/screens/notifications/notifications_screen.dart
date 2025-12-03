@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifications/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -24,7 +23,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           notificationsState.status != NotificationsStatus.paginating) {
-        NotificationsService.paginateUserNotifications(context);
+        notificationsState.paginateUserNotifications();
       }
     });
     super.initState();
@@ -71,7 +70,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget _buildScreen(BuildContext context, NotificationsState notificationsState) {
     return PopScope(
       onPopInvoked: (didPop) {
-        NotificationsService.markAllNotificationsAsRead(context);
+        notificationsState.markAllNotificationsAsRead();
       },
       child: Scaffold(
         appBar: AppBar(
@@ -79,7 +78,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            NotificationsService.getUserNotifications(context);
+            notificationsState.getUserNotifications();
           },
           child: notificationsState.notifications.isEmpty
               ? const Padding(

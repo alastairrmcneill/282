@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class NotificationIconButton extends StatelessWidget {
   const NotificationIconButton({super.key});
@@ -14,7 +13,7 @@ class NotificationIconButton extends StatelessWidget {
     NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
     return IconButton(
       onPressed: () {
-        NotificationsService.getUserNotifications(context);
+        notificationsState.getUserNotifications();
         Navigator.of(context).pushNamed(NotificationsScreen.route);
       },
       icon: Stack(

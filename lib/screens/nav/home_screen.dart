@@ -122,6 +122,7 @@ class HomeScreenState extends State<HomeScreen> {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
     final munroState = context.read<MunroState>();
+    final notificationsState = context.read<NotificationsState>();
 
     return Scaffold(
       body: _screens[_currentIndex],
@@ -146,7 +147,7 @@ class HomeScreenState extends State<HomeScreen> {
               // Navigate to feed
               PostService.getGlobalFeed(context);
               PostService.getFriendsFeed(context);
-              NotificationsService.getUserNotifications(context);
+              notificationsState.getUserNotifications();
               setState(() => _currentIndex = value);
             }
           }

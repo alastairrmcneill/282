@@ -74,7 +74,8 @@ class PushNotificationService {
 
     navigatorKey.currentState?.pushReplacementNamed(FeedTab.route);
     PostService.getGlobalFeed(navigatorKey.currentContext!);
-    NotificationsService.getUserNotifications(navigatorKey.currentContext!);
+    final notificationsState = navigatorKey.currentContext?.read<NotificationsState>();
+    notificationsState?.getUserNotifications();
     navigatorKey.currentState?.pushNamed(NotificationsScreen.route);
   }
 

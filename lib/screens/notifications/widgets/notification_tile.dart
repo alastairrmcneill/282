@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/state/comments_state.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -51,6 +52,7 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context);
+    NotificationsState notificationsState = context.read<NotificationsState>();
     return ListTile(
       tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
       leading: CircularProfilePicture(
@@ -61,7 +63,7 @@ class NotificationTile extends StatelessWidget {
       title: _buildText(notification),
       onTap: () {
         notification.read = true;
-        NotificationsService.markNotificationAsRead(context, notification: notification);
+        notificationsState.markNotificationAsRead(notification);
         if (notification.type == "like" || notification.type == "comment") {
           // Navigate to the comments page of the post
           // Load in post
