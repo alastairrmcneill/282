@@ -5,7 +5,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroReviewsWidget extends StatelessWidget {
@@ -19,7 +18,7 @@ class MunroReviewsWidget extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            ReviewService.getMunroReviews(context);
+            reviewsState.getMunroReviews();
             Navigator.of(context).pushNamed(ReviewsScreen.route);
           },
           child: Container(

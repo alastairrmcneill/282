@@ -6,7 +6,6 @@ import 'package:two_eight_two/screens/comments/screens/screens.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -18,6 +17,7 @@ class PostWidget extends StatelessWidget {
   Widget _buildIncludedMunroText(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
+    ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
     if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
         alignment: Alignment.centerLeft,
@@ -32,7 +32,7 @@ class PostWidget extends StatelessWidget {
                     orElse: () => Munro.empty,
                   );
                   munroDetailState.loadMunroPictures(munroId: post.includedMunroIds[i], count: 4);
-                  ReviewService.getMunroReviews(context);
+                  reviewsState.getMunroReviews();
                   Navigator.of(context).pushNamed(MunroScreen.route);
                 },
                 child: Text.rich(

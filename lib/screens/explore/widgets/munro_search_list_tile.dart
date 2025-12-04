@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroSearchListTile extends StatelessWidget {
   final Munro munro;
@@ -32,7 +30,7 @@ class MunroSearchListTile extends StatelessWidget {
       onTap: () {
         munroState.setSelectedMunro = munro;
         munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
-        ReviewService.getMunroReviews(context);
+        context.read<ReviewsState>().getMunroReviews();
         Navigator.of(context).pushNamed(MunroScreen.route);
       },
     );

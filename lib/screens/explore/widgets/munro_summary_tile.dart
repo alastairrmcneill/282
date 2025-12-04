@@ -49,7 +49,7 @@ class MunroSummaryTile extends StatelessWidget {
           onTap: () {
             munroState.setSelectedMunro = munro;
             munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
-            ReviewService.getMunroReviews(context);
+            context.read<ReviewsState>().getMunroReviews();
             Navigator.of(context).pushNamed(MunroScreen.route);
           },
           child: Card(

@@ -65,6 +65,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => ReportRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => ReviewsRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -75,6 +78,22 @@ class App extends StatelessWidget {
             ctx.read<UserRepository>(),
             ctx.read<BlockedUserRepository>(),
           ),
+        ),
+
+        ChangeNotifierProvider<MunroCompletionState>(
+          create: (ctx) => MunroCompletionState(
+            ctx.read<MunroCompletionsRepository>(),
+            ctx.read<UserState>(),
+          ),
+        ),
+
+        ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
+          create: (ctx) => MunroState(ctx.read<MunroRepository>()),
+          update: (ctx, completions, munroState) {
+            munroState ??= MunroState(ctx.read<MunroRepository>());
+            munroState.syncCompletedIds(completions.completedMunroIds);
+            return munroState;
+          },
         ),
         ChangeNotifierProvider<NavigationState>(
           create: (_) => NavigationState(),
@@ -105,12 +124,6 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<UserSearchState>(
           create: (_) => UserSearchState(),
-        ),
-        ChangeNotifierProvider<MunroCompletionState>(
-          create: (ctx) => MunroCompletionState(
-            ctx.read<MunroCompletionsRepository>(),
-            ctx.read<UserState>(),
-          ),
         ),
         ChangeNotifierProvider<CreatePostState>(
           create: (ctx) => CreatePostState(
@@ -159,11 +172,20 @@ class App extends StatelessWidget {
             ctx.read<UserState>(),
           ),
         ),
-        ChangeNotifierProvider<CreateReviewState>(
-          create: (_) => CreateReviewState(),
-        ),
+
         ChangeNotifierProvider<ReviewsState>(
-          create: (_) => ReviewsState(),
+          create: (ctx) => ReviewsState(
+            ctx.read<ReviewsRepository>(),
+            ctx.read<MunroState>(),
+            ctx.read<UserState>(),
+          ),
+        ),
+        ChangeNotifierProvider<CreateReviewState>(
+          create: (ctx) => CreateReviewState(
+            ctx.read<ReviewsRepository>(),
+            ctx.read<UserState>(),
+            ctx.read<MunroState>(),
+          ),
         ),
         ChangeNotifierProvider<AchievementsState>(
           create: (_) => AchievementsState(),
@@ -188,15 +210,6 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<GroupFilterState>(
           create: (_) => GroupFilterState(),
-        ),
-
-        ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
-          create: (ctx) => MunroState(ctx.read<MunroRepository>()),
-          update: (ctx, completions, munroState) {
-            munroState ??= MunroState(ctx.read<MunroRepository>());
-            munroState.syncCompletedIds(completions.completedMunroIds);
-            return munroState;
-          },
         ),
       ],
       child: MaterialApp(

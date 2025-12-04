@@ -5,7 +5,7 @@ export 'posts_repository.dart';
 export 'user_repository.dart';
 export 'likes_repository.dart';
 export 'notifications_repository.dart';
-export 'review_database.dart';
+export 'reviews_repository.dart';
 export 'saved_list_database.dart';
 export 'munro_pictures_repository.dart';
 export 'report_repository.dart';

@@ -7,7 +7,6 @@ import 'package:two_eight_two/extensions/datetime_extension.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewListTile extends StatelessWidget {
@@ -34,7 +33,7 @@ class ReviewListTile extends StatelessWidget {
         MenuItem(
           text: 'Delete',
           onTap: () {
-            ReviewService.deleteReview(context, review: review);
+            context.read<ReviewsState>().deleteReview(review: review);
           },
         ),
       ];
