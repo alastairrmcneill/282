@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class UserTrailingButton extends StatefulWidget {
   final String profileUserId;
@@ -37,8 +36,8 @@ class _UserTrailingButtonState extends State<UserTrailingButton> {
 
   Future loadData(BuildContext context) async {
     AppUser? user = Provider.of<AppUser?>(context, listen: false);
-    following = await ProfileService.isFollowingUser(
-      context,
+    ProfileState profileState = context.read<ProfileState>();
+    following = await profileState.isFollowingUser(
       currentUserId: user?.uid ?? "",
       profileUserId: widget.profileUserId,
     );

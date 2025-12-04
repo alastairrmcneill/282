@@ -41,6 +41,7 @@ class UserService {
   static Future updateProfile(BuildContext context, {required AppUser appUser, File? profilePicture}) async {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     UserState userState = context.read<UserState>();
+    ProfileRepository profileRepo = context.read<ProfileRepository>();
     try {
       startCircularProgressOverlay(context);
       // Upload new profile picture
@@ -57,7 +58,7 @@ class UserService {
       await userState.updateUser(appUser: appUser);
 
       // Update profile
-      profileState.setProfile = await ProfileDatabase.getProfileFromUserId(userId: appUser.uid!);
+      profileState.setProfile = await profileRepo.getProfileFromUserId(userId: appUser.uid!);
       stopCircularProgressOverlay(context);
       Navigator.pop(context);
     } catch (error, stackTrace) {

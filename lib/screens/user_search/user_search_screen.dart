@@ -122,6 +122,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
       controller: scrollController,
       itemCount: userSearchState.users.length,
       itemBuilder: (context, index) {
+        ProfileState profileState = context.read<ProfileState>();
         final AppUser user = userSearchState.users[index];
 
         if (user.uid != currentUserId) {
@@ -137,7 +138,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
               profileUserPictureURL: user.profilePictureURL ?? "",
             ),
             onTap: () {
-              ProfileService.loadUserFromUid(context, userId: user.uid!);
+              profileState.loadProfileFromUserId(userId: user.uid!);
               Navigator.of(context).pushNamed(ProfileScreen.route);
             },
           );

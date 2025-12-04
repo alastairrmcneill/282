@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -87,6 +86,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
             return _buildScreen(
               context,
               followersState: followersState,
+              profileState: context.read<ProfileState>(),
               followersScrollController: _followersScrollController,
               followingScrollController: _followingScrollController,
             );
@@ -136,6 +136,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
   Widget _buildScreen(
     BuildContext context, {
     required FollowersState followersState,
+    required ProfileState profileState,
     required ScrollController followersScrollController,
     required ScrollController followingScrollController,
   }) {
@@ -181,7 +182,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                             profileUserPictureURL: f.targetProfilePictureURL ?? "",
                           ),
                           onTap: () {
-                            ProfileService.loadUserFromUid(context, userId: f.targetId);
+                            profileState.loadProfileFromUserId(userId: f.targetId);
                             Navigator.of(context).pushNamed(ProfileScreen.route);
                           },
                         );
@@ -210,7 +211,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                             profileUserPictureURL: f.sourceProfilePictureURL ?? "",
                           ),
                           onTap: () {
-                            ProfileService.loadUserFromUid(context, userId: f.sourceId);
+                            profileState.loadProfileFromUserId(userId: f.sourceId);
                             Navigator.of(context).pushNamed(ProfileScreen.route);
                           },
                         );

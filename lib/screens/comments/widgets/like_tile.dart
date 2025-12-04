@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/screens/screens.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class LikeTile extends StatelessWidget {
@@ -11,6 +12,7 @@ class LikeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProfileState profileState = context.read<ProfileState>();
     return ListTile(
       leading: CircularProfilePicture(
         radius: 15,
@@ -25,7 +27,7 @@ class LikeTile extends StatelessWidget {
         profileUserPictureURL: like.userProfilePictureURL ?? "",
       ),
       onTap: () {
-        ProfileService.loadUserFromUid(context, userId: like.userId);
+        profileState.loadProfileFromUserId(userId: like.userId);
         Navigator.of(context).pushNamed(
           ProfileScreen.route,
         );

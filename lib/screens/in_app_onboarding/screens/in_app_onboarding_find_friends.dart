@@ -19,6 +19,7 @@ class InAppOnboardingFindFriends extends StatelessWidget {
   Widget build(BuildContext context) {
     UserSearchState userSearchState = Provider.of<UserSearchState>(context);
     UserState userState = Provider.of<UserState>(context);
+    ProfileState profileState = context.read<ProfileState>();
     String currentUserId = userState.currentUser?.uid ?? "";
 
     return Padding(
@@ -82,7 +83,7 @@ class InAppOnboardingFindFriends extends StatelessWidget {
                           profileUserPictureURL: user.profilePictureURL ?? "",
                         ),
                         onTap: () {
-                          ProfileService.loadUserFromUid(context, userId: user.uid!);
+                          profileState.loadProfileFromUserId(userId: user.uid!);
                           Navigator.of(context).pushNamed(ProfileScreen.route);
                         },
                       );

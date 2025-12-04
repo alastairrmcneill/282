@@ -5,15 +5,21 @@ import 'package:two_eight_two/screens/notifiers.dart' show UserLikeState, UserSt
 import 'package:two_eight_two/services/services.dart';
 
 class ProfileState extends ChangeNotifier {
+  final ProfileRepository _profileRepository;
   final MunroPicturesRepository _munroPicturesRepository;
   final PostsRepository _postsRepository;
   final UserState _userState;
   final UserLikeState _userLikeState;
+  final FollowersRepository _followersRepository;
+  final MunroCompletionsRepository _munroCompletionsRepository;
   ProfileState(
+    this._profileRepository,
     this._munroPicturesRepository,
     this._postsRepository,
     this._userState,
     this._userLikeState,
+    this._followersRepository,
+    this._munroCompletionsRepository,
   );
 
   ProfileStatus _status = ProfileStatus.initial;
@@ -40,6 +46,69 @@ class ProfileState extends ChangeNotifier {
   List<MunroPicture> get profilePhotos => _profilePhotos;
   List<MunroCompletion> get munroCompletions => _munroCompletions;
   Error get error => _error;
+
+  Future<void> loadProfileFromUserId({required String userId}) async {
+    try {
+      setStatus = ProfileStatus.loading;
+      // Load user from database
+      setProfile = await _profileRepository.getProfileFromUserId(userId: userId);
+
+      // Check if this is current user
+      setIsCurrentUser = _userState.currentUser?.uid == userId;
+
+      // Check if current user is following this user
+      setIsFollowing = await isFollowingUser(
+        currentUserId: _userState.currentUser?.uid ?? "",
+        profileUserId: userId,
+      );
+
+      await getProfilePosts();
+
+      // Load profile pictures
+      getMunroPictures(profileId: userId);
+
+      // Set loading status?
+      setStatus = ProfileStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(
+        code: error.toString(),
+        message: "There was an issue loading the profile. Please try again.",
+      );
+    }
+  }
+
+  Future<bool> isFollowingUser({
+    required String currentUserId,
+    required String profileUserId,
+  }) async {
+    try {
+      final relationshipExists = await _followersRepository.relationshipExists(
+        sourceId: currentUserId,
+        targetId: profileUserId,
+      );
+
+      return relationshipExists;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> getProfileMunroCompletions({required String userId}) async {
+    try {
+      final munroCompletions = await _munroCompletionsRepository.getUserMunroCompletions(
+        userId: userId,
+      );
+      setMunroCompletions = munroCompletions;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(
+        code: error.toString(),
+        message: "There was an issue loading the munros. Please try again.",
+      );
+    }
+  }
 
   Future<void> getMunroPictures({required String profileId, int count = 18}) async {
     try {
@@ -107,7 +176,7 @@ class ProfileState extends ChangeNotifier {
     }
   }
 
-  Future paginateProfilePosts() async {
+  Future<void> paginateProfilePosts() async {
     try {
       setStatus = ProfileStatus.paginating;
 

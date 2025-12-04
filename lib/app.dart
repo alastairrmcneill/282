@@ -59,6 +59,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => PostsRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => ProfileRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -81,10 +84,13 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<ProfileState>(
           create: (ctx) => ProfileState(
+            ctx.read<ProfileRepository>(),
             ctx.read<MunroPicturesRepository>(),
             ctx.read<PostsRepository>(),
             ctx.read<UserState>(),
             ctx.read<UserLikeState>(),
+            ctx.read<FollowersRepository>(),
+            ctx.read<MunroCompletionsRepository>(),
           ),
         ),
         ChangeNotifierProvider<FollowersState>(

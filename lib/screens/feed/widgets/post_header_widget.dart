@@ -5,7 +5,6 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostHeader extends StatelessWidget {
@@ -62,6 +61,7 @@ class PostHeader extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
+    ProfileState profileState = context.read<ProfileState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
@@ -82,7 +82,7 @@ class PostHeader extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      ProfileService.loadUserFromUid(context, userId: post.authorId);
+                      profileState.loadProfileFromUserId(userId: post.authorId);
                       Navigator.of(context).pushNamed(ProfileScreen.route);
                     },
                     child: Text(

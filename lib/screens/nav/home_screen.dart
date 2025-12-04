@@ -168,7 +168,7 @@ class HomeScreenState extends State<HomeScreen> {
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
             } else {
               // Navigate to profile
-              ProfileService.loadUserFromUid(context, userId: user.uid!);
+              profileState.loadProfileFromUserId(userId: user.uid!);
               setState(() => _currentIndex = value);
             }
           }

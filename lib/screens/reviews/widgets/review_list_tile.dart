@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -59,6 +58,7 @@ class ReviewListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+    ProfileState profileState = context.read<ProfileState>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
@@ -79,7 +79,7 @@ class ReviewListTile extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    ProfileService.loadUserFromUid(context, userId: review.authorId);
+                    profileState.loadProfileFromUserId(userId: review.authorId);
                     Navigator.of(context).pushNamed(ProfileScreen.route);
                   },
                   child: Text(

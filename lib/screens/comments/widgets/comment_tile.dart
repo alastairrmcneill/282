@@ -4,7 +4,6 @@ import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 import '../../screens.dart';
@@ -48,6 +47,7 @@ class CommentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
+    ProfileState profileState = context.read<ProfileState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
@@ -67,7 +67,7 @@ class CommentTile extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    ProfileService.loadUserFromUid(context, userId: comment.authorId);
+                    profileState.loadProfileFromUserId(userId: comment.authorId);
                     Navigator.of(context).pushNamed(
                       ProfileScreen.route,
                     );

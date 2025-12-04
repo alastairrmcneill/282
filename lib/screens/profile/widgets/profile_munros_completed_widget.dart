@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class ProfileMunrosCompletedWidget extends StatelessWidget {
   final double width;
@@ -19,7 +18,7 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
 
     return ClickableStatBox(
       onTap: () async {
-        await ProfileService.getProfileMunroCompletions(context, userId: profileState.profile?.id ?? "");
+        await profileState.getProfileMunroCompletions(userId: profileState.profile?.id ?? "");
         Navigator.of(context).pushNamed(MunrosCompletedScreen.route);
       },
       progress: progress.toString(),

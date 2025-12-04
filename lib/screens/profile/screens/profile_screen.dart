@@ -7,7 +7,6 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -157,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            ProfileService.loadUserFromUid(context, userId: profileState.profile?.id ?? "");
+            profileState.loadProfileFromUserId(userId: profileState.profile?.id ?? "");
           },
           child: SingleChildScrollView(
             controller: _scrollController,
