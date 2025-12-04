@@ -8,7 +8,7 @@ export 'notifications_repository.dart';
 export 'review_database.dart';
 export 'saved_list_database.dart';
 export 'munro_pictures_repository.dart';
-export 'report_database.dart';
+export 'report_repository.dart';
 export 'user_achievements_database.dart';
 export 'feedback_repository.dart';
 export 'blocked_user_repository.dart';

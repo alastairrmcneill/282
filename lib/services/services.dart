@@ -10,7 +10,6 @@ export 'user_service.dart';
 export 'weather_service.dart';
 export 'saved_list_service.dart';
 export 'shared_preferences_service.dart';
-export 'report_service.dart';
 export 'remote_config_service.dart';
 export 'analytics_service.dart';
 export 'group_filter_service.dart';

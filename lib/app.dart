@@ -62,6 +62,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => ProfileRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => ReportRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -175,7 +178,10 @@ class App extends StatelessWidget {
           create: (_) => BulkMunroUpdateState(),
         ),
         ChangeNotifierProvider<ReportState>(
-          create: (_) => ReportState(),
+          create: (ctx) => ReportState(
+            ctx.read<ReportRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<LayoutState>(
           create: (_) => LayoutState(),
