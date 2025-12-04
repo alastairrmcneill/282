@@ -27,7 +27,7 @@ class ProfileService {
         profileUserId: userId,
       );
 
-      profileState.setPosts = await PostService.getProfilePosts(context);
+      await profileState.getProfilePosts();
 
       // Load profile pictures
       profileState.getMunroPictures(profileId: userId);

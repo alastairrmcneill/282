@@ -4,7 +4,6 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:two_eight_two/screens/feed/screens/feed_list_view.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 
@@ -109,13 +108,13 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
           children: [
             FeedListView(
               posts: feedState.globalPosts,
-              paginate: () => PostService.paginateGlobalFeed(context),
-              refreshPosts: () => PostService.getGlobalFeed(context),
+              paginate: () => feedState.paginateGlobalFeed(),
+              refreshPosts: () => feedState.getGlobalFeed(),
             ),
             FeedListView(
               posts: feedState.friendsPosts,
-              paginate: () => PostService.paginateFriendsFeed(context),
-              refreshPosts: () => PostService.getFriendsFeed(context),
+              paginate: () => feedState.paginateFriendsFeed(),
+              refreshPosts: () => feedState.getFriendsFeed(),
               headerWidget: const FindFriendsHeaderWiget(),
               emptyList: const EmptyFriendsFeed(),
             ),

@@ -10,7 +10,6 @@ import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class PushNotificationService {
   static final _messaging = FirebaseMessaging.instance;
@@ -72,9 +71,10 @@ class PushNotificationService {
   static Future<void> handleBackgroundNotificaiton(RemoteMessage? message) async {
     if (message == null) return;
 
-    navigatorKey.currentState?.pushReplacementNamed(FeedTab.route);
-    PostService.getGlobalFeed(navigatorKey.currentContext!);
     final notificationsState = navigatorKey.currentContext?.read<NotificationsState>();
+    final feedState = navigatorKey.currentContext?.read<FeedState>();
+    navigatorKey.currentState?.pushReplacementNamed(FeedTab.route);
+    feedState?.getGlobalFeed();
     notificationsState?.getUserNotifications();
     navigatorKey.currentState?.pushNamed(NotificationsScreen.route);
   }

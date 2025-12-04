@@ -123,6 +123,7 @@ class HomeScreenState extends State<HomeScreen> {
     FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
     final munroState = context.read<MunroState>();
     final notificationsState = context.read<NotificationsState>();
+    final feedState = context.read<FeedState>();
 
     return Scaffold(
       body: _screens[_currentIndex],
@@ -145,8 +146,8 @@ class HomeScreenState extends State<HomeScreen> {
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
             } else {
               // Navigate to feed
-              PostService.getGlobalFeed(context);
-              PostService.getFriendsFeed(context);
+              feedState.getGlobalFeed();
+              feedState.getFriendsFeed();
               notificationsState.getUserNotifications();
               setState(() => _currentIndex = value);
             }

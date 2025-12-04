@@ -56,6 +56,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => NotificationsRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => PostsRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -70,10 +73,18 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<NavigationState>(
           create: (_) => NavigationState(),
         ),
+        ChangeNotifierProvider<UserLikeState>(
+          create: (ctx) => UserLikeState(
+            ctx.read<LikesRepository>(),
+            ctx.read<UserState>(),
+          ),
+        ),
         ChangeNotifierProvider<ProfileState>(
           create: (ctx) => ProfileState(
             ctx.read<MunroPicturesRepository>(),
+            ctx.read<PostsRepository>(),
             ctx.read<UserState>(),
+            ctx.read<UserLikeState>(),
           ),
         ),
         ChangeNotifierProvider<FollowersState>(
@@ -86,26 +97,35 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<UserSearchState>(
           create: (_) => UserSearchState(),
         ),
+        ChangeNotifierProvider<MunroCompletionState>(
+          create: (ctx) => MunroCompletionState(
+            ctx.read<MunroCompletionsRepository>(),
+            ctx.read<UserState>(),
+          ),
+        ),
         ChangeNotifierProvider<CreatePostState>(
-          create: (_) => CreatePostState(),
+          create: (ctx) => CreatePostState(
+            ctx.read<PostsRepository>(),
+            ctx.read<MunroPicturesRepository>(),
+            ctx.read<UserState>(),
+            ctx.read<MunroCompletionState>(),
+          ),
         ),
         ChangeNotifierProvider<FeedState>(
-          create: (_) => FeedState(),
+          create: (ctx) => FeedState(
+            ctx.read<PostsRepository>(),
+            ctx.read<UserState>(),
+            ctx.read<UserLikeState>(),
+          ),
         ),
         ChangeNotifierProvider<CommentsState>(
           create: (ctx) => CommentsState(
             ctx.read<CommentsRepository>(),
             ctx.read<UserState>(),
+            ctx.read<PostsRepository>(),
           ),
         ),
-        ChangeNotifierProvider<UserLikeState>(
-          create: (ctx) => UserLikeState(
-            ctx.read<LikesRepository>(),
-            ctx.read<UserState>(),
-            ctx.read<FeedState>(),
-            ctx.read<ProfileState>(),
-          ),
-        ),
+
         ChangeNotifierProvider<NotificationsState>(
           create: (ctx) => NotificationsState(
             ctx.read<NotificationsRepository>(),
@@ -157,12 +177,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<GroupFilterState>(
           create: (_) => GroupFilterState(),
         ),
-        ChangeNotifierProvider<MunroCompletionState>(
-          create: (ctx) => MunroCompletionState(
-            ctx.read<MunroCompletionsRepository>(),
-            ctx.read<UserState>(),
-          ),
-        ),
+
         ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
           create: (ctx) => MunroState(ctx.read<MunroRepository>()),
           update: (ctx, completions, munroState) {

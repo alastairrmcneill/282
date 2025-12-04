@@ -7,14 +7,10 @@ import 'package:two_eight_two/services/services.dart';
 class UserLikeState extends ChangeNotifier {
   final LikesRepository _repository;
   final UserState _userState;
-  final FeedState _feedState;
-  final ProfileState _profileState;
 
   UserLikeState(
     this._repository,
     this._userState,
-    this._feedState,
-    this._profileState,
   );
 
   UserLikeStatus _status = UserLikeStatus.initial;
@@ -29,7 +25,10 @@ class UserLikeState extends ChangeNotifier {
   Set<String> get recentlyLikedPosts => _recentlyLikedPosts;
   Set<String> get recentlyUnlikedPosts => _recentlyUnlikedPosts;
 
-  Future<void> likePost({required Post post, required bool inFeed}) async {
+  Future<void> likePost({
+    required Post post,
+    required void Function(Post newPost) onPostUpdated,
+  }) async {
     Like like = Like(
       postId: post.uid,
       userId: _userState.currentUser?.uid ?? "",
@@ -50,14 +49,13 @@ class UserLikeState extends ChangeNotifier {
     notifyListeners();
 
     Post newPost = post.copyWith(likes: post.likes + 1);
-    if (inFeed) {
-      _feedState.updatePost(newPost);
-    } else {
-      _profileState.updatePost(newPost);
-    }
+    onPostUpdated(newPost);
   }
 
-  Future<void> unLikePost({required Post post, required bool inFeed}) async {
+  Future<void> unLikePost({
+    required Post post,
+    required void Function(Post newPost) onPostUpdated,
+  }) async {
     await _repository.delete(
       postId: post.uid,
       userId: _userState.currentUser?.uid ?? "",
@@ -72,11 +70,7 @@ class UserLikeState extends ChangeNotifier {
     notifyListeners();
 
     Post newPost = post.copyWith(likes: post.likes - 1);
-    if (inFeed) {
-      _feedState.updatePost(newPost);
-    } else {
-      _profileState.updatePost(newPost);
-    }
+    onPostUpdated(newPost);
   }
 
   Future<void> getLikedPostIds({required List<Post> posts}) async {

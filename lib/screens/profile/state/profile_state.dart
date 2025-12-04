@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
-import 'package:two_eight_two/screens/notifiers.dart' show UserState;
+import 'package:two_eight_two/screens/notifiers.dart' show UserLikeState, UserState;
 import 'package:two_eight_two/services/services.dart';
 
 class ProfileState extends ChangeNotifier {
   final MunroPicturesRepository _munroPicturesRepository;
+  final PostsRepository _postsRepository;
   final UserState _userState;
-  ProfileState(this._munroPicturesRepository, this._userState);
+  final UserLikeState _userLikeState;
+  ProfileState(
+    this._munroPicturesRepository,
+    this._postsRepository,
+    this._userState,
+    this._userLikeState,
+  );
 
   ProfileStatus _status = ProfileStatus.initial;
   ProfilePhotoStatus _photoStatus = ProfilePhotoStatus.initial;
@@ -77,6 +84,48 @@ class ProfileState extends ChangeNotifier {
       Log.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
       return [];
+    }
+  }
+
+  Future<void> getProfilePosts() async {
+    try {
+      setStatus = ProfileStatus.loading;
+      // Get posts
+      final posts = await _postsRepository.readPostsFromUserId(
+        userId: _profile?.id ?? "",
+      );
+
+      // Check likes
+      _userLikeState.reset();
+      _userLikeState.getLikedPostIds(posts: posts);
+
+      setPosts = posts;
+      setStatus = ProfileStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an retreiving your posts. Please try again.");
+    }
+  }
+
+  Future paginateProfilePosts() async {
+    try {
+      setStatus = ProfileStatus.paginating;
+
+      // Add posts from database
+      List<Post> newPosts = await _postsRepository.readPostsFromUserId(
+        userId: _profile?.id ?? "",
+        offset: _posts.length,
+      );
+
+      // Check likes
+      _userLikeState.getLikedPostIds(posts: newPosts);
+
+      // Set state
+      addPosts = newPosts;
+      setStatus = ProfileStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue loading your posts. Please try again.");
     }
   }
 

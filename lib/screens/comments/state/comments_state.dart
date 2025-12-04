@@ -7,7 +7,8 @@ import 'package:two_eight_two/services/services.dart';
 class CommentsState extends ChangeNotifier {
   final CommentsRepository _commentsRepository;
   final UserState userState;
-  CommentsState(this._commentsRepository, this.userState);
+  final PostsRepository _postsRepository;
+  CommentsState(this._commentsRepository, this.userState, this._postsRepository);
 
   CommentsStatus _status = CommentsStatus.initial;
   Error _error = Error();
@@ -60,7 +61,7 @@ class CommentsState extends ChangeNotifier {
       );
 
       // Read post details //TODO: remove this at some point
-      _post = await PostsDatabase.readPostFromUid(context, uid: _postId!);
+      _post = await _postsRepository.readPostFromUid(uid: _postId!);
 
       _status = CommentsStatus.loaded;
       notifyListeners();

@@ -77,6 +77,8 @@ class PostWidget extends StatelessWidget {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     UserLikeState userLikeState = Provider.of<UserLikeState>(context);
     LikesState likesState = Provider.of<LikesState>(context);
+    FeedState feedState = context.read<FeedState>();
+    ProfileState profileState = context.read<ProfileState>();
 
     if (post.includedMunroIds.isEmpty) {
       return const SizedBox();
@@ -114,9 +116,15 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             if (userLikeState.likedPosts.contains(post.uid)) {
-                              userLikeState.unLikePost(post: post, inFeed: inFeed);
+                              userLikeState.unLikePost(
+                                post: post,
+                                onPostUpdated: inFeed ? feedState.updatePost : profileState.updatePost,
+                              );
                             } else {
-                              userLikeState.likePost(post: post, inFeed: inFeed);
+                              userLikeState.likePost(
+                                post: post,
+                                onPostUpdated: inFeed ? feedState.updatePost : profileState.updatePost,
+                              );
                             }
                           },
                           child: userLikeState.likedPosts.contains(post.uid)

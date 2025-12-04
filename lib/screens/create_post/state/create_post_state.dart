@@ -2,8 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/services/services.dart';
 
 class CreatePostState extends ChangeNotifier {
+  final PostsRepository _postsRepository;
+  final MunroPicturesRepository _munroPicturesRepository;
+  final UserState _userState;
+  final MunroCompletionState munroCompletionState;
+  CreatePostState(this._postsRepository, this._munroPicturesRepository, this._userState, this.munroCompletionState);
+
   CreatePostStatus _status = CreatePostStatus.initial;
   Error _error = Error();
   String? _title;
@@ -39,6 +48,218 @@ class CreatePostState extends ChangeNotifier {
       _addedImages.values.any((element) => element.isNotEmpty) ||
       _existingImages.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
+
+  Future<void> createPost() async {
+    try {
+      setStatus = CreatePostStatus.loading;
+
+      // Upload picture and get url
+      Map<int, List<String>> addedImageUrlsMap = {};
+
+      for (int munroId in _addedImages.keys) {
+        for (File image in _addedImages[munroId]!) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (addedImageUrlsMap[munroId] == null) {
+            addedImageUrlsMap[munroId] = [];
+          }
+          addedImageUrlsMap[munroId]!.add(imageURL);
+        }
+      }
+
+      // Get title
+      String title = "";
+      if (_title == null) {
+        DateTime now = DateTime.now();
+        if (now.month == 1 || now.month == 2 || now.month == 12) {
+          title = "Winter Hike";
+        } else if (now.month >= 3 && now.month <= 5) {
+          title = "Spring Hike";
+        } else if (now.month >= 6 && now.month <= 8) {
+          title = "Summer Hike";
+        } else if (now.month >= 9 && now.month <= 11) {
+          title = "Autumn Hike";
+        }
+      } else {
+        title = _title!;
+      }
+
+      DateTime postDateTime = DateTime.now().toUtc();
+
+      // Get summitDateTime by combining date and time
+      DateTime? summitDateTime = DateTime(
+        _summitedDate?.year ?? postDateTime.year,
+        _summitedDate?.month ?? postDateTime.month,
+        _summitedDate?.day ?? postDateTime.day,
+        _startTime?.hour ?? 12,
+        _startTime?.minute ?? 0,
+      );
+
+      // Create post object
+      Post post = Post(
+        authorId: _userState.currentUser?.uid ?? "",
+        title: title,
+        description: _description,
+        dateTimeCreated: postDateTime,
+        privacy: _postPrivacy ?? Privacy.public,
+      );
+
+      // Send to database
+      String postId = await _postsRepository.create(post: post);
+
+      // Log event
+      bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
+
+      await AnalyticsService.logPostCreation(
+        privacy: post.privacy,
+        showPrivacyOption: showPrivacyOption,
+      );
+
+      // Complete munros
+      await munroCompletionState.markMunrosAsCompleted(
+        munroIds: selectedMunroIds.toList(),
+        summitDateTime: summitDateTime,
+        postId: postId,
+      );
+
+      // Upload munro pictures
+      await uploadMunroPictures(
+        postId: postId,
+        imageURLsMap: addedImageUrlsMap,
+        privacy: post.privacy,
+      );
+
+      // Update state
+      setStatus = CreatePostStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue uploading your post. Please try again");
+    }
+  }
+
+  Future editPost(FeedState feedState, ProfileState profileState) async {
+    try {
+      setStatus = CreatePostStatus.loading;
+
+      // Get the original post
+      Map<int, List<String>> addedImageUrlsMap = {};
+
+      for (int munroId in _addedImages.keys) {
+        for (File image in _addedImages[munroId]!) {
+          String imageURL = await StorageService.uploadPostImage(image);
+          if (addedImageUrlsMap[munroId] == null) {
+            addedImageUrlsMap[munroId] = [];
+          }
+          addedImageUrlsMap[munroId]!.add(imageURL);
+        }
+      }
+
+      // Create post object
+      Post post = _editingPost!;
+
+      // Get summitDateTime by combining date and time
+      DateTime? summitDateTime = DateTime(
+        _summitedDate?.year ?? post.summitedDateTime!.year,
+        _summitedDate?.month ?? post.summitedDateTime!.month,
+        _summitedDate?.day ?? post.summitedDateTime!.day,
+        _startTime?.hour ?? 12,
+        _startTime?.minute ?? 0,
+      );
+
+      Post newPost = post.copyWith(
+        title: _title,
+        description: _description,
+        summitedDateTime: summitDateTime,
+        privacy: _postPrivacy ?? Privacy.public,
+      );
+
+      // Send to database
+      await _postsRepository.update(post: newPost);
+
+      munroCompletionState.markMunrosAsCompleted(
+        munroIds: _addedMunroIds.toList(),
+        summitDateTime: newPost.summitedDateTime!,
+        postId: post.uid,
+      );
+
+      munroCompletionState.removeCompletionsByMunroIdsAndPost(
+        munroIds: _deletedMunroIds.toList(),
+        postId: post.uid,
+      );
+
+      await uploadMunroPictures(
+        postId: post.uid,
+        imageURLsMap: addedImageUrlsMap,
+        privacy: newPost.privacy,
+      );
+
+      // Delete images that aren't needed anymore
+      await deleteMunroPictures(
+        postId: post.uid,
+        imageURLs: deletedImages.toList(),
+      );
+
+      // Update post in state
+      Map<int, List<String>> updatedImageURLsMap = {...existingImages, ...addedImageUrlsMap};
+
+      Post newPostState = newPost.copyWith(imageUrlsMap: updatedImageURLsMap);
+
+      // Update state
+      profileState.updatePost(newPostState);
+      feedState.updatePost(newPostState);
+      setStatus = CreatePostStatus.loaded;
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue uploading your post. Please try again");
+    }
+  }
+
+  Future<void> uploadMunroPictures({
+    required String postId,
+    required Map<int, List<String>> imageURLsMap,
+    required String privacy,
+  }) async {
+    if (_userState.currentUser == null) return;
+
+    List<MunroPicture> munroPictures = [];
+
+    imageURLsMap.forEach((munroId, imageURLs) async {
+      for (String imageURL in imageURLs) {
+        munroPictures.add(MunroPicture(
+          uid: "",
+          munroId: munroId,
+          authorId: _userState.currentUser!.uid!,
+          imageUrl: imageURL,
+          postId: postId,
+          privacy: privacy,
+        ));
+      }
+    });
+
+    await _munroPicturesRepository.createMunroPictures(munroPictures: munroPictures);
+  }
+
+  Future deleteMunroPictures({
+    required String postId,
+    required List<String> imageURLs,
+  }) async {
+    await _munroPicturesRepository.deleteMunroPicturesByUrls(imageURLs: imageURLs);
+
+    for (String imageURL in imageURLs) {
+      await StorageService.deleteImage(imageURL);
+    }
+  }
+
+  Future deletePost({required Post post, required FeedState feedState, required ProfileState profileState}) async {
+    try {
+      profileState.removePost(post);
+      feedState.removePost(post);
+
+      _postsRepository.deletePostWithUID(uid: post.uid);
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      profileState.setError = Error(message: "There was an issue deleting your post. Please try again.");
+    }
+  }
 
   set setStatus(CreatePostStatus searchStatus) {
     _status = searchStatus;

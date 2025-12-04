@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           profileState.status != ProfileStatus.paginating) {
-        PostService.paginateProfilePosts(context);
+        profileState.paginateProfilePosts();
       }
     });
     super.initState();

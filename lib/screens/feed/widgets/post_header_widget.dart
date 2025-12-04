@@ -19,6 +19,9 @@ class PostHeader extends StatelessWidget {
     required CreatePostState createPostState,
     required SettingsState settingsState,
   }) {
+    FeedState feedState = context.read<FeedState>();
+    ProfileState profileState = context.read<ProfileState>();
+
     List<MenuItem> menuItems = [];
     if (post.authorId == userState.currentUser?.uid) {
       menuItems = [
@@ -34,7 +37,7 @@ class PostHeader extends StatelessWidget {
         MenuItem(
           text: 'Delete',
           onTap: () {
-            PostService.deletePost(context, post: post);
+            createPostState.deletePost(post: post, feedState: feedState, profileState: profileState);
           },
         ),
       ];

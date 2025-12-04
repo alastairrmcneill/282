@@ -66,7 +66,7 @@ class MunroCompletionState extends ChangeNotifier {
   }
 
   Future<void> markMunrosAsCompleted({
-    required List<Munro> munros,
+    required List<int> munroIds,
     required DateTime summitDateTime,
     String? postId,
   }) async {
@@ -76,11 +76,11 @@ class MunroCompletionState extends ChangeNotifier {
     }
 
     try {
-      final newCompletions = munros
+      final newCompletions = munroIds
           .map(
-            (m) => MunroCompletion(
+            (id) => MunroCompletion(
               userId: userState.currentUser!.uid ?? "",
-              munroId: m.id,
+              munroId: id,
               postId: postId,
               dateTimeCompleted: summitDateTime,
             ),
