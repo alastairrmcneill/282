@@ -95,7 +95,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                       _currentPage == 3
                           ? ElevatedButton(
                               onPressed: () async {
-                                AchievementService.setMunroChallenge(context);
+                                context.read<AchievementsState>().setMunroChallenge();
                                 munroCompletionState.addBulkCompletions(
                                     munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList);
                                 SharedPreferencesService.setShowBulkMunroDialog(false);

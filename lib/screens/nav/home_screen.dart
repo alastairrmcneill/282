@@ -62,7 +62,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     await context.read<MunroState>().loadMunros();
     await context.read<MunroCompletionState>().loadUserMunroCompletions();
-    AchievementService.getUserAchievements(context);
+    context.read<AchievementsState>().getUserAchievements();
     context.read<UserState>().loadBlockedUsers();
     context.read<SavedListState>().readUserSavedLists();
     PushNotificationService.checkAndUpdateFCMToken(context);

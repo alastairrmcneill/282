@@ -477,8 +477,9 @@ class AuthService {
       bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
       munroState.setFilterString = "";
 
-      Achievement? munroChallenge = await UserAchievementsDatabase.getLatestMunroChallengeAchievement(context,
-          userId: userState.currentUser!.uid ?? "");
+      Achievement? munroChallenge = await context
+          .read<UserAchievementsRepository>()
+          .getLatestMunroChallengeAchievement(userId: userState.currentUser!.uid ?? "");
 
       achievementsState.reset();
       achievementsState.setCurrentAchievement = munroChallenge;

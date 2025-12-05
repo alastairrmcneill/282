@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/achievements/state/achievements_state.dart';
 import 'package:two_eight_two/screens/achievements/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class AchievementsCompletedScreen extends StatefulWidget {
@@ -88,7 +87,7 @@ class _AchievementsCompletedScreenState extends State<AchievementsCompletedScree
                       onPressed: () {
                         AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
                         for (var achievement in achievementsState.recentlyCompletedAchievements) {
-                          AchievementService.acknowledgeAchievement(achievement: achievement);
+                          achievementsState.acknowledgeAchievement(achievement: achievement);
                         }
                         achievementsState.setRecentlyCompletedAchievements = [];
                         Navigator.of(context).pop();

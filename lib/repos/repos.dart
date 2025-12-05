@@ -9,7 +9,7 @@ export 'reviews_repository.dart';
 export 'saved_list_repository.dart';
 export 'munro_pictures_repository.dart';
 export 'report_repository.dart';
-export 'user_achievements_database.dart';
+export 'user_achievements_repository.dart';
 export 'feedback_repository.dart';
 export 'blocked_user_repository.dart';
 export 'munro_completions_repository.dart';

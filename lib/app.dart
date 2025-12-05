@@ -74,6 +74,9 @@ class App extends StatelessWidget {
         Provider(
           create: (_) => SavedListMunroRepository(Supabase.instance.client),
         ),
+        Provider(
+          create: (_) => UserAchievementsRepository(Supabase.instance.client),
+        ),
 
         StreamProvider<AppUser?>.value(
           value: AuthService.appUserStream,
@@ -194,7 +197,10 @@ class App extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider<AchievementsState>(
-          create: (_) => AchievementsState(),
+          create: (ctx) => AchievementsState(
+            ctx.read<UserAchievementsRepository>(),
+            ctx.read<UserState>(),
+          ),
         ),
         ChangeNotifierProvider<WeatherState>(
           create: (_) => WeatherState(),
