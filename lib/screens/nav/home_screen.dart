@@ -64,7 +64,7 @@ class HomeScreenState extends State<HomeScreen> {
     await context.read<MunroCompletionState>().loadUserMunroCompletions();
     AchievementService.getUserAchievements(context);
     context.read<UserState>().loadBlockedUsers();
-    SavedListService.readUserSavedLists(context);
+    context.read<SavedListState>().readUserSavedLists();
     PushNotificationService.checkAndUpdateFCMToken(context);
   }
 
@@ -158,7 +158,7 @@ class HomeScreenState extends State<HomeScreen> {
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
             } else {
               // Navigate to saved
-              SavedListService.readUserSavedLists(context);
+              context.read<SavedListState>().readUserSavedLists();
               setState(() => _currentIndex = value);
             }
           }
