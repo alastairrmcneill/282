@@ -12,7 +12,18 @@ import 'package:two_eight_two/widgets/widgets.dart';
 class PostWidget extends StatelessWidget {
   final Post post;
   final bool inFeed;
-  const PostWidget({super.key, required this.post, this.inFeed = true});
+  final Future<void> Function() onEdit;
+  final Future<void> Function() onDelete;
+  final Future<void> Function() onLikeTap;
+
+  const PostWidget({
+    super.key,
+    required this.post,
+    this.inFeed = true,
+    required this.onEdit,
+    required this.onDelete,
+    required this.onLikeTap,
+  });
 
   Widget _buildIncludedMunroText(BuildContext context) {
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
@@ -77,8 +88,6 @@ class PostWidget extends StatelessWidget {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     UserLikeState userLikeState = Provider.of<UserLikeState>(context);
     LikesState likesState = Provider.of<LikesState>(context);
-    FeedState feedState = context.read<FeedState>();
-    ProfileState profileState = context.read<ProfileState>();
 
     if (post.includedMunroIds.isEmpty) {
       return const SizedBox();
@@ -90,7 +99,11 @@ class PostWidget extends StatelessWidget {
         color: MyColors.backgroundColor,
         child: Column(
           children: [
-            PostHeader(post: post),
+            PostHeader(
+              post: post,
+              onEdit: onEdit,
+              onDelete: onDelete,
+            ),
             PostImagesCarousel(post: post),
             const SizedBox(height: 10),
             Padding(
@@ -114,19 +127,7 @@ class PostWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            if (userLikeState.likedPosts.contains(post.uid)) {
-                              userLikeState.unLikePost(
-                                post: post,
-                                onPostUpdated: inFeed ? feedState.updatePost : profileState.updatePost,
-                              );
-                            } else {
-                              userLikeState.likePost(
-                                post: post,
-                                onPostUpdated: inFeed ? feedState.updatePost : profileState.updatePost,
-                              );
-                            }
-                          },
+                          onTap: onLikeTap,
                           child: userLikeState.likedPosts.contains(post.uid)
                               ? const Icon(CupertinoIcons.heart_fill)
                               : const Icon(CupertinoIcons.heart),

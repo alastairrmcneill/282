@@ -18,7 +18,7 @@ class FollowingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<AppUser?>(context);
     NavigationState navigationState = Provider.of<NavigationState>(context);
-    final FollowersState followersState = context.read<FollowersState>();
+    final CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
     if (profile == null) return const SizedBox();
 
     return ElevatedButton(
@@ -28,11 +28,11 @@ class FollowingButton extends StatelessWidget {
           Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
           if (isFollowing) {
-            await followersState.unfollowUser(
+            await currentUserFollowerState.unfollowUser(
               targetUserId: profile!.id!,
             );
           } else {
-            await followersState.followUser(
+            await currentUserFollowerState.followUser(
               targetUserId: profile!.id!,
             );
           }

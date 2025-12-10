@@ -170,7 +170,7 @@ class FeedState extends ChangeNotifier {
     notifyListeners();
   }
 
-  updatePost(Post post) {
+  void updatePost(Post post) {
     int index = _friendsPosts.indexWhere((element) => element.uid == post.uid);
     if (index != -1) {
       _friendsPosts[index] = post;

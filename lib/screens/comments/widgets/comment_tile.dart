@@ -47,7 +47,6 @@ class CommentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
-    ProfileState profileState = context.read<ProfileState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
@@ -67,9 +66,9 @@ class CommentTile extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    profileState.loadProfileFromUserId(userId: comment.authorId);
                     Navigator.of(context).pushNamed(
                       ProfileScreen.route,
+                      arguments: ProfileScreenArgs(userId: comment.authorId),
                     );
                   },
                   child: Text(

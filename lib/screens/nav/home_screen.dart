@@ -65,6 +65,7 @@ class HomeScreenState extends State<HomeScreen> {
     context.read<AchievementsState>().getUserAchievements();
     context.read<UserState>().loadBlockedUsers();
     context.read<SavedListState>().readUserSavedLists();
+    context.read<CurrentUserFollowerState>().loadInitial();
     PushNotificationService.checkAndUpdateFCMToken(context);
   }
 
@@ -117,61 +118,47 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildScreen(BuildContext context, UserState userState) {
-    final user = Provider.of<AppUser?>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
-    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
-    final munroState = context.read<MunroState>();
-    final notificationsState = context.read<NotificationsState>();
-    final feedState = context.read<FeedState>();
-
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         key: _bottomNavigationKey,
         onTap: (value) {
-          // Reset notifiers
-          profileState.clear();
-          followersState.clear();
+          final user = Provider.of<AppUser?>(context, listen: false);
+          final navigationState = context.read<NavigationState>();
 
-          // Check which screen
+          if (value == 1 || value == 2 || value == 3) {
+            if (user == null) {
+              // store desired tab route and force auth
+              final route = value == 1
+                  ? FeedTab.route
+                  : value == 2
+                      ? SavedTab.route
+                      : ProfileTab.route;
+              navigationState.setNavigateToRoute = route;
+              Navigator.of(context).pushNamed(AuthHomeScreen.route);
+              return;
+            }
+          }
+
+          if (value == 1) {
+            final feedState = context.read<FeedState>();
+            final notificationsState = context.read<NotificationsState>();
+            feedState.getGlobalFeed();
+            feedState.getFriendsFeed();
+            notificationsState.getUserNotifications();
+          }
+
+          if (value == 2) {
+            context.read<SavedListState>().readUserSavedLists();
+          }
+
           if (value == 0) {
+            final munroState = context.read<MunroState>();
             munroState.setSelectedMunro = null;
             munroState.setSelectedMunroId = null;
-            setState(() => _currentIndex = value);
           }
-          if (value == 1) {
-            if (user == null) {
-              navigationState.setNavigateToRoute = FeedTab.route;
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
-            } else {
-              // Navigate to feed
-              feedState.getGlobalFeed();
-              feedState.getFriendsFeed();
-              notificationsState.getUserNotifications();
-              setState(() => _currentIndex = value);
-            }
-          }
-          if (value == 2) {
-            if (user == null) {
-              navigationState.setNavigateToRoute = SavedTab.route;
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
-            } else {
-              // Navigate to saved
-              context.read<SavedListState>().readUserSavedLists();
-              setState(() => _currentIndex = value);
-            }
-          }
-          if (value == 3) {
-            if (user == null) {
-              navigationState.setNavigateToRoute = ProfileTab.route;
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
-            } else {
-              // Navigate to profile
-              profileState.loadProfileFromUserId(userId: user.uid!);
-              setState(() => _currentIndex = value);
-            }
-          }
+
+          setState(() => _currentIndex = value);
         },
         currentIndex: _currentIndex,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),

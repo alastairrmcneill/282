@@ -9,7 +9,15 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostHeader extends StatelessWidget {
   final Post post;
-  const PostHeader({super.key, required this.post});
+  final Future<void> Function() onEdit;
+  final Future<void> Function() onDelete;
+
+  const PostHeader({
+    super.key,
+    required this.post,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   Widget _buildPopUpMenu(
     BuildContext context, {
@@ -18,25 +26,19 @@ class PostHeader extends StatelessWidget {
     required CreatePostState createPostState,
     required SettingsState settingsState,
   }) {
-    FeedState feedState = context.read<FeedState>();
-    ProfileState profileState = context.read<ProfileState>();
-
     List<MenuItem> menuItems = [];
     if (post.authorId == userState.currentUser?.uid) {
       menuItems = [
         MenuItem(
           text: 'Edit',
-          onTap: () {
-            createPostState.reset();
-            createPostState.loadPost = post;
-            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-            Navigator.of(context).pushNamed(CreatePostScreen.route);
+          onTap: () async {
+            await onEdit.call();
           },
         ),
         MenuItem(
           text: 'Delete',
-          onTap: () {
-            createPostState.deletePost(post: post, feedState: feedState, profileState: profileState);
+          onTap: () async {
+            await onDelete.call();
           },
         ),
       ];
@@ -61,7 +63,6 @@ class PostHeader extends StatelessWidget {
     CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
     SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
     UserState userState = Provider.of<UserState>(context, listen: false);
-    ProfileState profileState = context.read<ProfileState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
@@ -82,8 +83,10 @@ class PostHeader extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      profileState.loadProfileFromUserId(userId: post.authorId);
-                      Navigator.of(context).pushNamed(ProfileScreen.route);
+                      Navigator.of(context).pushNamed(
+                        ProfileScreen.route,
+                        arguments: ProfileScreenArgs(userId: post.authorId),
+                      );
                     },
                     child: Text(
                       post.authorDisplayName,

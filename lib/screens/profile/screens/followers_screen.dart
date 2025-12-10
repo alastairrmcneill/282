@@ -8,9 +8,16 @@ import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class FollowersFollowingScreenArgs {
+  final String userId;
+
+  FollowersFollowingScreenArgs({required this.userId});
+}
+
 class FollowersFollowingScreen extends StatefulWidget {
+  final String userId;
   static const String route = '/profile/followers';
-  const FollowersFollowingScreen({super.key});
+  const FollowersFollowingScreen({super.key, required this.userId});
 
   @override
   State<FollowersFollowingScreen> createState() => _FollowersFollowingScreenState();
@@ -25,8 +32,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
   void initState() {
     super.initState();
 
-    final followersState = Provider.of<FollowersState>(context, listen: false);
-    final profileState = Provider.of<ProfileState>(context, listen: false);
+    final followersListState = Provider.of<FollowersListState>(context, listen: false);
 
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
@@ -42,8 +48,8 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
     _followersScrollController.addListener(() {
       if (_followersScrollController.offset >= _followersScrollController.position.maxScrollExtent &&
           !_followersScrollController.position.outOfRange &&
-          followersState.status != FollowersStatus.paginating) {
-        followersState.paginateFollowers(userId: profileState.profile!.id!);
+          followersListState.status != FollowersListStatus.paginating) {
+        followersListState.paginateFollowers(userId: widget.userId);
       }
     });
 
@@ -51,8 +57,8 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
     _followingScrollController.addListener(() {
       if (_followingScrollController.offset >= _followingScrollController.position.maxScrollExtent &&
           !_followingScrollController.position.outOfRange &&
-          followersState.status != FollowersStatus.paginating) {
-        followersState.paginateFollowing(userId: profileState.profile!.id!);
+          followersListState.status != FollowersListStatus.paginating) {
+        followersListState.paginateFollowing(userId: widget.userId);
       }
     });
   }
@@ -72,21 +78,20 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FollowersState>(
-      builder: (context, followersState, child) {
-        switch (followersState.status) {
-          case FollowersStatus.loading:
-            return _buildLoadingScreen(followersState);
-          case FollowersStatus.error:
+    return Consumer<FollowersListState>(
+      builder: (context, followersListState, child) {
+        switch (followersListState.status) {
+          case FollowersListStatus.loading:
+            return _buildLoadingScreen(followersListState);
+          case FollowersListStatus.error:
             return Scaffold(
               appBar: AppBar(),
-              body: CenterText(text: followersState.error.message),
+              body: CenterText(text: followersListState.error.message),
             );
           default:
             return _buildScreen(
               context,
-              followersState: followersState,
-              profileState: context.read<ProfileState>(),
+              followersListState: followersListState,
               followersScrollController: _followersScrollController,
               followingScrollController: _followingScrollController,
             );
@@ -95,131 +100,122 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
     );
   }
 
-  Widget _buildLoadingScreen(FollowersState followersState) {
-    return WillPopScope(
-      onWillPop: () async {
-        followersState.navigateBack();
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(""),
-          centerTitle: false,
-          bottom: TabBar(
-            controller: _tabController,
-            indicatorColor: Colors.white,
-            tabs: const [
-              Tab(text: "Following"),
-              Tab(text: "Followers"),
-            ],
-          ),
-        ),
-        body: TabBarView(
+  Widget _buildLoadingScreen(FollowersListState followersListState) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+        centerTitle: false,
+        bottom: TabBar(
           controller: _tabController,
-          children: [
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 30,
-              itemBuilder: (context, index) => const ShimmerListTile(),
-            ),
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 30,
-              itemBuilder: (context, index) => const ShimmerListTile(),
-            ),
+          indicatorColor: Colors.white,
+          tabs: const [
+            Tab(text: "Following"),
+            Tab(text: "Followers"),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 30,
+            itemBuilder: (context, index) => const ShimmerListTile(),
+          ),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 30,
+            itemBuilder: (context, index) => const ShimmerListTile(),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildScreen(
     BuildContext context, {
-    required FollowersState followersState,
-    required ProfileState profileState,
+    required FollowersListState followersListState,
     required ScrollController followersScrollController,
     required ScrollController followingScrollController,
   }) {
-    return WillPopScope(
-      onWillPop: () async {
-        followersState.navigateBack();
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(""),
-          centerTitle: false,
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: "Following"),
-              Tab(text: "Followers"),
-            ],
-          ),
-        ),
-        body: TabBarView(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+        centerTitle: false,
+        bottom: TabBar(
           controller: _tabController,
-          children: [
-            followersState.following.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(15),
-                    child: CenterText(text: "Not following anyone."),
-                  )
-                : ListView(
-                    controller: followingScrollController,
-                    children: followersState.following.map(
-                      (f) {
-                        return ListTile(
-                          leading: CircularProfilePicture(
-                            radius: 20,
-                            profilePictureURL: f.targetProfilePictureURL,
-                            profileUid: f.targetId,
-                          ),
-                          title: Text(f.targetDisplayName ?? ""),
-                          trailing: UserTrailingButton(
-                            profileUserId: f.targetId,
-                            profileUserDisplayName: f.targetDisplayName ?? "",
-                            profileUserPictureURL: f.targetProfilePictureURL ?? "",
-                          ),
-                          onTap: () {
-                            profileState.loadProfileFromUserId(userId: f.targetId);
-                            Navigator.of(context).pushNamed(ProfileScreen.route);
-                          },
-                        );
-                      },
-                    ).toList(),
-                  ),
-            followersState.followers.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(15),
-                    child: CenterText(text: "No followers."),
-                  )
-                : ListView(
-                    controller: followersScrollController,
-                    children: followersState.followers.map(
-                      (f) {
-                        return ListTile(
-                          leading: CircularProfilePicture(
-                            radius: 20,
-                            profilePictureURL: f.sourceProfilePictureURL,
-                            profileUid: f.sourceId,
-                          ),
-                          title: Text(f.sourceDisplayName ?? ""),
-                          trailing: UserTrailingButton(
-                            profileUserId: f.sourceId,
-                            profileUserDisplayName: f.sourceDisplayName ?? "",
-                            profileUserPictureURL: f.sourceProfilePictureURL ?? "",
-                          ),
-                          onTap: () {
-                            profileState.loadProfileFromUserId(userId: f.sourceId);
-                            Navigator.of(context).pushNamed(ProfileScreen.route);
-                          },
-                        );
-                      },
-                    ).toList(),
-                  ),
+          tabs: const [
+            Tab(text: "Following"),
+            Tab(text: "Followers"),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          followersListState.following.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.all(15),
+                  child: CenterText(text: "Not following anyone."),
+                )
+              : ListView(
+                  controller: followingScrollController,
+                  children: followersListState.following.map(
+                    (f) {
+                      return ListTile(
+                        leading: CircularProfilePicture(
+                          radius: 20,
+                          profilePictureURL: f.targetProfilePictureURL,
+                          profileUid: f.targetId,
+                        ),
+                        title: Text(f.targetDisplayName ?? ""),
+                        trailing: UserTrailingButton(
+                          profileUserId: f.targetId,
+                          profileUserDisplayName: f.targetDisplayName ?? "",
+                          profileUserPictureURL: f.targetProfilePictureURL ?? "",
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            ProfileScreen.route,
+                            arguments: ProfileScreenArgs(userId: f.targetId),
+                          );
+                        },
+                      );
+                    },
+                  ).toList(),
+                ),
+          followersListState.followers.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.all(15),
+                  child: CenterText(text: "No followers."),
+                )
+              : ListView(
+                  controller: followersScrollController,
+                  children: followersListState.followers.map(
+                    (f) {
+                      return ListTile(
+                        leading: CircularProfilePicture(
+                          radius: 20,
+                          profilePictureURL: f.sourceProfilePictureURL,
+                          profileUid: f.sourceId,
+                        ),
+                        title: Text(f.sourceDisplayName ?? ""),
+                        trailing: UserTrailingButton(
+                          profileUserId: f.sourceId,
+                          profileUserDisplayName: f.sourceDisplayName ?? "",
+                          profileUserPictureURL: f.sourceProfilePictureURL ?? "",
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            ProfileScreen.route,
+                            arguments: ProfileScreenArgs(userId: f.sourceId),
+                          );
+                        },
+                      );
+                    },
+                  ).toList(),
+                ),
+        ],
       ),
     );
   }

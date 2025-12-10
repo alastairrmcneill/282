@@ -57,7 +57,6 @@ class ReviewListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
     CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
-    ProfileState profileState = context.read<ProfileState>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
@@ -78,8 +77,10 @@ class ReviewListTile extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    profileState.loadProfileFromUserId(userId: review.authorId);
-                    Navigator.of(context).pushNamed(ProfileScreen.route);
+                    Navigator.of(context).pushNamed(
+                      ProfileScreen.route,
+                      arguments: ProfileScreenArgs(userId: review.authorId),
+                    );
                   },
                   child: Text(
                     "${review.authorDisplayName} - ${review.dateTime.timeAgoShort()}",

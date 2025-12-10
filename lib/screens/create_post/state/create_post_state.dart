@@ -49,7 +49,7 @@ class CreatePostState extends ChangeNotifier {
       _existingImages.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
 
-  Future<void> createPost() async {
+  Future<Post?> createPost() async {
     try {
       setStatus = CreatePostStatus.loading;
 
@@ -130,13 +130,19 @@ class CreatePostState extends ChangeNotifier {
 
       // Update state
       setStatus = CreatePostStatus.loaded;
+      return post.copyWith(
+        uid: postId,
+        summitedDateTime: summitDateTime,
+        imageUrlsMap: addedImageUrlsMap,
+      );
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue uploading your post. Please try again");
+      return null;
     }
   }
 
-  Future editPost(FeedState feedState, ProfileState profileState) async {
+  Future<Post?> editPost() async {
     try {
       setStatus = CreatePostStatus.loading;
 
@@ -203,13 +209,12 @@ class CreatePostState extends ChangeNotifier {
 
       Post newPostState = newPost.copyWith(imageUrlsMap: updatedImageURLsMap);
 
-      // Update state
-      profileState.updatePost(newPostState);
-      feedState.updatePost(newPostState);
       setStatus = CreatePostStatus.loaded;
+      return newPostState;
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue uploading your post. Please try again");
+      return null;
     }
   }
 
@@ -249,15 +254,13 @@ class CreatePostState extends ChangeNotifier {
     }
   }
 
-  Future deletePost({required Post post, required FeedState feedState, required ProfileState profileState}) async {
+  Future deletePost({required Post post}) async {
     try {
-      profileState.removePost(post);
-      feedState.removePost(post);
-
       _postsRepository.deletePostWithUID(uid: post.uid);
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
-      profileState.setError = Error(message: "There was an issue deleting your post. Please try again.");
+      _status = CreatePostStatus.error;
+      notifyListeners();
     }
   }
 

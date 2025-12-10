@@ -447,8 +447,11 @@ class AuthService {
     ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
     profileState.reset();
 
-    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
-    followersState.reset();
+    FollowersListState followersListState = Provider.of<FollowersListState>(context, listen: false);
+    followersListState.reset();
+
+    CurrentUserFollowerState currentUserFollowerState = Provider.of<CurrentUserFollowerState>(context, listen: false);
+    currentUserFollowerState.reset();
 
     LikesState likesState = Provider.of<LikesState>(context, listen: false);
     likesState.reset();

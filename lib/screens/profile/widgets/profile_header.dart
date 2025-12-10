@@ -11,8 +11,7 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProfileState profileState = Provider.of<ProfileState>(context);
-    final followersState = context.read<FollowersState>();
-
+    CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
     return SafeArea(
       top: true,
       bottom: false,
@@ -60,10 +59,10 @@ class ProfileHeader extends StatelessWidget {
                         text: "Following",
                         stat: profileState.profile?.followingCount.toString() ?? "0",
                         onTap: () {
-                          followersState.loadInitialFollowersAndFollowing(
-                            userId: profileState.profile!.id!,
+                          Navigator.of(context).pushNamed(
+                            FollowersFollowingScreen.route,
+                            arguments: FollowersFollowingScreenArgs(userId: profileState.profile!.id!),
                           );
-                          Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
                         },
                       ),
                       const SizedBox(width: 10),
@@ -71,10 +70,10 @@ class ProfileHeader extends StatelessWidget {
                         text: "Followers",
                         stat: profileState.profile?.followersCount.toString() ?? "0",
                         onTap: () {
-                          followersState.loadInitialFollowersAndFollowing(
-                            userId: profileState.profile!.id!,
+                          Navigator.of(context).pushNamed(
+                            FollowersFollowingScreen.route,
+                            arguments: FollowersFollowingScreenArgs(userId: profileState.profile!.id!),
                           );
-                          Navigator.of(context).pushNamed(FollowersFollowingScreen.route);
                         },
                       ),
                     ],
@@ -89,7 +88,7 @@ class ProfileHeader extends StatelessWidget {
                               child: const Text('Edit profile'),
                             )
                           : FollowingButton(
-                              isFollowing: profileState.isFollowing,
+                              isFollowing: currentUserFollowerState.isFollowing(profileState.profile?.id ?? ""),
                               profile: profileState.profile,
                             ),
                       const SizedBox(width: 10),

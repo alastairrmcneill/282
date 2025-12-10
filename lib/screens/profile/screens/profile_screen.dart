@@ -9,9 +9,16 @@ import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class ProfileScreenArgs {
+  final String userId;
+
+  ProfileScreenArgs({required this.userId});
+}
+
 class ProfileScreen extends StatefulWidget {
+  final String userId;
   static const String route = '/profile';
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, required this.userId});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -21,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    final profileState = context.read<ProfileState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -30,6 +37,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         profileState.paginateProfilePosts();
       }
     });
+
+    // Kick off load if not already loaded for this user
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      profileState.loadProfileFromUserId(userId: widget.userId);
+    });
+
     super.initState();
   }
 
@@ -94,120 +107,146 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildLoadingScreen(ProfileState profileState) {
-    return WillPopScope(
-      onWillPop: () async {
-        profileState.navigateBack();
-        return true;
-      },
-      child: const Scaffold(
-        backgroundColor: Colors.white,
-        body: CustomScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          slivers: [
-            LoadingSliverHeader(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ShimmerBox(width: 300, height: 24, borderRadius: 5),
-                    SizedBox(height: 20),
-                    ShimmerBox(
-                      width: double.infinity,
-                      height: 40,
-                      borderRadius: 5,
-                    ),
-                    SizedBox(height: 20),
-                    ShimmerPostTile(),
-                    ShimmerPostTile(),
-                    ShimmerPostTile(),
-                  ],
-                ),
+    return const Scaffold(
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        slivers: [
+          LoadingSliverHeader(),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShimmerBox(width: 300, height: 24, borderRadius: 5),
+                  SizedBox(height: 20),
+                  ShimmerBox(
+                    width: double.infinity,
+                    height: 40,
+                    borderRadius: 5,
+                  ),
+                  SizedBox(height: 20),
+                  ShimmerPostTile(),
+                  ShimmerPostTile(),
+                  ShimmerPostTile(),
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
 
   Widget _buildScreen(BuildContext context, ProfileState profileState) {
+    UserLikeState userLikeState = context.read<UserLikeState>();
+    CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
     if (profileState.isCurrentUser) showGoToBulkMunroDialog(context);
 
-    return PopScope(
-      onPopInvoked: (value) {
-        profileState.navigateBack();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 35,
-          elevation: 0,
-          actions: [
-            profileState.isCurrentUser
-                ? IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(SettingsScreen.route);
-                    },
-                    icon: const Icon(Icons.settings_rounded),
-                  )
-                : _buildPopUpMenu(context, profileState: profileState)
-          ],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            profileState.loadProfileFromUserId(userId: profileState.profile?.id ?? "");
-          },
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              children: [
-                const ProfileHeader(),
-                const PaddedDivider(left: 15, right: 15),
-                !(profileState.isCurrentUser || profileState.isFollowing)
-                    ? const SizedBox(
-                        width: double.infinity,
-                        height: 100,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(CupertinoIcons.lock),
-                              Text('You are not following this user'),
-                            ],
-                          ),
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 35,
+        elevation: 0,
+        actions: [
+          profileState.isCurrentUser
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(SettingsScreen.route);
+                  },
+                  icon: const Icon(Icons.settings_rounded),
+                )
+              : _buildPopUpMenu(context, profileState: profileState)
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          profileState.loadProfileFromUserId(userId: profileState.profile?.id ?? "");
+        },
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              const ProfileHeader(),
+              const PaddedDivider(left: 15, right: 15),
+              !(profileState.isCurrentUser || currentUserFollowerState.isFollowing(widget.userId))
+                  ? const SizedBox(
+                      width: double.infinity,
+                      height: 100,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(CupertinoIcons.lock),
+                            Text('You are not following this user'),
+                          ],
                         ),
-                      )
-                    : Column(
-                        children: [
-                          const ProfileMunroStats(),
-                          const PaddedDivider(left: 15, right: 15),
-                          const ProfilePhotosWidget(),
-                          const PaddedDivider(
-                            top: 20,
-                            left: 15,
-                            right: 15,
-                            bottom: 5,
-                          ),
-                          profileState.posts.isEmpty
-                              ? const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20),
-                                  child: CenterText(text: "No posts"),
-                                )
-                              : Column(
-                                  children: profileState.posts
-                                      .map(
-                                        (Post post) => PostWidget(
-                                          post: post,
-                                          inFeed: false,
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                        ],
                       ),
-              ],
-            ),
+                    )
+                  : Column(
+                      children: [
+                        const ProfileMunroStats(),
+                        const PaddedDivider(left: 15, right: 15),
+                        const ProfilePhotosWidget(),
+                        const PaddedDivider(
+                          top: 20,
+                          left: 15,
+                          right: 15,
+                          bottom: 5,
+                        ),
+                        profileState.posts.isEmpty
+                            ? const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: CenterText(text: "No posts"),
+                              )
+                            : Column(
+                                children: profileState.posts
+                                    .map(
+                                      (Post post) => PostWidget(
+                                        post: post,
+                                        inFeed: false,
+                                        onEdit: () async {
+                                          final createPostState = context.read<CreatePostState>();
+                                          final settingsState = context.read<SettingsState>();
+
+                                          createPostState.reset();
+                                          createPostState.loadPost = post;
+                                          createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+
+                                          final updated = await Navigator.of(context).pushNamed<Post>(
+                                            CreatePostScreen.route,
+                                          );
+
+                                          if (updated != null) {
+                                            context.read<ProfileState>().updatePost(updated);
+                                          }
+                                        },
+                                        onDelete: () async {
+                                          final createPostState = context.read<CreatePostState>();
+                                          await createPostState.deletePost(post: post);
+
+                                          context.read<ProfileState>().removePost(post);
+                                        },
+                                        onLikeTap: () async {
+                                          if (userLikeState.likedPosts.contains(post.uid)) {
+                                            userLikeState.unLikePost(
+                                              post: post,
+                                              onPostUpdated: profileState.updatePost,
+                                            );
+                                          } else {
+                                            userLikeState.likePost(
+                                              post: post,
+                                              onPostUpdated: profileState.updatePost,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                      ],
+                    ),
+            ],
           ),
         ),
       ),

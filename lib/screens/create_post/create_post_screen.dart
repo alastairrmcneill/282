@@ -65,8 +65,6 @@ class CreatePostScreen extends StatelessWidget {
   }
 
   Widget _buildScreen(BuildContext context, CreatePostState createPostState) {
-    final FeedState feedState = context.read<FeedState>();
-    final ProfileState profileState = context.read<ProfileState>();
     return Stack(
       children: [
         Scaffold(
@@ -249,7 +247,12 @@ class CreatePostScreen extends StatelessWidget {
                   if (createPostState.editingPost == null) {
                     createPostState.createPost();
                   } else {
-                    createPostState.editPost(feedState, profileState);
+                    final updated = await createPostState.editPost();
+                    if (updated != null) {
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop<Post>(updated);
+                      }
+                    }
                   }
                 }
               },

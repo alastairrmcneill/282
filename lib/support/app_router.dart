@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import '../screens/screens.dart';
@@ -90,10 +93,45 @@ class AppRouter {
           settings: settings,
         );
       case ProfileScreen.route:
+        final args = settings.arguments as ProfileScreenArgs;
+
         return MaterialPageRoute(
-          builder: (_) => const ProfileScreen(),
+          builder: (context) {
+            return ChangeNotifierProvider<ProfileState>(
+              create: (ctx) => ProfileState(
+                ctx.read<ProfileRepository>(),
+                ctx.read<MunroPicturesRepository>(),
+                ctx.read<PostsRepository>(),
+                ctx.read<UserState>(),
+                ctx.read<UserLikeState>(),
+                ctx.read<MunroCompletionsRepository>(),
+              )..loadProfileFromUserId(userId: args.userId),
+              child: ProfileScreen(
+                userId: args.userId,
+              ),
+            );
+          },
           settings: settings,
         );
+
+      case FollowersFollowingScreen.route:
+        final args = settings.arguments as FollowersFollowingScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return ChangeNotifierProvider<FollowersListState>(
+              create: (ctx) => FollowersListState(
+                ctx.read<FollowersRepository>(),
+                ctx.read<UserState>(),
+              )..loadInitialFollowersAndFollowing(userId: args.userId),
+              child: FollowersFollowingScreen(
+                userId: args.userId,
+              ),
+            );
+          },
+          settings: settings,
+        );
+
       case CommentsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const CommentsScreen(),
@@ -225,11 +263,7 @@ class AppRouter {
           builder: (_) => const MunroChallengeDetailScreen(),
           settings: settings,
         );
-      case FollowersFollowingScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const FollowersFollowingScreen(),
-          settings: settings,
-        );
+
       case MunrosCompletedScreen.route:
         return MaterialPageRoute(
           builder: (_) => const MunrosCompletedScreen(),

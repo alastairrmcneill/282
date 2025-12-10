@@ -18,7 +18,7 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
 
     return ClickableStatBox(
       onTap: () async {
-        await profileState.getProfileMunroCompletions(userId: profileState.profile?.id ?? "");
+        await profileState.getProfileMunroCompletions();
         Navigator.of(context).pushNamed(MunrosCompletedScreen.route);
       },
       progress: progress.toString(),

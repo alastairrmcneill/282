@@ -51,7 +51,6 @@ class NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context);
     NotificationsState notificationsState = context.read<NotificationsState>();
-    ProfileState profileState = context.read<ProfileState>();
     return ListTile(
       tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
       leading: CircularProfilePicture(
@@ -73,8 +72,10 @@ class NotificationTile extends StatelessWidget {
           Navigator.of(context).pushNamed(CommentsScreen.route);
         } else if (notification.type == "follow") {
           // Navigate to the user post
-          profileState.loadProfileFromUserId(userId: notification.sourceId);
-          Navigator.of(context).pushNamed(ProfileScreen.route);
+          Navigator.of(context).pushNamed(
+            ProfileScreen.route,
+            arguments: ProfileScreenArgs(userId: notification.sourceId),
+          );
         }
       },
     );
