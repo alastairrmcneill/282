@@ -265,8 +265,12 @@ class AppRouter {
         );
 
       case MunrosCompletedScreen.route:
+        final args = settings.arguments as MunrosCompletedScreenArgs;
         return MaterialPageRoute(
-          builder: (_) => const MunrosCompletedScreen(),
+          builder: (_) => MunrosCompletedScreen(
+            munroCompletions: args.munroCompletions,
+            isCurrentUser: args.isCurrentUser,
+          ),
           settings: settings,
         );
       case ProfilePhotoGallery.route:
