@@ -29,24 +29,25 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           groupFilterState.status != GroupFilterStatus.paginating) {
-        GroupFilterService.paginateSearch(context, query: _searchController.text.trim());
+        groupFilterState.paginateSearch(query: _searchController.text.trim());
       }
     });
 
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      GroupFilterService.getInitialFriends(context, userId: user?.uid ?? '');
+      groupFilterState.getInitialFriends(userId: user?.uid ?? '');
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    GroupFilterState groupFilterState = context.read<GroupFilterState>();
     return Scaffold(
       appBar: AppBar(
         leading: CustomAppBarBackButton(
           onPressed: () {
-            GroupFilterService.clearSelection(context);
+            groupFilterState.clearSelection();
             Navigator.pop(context);
           },
         ),
@@ -55,12 +56,12 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
           hintText: "Find friends",
           onClear: () {
             _searchController.clear();
-            GroupFilterService.clearSearch(context);
+            groupFilterState.clearSearch();
           },
           onSearchTap: () {},
           onChanged: (value) {
             if (value.trim().length >= 2) {
-              GroupFilterService.search(context, query: value.trim());
+              groupFilterState.search(query: value.trim());
             }
           },
         ),
@@ -122,9 +123,9 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                               : null,
                           onTap: () {
                             if (groupFilterState.selectedFriendsUids.contains(followingRelationship.targetId)) {
-                              groupFilterState.removeSelectedFriend(followingRelationship.targetId);
+                              groupFilterState.removeSelectedFriend(uid: followingRelationship.targetId);
                             } else {
-                              groupFilterState.addSelectedFriend(followingRelationship.targetId);
+                              groupFilterState.addSelectedFriend(uid: followingRelationship.targetId);
                             }
                           },
                         );
@@ -139,7 +140,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    GroupFilterService.clearSelection(context);
+                    groupFilterState.clearSelection();
                   },
                   child: const Text("Clear"),
                 ),
@@ -148,7 +149,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                       ? () async {
                           // Run the filter
                           AnalyticsService.logEvent(name: "Group View Filter Applied");
-                          await GroupFilterService.filterMunrosBySelection(context);
+                          await groupFilterState.filterMunrosBySelection();
                           Navigator.pop(context);
                         }
                       : null,

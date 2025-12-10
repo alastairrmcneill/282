@@ -12,7 +12,7 @@ class ExploreHeaderGroupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context, listen: false);
+    final user = Provider.of<AppUser?>(context, listen: true);
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context);
 

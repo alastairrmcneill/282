@@ -162,6 +162,11 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (_) => LayoutState(),
       ),
       ChangeNotifierProvider<GroupFilterState>(
-        create: (_) => GroupFilterState(),
+        create: (ctx) => GroupFilterState(
+          ctx.read<UserState>(),
+          ctx.read<FollowersRepository>(),
+          ctx.read<MunroState>(),
+          ctx.read<MunroCompletionsRepository>(),
+        ),
       ),
     ];
