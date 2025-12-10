@@ -1,10 +1,8 @@
 export 'auth_service.dart';
-export 'search_service.dart';
 export 'storage_service.dart';
 export 'push_notification_service.dart';
 export '../screens/settings/service/settings_service.dart';
 export 'log_service.dart';
-export 'user_service.dart';
 export 'weather_service.dart';
 export 'shared_preferences_service.dart';
 export 'remote_config_service.dart';

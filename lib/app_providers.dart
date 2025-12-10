@@ -61,13 +61,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<UserState>(),
         ),
       ),
-      // ChangeNotifierProvider<FollowersState>(
-      //   create: (ctx) => FollowersState(
-      //     ctx.read<FollowersRepository>(),
-      //     ctx.read<UserState>(),
-      //     ctx.read<ProfileState>(),
-      //   ),
-      // ),
       ChangeNotifierProvider<CurrentUserFollowerState>(
         create: (ctx) => CurrentUserFollowerState(
           ctx.read<FollowersRepository>(),
@@ -75,7 +68,10 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         ),
       ),
       ChangeNotifierProvider<UserSearchState>(
-        create: (_) => UserSearchState(),
+        create: (ctx) => UserSearchState(
+          ctx.read<UserRepository>(),
+          ctx.read<UserState>(),
+        ),
       ),
       ChangeNotifierProvider<CreatePostState>(
         create: (ctx) => CreatePostState(

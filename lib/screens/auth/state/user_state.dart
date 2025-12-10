@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -124,6 +126,40 @@ class UserState extends ChangeNotifier {
       notifyListeners();
     } catch (error, stackTrace) {
       Log.error(error.toString(), stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> updateProfileVisibility(String newValue) async {
+    if (_currentUser == null) return;
+
+    AppUser updatedUser = _currentUser!.copyWith(profileVisibility: newValue);
+    updateUser(appUser: updatedUser);
+  }
+
+  Future updateProfile({required AppUser appUser, File? profilePicture}) async {
+    try {
+      if (_currentUser == null) return;
+      _status = UserStatus.loading;
+      notifyListeners();
+
+      String? photoURL;
+      if (profilePicture != null) {
+        photoURL = await StorageService.uploadProfilePicture(profilePicture);
+        appUser.profilePictureURL = photoURL;
+      }
+
+      // Update Auth
+      // await AuthService.updateAuthUser(appUser: appUser); // TODO: come back to
+
+      // Update user database
+      await updateUser(appUser: appUser);
+      _status = UserStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      Log.error(error.toString(), stackTrace: stackTrace);
+      _status = UserStatus.error;
+      _error = Error(code: error.toString(), message: "There was an issue updating the profile.");
+      notifyListeners();
     }
   }
 

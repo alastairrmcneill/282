@@ -64,9 +64,8 @@ class PrivacySettingsScreen extends StatelessWidget {
               child: DropdownButton<String>(
                 value: userState.currentUser?.profileVisibility ?? Privacy.public,
                 onChanged: (String? newValue) {
-                  print(newValue);
                   if (newValue != null) {
-                    UserService.updateProfileVisibility(context, newValue);
+                    context.read<UserState>().updateProfileVisibility(newValue);
                   }
                 },
                 items: _profileVisibilityOptions.map<DropdownMenuItem<String>>((String value) {

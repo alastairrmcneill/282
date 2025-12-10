@@ -6,7 +6,6 @@ import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -41,12 +40,12 @@ class InAppOnboardingFindFriends extends StatelessWidget {
             hintText: "Search Friends",
             onSearchTap: () {},
             onChanged: (value) {
-              if (value.trim().length >= 3) {
-                SearchService.search(context, query: value.trim());
+              if (value.trim().length >= 2) {
+                userSearchState.search(query: value.trim());
               }
             },
             onClear: () {
-              SearchService.clearSearch(context);
+              userSearchState.clearSearch();
             },
           ),
           const SizedBox(height: 30),

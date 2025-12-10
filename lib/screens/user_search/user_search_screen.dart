@@ -5,7 +5,6 @@ import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class UserSearchScreen extends StatefulWidget {
@@ -28,7 +27,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           userSearchState.status != SearchStatus.paginating) {
-        SearchService.paginateSearch(context, query: _searchController.text.trim());
+        userSearchState.paginateSearch(query: _searchController.text.trim());
       }
     });
     _focusNode = FocusNode();
@@ -46,11 +45,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
   @override
   Widget build(BuildContext context) {
     UserState userState = Provider.of<UserState>(context);
+    UserSearchState userSearchState = context.read<UserSearchState>();
     String currentUserId = userState.currentUser?.uid ?? "";
 
     return PopScope(
       onPopInvoked: (value) {
-        SearchService.clearSearch(context);
+        userSearchState.clearSearch();
       },
       child: Scaffold(
         appBar: AppBar(
@@ -59,12 +59,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             hintText: "Find friends",
             onClear: () {
               _searchController.clear();
-              SearchService.clearSearch(context);
+              userSearchState.clearSearch();
             },
             onSearchTap: () {},
             onChanged: (value) {
-              if (value.trim().length >= 3) {
-                SearchService.search(context, query: value.trim());
+              if (value.trim().length >= 2) {
+                userSearchState.search(query: value.trim());
               }
             },
           ),
