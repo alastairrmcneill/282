@@ -87,7 +87,6 @@ class PostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
     UserLikeState userLikeState = Provider.of<UserLikeState>(context);
-    LikesState likesState = Provider.of<LikesState>(context);
 
     if (post.includedMunroIds.isEmpty) {
       return const SizedBox();
@@ -135,10 +134,10 @@ class PostWidget extends StatelessWidget {
                         const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () {
-                            likesState.reset();
-                            likesState.setPostId = post.uid;
-                            likesState.getPostLikes();
-                            Navigator.of(context).pushNamed(LikesScreen.route);
+                            Navigator.of(context).pushNamed(
+                              LikesScreen.route,
+                              arguments: LikesScreenArgs(postId: post.uid),
+                            );
                           },
                           child: Text(
                             post.likes == 1 ? "1 like" : "${post.likes} likes",

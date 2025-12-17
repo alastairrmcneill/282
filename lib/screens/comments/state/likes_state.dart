@@ -19,7 +19,8 @@ class LikesState extends ChangeNotifier {
   String get postId => _postId!;
   List<Like> get likes => _likes;
 
-  Future<void> getPostLikes() async {
+  Future<void> getPostLikes({required String postId}) async {
+    _postId = postId;
     try {
       _status = LikesStatus.loading;
       notifyListeners();

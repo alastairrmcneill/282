@@ -2,10 +2,11 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class RegistrationNamesScreenArgs {
   final RegistrationData registrationData;
@@ -104,10 +105,23 @@ class RegistrationNamesScreen extends StatelessWidget {
                           "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}";
                       registrationData.firstName = _firstNameController.text.trim();
                       registrationData.lastName = _lastNameController.text.trim();
-                      await AuthService.registerWithEmail(
-                        context,
-                        registrationData: registrationData,
-                      );
+                      final authResult = await context.read<AuthState>().registerWithEmail(
+                            registrationData: registrationData,
+                          );
+
+                      if (authResult.success && authResult.showOnboarding) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          InAppOnboarding.route,
+                          (route) => false,
+                        );
+                      } else {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          HomeScreen.route,
+                          (route) => false,
+                        );
+                      }
                     },
                     child: Text('Next'),
                   ),

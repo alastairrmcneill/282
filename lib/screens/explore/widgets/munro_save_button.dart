@@ -13,7 +13,7 @@ class MunroSaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context);
+    final userId = context.read<AuthState>().currentUserId;
     NavigationState navigationState = Provider.of(context);
     MunroState munroState = Provider.of<MunroState>(context);
 
@@ -36,10 +36,10 @@ class MunroSaveButton extends StatelessWidget {
               "source": "Munro Page",
               "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
               "munro_name": munroState.selectedMunro?.name ?? "",
-              "user_id": user?.uid ?? "",
+              "user_id": userId ?? "",
             },
           );
-          if (user == null) {
+          if (userId == null) {
             navigationState.setNavigateToRoute = HomeScreen.route;
             Navigator.pushNamed(context, AuthHomeScreen.route);
           } else {

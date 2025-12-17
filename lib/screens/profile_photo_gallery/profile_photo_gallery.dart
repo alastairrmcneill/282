@@ -4,9 +4,16 @@ import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/notifiers.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
+class ProfilePhotoGalleryArgs {
+  final String userId;
+  final String displayName;
+  ProfilePhotoGalleryArgs({required this.userId, required this.displayName});
+}
+
 class ProfilePhotoGallery extends StatefulWidget {
+  final ProfilePhotoGalleryArgs args;
   static const String route = '/profile/photo_gallery';
-  const ProfilePhotoGallery({super.key});
+  const ProfilePhotoGallery({super.key, required this.args});
 
   @override
   State<ProfilePhotoGallery> createState() => _ProfilePhotoGalleryState();
@@ -16,13 +23,13 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
+    final profileGalleryState = context.read<ProfileGalleryState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
-          profileState.photoStatus != ProfilePhotoStatus.paginating) {
-        profileState.paginateMunroPictures(profileId: profileState.profile?.id ?? '');
+          profileGalleryState.status != ProfileGalleryStatus.paginating) {
+        profileGalleryState.paginateMunroPictures(profileId: widget.args.userId);
       }
     });
     super.initState();
@@ -36,11 +43,11 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
 
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
+    final profileGalleryState = context.watch<ProfileGalleryState>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Photos from ${profileState.profile?.displayName ?? "user"}"),
+        title: Text("Photos from ${widget.args.displayName}"),
       ),
       body: Column(
         children: [
@@ -53,16 +60,16 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
               ),
-              itemCount: profileState.profilePhotos.length,
+              itemCount: profileGalleryState.photos.length,
               itemBuilder: (BuildContext context, int index) {
-                MunroPicture munroPicture = profileState.profilePhotos[index];
+                MunroPicture munroPicture = profileGalleryState.photos[index];
                 return ClickableImage(
                   image: munroPicture,
-                  munroPictures: profileState.profilePhotos,
+                  munroPictures: profileGalleryState.photos,
                   initialIndex: index,
                   fetchMorePhotos: () async {
                     List<MunroPicture> newPhotos =
-                        await profileState.paginateMunroPictures(profileId: profileState.profile?.id ?? '');
+                        await profileGalleryState.paginateMunroPictures(profileId: widget.args.userId);
                     return newPhotos;
                   },
                 );
@@ -70,7 +77,9 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
             ),
           ),
           SizedBox(
-            child: profileState.photoStatus == ProfilePhotoStatus.paginating ? const CircularProgressIndicator() : null,
+            child: profileGalleryState.status == ProfileGalleryStatus.paginating
+                ? const CircularProgressIndicator()
+                : null,
           ),
         ],
       ),

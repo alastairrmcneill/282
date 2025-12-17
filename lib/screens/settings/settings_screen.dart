@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/config/app_config.dart';
 
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -20,8 +19,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context);
-    FlavorState flavorState = Provider.of<FlavorState>(context, listen: false);
+    final user = context.read<UserState>().currentUser;
+    FlavorState flavorState = context.read<FlavorState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -137,7 +136,10 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () async {
-              await AuthService.signOut(context);
+              await context.read<AuthState>().signOut().then((_) {
+                context.read<MunroCompletionState>().reset();
+                Navigator.of(context).pushReplacementNamed(HomeScreen.route);
+              });
             },
             title: const Text("Sign out"),
           ),
@@ -147,7 +149,10 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 message: "Are you sure you want to delete account and all associated data?",
                 onConfirm: () async {
-                  await AuthService.deleteUser(context, appUser: user!);
+                  await context.read<AuthState>().deleteUser(user!).then((_) {
+                    context.read<MunroCompletionState>().reset();
+                    Navigator.of(context).pushReplacementNamed(HomeScreen.route);
+                  });
                 },
               );
             },

@@ -27,8 +27,8 @@ class MunroSummaryTile extends StatelessWidget {
     if (munroId == null) {
       return const SizedBox();
     }
-    final user = Provider.of<AppUser?>(context);
-    NavigationState navigationState = Provider.of(context);
+    final userId = context.read<AuthState>().currentUserId;
+    NavigationState navigationState = Provider.of<NavigationState>(context);
     MunroState munroState = Provider.of<MunroState>(context);
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
     CreatePostState createPostState = Provider.of<CreatePostState>(context);
@@ -164,10 +164,10 @@ class MunroSummaryTile extends StatelessWidget {
                               "source": "Munro Summary Tile",
                               "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
                               "munro_name": munroState.selectedMunro?.name ?? "",
-                              "user_id": user?.uid ?? "",
+                              "user_id": userId ?? "",
                             },
                           );
-                          if (user == null) {
+                          if (userId == null) {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
@@ -182,7 +182,7 @@ class MunroSummaryTile extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: InkWell(
                         onTap: () {
-                          if (user == null) {
+                          if (userId == null) {
                             navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {

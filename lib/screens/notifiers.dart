@@ -1,5 +1,6 @@
 export 'explore/state/munro_state.dart';
 export 'auth/state/user_state.dart';
+export 'auth/state/auth_state.dart';
 export 'nav/state/navigation_state.dart';
 export 'profile/state/profile_state.dart';
 export 'profile/state/followers_list_state.dart';
@@ -24,3 +25,4 @@ export 'report/state/report_state.dart';
 export 'nav/state/layout_state.dart';
 export 'group_filter/state/group_filter_state.dart';
 export 'nav/state/munro_completions_state.dart';
+export 'profile_photo_gallery/state/profile_gallery_state.dart';

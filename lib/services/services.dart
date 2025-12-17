@@ -1,4 +1,3 @@
-export 'auth_service.dart';
 export 'storage_service.dart';
 export 'push_notification_service.dart';
 export '../screens/settings/service/settings_service.dart';

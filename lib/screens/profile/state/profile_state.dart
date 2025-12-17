@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
-import 'package:two_eight_two/screens/notifiers.dart' show UserLikeState, UserState;
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 
 class ProfileState extends ChangeNotifier {
@@ -177,14 +177,6 @@ class ProfileState extends ChangeNotifier {
   set setProfile(Profile? profile) {
     _profile = profile;
     notifyListeners();
-  }
-
-  void clear() {
-    _profile = null;
-    _posts = [];
-    _profilePhotos = [];
-    _isCurrentUser = false;
-    _munroCompletions = [];
   }
 
   set setMunroCompletions(List<MunroCompletion> munroCompletions) {

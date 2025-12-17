@@ -5,8 +5,14 @@ import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class LikesScreenArgs {
+  final String postId;
+  LikesScreenArgs({required this.postId});
+}
+
 class LikesScreen extends StatefulWidget {
-  const LikesScreen({super.key});
+  final String postId;
+  const LikesScreen({super.key, required this.postId});
   static const String route = '/posts/likes';
 
   @override
@@ -72,7 +78,7 @@ class _LikesScreenState extends State<LikesScreen> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            likesState.getPostLikes();
+            likesState.getPostLikes(postId: widget.postId);
           },
           child: ListView(
             controller: _scrollController,

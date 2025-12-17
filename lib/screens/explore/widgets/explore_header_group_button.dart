@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/services/services.dart';
@@ -12,7 +11,7 @@ class ExploreHeaderGroupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context, listen: true);
+    final userId = context.read<AuthState>().currentUserId;
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context);
 
@@ -38,7 +37,7 @@ class ExploreHeaderGroupButton extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  if (user == null) {
+                  if (userId == null) {
                     navigationState.setNavigateToRoute = HomeScreen.route;
                     Navigator.of(context).pushNamed(AuthHomeScreen.route);
                   } else {

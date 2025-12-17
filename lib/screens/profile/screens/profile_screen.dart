@@ -38,11 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     });
 
-    // Kick off load if not already loaded for this user
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      profileState.loadProfileFromUserId(userId: widget.userId);
-    });
-
     super.initState();
   }
 

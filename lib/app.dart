@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/app_providers.dart';
@@ -21,10 +23,16 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AnalyticsService.logOpen();
-    final client = Supabase.instance.client;
+    final authClient = FirebaseAuth.instance;
+    final googleSignInClient = GoogleSignIn.instance;
+    final supabaseClient = Supabase.instance.client;
     return MultiProvider(
       providers: [
-        ...buildRepositories(client),
+        ...buildRepositories(
+          supabaseClient,
+          authClient,
+          googleSignInClient,
+        ),
         ...buildGlobalStates(environment),
       ],
       child: MaterialApp(

@@ -51,7 +51,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
                 return null;
               },
               onSaved: (value) {
-                achievementsState.setAchievementFormCount = int.parse(value!);
+                achievementsState.setAchievementFormCount = int.parse(value!.trim());
               },
             ),
           ),

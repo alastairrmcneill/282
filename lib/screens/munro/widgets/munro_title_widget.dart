@@ -13,7 +13,7 @@ class MunroTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context);
+    final userId = context.read<AuthState>().currentUserId;
     MunroState munroState = Provider.of<MunroState>(context, listen: false);
     NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
     SavedListState savedListState = Provider.of<SavedListState>(context);
@@ -63,10 +63,10 @@ class MunroTitle extends StatelessWidget {
                 "source": "Munro Tile",
                 "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
                 "munro_name": munroState.selectedMunro?.name ?? "",
-                "user_id": user?.uid ?? "",
+                "user_id": userId ?? "",
               },
             );
-            if (user == null) {
+            if (userId == null) {
               navigationState.setNavigateToRoute = HomeScreen.route;
               Navigator.pushNamed(context, AuthHomeScreen.route);
             } else {

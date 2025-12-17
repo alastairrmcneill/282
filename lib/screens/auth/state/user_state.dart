@@ -54,11 +54,10 @@ class UserState extends ChangeNotifier {
     }
   }
 
-  Future<void> readCurrentUser() async {
+  Future<void> readUser({required String? uid}) async {
     _status = UserStatus.loading;
     notifyListeners();
     try {
-      String? uid = AuthService.currentUserId;
       if (uid == null) {
         _status = UserStatus.loaded;
         notifyListeners();

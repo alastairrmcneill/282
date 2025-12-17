@@ -78,7 +78,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, CommentsState commentsState) {
-    LikesState likesState = context.read<LikesState>();
     CommentsState commentsState = context.watch<CommentsState>();
 
     return Scaffold(
@@ -144,10 +143,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        likesState.reset();
-                        likesState.setPostId = commentsState.postId;
-                        likesState.getPostLikes();
-                        Navigator.of(context).pushNamed(LikesScreen.route);
+                        Navigator.of(context).pushNamed(
+                          LikesScreen.route,
+                          arguments: LikesScreenArgs(postId: commentsState.post.uid),
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

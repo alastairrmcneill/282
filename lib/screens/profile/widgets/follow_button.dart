@@ -16,7 +16,7 @@ class FollowingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<AppUser?>(context);
+    final loggedInUser = context.read<AuthState>().currentUserId;
     NavigationState navigationState = Provider.of<NavigationState>(context);
     final CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
     if (profile == null) return const SizedBox();

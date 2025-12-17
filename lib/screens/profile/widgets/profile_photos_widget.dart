@@ -19,8 +19,13 @@ class ProfilePhotosWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              profileState.getMunroPictures(profileId: profileState.profile?.id ?? '');
-              Navigator.of(context).pushNamed(ProfilePhotoGallery.route);
+              Navigator.of(context).pushNamed(
+                ProfilePhotoGallery.route,
+                arguments: ProfilePhotoGalleryArgs(
+                  userId: profileState.profile?.id ?? '',
+                  displayName: profileState.profile?.displayName ?? 'User',
+                ),
+              );
             },
             child: Container(
               color: Colors.transparent,

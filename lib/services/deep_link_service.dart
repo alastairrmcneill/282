@@ -53,7 +53,7 @@ class DeepLinkService {
     try {
       // Load necessary data
       await SettingsSerivce.loadSettings(context);
-      await userState.readCurrentUser();
+      await userState.readUser(uid: context.read<AuthState>().currentUserId);
       await context.read<SavedListState>().readUserSavedLists();
 
       munroState.setSelectedMunroId = munroId;

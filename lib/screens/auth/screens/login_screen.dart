@@ -2,10 +2,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController _emailController = TextEditingController();
@@ -16,11 +17,24 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   Future _submit(BuildContext context) async {
-    await AuthService.signInWithEmail(
-      context,
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    final authResult = await context.read<AuthState>().signInWithEmail(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
+    if (authResult.success && authResult.showOnboarding) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        InAppOnboarding.route,
+        (route) => false,
+      );
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomeScreen.route,
+        (route) => false,
+      );
+    }
   }
 
   @override

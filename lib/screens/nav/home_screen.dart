@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -58,7 +58,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future _loadData() async {
     await SettingsSerivce.loadSettings(context);
-    await context.read<UserState>().readCurrentUser();
+    final userId = context.read<AuthRepository>().currentUserId;
+    await context.read<UserState>().readUser(uid: userId);
 
     await context.read<MunroState>().loadMunros();
     await context.read<MunroCompletionState>().loadUserMunroCompletions();
@@ -89,7 +90,11 @@ class HomeScreenState extends State<HomeScreen> {
                 children: [
                   CenterText(text: userState.error.message),
                   ElevatedButton(
-                    onPressed: () => AuthService.signOut(context),
+                    onPressed: () async {
+                      await context.read<AuthState>().signOut().then((_) {
+                        context.read<MunroCompletionState>().reset();
+                      });
+                    },
                     child: const Text('Sign Out'),
                   ),
                 ],
@@ -123,11 +128,11 @@ class HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         key: _bottomNavigationKey,
         onTap: (value) {
-          final user = Provider.of<AppUser?>(context, listen: false);
+          final userId = context.read<AuthRepository>().currentUserId;
           final navigationState = context.read<NavigationState>();
 
           if (value == 1 || value == 2 || value == 3) {
-            if (user == null) {
+            if (userId == null) {
               // store desired tab route and force auth
               final route = value == 1
                   ? FeedTab.route

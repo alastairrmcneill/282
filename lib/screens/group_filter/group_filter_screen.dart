@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -23,7 +22,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
   @override
   void initState() {
     GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
-    final user = Provider.of<AppUser?>(context, listen: false);
+    final userId = context.read<AuthState>().currentUserId;
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -36,7 +35,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      groupFilterState.getInitialFriends(userId: user?.uid ?? '');
+      groupFilterState.getInitialFriends(userId: userId ?? '');
     });
   }
 

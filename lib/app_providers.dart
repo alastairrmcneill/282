@@ -1,13 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'models/models.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 import 'repos/repos.dart';
 import 'config/app_config.dart';
 import 'screens/notifiers.dart';
-import 'services/services.dart';
 
-List<SingleChildWidget> buildRepositories(SupabaseClient client) => [
+List<SingleChildWidget> buildRepositories(
+  SupabaseClient client,
+  FirebaseAuth firebaseAuth,
+  GoogleSignIn googleSignIn,
+) =>
+    [
+      Provider(create: (_) => AuthRepository(firebaseAuth, googleSignIn)),
       Provider(create: (_) => MunroRepository(client)),
       Provider(create: (_) => MunroCompletionsRepository(client)),
       Provider(create: (_) => UserRepository(client)),
@@ -28,14 +34,16 @@ List<SingleChildWidget> buildRepositories(SupabaseClient client) => [
     ];
 
 List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
-      StreamProvider<AppUser?>.value(
-        value: AuthService.appUserStream,
-        initialData: null,
-      ),
       ChangeNotifierProvider<UserState>(
         create: (ctx) => UserState(
           ctx.read<UserRepository>(),
           ctx.read<BlockedUserRepository>(),
+        ),
+      ),
+      ChangeNotifierProvider<AuthState>(
+        create: (ctx) => AuthState(
+          ctx.read<AuthRepository>(),
+          ctx.read<UserState>(),
         ),
       ),
       ChangeNotifierProvider<MunroCompletionState>(
@@ -64,12 +72,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ChangeNotifierProvider<CurrentUserFollowerState>(
         create: (ctx) => CurrentUserFollowerState(
           ctx.read<FollowersRepository>(),
-          ctx.read<UserState>(),
-        ),
-      ),
-      ChangeNotifierProvider<UserSearchState>(
-        create: (ctx) => UserSearchState(
-          ctx.read<UserRepository>(),
           ctx.read<UserState>(),
         ),
       ),

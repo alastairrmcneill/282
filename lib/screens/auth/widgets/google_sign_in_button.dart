@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/services/services.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 // Custom button for google sign in with shape and method
 class GoogleSignInButton extends StatelessWidget {
@@ -21,7 +23,20 @@ class GoogleSignInButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          await AuthService.signInWithGoogle(context);
+          final authResult = await context.read<AuthState>().signInWithGoogle();
+          if (authResult.success && authResult.showOnboarding) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              InAppOnboarding.route,
+              (route) => false,
+            );
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              HomeScreen.route,
+              (route) => false,
+            );
+          }
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

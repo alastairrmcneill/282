@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -49,7 +50,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
   }
 
   void _submit(FeedbackRepository repository, int surveyNumber) async {
-    final user = Provider.of<AppUser?>(context, listen: false);
+    final userId = context.read<AuthState>().currentUserId;
     String response1 = _feedbackController1.text;
     String response2 = _feedbackController2.text;
 
@@ -58,7 +59,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
     String appVersion = packageInfo.version;
 
     AppFeedback feedback = AppFeedback(
-      userId: user?.uid ?? "No User",
+      userId: userId ?? "No User",
       dateProvided: DateTime.now(),
       surveyNumber: surveyNumber,
       feedback1: response1,

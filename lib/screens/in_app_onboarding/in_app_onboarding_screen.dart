@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -25,6 +27,31 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
     // Log first screen view
     AnalyticsService.logOnboardingScreenViewed(screenIndex: _currentPage);
     AnalyticsService.logOnboardingStarted();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserData();
+    });
+  }
+
+  void _loadUserData() async {
+    final userId = context.read<AuthState>().currentUserId;
+    final userState = context.read<UserState>();
+    final munroCompletionState = context.read<MunroCompletionState>();
+    final bulkMunroCompletionState = context.read<BulkMunroUpdateState>();
+    await userState.readUser(uid: userId);
+    await munroCompletionState.loadUserMunroCompletions();
+    bulkMunroCompletionState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
+
+    context.read<MunroState>().setFilterString = "";
+
+    final achievementsState = context.read<AchievementsState>();
+
+    Achievement? munroChallenge = await context.read<UserAchievementsRepository>().getLatestMunroChallengeAchievement(
+          userId: userState.currentUser!.uid ?? "",
+        );
+
+    achievementsState.reset();
+    achievementsState.setCurrentAchievement = munroChallenge;
   }
 
   void _onPageChanged(int newPage) {
@@ -59,7 +86,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
               children: [
                 PageProgressIndicator(
                   currentPageIndex: _currentPage,
-                  totalPages: 4,
+                  totalPages: 3,
                 ),
                 Expanded(
                   child: PageView(
@@ -71,8 +98,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                       InAppOnboardingMunroUpdates(),
                       InAppOnboardingMunroChallenge(
                         args: InAppOnboardingMunroChallengeArgs(formKey: widget.formKey),
-                      ),
-                      InAppOnboardingFindFriends(),
+                      )
                     ],
                   ),
                 ),
@@ -92,9 +118,13 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               },
                               child: const Text('Back'),
                             ),
-                      _currentPage == 3
+                      _currentPage == 2
                           ? ElevatedButton(
                               onPressed: () async {
+                                if (!widget.formKey.currentState!.validate()) {
+                                  return;
+                                }
+                                widget.formKey.currentState!.save();
                                 context.read<AchievementsState>().setMunroChallenge();
                                 munroCompletionState.addBulkCompletions(
                                     munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList);
@@ -110,13 +140,6 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                             )
                           : ElevatedButton(
                               onPressed: () {
-                                if (_currentPage == 2) {
-                                  if (!widget.formKey.currentState!.validate()) {
-                                    return;
-                                  }
-                                  widget.formKey.currentState!.save();
-                                }
-
                                 _pageController.nextPage(
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,

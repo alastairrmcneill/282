@@ -15,3 +15,4 @@ export 'blocked_user_repository.dart';
 export 'munro_completions_repository.dart';
 export 'saved_list_munro_repository.dart';
 export 'profile_repository.dart';
+export 'auth_repository.dart';
