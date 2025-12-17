@@ -11,14 +11,14 @@ class MunroPictureGallery extends StatelessWidget {
   const MunroPictureGallery({super.key});
   @override
   Widget build(BuildContext context) {
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     return Column(
       children: [
         InkWell(
           onTap: () {
-            munroDetailState.loadMunroPictures(munroId: munroState.selectedMunro!.id, count: 4);
+            munroDetailState.loadMunroPictures(munroId: munroState.selectedMunro!.id);
             Navigator.of(context).pushNamed(MunroPhotoGallery.route);
           },
           child: Container(

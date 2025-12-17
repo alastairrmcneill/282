@@ -101,9 +101,7 @@ class AuthState extends ChangeNotifier {
     _setLoading();
 
     try {
-      final credential = await _authRepo.signInWithEmail(email: email, password: password);
-
-      // await _userState.readUser(uid: credential.user!.uid);
+      await _authRepo.signInWithEmail(email: email, password: password);
 
       _setAuthenticated();
 

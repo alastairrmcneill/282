@@ -37,8 +37,8 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     return Scaffold(
       appBar: AppBar(

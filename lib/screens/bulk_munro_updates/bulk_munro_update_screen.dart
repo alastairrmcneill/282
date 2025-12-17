@@ -28,8 +28,6 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
     MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
     BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context);
 
-    print("Building BulkMunroUpdateScreen");
-    print("Filtered Munro List Length: ${munroState.filteredMunroList.length}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bulk Munro Update'),
@@ -39,7 +37,7 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
               Navigator.pop(context);
 
               munroCompletionState.addBulkCompletions(
-                munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList,
+                munroCompletions: bulkMunroUpdateState.addedMunroCompletions,
               );
             },
             child: const Text("Save"),
