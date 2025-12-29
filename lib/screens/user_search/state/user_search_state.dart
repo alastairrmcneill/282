@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class UserSearchState extends ChangeNotifier {
   final UserRepository _userRepository;
   final UserState _userState;
-  UserSearchState(this._userRepository, this._userState);
+  final Logger _logger;
+
+  UserSearchState(
+    this._userRepository,
+    this._userState,
+    this._logger,
+  );
 
   SearchStatus _status = SearchStatus.initial;
   List<AppUser> _users = [];
@@ -35,7 +41,7 @@ class UserSearchState extends ChangeNotifier {
       _status = SearchStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue with the search. Please try again.");
     }
   }
@@ -58,7 +64,7 @@ class UserSearchState extends ChangeNotifier {
       _status = SearchStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue with the search. Please try again.");
     }
   }

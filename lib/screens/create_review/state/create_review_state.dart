@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class CreateReviewState extends ChangeNotifier {
   final ReviewsRepository _reviewsRepository;
   final UserState _userState;
   final MunroState _munroState;
+  final Logger _logger;
   CreateReviewState(
     this._reviewsRepository,
     this._userState,
     this._munroState,
+    this._logger,
   );
   CreateReviewStatus _status = CreateReviewStatus.initial;
   Error _error = Error();
@@ -55,7 +57,7 @@ class CreateReviewState extends ChangeNotifier {
 
       setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue posting your review. Please try again",
         code: error.toString(),
@@ -83,7 +85,7 @@ class CreateReviewState extends ChangeNotifier {
       _munroState.loadMunros();
       setStatus = CreateReviewStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue editing your review. Please try again",
         code: error.toString(),

@@ -263,7 +263,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
-    final MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
     final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
       image: selectedIcon,
@@ -288,8 +288,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: true);
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: true);
+    final munroState = context.read<MunroState>();
+    final munroCompletionState = context.read<MunroCompletionState>();
     return Scaffold(
       body: loading
           ? MapShimmerLoader()

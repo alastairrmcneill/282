@@ -46,7 +46,7 @@ class EditReviewScreen extends StatelessWidget {
   }
 
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
     Munro munro = munroState.munroList.firstWhere(
       (element) => element.id == createReviewState.editingReview!.munroId,
       orElse: () => Munro.empty,

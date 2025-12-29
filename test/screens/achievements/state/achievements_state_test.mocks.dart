@@ -8,6 +8,7 @@ import 'dart:io' as _i7;
 import 'dart:ui' as _i8;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:two_eight_two/logging/logging.dart' as _i9;
 import 'package:two_eight_two/models/achievement_model.dart' as _i5;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
@@ -50,8 +51,19 @@ class _FakeBlockedUserRepository_1 extends _i1.SmartFake
         );
 }
 
-class _FakeError_2 extends _i1.SmartFake implements _i3.Error {
-  _FakeError_2(
+class _FakeStorageRepository_2 extends _i1.SmartFake
+    implements _i2.StorageRepository {
+  _FakeStorageRepository_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeError_3 extends _i1.SmartFake implements _i3.Error {
+  _FakeError_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -135,6 +147,15 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
       ) as _i2.BlockedUserRepository);
 
   @override
+  _i2.StorageRepository get storageRepository => (super.noSuchMethod(
+        Invocation.getter(#storageRepository),
+        returnValue: _FakeStorageRepository_2(
+          this,
+          Invocation.getter(#storageRepository),
+        ),
+      ) as _i2.StorageRepository);
+
+  @override
   _i6.UserStatus get status => (super.noSuchMethod(
         Invocation.getter(#status),
         returnValue: _i6.UserStatus.initial,
@@ -143,7 +164,7 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
   @override
   _i3.Error get error => (super.noSuchMethod(
         Invocation.getter(#error),
-        returnValue: _FakeError_2(
+        returnValue: _FakeError_3(
           this,
           Invocation.getter(#error),
         ),
@@ -316,6 +337,67 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
         Invocation.method(
           #notifyListeners,
           [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [Logger].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLogger extends _i1.Mock implements _i9.Logger {
+  MockLogger() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void error(
+    String? message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #error,
+          [message],
+          {
+            #error: error,
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void fatal(
+    Object? error, {
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #fatal,
+          [error],
+          {
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void info(
+    String? message, {
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #info,
+          [message],
+          {#context: context},
         ),
         returnValueForMissingStub: null,
       );

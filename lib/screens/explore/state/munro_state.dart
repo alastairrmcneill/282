@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroState extends ChangeNotifier {
   final MunroRepository munroRepository;
-  MunroState(this.munroRepository);
+  final Logger _logger;
+  MunroState(this.munroRepository, this._logger);
 
   MunroStatus _status = MunroStatus.initial;
   Error _error = Error();
@@ -52,7 +53,7 @@ class MunroState extends ChangeNotifier {
       _createPostFilter();
       _bulkMunroUpdateFilter();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       _status = MunroStatus.error;
       _error = Error(
         code: error.toString(),

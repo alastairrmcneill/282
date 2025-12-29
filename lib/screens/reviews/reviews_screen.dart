@@ -17,7 +17,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
 
   @override
   void initState() {
-    ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
+    final reviewsState = context.read<ReviewsState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&

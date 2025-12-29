@@ -12,8 +12,8 @@ class MunroReviewsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ReviewsState reviewsState = Provider.of<ReviewsState>(context);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final reviewsState = context.watch<ReviewsState>();
+    final munroState = context.read<MunroState>();
     return Column(
       children: [
         InkWell(

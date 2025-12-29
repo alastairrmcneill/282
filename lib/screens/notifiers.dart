@@ -1,7 +1,6 @@
 export 'explore/state/munro_state.dart';
 export 'auth/state/user_state.dart';
 export 'auth/state/auth_state.dart';
-export 'nav/state/navigation_state.dart';
 export 'profile/state/profile_state.dart';
 export 'profile/state/followers_list_state.dart';
 export 'user_search/state/user_search_state.dart';
@@ -13,6 +12,7 @@ export 'notifications/state/notifications_state.dart';
 export 'settings/state/settings_state.dart';
 export 'nav/state/flavor_state.dart';
 export 'nav/state/current_user_follower_state.dart';
+export 'nav/state/remote_config_state.dart';
 export 'comments/state/likes_state.dart';
 export 'munro/state/munro_detail_state.dart';
 export 'create_review/state/create_review_state.dart';

@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroSummaryTile extends StatelessWidget {
   final int? munroId;
@@ -28,14 +28,13 @@ class MunroSummaryTile extends StatelessWidget {
       return const SizedBox();
     }
     final userId = context.read<AuthState>().currentUserId;
-    NavigationState navigationState = Provider.of<NavigationState>(context);
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
-    SettingsState settingsState = Provider.of<SettingsState>(context);
-    SavedListState savedListState = Provider.of<SavedListState>(context);
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
+    final createPostState = context.watch<CreatePostState>();
+    final settingsState = context.watch<SettingsState>();
+    final savedListState = context.watch<SavedListState>();
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
     bool munroSummited = munroCompletionState.munroCompletions.any((mc) => mc.munroId == munro.id);
@@ -158,17 +157,12 @@ class MunroSummaryTile extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: InkWell(
                         onTap: () async {
-                          AnalyticsService.logEvent(
-                            name: "Save Munro Button Clicked",
-                            parameters: {
-                              "source": "Munro Summary Tile",
-                              "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
-                              "munro_name": munroState.selectedMunro?.name ?? "",
-                              "user_id": userId ?? "",
-                            },
-                          );
+                          context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
+                            AnalyticsProp.source: "Munro Summary Tile",
+                            AnalyticsProp.munroId: (munroState.selectedMunro?.id ?? 0).toString(),
+                            AnalyticsProp.munroName: munroState.selectedMunro?.name ?? "",
+                          });
                           if (userId == null) {
-                            navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             munroState.setSelectedMunro = munro;
@@ -183,7 +177,6 @@ class MunroSummaryTile extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           if (userId == null) {
-                            navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             if (munroSummited) return;
@@ -191,7 +184,6 @@ class MunroSummaryTile extends StatelessWidget {
                             createPostState.reset();
                             createPostState.addMunro(munro.id);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-                            navigationState.setNavigateToRoute = HomeScreen.route;
                             Navigator.of(context).pushNamed(CreatePostScreen.route);
                           }
                         },

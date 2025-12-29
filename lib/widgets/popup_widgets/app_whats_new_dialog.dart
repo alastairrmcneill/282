@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/services/services.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/repos/repos.dart';
 
 class WhatsNewDialog extends StatefulWidget {
   final Widget child;
@@ -25,12 +26,13 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
 
     String version = "1.2.6";
     // Check if dialog has been shown before
-    bool showWhatsNewDialog = await SharedPreferencesService.getShowWhatsNewDialog(version);
+    final appFlagsRepository = context.read<AppFlagsRepository>();
+    bool showWhatsNewDialog = appFlagsRepository.showWhatsNewDialog(version);
 
-    String? firstAppVersion = await SharedPreferencesService.getFirstAppVersion();
+    String? firstAppVersion = appFlagsRepository.firstAppVersion;
 
     if (firstAppVersion == null) {
-      SharedPreferencesService.setFirstAppVersion(version);
+      appFlagsRepository.setFirstAppVersion(version);
       return;
     }
 
@@ -51,7 +53,7 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
           onPopInvoked: (didPop) {
             if (didPop) {
               // Mark shared prefs as seen
-              SharedPreferencesService.setShownWhatsNewDialog(version);
+              context.read<AppFlagsRepository>().setShownWhatsNewDialog(version);
             }
           },
           child: Dialog(

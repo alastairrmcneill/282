@@ -12,9 +12,9 @@ class BulkMunroUpdateListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
-    BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context);
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final bulkMunroUpdateState = context.watch<BulkMunroUpdateState>();
+    final userState = context.read<UserState>();
 
     List<DateTime> alreadySummitedDates = munroCompletionState.munroCompletions
         .where((mc) => mc.munroId == munro.id)

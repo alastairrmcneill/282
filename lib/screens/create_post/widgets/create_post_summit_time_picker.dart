@@ -8,7 +8,7 @@ class CreatePostSummitTimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
+    final createPostState = context.watch<CreatePostState>();
     TextEditingController timeController = TextEditingController(
       text: createPostState.startTime != null
           ? createPostState.startTime!.format(context)

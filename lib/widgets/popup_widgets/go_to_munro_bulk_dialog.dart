@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 // Custom error dialog with string input for any message
 showGoToBulkMunroDialog(BuildContext context) async {
   // Check if if should show this dialog
-  bool result = await SharedPreferencesService.getShowBulkMunroDialog();
+  bool result = context.read<AppFlagsRepository>().showBulkMunroDialog;
   if (!result) return;
 
   Dialog dialog = Dialog(
@@ -33,9 +33,9 @@ showGoToBulkMunroDialog(BuildContext context) async {
             child: ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
-                MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
-                MunroState munroState = Provider.of<MunroState>(context, listen: false);
+                final bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
+                final munroCompletionState = context.read<MunroCompletionState>();
+                final munroState = context.read<MunroState>();
 
                 bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
                 munroState.setBulkMunroUpdateFilterString = "";

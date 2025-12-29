@@ -32,7 +32,7 @@ class _AchievementsCompletedScreenState extends State<AchievementsCompletedScree
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+    final achievementsState = context.read<AchievementsState>();
     confettiController.play();
 
     return Dialog(
@@ -85,7 +85,6 @@ class _AchievementsCompletedScreenState extends State<AchievementsCompletedScree
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
                         for (var achievement in achievementsState.recentlyCompletedAchievements) {
                           achievementsState.acknowledgeAchievement(achievement: achievement);
                         }

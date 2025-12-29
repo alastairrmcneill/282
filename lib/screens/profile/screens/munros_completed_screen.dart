@@ -50,7 +50,7 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
   void _logTabAnalytics(int index) {
     final screenName =
         index == 0 ? '${MunrosCompletedScreen.route}/completed' : '${MunrosCompletedScreen.route}/remaining';
-    appRouteObserver.updateCurrentScreen(screenName);
+    context.read<AppRouteObserver>().updateCurrentScreen(screenName);
   }
 
   @override
@@ -61,7 +61,7 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
     MunroCompletionState munroCompletionState = context.watch<MunroCompletionState>();
 
     Set<int> completedMunroIds = {};

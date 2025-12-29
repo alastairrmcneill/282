@@ -1,19 +1,30 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class AuthState extends ChangeNotifier {
   final AuthRepository _authRepo;
   final UserState _userState;
+  final AppFlagsRepository _appFlagsRepository;
+  final Analytics _analytics;
+  final Logger _logger;
 
-  AuthState(this._authRepo, this._userState);
+  AuthState(
+    this._authRepo,
+    this._userState,
+    this._appFlagsRepository,
+    this._analytics,
+    this._logger,
+  );
 
   AuthStatus _status = AuthStatus.initial;
   String? _errorMessage;
@@ -76,19 +87,21 @@ class AuthState extends ChangeNotifier {
 
       await _userState.createUser(appUser: appUser);
 
-      AnalyticsService.logSignUp(
-        method: "email",
-        platform: isIOS ? "iOS" : "Android",
-      );
+      await _analytics.identify(firebaseUser.uid);
+
+      _analytics.track(AnalyticsEvent.signUp, props: {
+        AnalyticsProp.method: 'email',
+        AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
+      });
 
       _setAuthenticated();
 
       // State doesn’t navigate – just tell UI what to do.
-      final showOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
 
       return AuthResult(success: true, showOnboarding: showOnboarding);
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -105,11 +118,11 @@ class AuthState extends ChangeNotifier {
 
       _setAuthenticated();
 
-      final showOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
 
       return AuthResult(success: true, showOnboarding: showOnboarding);
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -166,20 +179,22 @@ class AuthState extends ChangeNotifier {
 
       await _userState.createUser(appUser: appUser);
 
+      await _analytics.identify(firebaseUser.uid);
+
       if (isNewUser) {
-        AnalyticsService.logSignUp(
-          method: "apple",
-          platform: isIOS ? "iOS" : "Android",
-        );
+        _analytics.track(AnalyticsEvent.signUp, props: {
+          AnalyticsProp.method: 'apple',
+          AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
+        });
       }
 
       _setAuthenticated();
 
-      final showOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
 
       return AuthResult(success: true, showOnboarding: showOnboarding);
     } on SignInWithAppleAuthorizationException catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
 
       if (e.code == AuthorizationErrorCode.canceled) {
         _status = AuthStatus.initial;
@@ -193,7 +208,7 @@ class AuthState extends ChangeNotifier {
         errorMessage: e.message,
       );
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -238,18 +253,20 @@ class AuthState extends ChangeNotifier {
 
       await _userState.createUser(appUser: appUser);
 
-      AnalyticsService.logSignUp(
-        method: "google",
-        platform: isIOS ? "iOS" : "Android",
-      );
+      await _analytics.identify(firebaseUser.uid);
+
+      _analytics.track(AnalyticsEvent.signUp, props: {
+        AnalyticsProp.method: 'google',
+        AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
+      });
 
       _setAuthenticated();
 
-      final showOnboarding = await SharedPreferencesService.getShowInAppOnboarding();
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
 
       return AuthResult(success: true, showOnboarding: showOnboarding);
     } on GoogleSignInException catch (e, st) {
-      Log.error("Google Sign In Error: $e", stackTrace: st);
+      _logger.error("Google Sign In Error: $e", stackTrace: st);
       if (e.code == GoogleSignInExceptionCode.canceled) {
         _status = AuthStatus.initial;
         notifyListeners();
@@ -262,7 +279,7 @@ class AuthState extends ChangeNotifier {
         errorMessage: "There was an error signing in with Google.",
       );
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -276,7 +293,7 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return AuthResult(success: true);
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -285,6 +302,7 @@ class AuthState extends ChangeNotifier {
   Future<AuthResult> signOut() async {
     _setLoading();
     try {
+      _analytics.reset();
       await _authRepo.signOut();
       _userState.reset();
 
@@ -292,7 +310,7 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return AuthResult(success: true);
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -301,13 +319,14 @@ class AuthState extends ChangeNotifier {
   Future<AuthResult> deleteUser(AppUser appUser) async {
     _setLoading();
     try {
+      _analytics.reset();
       await _userState.deleteUser(appUser: appUser);
       await _authRepo.deleteAuthUser();
       _status = AuthStatus.initial;
       notifyListeners();
       return AuthResult(success: true);
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }

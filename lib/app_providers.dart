@@ -1,8 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
+import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
+import 'analytics/analytics.dart';
 import 'repos/repos.dart';
 import 'config/app_config.dart';
 import 'screens/notifiers.dart';
@@ -11,6 +18,10 @@ List<SingleChildWidget> buildRepositories(
   SupabaseClient client,
   FirebaseAuth firebaseAuth,
   GoogleSignIn googleSignIn,
+  SharedPreferences sharedPreferences,
+  Mixpanel mixpanel,
+  FirebaseStorage firebaseStorage,
+  FirebaseRemoteConfig remoteConfig,
 ) =>
     [
       Provider(create: (_) => AuthRepository(firebaseAuth, googleSignIn)),
@@ -31,56 +42,91 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => SavedListRepository(client)),
       Provider(create: (_) => SavedListMunroRepository(client)),
       Provider(create: (_) => UserAchievementsRepository(client)),
+      Provider(create: (_) => SettingsRepository(sharedPreferences)),
+      Provider(create: (_) => AppFlagsRepository(sharedPreferences)),
+      Provider(create: (_) => WeartherRepository()),
+      Provider<Analytics>(
+        create: (ctx) => MixpanelAnalytics(
+          mixpanel,
+          ctx.read<Logger>(),
+        ),
+      ),
+      Provider<AppRouteObserver>(
+        create: (ctx) => AppRouteObserver(ctx.read<Analytics>()),
+      ),
+      Provider(create: (_) => StorageRepository(firebaseStorage)),
+      Provider(create: (_) => RemoteConfigRespository(remoteConfig)),
     ];
 
 List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
+      ChangeNotifierProvider<RemoteConfigState>(
+        create: (ctx) => RemoteConfigState(
+          ctx.read<RemoteConfigRespository>(),
+          ctx.read<Logger>(),
+        ),
+      ),
       ChangeNotifierProvider<UserState>(
         create: (ctx) => UserState(
           ctx.read<UserRepository>(),
           ctx.read<BlockedUserRepository>(),
+          ctx.read<StorageRepository>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<AuthState>(
         create: (ctx) => AuthState(
           ctx.read<AuthRepository>(),
           ctx.read<UserState>(),
+          ctx.read<AppFlagsRepository>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<MunroCompletionState>(
         create: (ctx) => MunroCompletionState(
           ctx.read<MunroCompletionsRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
-        create: (ctx) => MunroState(ctx.read<MunroRepository>()),
+        create: (ctx) => MunroState(
+          ctx.read<MunroRepository>(),
+          ctx.read<Logger>(),
+        ),
         update: (ctx, completions, munroState) {
-          munroState ??= MunroState(ctx.read<MunroRepository>());
+          munroState ??= MunroState(
+            ctx.read<MunroRepository>(),
+            ctx.read<Logger>(),
+          );
           munroState.syncCompletedIds(completions.completedMunroIds);
           return munroState;
         },
-      ),
-      ChangeNotifierProvider<NavigationState>(
-        create: (_) => NavigationState(),
       ),
       ChangeNotifierProvider<UserLikeState>(
         create: (ctx) => UserLikeState(
           ctx.read<LikesRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<CurrentUserFollowerState>(
         create: (ctx) => CurrentUserFollowerState(
           ctx.read<FollowersRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<CreatePostState>(
         create: (ctx) => CreatePostState(
           ctx.read<PostsRepository>(),
           ctx.read<MunroPicturesRepository>(),
+          ctx.read<StorageRepository>(),
           ctx.read<UserState>(),
           ctx.read<MunroCompletionState>(),
+          ctx.read<RemoteConfigState>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<FeedState>(
@@ -88,6 +134,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<PostsRepository>(),
           ctx.read<UserState>(),
           ctx.read<UserLikeState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<CommentsState>(
@@ -95,16 +142,21 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<CommentsRepository>(),
           ctx.read<UserState>(),
           ctx.read<PostsRepository>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<NotificationsState>(
         create: (ctx) => NotificationsState(
           ctx.read<NotificationsRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<SettingsState>(
-        create: (_) => SettingsState(),
+        create: (ctx) => SettingsState(
+          ctx.read<SettingsRepository>(),
+          ctx.read<Logger>(),
+        ),
       ),
       ChangeNotifierProvider<FlavorState>(
         create: (_) => FlavorState(environment),
@@ -113,12 +165,14 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => LikesState(
           ctx.read<LikesRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<MunroDetailState>(
         create: (ctx) => MunroDetailState(
           ctx.read<MunroPicturesRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<ReviewsState>(
@@ -126,6 +180,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<ReviewsRepository>(),
           ctx.read<MunroState>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<CreateReviewState>(
@@ -133,22 +188,30 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<ReviewsRepository>(),
           ctx.read<UserState>(),
           ctx.read<MunroState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<AchievementsState>(
         create: (ctx) => AchievementsState(
           ctx.read<UserAchievementsRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<WeatherState>(
-        create: (_) => WeatherState(),
+        create: (ctx) => WeatherState(
+          ctx.read<WeartherRepository>(),
+          ctx.read<SettingsState>(),
+          ctx.read<MunroState>(),
+          ctx.read<Logger>(),
+        ),
       ),
       ChangeNotifierProvider<SavedListState>(
         create: (ctx) => SavedListState(
           ctx.read<SavedListRepository>(),
           ctx.read<SavedListMunroRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<BulkMunroUpdateState>(
@@ -158,6 +221,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => ReportState(
           ctx.read<ReportRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<LayoutState>(
@@ -169,6 +233,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<FollowersRepository>(),
           ctx.read<MunroState>(),
           ctx.read<MunroCompletionsRepository>(),
+          ctx.read<Logger>(),
         ),
       ),
     ];

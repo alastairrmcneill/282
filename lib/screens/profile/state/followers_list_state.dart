@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/log_service.dart';
 
 class FollowersListState extends ChangeNotifier {
   final FollowersRepository _repository;
   final UserState _userState;
+  final Logger _logger;
+
   FollowersListState(
     this._repository,
     this._userState,
+    this._logger,
   );
 
   FollowersListStatus _status = FollowersListStatus.initial;
@@ -46,7 +49,7 @@ class FollowersListState extends ChangeNotifier {
       _status = FollowersListStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue. Please try again.");
     }
   }
@@ -70,7 +73,7 @@ class FollowersListState extends ChangeNotifier {
       _status = FollowersListStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue. Please try again.");
     }
   }
@@ -94,7 +97,7 @@ class FollowersListState extends ChangeNotifier {
       _status = FollowersListStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue. Please try again.");
     }
   }

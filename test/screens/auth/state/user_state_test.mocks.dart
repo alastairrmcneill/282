@@ -4,12 +4,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
+import 'dart:io' as _i7;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:two_eight_two/logging/logger.dart' as _i9;
 import 'package:two_eight_two/models/models.dart' as _i4;
 import 'package:two_eight_two/repos/blocked_user_repository.dart' as _i5;
+import 'package:two_eight_two/repos/storage_repository.dart' as _i6;
 import 'package:two_eight_two/repos/user_repository.dart' as _i2;
-import 'package:two_eight_two/services/storage_service.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -146,11 +149,109 @@ class MockBlockedUserRepository extends _i1.Mock
       ) as _i3.Future<List<String>>);
 }
 
-/// A class which mocks [StorageService].
+/// A class which mocks [StorageRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStorageService extends _i1.Mock implements _i6.StorageService {
-  MockStorageService() {
+class MockStorageRepository extends _i1.Mock implements _i6.StorageRepository {
+  MockStorageRepository() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  _i3.Future<String> uploadImage({
+    required _i7.File? imageFile,
+    required _i6.ImageUploadType? type,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #uploadImage,
+          [],
+          {
+            #imageFile: imageFile,
+            #type: type,
+          },
+        ),
+        returnValue: _i3.Future<String>.value(_i8.dummyValue<String>(
+          this,
+          Invocation.method(
+            #uploadImage,
+            [],
+            {
+              #imageFile: imageFile,
+              #type: type,
+            },
+          ),
+        )),
+      ) as _i3.Future<String>);
+
+  @override
+  _i3.Future<void> deleteByUrl(String? imageUrl) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteByUrl,
+          [imageUrl],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+}
+
+/// A class which mocks [Logger].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLogger extends _i1.Mock implements _i9.Logger {
+  MockLogger() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void error(
+    String? message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #error,
+          [message],
+          {
+            #error: error,
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void fatal(
+    Object? error, {
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #fatal,
+          [error],
+          {
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void info(
+    String? message, {
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #info,
+          [message],
+          {#context: context},
+        ),
+        returnValueForMissingStub: null,
+      );
 }

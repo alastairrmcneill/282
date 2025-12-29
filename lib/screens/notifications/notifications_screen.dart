@@ -17,7 +17,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
+    final notificationsState = context.read<NotificationsState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&

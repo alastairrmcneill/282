@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
@@ -52,7 +53,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                               constraints: const BoxConstraints(),
                               padding: const EdgeInsets.all(2),
                               onPressed: () {
-                                AnalyticsService.logEvent(name: "auth_home_screen_close_button_tapped");
+                                context.read<Analytics>().track(AnalyticsEvent.authHomeCloseButtonTapped);
                                 Navigator.of(context).pop();
                               },
                               icon: const Icon(

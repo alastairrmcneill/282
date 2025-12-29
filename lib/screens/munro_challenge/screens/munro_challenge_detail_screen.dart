@@ -64,7 +64,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+    final achievementsState = context.watch<AchievementsState>();
 
     Achievement achievement = achievementsState.currentAchievement!;
     return Scaffold(

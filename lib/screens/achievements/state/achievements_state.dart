@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class AchievementsState extends ChangeNotifier {
   final UserAchievementsRepository _userAchievementsRepository;
   final UserState _userState;
-  AchievementsState(this._userAchievementsRepository, this._userState);
+  final Logger _logger;
+  AchievementsState(this._userAchievementsRepository, this._userState, this._logger);
 
   AchievementsStatus _status = AchievementsStatus.initial;
   Error _error = Error();
@@ -48,7 +49,7 @@ class AchievementsState extends ChangeNotifier {
       }
       setStatus = AchievementsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setStatus = AchievementsStatus.error;
     }
   }
@@ -59,7 +60,7 @@ class AchievementsState extends ChangeNotifier {
       achievement.acknowledgedAt = DateTime.now();
       await _userAchievementsRepository.updateUserAchievement(achievement: achievement);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
     }
   }
 
@@ -69,7 +70,7 @@ class AchievementsState extends ChangeNotifier {
       achievement.acknowledgedAt = null;
       await _userAchievementsRepository.updateUserAchievement(achievement: achievement);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
     }
   }
 
@@ -81,7 +82,7 @@ class AchievementsState extends ChangeNotifier {
 
       await _userAchievementsRepository.updateUserAchievement(achievement: achievement);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "Failed to set Munro Challenge",
         code: error.toString(),

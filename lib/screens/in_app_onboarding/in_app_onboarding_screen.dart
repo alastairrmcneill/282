@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics_base.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class InAppOnboarding extends StatefulWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -25,8 +25,19 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
   void initState() {
     super.initState();
     // Log first screen view
-    AnalyticsService.logOnboardingScreenViewed(screenIndex: _currentPage);
-    AnalyticsService.logOnboardingStarted();
+    final analytics = context.read<Analytics>();
+    analytics.track(
+      AnalyticsEvent.onboardingScreenViewed,
+      props: {
+        AnalyticsProp.screenIndex: _currentPage,
+      },
+    );
+    analytics.track(
+      AnalyticsEvent.onboardingProgress,
+      props: {
+        AnalyticsProp.status: 'started',
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUserData();
@@ -60,13 +71,18 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
     });
 
     // Log screen view on every page change
-    AnalyticsService.logOnboardingScreenViewed(screenIndex: newPage);
+    context.read<Analytics>().track(
+      AnalyticsEvent.onboardingScreenViewed,
+      props: {
+        AnalyticsProp.screenIndex: newPage,
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
-    BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
+    final munroCompletionState = context.read<MunroCompletionState>();
+    final bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -128,8 +144,10 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                                 context.read<AchievementsState>().setMunroChallenge();
                                 munroCompletionState.addBulkCompletions(
                                     munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList);
-                                SharedPreferencesService.setShowBulkMunroDialog(false);
-                                AnalyticsService.logOnboardingCompleted();
+                                context.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
+                                context.read<Analytics>().track(AnalyticsEvent.onboardingProgress, props: {
+                                  AnalyticsProp.status: "completed",
+                                });
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   HomeScreen.route,

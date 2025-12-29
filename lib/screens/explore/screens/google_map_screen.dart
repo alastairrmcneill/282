@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/app_flags-repository.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   final FocusNode searchFocusNode;
@@ -20,7 +20,6 @@ class GoogleMapScreen extends StatefulWidget {
 }
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
-  bool loading = true;
   late GoogleMapController _googleMapController;
   BitmapDescriptor _completedIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
@@ -32,15 +31,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   void initState() {
     super.initState();
-    loadData();
     addCustomIcon();
-  }
-
-  void loadData() async {
-    SharedPreferencesService.getMapTerrain().then((value) => setState(() {
-          showTerrain = value;
-          loading = false;
-        }));
   }
 
   Set<Marker> getMarkers({required MunroState munroState, required List<MunroCompletion> completedMunros}) {
@@ -156,7 +147,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       mapToolbarEnabled: false,
       compassEnabled: true,
       zoomControlsEnabled: false,
-      mapType: showTerrain ? MapType.terrain : MapType.hybrid,
+      mapType: context.read<AppFlagsRepository>().mapTerrain ? MapType.terrain : MapType.hybrid,
       padding: const EdgeInsets.all(20),
       markers: getMarkers(munroState: munroState, completedMunros: completedMunros),
       myLocationButtonEnabled: false,
@@ -166,17 +157,15 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: true);
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: true);
+    final munroState = context.read<MunroState>();
+    final munroCompletionState = context.read<MunroCompletionState>();
     return Scaffold(
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                _buildGoogleMap(munroState, munroCompletionState.munroCompletions),
-                Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: _selectedMunroID)),
-              ],
-            ),
+      body: Stack(
+        children: [
+          _buildGoogleMap(munroState, munroCompletionState.munroCompletions),
+          Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: _selectedMunroID)),
+        ],
+      ),
     );
   }
 }

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class NotificationsState extends ChangeNotifier {
   final NotificationsRepository _repository;
   final UserState _userState;
-  NotificationsState(this._repository, this._userState);
+  final Logger _logger;
+  NotificationsState(
+    this._repository,
+    this._userState,
+    this._logger,
+  );
 
   NotificationsStatus _status = NotificationsStatus.initial;
   Error _error = Error();
@@ -33,7 +38,7 @@ class NotificationsState extends ChangeNotifier {
       // Update status
       setStatus = NotificationsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your notifications. Please try again.",
@@ -56,7 +61,7 @@ class NotificationsState extends ChangeNotifier {
 
       setStatus = NotificationsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your notifications. Please try again.",
@@ -76,7 +81,7 @@ class NotificationsState extends ChangeNotifier {
 
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue marking your notification as done. Please try again.",
@@ -97,7 +102,7 @@ class NotificationsState extends ChangeNotifier {
 
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue marking your notifications as done. Please try again.",

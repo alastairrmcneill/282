@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class ProfileState extends ChangeNotifier {
   final ProfileRepository _profileRepository;
@@ -11,6 +11,8 @@ class ProfileState extends ChangeNotifier {
   final UserState _userState;
   final UserLikeState _userLikeState;
   final MunroCompletionsRepository _munroCompletionsRepository;
+  final Logger _logger;
+
   ProfileState(
     this._profileRepository,
     this._munroPicturesRepository,
@@ -18,6 +20,7 @@ class ProfileState extends ChangeNotifier {
     this._userState,
     this._userLikeState,
     this._munroCompletionsRepository,
+    this._logger,
   );
 
   ProfileStatus _status = ProfileStatus.initial;
@@ -54,7 +57,7 @@ class ProfileState extends ChangeNotifier {
       // Set loading status?
       setStatus = ProfileStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue loading the profile. Please try again.",
@@ -67,9 +70,10 @@ class ProfileState extends ChangeNotifier {
       final munroCompletions = await _munroCompletionsRepository.getUserMunroCompletions(
         userId: _profile?.id ?? "",
       );
-      setMunroCompletions = munroCompletions;
+      _munroCompletions = munroCompletions;
+      notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue loading the munros. Please try again.",
@@ -94,7 +98,7 @@ class ProfileState extends ChangeNotifier {
       _photoStatus = ProfilePhotoStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
     }
   }
@@ -116,7 +120,7 @@ class ProfileState extends ChangeNotifier {
       notifyListeners();
       return pictures;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
       return [];
     }
@@ -134,10 +138,10 @@ class ProfileState extends ChangeNotifier {
       _userLikeState.reset();
       _userLikeState.getLikedPostIds(posts: posts);
 
-      setPosts = posts;
+      _posts = posts;
       setStatus = ProfileStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an retreiving your posts. Please try again.");
     }
   }
@@ -156,45 +160,16 @@ class ProfileState extends ChangeNotifier {
       _userLikeState.getLikedPostIds(posts: newPosts);
 
       // Set state
-      addPosts = newPosts;
+      _posts.addAll(newPosts);
       setStatus = ProfileStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading your posts. Please try again.");
     }
   }
 
   set setStatus(ProfileStatus profileStatus) {
     _status = profileStatus;
-    notifyListeners();
-  }
-
-  set setPhotoStatus(ProfilePhotoStatus photoStatus) {
-    _photoStatus = photoStatus;
-    notifyListeners();
-  }
-
-  set setProfile(Profile? profile) {
-    _profile = profile;
-    notifyListeners();
-  }
-
-  set setMunroCompletions(List<MunroCompletion> munroCompletions) {
-    _munroCompletions = munroCompletions;
-    notifyListeners();
-  }
-
-  set setIsCurrentUser(bool isCurrentUser) {
-    _isCurrentUser = isCurrentUser;
-    notifyListeners();
-  }
-
-  set setPosts(List<Post> posts) {
-    _posts = posts;
-    notifyListeners();
-  }
-
-  set addPosts(List<Post> posts) {
     notifyListeners();
   }
 
@@ -213,30 +188,10 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setProfilePhotos(List<MunroPicture> profilePhotos) {
-    _profilePhotos = profilePhotos;
-    notifyListeners();
-  }
-
-  set addProfilePhotos(List<MunroPicture> profilePhotos) {
-    _profilePhotos.addAll(profilePhotos);
-    notifyListeners();
-  }
-
   set setError(Error error) {
     _status = ProfileStatus.error;
     _error = error;
     notifyListeners();
-  }
-
-  void reset() {
-    _status = ProfileStatus.initial;
-    _photoStatus = ProfilePhotoStatus.initial;
-    _profile = null;
-    _isCurrentUser = false;
-    _posts = [];
-    _munroCompletions = [];
-    _error = Error();
   }
 }
 

@@ -38,7 +38,7 @@ class ReviewListTile extends StatelessWidget {
         ),
       ];
     } else {
-      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      final reportState = context.read<ReportState>();
       menuItems = [
         MenuItem(
           text: 'Report',
@@ -55,8 +55,8 @@ class ReviewListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
-    CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
+    final userState = context.watch<UserState>();
+    final createReviewState = context.read<CreateReviewState>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),

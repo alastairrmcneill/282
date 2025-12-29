@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class UnitsSettingsScreen extends StatelessWidget {
   static const String route = '${SettingsScreen.route}/units';
@@ -10,7 +9,7 @@ class UnitsSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context);
+    final settingsState = context.watch<SettingsState>();
     return Scaffold(
       appBar: AppBar(),
       body: Column(
@@ -18,11 +17,7 @@ class UnitsSettingsScreen extends StatelessWidget {
           SwitchListTile(
             value: settingsState.metricHeight,
             onChanged: (value) {
-              settingsState.setMetricHeight = value;
-              SettingsSerivce.setBoolSetting(
-                settingName: SettingsFields.metricHeight,
-                value: value,
-              );
+              settingsState.setMetricHeight(value);
             },
             title: const Text('Units for height'),
             subtitle: settingsState.metricHeight ? const Text('Meters') : const Text('Feet'),
@@ -30,11 +25,7 @@ class UnitsSettingsScreen extends StatelessWidget {
           SwitchListTile(
             value: settingsState.metricTemperature,
             onChanged: (value) {
-              settingsState.setMetricTemperature = value;
-              SettingsSerivce.setBoolSetting(
-                settingName: SettingsFields.metricTemperature,
-                value: value,
-              );
+              settingsState.setMetricTemperature(value);
             },
             title: const Text('Units for temperature'),
             subtitle: settingsState.metricTemperature ? const Text('Celcius') : const Text('Fahrenheit'),

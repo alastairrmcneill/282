@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -71,7 +72,7 @@ class MunroSliverAppBar extends StatelessWidget {
               Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
             );
           } on Exception catch (error, stackTrace) {
-            Log.error(error.toString(), stackTrace: stackTrace);
+            context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
             Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
             showSnackBar(context, 'Copied email address. Go to email app to send.');
           }
@@ -84,9 +85,9 @@ class MunroSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context);
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final munroState = context.read<MunroState>();
+    final userState = context.watch<UserState>();
     Munro munro = munroState.selectedMunro!;
 
     return SliverAppBar(

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/helpers/image_picker_helper.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -29,7 +29,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    final userState = context.read<UserState>();
 
     if (userState.currentUser == null) return;
 
@@ -49,13 +49,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _image = image;
       });
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
+    final userState = context.watch<UserState>();
 
     return Scaffold(
       appBar: AppBar(

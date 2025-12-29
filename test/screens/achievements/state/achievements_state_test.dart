@@ -1,18 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
-import 'package:two_eight_two/screens/achievements/state/achievements_state.dart';
-import 'package:two_eight_two/screens/auth/state/user_state.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 import 'achievements_state_test.mocks.dart';
 
 // Generate mocks
-@GenerateMocks([UserAchievementsRepository, UserState])
+@GenerateMocks([
+  UserAchievementsRepository,
+  UserState,
+  Logger,
+])
 void main() {
   late MockUserAchievementsRepository mockUserAchievementsRepository;
   late MockUserState mockUserState;
+  late MockLogger mockLogger;
   late AchievementsState achievementsState;
 
   // Sample achievement data for testing
@@ -79,7 +84,9 @@ void main() {
   setUp(() {
     mockUserAchievementsRepository = MockUserAchievementsRepository();
     mockUserState = MockUserState();
-    achievementsState = AchievementsState(mockUserAchievementsRepository, mockUserState);
+    mockLogger = MockLogger();
+
+    achievementsState = AchievementsState(mockUserAchievementsRepository, mockUserState, mockLogger);
 
     // Setup default user state
     when(mockUserState.currentUser).thenReturn(sampleUser);
@@ -112,6 +119,7 @@ void main() {
         expect(achievementsState.recentlyCompletedAchievements, hasLength(1));
         expect(achievementsState.recentlyCompletedAchievements.first.achievementId, 'total_count_10');
         verify(mockUserAchievementsRepository.getUserAchievements(userId: 'user123')).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during loading', () async {
@@ -126,6 +134,7 @@ void main() {
         expect(achievementsState.status, AchievementsStatus.error);
         expect(achievementsState.achievements, isEmpty);
         verify(mockUserAchievementsRepository.getUserAchievements(userId: 'user123')).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
@@ -235,6 +244,7 @@ void main() {
         // Assert
         expect(achievementToAcknowledge.acknowledgedAt, isNotNull);
         verify(mockUserAchievementsRepository.updateUserAchievement(achievement: achievementToAcknowledge)).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during acknowledgment', () async {
@@ -247,6 +257,7 @@ void main() {
         await achievementsState.acknowledgeAchievement(achievement: achievementToAcknowledge);
 
         verify(mockUserAchievementsRepository.updateUserAchievement(achievement: achievementToAcknowledge)).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
     });
 
@@ -263,6 +274,7 @@ void main() {
         // Assert
         expect(achievementToUnacknowledge.acknowledgedAt, isNull);
         verify(mockUserAchievementsRepository.updateUserAchievement(achievement: achievementToUnacknowledge)).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during unacknowledgment', () async {
@@ -275,6 +287,7 @@ void main() {
         await achievementsState.unacknowledgeAchievement(achievement: achievementToUnacknowledge);
 
         verify(mockUserAchievementsRepository.updateUserAchievement(achievement: achievementToUnacknowledge)).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
     });
 
@@ -294,6 +307,7 @@ void main() {
         // Assert
         expect(challengeAchievement.annualTarget, 30);
         verify(mockUserAchievementsRepository.updateUserAchievement(achievement: challengeAchievement)).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during munro challenge setup', () async {
@@ -313,6 +327,7 @@ void main() {
         expect(achievementsState.error.message, 'Failed to set Munro Challenge');
         expect(achievementsState.error.code, 'Exception: Update failed');
         verify(mockUserAchievementsRepository.updateUserAchievement(achievement: challengeAchievement)).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should handle setMunroChallenge with valid currentAchievement', () async {

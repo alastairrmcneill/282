@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class GroupFilterScreen extends StatefulWidget {
@@ -21,7 +21,8 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
 
   @override
   void initState() {
-    GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
+    GroupFilterState groupFilterState = context.read<GroupFilterState>();
+
     final userId = context.read<AuthState>().currentUserId;
     _scrollController = ScrollController();
     _scrollController.addListener(() {
@@ -147,7 +148,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                   onPressed: groupFilterState.selectedFriendsUids.isNotEmpty
                       ? () async {
                           // Run the filter
-                          AnalyticsService.logEvent(name: "Group View Filter Applied");
+                          context.read<Analytics>().track(AnalyticsEvent.groupViewFilterApplied);
                           await groupFilterState.filterMunrosBySelection();
                           Navigator.pop(context);
                         }

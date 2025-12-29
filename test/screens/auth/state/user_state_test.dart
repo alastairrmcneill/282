@@ -1,18 +1,27 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/state/user_state.dart';
-import 'package:two_eight_two/services/services.dart';
 
 import 'user_state_test.mocks.dart';
 
 // Generate mocks
-@GenerateMocks([UserRepository, BlockedUserRepository, StorageService])
+@GenerateMocks([
+  UserRepository,
+  BlockedUserRepository,
+  StorageRepository,
+  Logger,
+])
 void main() {
   late MockUserRepository mockUserRepository;
   late MockBlockedUserRepository mockBlockedUserRepository;
+  late MockStorageRepository mockStorageRepository;
+  late MockLogger mockLogger;
   late UserState userState;
 
   // Sample user data for testing
@@ -50,7 +59,14 @@ void main() {
   setUp(() {
     mockUserRepository = MockUserRepository();
     mockBlockedUserRepository = MockBlockedUserRepository();
-    userState = UserState(mockUserRepository, mockBlockedUserRepository);
+    mockStorageRepository = MockStorageRepository();
+    mockLogger = MockLogger();
+    userState = UserState(
+      mockUserRepository,
+      mockBlockedUserRepository,
+      mockStorageRepository,
+      mockLogger,
+    );
   });
 
   group('UserState', () {
@@ -75,6 +91,7 @@ void main() {
         // Assert
         expect(userState.status, UserStatus.loaded);
         verify(mockUserRepository.create(appUser: newUser)).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during user creation', () async {
@@ -90,6 +107,7 @@ void main() {
         expect(userState.error.message, 'There was an error creating the account.');
         expect(userState.error.code, contains('Exception: Database error'));
         verify(mockUserRepository.create(appUser: newUser)).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
@@ -124,6 +142,7 @@ void main() {
         expect(userState.status, UserStatus.loaded);
         expect(userState.currentUser, updatedUser);
         verify(mockUserRepository.update(appUser: updatedUser)).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during user update', () async {
@@ -139,6 +158,7 @@ void main() {
         expect(userState.error.message, 'There was an error updating the account.');
         expect(userState.error.code, contains('Exception: Update failed'));
         verify(mockUserRepository.update(appUser: updatedUser)).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
@@ -173,6 +193,7 @@ void main() {
         expect(userState.status, UserStatus.loaded);
         expect(userState.currentUser, user);
         verify(mockUserRepository.readUserFromUid(uid: 'user123')).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during user read', () async {
@@ -187,6 +208,7 @@ void main() {
         expect(userState.error.message, 'There was an error fetching the account.');
         expect(userState.error.code, contains('Exception: User not found'));
         verify(mockUserRepository.readUserFromUid(uid: 'user123')).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should return early when uid is null', () async {
@@ -233,6 +255,7 @@ void main() {
         expect(userState.status, UserStatus.loaded);
         expect(userState.currentUser, isNull);
         verify(mockUserRepository.deleteUserWithUID(uid: 'user123')).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during user deletion', () async {
@@ -248,6 +271,7 @@ void main() {
         expect(userState.error.message, 'There was an error deleting the account.');
         expect(userState.error.code, contains('Exception: Delete failed'));
         verify(mockUserRepository.deleteUserWithUID(uid: 'user123')).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
@@ -288,6 +312,8 @@ void main() {
                         (relationship) => relationship.userId == 'user123' && relationship.blockedUserId == 'user456'),
                     named: 'blockedUserRelationship')))
             .called(1);
+
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during user blocking', () async {
@@ -308,6 +334,7 @@ void main() {
                         (relationship) => relationship.userId == 'user123' && relationship.blockedUserId == 'user456'),
                     named: 'blockedUserRelationship')))
             .called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should return early when currentUser is null', () async {
@@ -355,6 +382,7 @@ void main() {
         // Assert
         expect(userState.blockedUsers, blockedUserIds);
         verify(mockBlockedUserRepository.getBlockedUsersForUid(userId: 'user123')).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during blocked users loading', () async {
@@ -370,6 +398,7 @@ void main() {
         // Error should be logged but not affect state
         expect(userState.blockedUsers, isEmpty);
         verify(mockBlockedUserRepository.getBlockedUsersForUid(userId: 'user123')).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should return early when currentUser is null', () async {
@@ -416,6 +445,7 @@ void main() {
                     predicate<AppUser>((user) => user.uid == 'user123' && user.profileVisibility == Privacy.private),
                     named: 'appUser')))
             .called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should return early when currentUser is null', () async {
@@ -445,6 +475,64 @@ void main() {
         expect(userState.status, UserStatus.loaded);
         expect(userState.currentUser, updatedUser);
         verify(mockUserRepository.update(appUser: updatedUser)).called(1);
+        verifyNever(mockStorageRepository.uploadImage(imageFile: anyNamed('imageFile'), type: anyNamed('type')));
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+      });
+
+      test('should upload profile picture and update profile successfully', () async {
+        // Arrange
+        final currentUser = sampleUsers[0];
+        final updatedUser = currentUser.copyWith(bio: 'Updated bio');
+        final profilePicture = File('test/profile.jpg');
+        final uploadedURL = 'https://example.com/uploaded_profile.jpg';
+
+        userState.setCurrentUser = currentUser;
+        when(mockStorageRepository.uploadImage(imageFile: anyNamed('imageFile'), type: anyNamed('type')))
+            .thenAnswer((_) async => uploadedURL);
+        when(mockUserRepository.update(appUser: anyNamed('appUser'))).thenAnswer((_) async {});
+
+        // Act
+        await userState.updateProfile(appUser: updatedUser, profilePicture: profilePicture);
+
+        // Assert
+        expect(userState.status, UserStatus.loaded);
+        verify(mockStorageRepository.uploadImage(
+          imageFile: profilePicture,
+          type: ImageUploadType.profile,
+        )).called(1);
+        verify(mockUserRepository.update(
+          appUser: argThat(
+            predicate<AppUser>(
+              (user) => user.profilePictureURL == uploadedURL,
+            ),
+            named: 'appUser',
+          ),
+        )).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+      });
+
+      test('should handle error during profile picture upload', () async {
+        // Arrange
+        final currentUser = sampleUsers[0];
+        final updatedUser = currentUser.copyWith(bio: 'Updated bio');
+        final profilePicture = File('test/profile.jpg');
+
+        userState.setCurrentUser = currentUser;
+        when(mockStorageRepository.uploadImage(imageFile: anyNamed('imageFile'), type: anyNamed('type')))
+            .thenThrow(Exception('Upload failed'));
+
+        // Act
+        await userState.updateProfile(appUser: updatedUser, profilePicture: profilePicture);
+
+        // Assert
+        expect(userState.status, UserStatus.error);
+        expect(userState.error.message, 'There was an issue updating the profile.');
+        verify(mockStorageRepository.uploadImage(
+          imageFile: profilePicture,
+          type: ImageUploadType.profile,
+        )).called(1);
+        verifyNever(mockUserRepository.update(appUser: anyNamed('appUser')));
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should return early when currentUser is null', () async {
@@ -473,6 +561,7 @@ void main() {
         // but then updateProfile sets status to loaded afterward (potential bug in implementation)
         expect(userState.status, UserStatus.loaded);
         // The error would have been logged but status overridden
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {

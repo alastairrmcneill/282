@@ -19,7 +19,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
+    final commentsState = context.read<CommentsState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -89,7 +89,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               flex: 1,
               child: RefreshIndicator(
                 onRefresh: () async {
-                  await commentsState.getPostComments(context);
+                  await commentsState.getPostComments();
                 },
                 child: ListView(
                   controller: _scrollController,
@@ -161,11 +161,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         ),
                       ),
                     ),
-                    ...commentsState.comments
-                        .map((Comment comment) => CommentTile(
-                              comment: comment,
-                            ))
-                        .toList(),
+                    ...commentsState.comments.map(
+                      (Comment comment) => CommentTile(
+                        comment: comment,
+                      ),
+                    ),
                   ],
                 ),
               ),

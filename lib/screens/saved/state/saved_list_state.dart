@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class SavedListState extends ChangeNotifier {
   final SavedListRepository _savedListRepository;
   final SavedListMunroRepository _savedListMunroRepository;
   final UserState _userState;
-  SavedListState(this._savedListRepository, this._savedListMunroRepository, this._userState);
+  final Logger _logger;
+
+  SavedListState(
+    this._savedListRepository,
+    this._savedListMunroRepository,
+    this._userState,
+    this._logger,
+  );
 
   SavedListStatus _status = SavedListStatus.initial;
   Error _error = Error();
@@ -41,7 +48,7 @@ class SavedListState extends ChangeNotifier {
       addSavedList(newSavedList);
       setStatus = SavedListStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue creating your list. Please try again",
         code: error.toString(),
@@ -67,7 +74,7 @@ class SavedListState extends ChangeNotifier {
       setSavedLists = savedLists;
       setStatus = SavedListStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue reading your saved lists. Please try again",
         code: error.toString(),
@@ -93,7 +100,7 @@ class SavedListState extends ChangeNotifier {
 
       updateSavedList(savedList);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue updating your list. Please try again",
         code: error.toString(),
@@ -107,7 +114,7 @@ class SavedListState extends ChangeNotifier {
 
       await _savedListRepository.deleteFromUid(uid: savedList.uid ?? "");
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue deleting your post. Please try again.");
     }
   }
@@ -137,7 +144,7 @@ class SavedListState extends ChangeNotifier {
 
       await _savedListMunroRepository.create(savedListMunro: savedListMunro);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue saving your Munro. Please try again",
         code: error.toString(),
@@ -167,7 +174,7 @@ class SavedListState extends ChangeNotifier {
         munroId: munroId,
       );
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue removing your Munro. Please try again",
         code: error.toString(),

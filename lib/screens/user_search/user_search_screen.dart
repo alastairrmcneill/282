@@ -21,7 +21,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
   late FocusNode _focusNode;
   @override
   void initState() {
-    UserSearchState userSearchState = Provider.of<UserSearchState>(context, listen: false);
+    final userSearchState = context.read<UserSearchState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -44,7 +44,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
+    final userState = context.watch<UserState>();
     UserSearchState userSearchState = context.read<UserSearchState>();
     String currentUserId = userState.currentUser?.uid ?? "";
 

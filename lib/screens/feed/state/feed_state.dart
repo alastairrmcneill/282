@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class FeedState extends ChangeNotifier {
   final PostsRepository _postsRepository;
   final UserState _userState;
   final UserLikeState _userLikeState;
+  final Logger _logger;
 
-  FeedState(this._postsRepository, this._userState, this._userLikeState);
+  FeedState(
+    this._postsRepository,
+    this._userState,
+    this._userLikeState,
+    this._logger,
+  );
 
   FeedStatus _status = FeedStatus.initial;
   Error _error = Error();
@@ -45,7 +51,7 @@ class FeedState extends ChangeNotifier {
       _friendsPosts = posts;
       setStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your posts. Please try again.",
@@ -77,7 +83,7 @@ class FeedState extends ChangeNotifier {
       _friendsPosts.addAll(newPosts);
       setStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }
@@ -103,7 +109,7 @@ class FeedState extends ChangeNotifier {
       _globalPosts = posts;
       setStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your posts. Please try again.",
@@ -134,7 +140,7 @@ class FeedState extends ChangeNotifier {
       _globalPosts.addAll(newPosts);
       setStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }

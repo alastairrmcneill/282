@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/screens/screens.dart';
@@ -27,6 +28,7 @@ class ProfileTab extends StatelessWidget {
         ctx.read<UserState>(),
         ctx.read<UserLikeState>(),
         ctx.read<MunroCompletionsRepository>(),
+        ctx.read<Logger>(),
       )..loadProfileFromUserId(userId: userId),
       child: Scaffold(
         body: ProfileScreen(

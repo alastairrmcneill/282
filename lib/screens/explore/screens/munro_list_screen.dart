@@ -17,7 +17,7 @@ class MunroListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
 
     return Stack(
       children: [
@@ -48,7 +48,7 @@ class MunroListScreen extends StatelessWidget {
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeInOut,
                   );
-                  appRouteObserver.updateCurrentScreen(ExploreTab.route);
+                  context.read<AppRouteObserver>().updateCurrentScreen(ExploreTab.route);
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,

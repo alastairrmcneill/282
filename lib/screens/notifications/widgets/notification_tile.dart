@@ -49,8 +49,8 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CommentsState commentsState = Provider.of<CommentsState>(context);
-    NotificationsState notificationsState = context.read<NotificationsState>();
+    final commentsState = context.watch<CommentsState>();
+    final notificationsState = context.read<NotificationsState>();
     return ListTile(
       tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
       leading: CircularProfilePicture(
@@ -68,7 +68,7 @@ class NotificationTile extends StatelessWidget {
           commentsState.reset();
           // TODO: Get post here too and set it as selected post
           commentsState.setPostId = notification.postId!;
-          commentsState.getPostComments(context);
+          commentsState.getPostComments();
           Navigator.of(context).pushNamed(CommentsScreen.route);
         } else if (notification.type == "follow") {
           // Navigate to the user post

@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BuildContext context, {
     required ProfileState profileState,
   }) {
-    ReportState reportState = Provider.of<ReportState>(context, listen: false);
+    final reportState = context.read<ReportState>();
     List<MenuItem> menuItems = [];
 
     menuItems = [

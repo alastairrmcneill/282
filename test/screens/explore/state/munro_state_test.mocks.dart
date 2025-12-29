@@ -6,6 +6,7 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:two_eight_two/logging/logger.dart' as _i5;
 import 'package:two_eight_two/models/models.dart' as _i4;
 import 'package:two_eight_two/repos/munro_repository.dart' as _i2;
 
@@ -40,4 +41,65 @@ class MockMunroRepository extends _i1.Mock implements _i2.MunroRepository {
         ),
         returnValue: _i3.Future<List<_i4.Munro>>.value(<_i4.Munro>[]),
       ) as _i3.Future<List<_i4.Munro>>);
+}
+
+/// A class which mocks [Logger].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLogger extends _i1.Mock implements _i5.Logger {
+  MockLogger() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void error(
+    String? message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #error,
+          [message],
+          {
+            #error: error,
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void fatal(
+    Object? error, {
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #fatal,
+          [error],
+          {
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void info(
+    String? message, {
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #info,
+          [message],
+          {#context: context},
+        ),
+        returnValueForMissingStub: null,
+      );
 }

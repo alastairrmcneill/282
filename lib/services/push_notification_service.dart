@@ -80,8 +80,8 @@ class PushNotificationService {
   }
 
   static Future checkAndUpdateFCMToken(BuildContext context) async {
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+    final userState = context.read<UserState>();
+    final settingsState = context.read<SettingsState>();
 
     if (userState.currentUser == null) return;
     if (!settingsState.enablePushNotifications) return;

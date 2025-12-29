@@ -30,7 +30,7 @@ class _FeedListViewState extends State<FeedListView> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    final feedState = context.read<FeedState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&

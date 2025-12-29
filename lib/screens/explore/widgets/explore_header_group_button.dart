@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class ExploreHeaderGroupButton extends StatelessWidget {
@@ -12,10 +11,8 @@ class ExploreHeaderGroupButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.read<AuthState>().currentUserId;
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context);
-
-    bool showNewIcon = RemoteConfigService.getBool(RCFields.groupFilterNewIcon);
+    final groupFilterState = context.watch<GroupFilterState>();
+    bool showNewIcon = context.read<RemoteConfigState>().config.groupFilterNewIcon;
 
     return Padding(
       padding: const EdgeInsets.only(left: 8),
@@ -38,7 +35,6 @@ class ExploreHeaderGroupButton extends StatelessWidget {
                 ),
                 onPressed: () {
                   if (userId == null) {
-                    navigationState.setNavigateToRoute = HomeScreen.route;
                     Navigator.of(context).pushNamed(AuthHomeScreen.route);
                   } else {
                     Navigator.of(context).pushNamed(GroupFilterScreen.route);

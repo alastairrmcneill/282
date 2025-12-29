@@ -11,8 +11,8 @@ class MunroStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+    final munroState = context.watch<MunroState>();
+    final settingsState = context.read<SettingsState>();
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15),

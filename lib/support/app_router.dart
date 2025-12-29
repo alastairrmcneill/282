@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
-import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -105,6 +105,7 @@ class AppRouter {
                 ctx.read<UserState>(),
                 ctx.read<UserLikeState>(),
                 ctx.read<MunroCompletionsRepository>(),
+                ctx.read<Logger>(),
               )..loadProfileFromUserId(userId: args.userId),
               child: ProfileScreen(
                 userId: args.userId,
@@ -123,6 +124,7 @@ class AppRouter {
               create: (ctx) => FollowersListState(
                 ctx.read<FollowersRepository>(),
                 ctx.read<UserState>(),
+                ctx.read<Logger>(),
               )..loadInitialFollowersAndFollowing(userId: args.userId),
               child: FollowersFollowingScreen(
                 userId: args.userId,
@@ -141,6 +143,7 @@ class AppRouter {
               create: (ctx) => LikesState(
                 ctx.read<LikesRepository>(),
                 ctx.read<UserState>(),
+                ctx.read<Logger>(),
               )..getPostLikes(postId: args.postId),
               child: LikesScreen(postId: args.postId),
             );
@@ -155,6 +158,7 @@ class AppRouter {
               create: (ctx) => UserSearchState(
                 ctx.read<UserRepository>(),
                 ctx.read<UserState>(),
+                ctx.read<Logger>(),
               )..clearSearch(),
               child: const UserSearchScreen(),
             );
@@ -302,6 +306,7 @@ class AppRouter {
               create: (ctx) => ProfileGalleryState(
                 ctx.read<MunroPicturesRepository>(),
                 ctx.read<UserState>(),
+                ctx.read<Logger>(),
               )..getMunroPictures(profileId: args.userId),
               child: ProfilePhotoGallery(args: args),
             );

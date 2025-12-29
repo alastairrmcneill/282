@@ -25,7 +25,7 @@ class ExploreTabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
     return Positioned(
       top: 0,
       left: 0,

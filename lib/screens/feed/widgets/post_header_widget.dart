@@ -43,7 +43,7 @@ class PostHeader extends StatelessWidget {
         ),
       ];
     } else {
-      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      final reportState = context.read<ReportState>();
       menuItems = [
         MenuItem(
           text: 'Report',
@@ -60,9 +60,9 @@ class PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    final createPostState = context.read<CreatePostState>();
+    final settingsState = context.read<SettingsState>();
+    final userState = context.read<UserState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),

@@ -17,14 +17,12 @@ class FollowingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = context.read<AuthState>().currentUserId;
-    NavigationState navigationState = Provider.of<NavigationState>(context);
     final CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
     if (profile == null) return const SizedBox();
 
     return ElevatedButton(
       onPressed: () async {
         if (loggedInUser == null) {
-          navigationState.setNavigateToRoute = FeedTab.route;
           Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
           if (isFollowing) {

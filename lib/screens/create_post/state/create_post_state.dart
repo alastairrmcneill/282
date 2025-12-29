@@ -1,17 +1,32 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics_base.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class CreatePostState extends ChangeNotifier {
   final PostsRepository _postsRepository;
   final MunroPicturesRepository _munroPicturesRepository;
+  final StorageRepository _storageRepository;
   final UserState _userState;
-  final MunroCompletionState munroCompletionState;
-  CreatePostState(this._postsRepository, this._munroPicturesRepository, this._userState, this.munroCompletionState);
+  final MunroCompletionState _munroCompletionState;
+  final RemoteConfigState _remoteConfigState;
+  final Analytics _analytics;
+  final Logger _logger;
+
+  CreatePostState(
+    this._postsRepository,
+    this._munroPicturesRepository,
+    this._storageRepository,
+    this._userState,
+    this._munroCompletionState,
+    this._remoteConfigState,
+    this._analytics,
+    this._logger,
+  );
 
   CreatePostStatus _status = CreatePostStatus.initial;
   Error _error = Error();
@@ -58,7 +73,7 @@ class CreatePostState extends ChangeNotifier {
 
       for (int munroId in _addedImages.keys) {
         for (File image in _addedImages[munroId]!) {
-          String imageURL = await StorageService.uploadPostImage(image);
+          String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
           if (addedImageUrlsMap[munroId] == null) {
             addedImageUrlsMap[munroId] = [];
           }
@@ -107,15 +122,18 @@ class CreatePostState extends ChangeNotifier {
       String postId = await _postsRepository.create(post: post);
 
       // Log event
-      bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
+      bool showPrivacyOption = _remoteConfigState.config.showPrivacyOption;
 
-      await AnalyticsService.logPostCreation(
-        privacy: post.privacy,
-        showPrivacyOption: showPrivacyOption,
+      _analytics.track(
+        AnalyticsEvent.createPost,
+        props: {
+          AnalyticsProp.privacy: post.privacy,
+          AnalyticsProp.showPrivacyOption: showPrivacyOption,
+        },
       );
 
       // Complete munros
-      await munroCompletionState.markMunrosAsCompleted(
+      await _munroCompletionState.markMunrosAsCompleted(
         munroIds: selectedMunroIds.toList(),
         summitDateTime: summitDateTime,
         postId: postId,
@@ -136,7 +154,7 @@ class CreatePostState extends ChangeNotifier {
         imageUrlsMap: addedImageUrlsMap,
       );
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue uploading your post. Please try again");
       return null;
     }
@@ -151,7 +169,7 @@ class CreatePostState extends ChangeNotifier {
 
       for (int munroId in _addedImages.keys) {
         for (File image in _addedImages[munroId]!) {
-          String imageURL = await StorageService.uploadPostImage(image);
+          String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
           if (addedImageUrlsMap[munroId] == null) {
             addedImageUrlsMap[munroId] = [];
           }
@@ -181,13 +199,13 @@ class CreatePostState extends ChangeNotifier {
       // Send to database
       await _postsRepository.update(post: newPost);
 
-      munroCompletionState.markMunrosAsCompleted(
+      _munroCompletionState.markMunrosAsCompleted(
         munroIds: _addedMunroIds.toList(),
         summitDateTime: newPost.summitedDateTime!,
         postId: post.uid,
       );
 
-      munroCompletionState.removeCompletionsByMunroIdsAndPost(
+      _munroCompletionState.removeCompletionsByMunroIdsAndPost(
         munroIds: _deletedMunroIds.toList(),
         postId: post.uid,
       );
@@ -212,7 +230,7 @@ class CreatePostState extends ChangeNotifier {
       setStatus = CreatePostStatus.loaded;
       return newPostState;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue uploading your post. Please try again");
       return null;
     }
@@ -250,7 +268,7 @@ class CreatePostState extends ChangeNotifier {
     await _munroPicturesRepository.deleteMunroPicturesByUrls(imageURLs: imageURLs);
 
     for (String imageURL in imageURLs) {
-      await StorageService.deleteImage(imageURL);
+      await _storageRepository.deleteByUrl(imageURL);
     }
   }
 
@@ -258,7 +276,7 @@ class CreatePostState extends ChangeNotifier {
     try {
       _postsRepository.deletePostWithUID(uid: post.uid);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       _status = CreatePostStatus.error;
       notifyListeners();
     }

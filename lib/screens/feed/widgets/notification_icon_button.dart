@@ -10,7 +10,7 @@ class NotificationIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
+    final notificationsState = context.read<NotificationsState>();
     return IconButton(
       onPressed: () {
         notificationsState.getUserNotifications();

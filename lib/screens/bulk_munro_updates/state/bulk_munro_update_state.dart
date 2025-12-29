@@ -31,7 +31,6 @@ class BulkMunroUpdateState extends ChangeNotifier {
   }
 
   void addMunroCompleted(MunroCompletion munroCompletion) {
-    print("Adding munro completion for munro ID: ${munroCompletion.munroId}");
     _addedMunroCompletions.add(munroCompletion);
     notifyListeners();
   }

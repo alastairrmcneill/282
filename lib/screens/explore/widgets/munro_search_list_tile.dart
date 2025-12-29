@@ -11,9 +11,9 @@ class MunroSearchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
-    SettingsState settingsState = Provider.of<SettingsState>(context);
+    final munroState = context.watch<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
+    final settingsState = context.watch<SettingsState>();
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

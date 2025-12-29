@@ -16,8 +16,8 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&

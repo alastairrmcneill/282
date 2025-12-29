@@ -11,8 +11,8 @@ class MunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
+    final munroState = context.watch<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     double width = MediaQuery.of(context).size.width - 60;
 

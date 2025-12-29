@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class DeepLinkService {
@@ -38,21 +38,20 @@ class DeepLinkService {
     final int? munroId = data['munroId'];
 
     // Log data
-    AnalyticsService.logEvent(
-      name: 'branch_link_clicked',
-      parameters: {
-        'munro_id': (munroId ?? 0).toString(),
-      },
-    );
+    // context.read<Analytics>().track(AnalyticsEvent.branchLinkClicked, props: {
+    //   AnalyticsProp.munroId: munroId ?? 0,
+    // });
+
+    // TODO fix
 
     if (munroId == null || munroId == 0) return;
 
     final BuildContext context = navigatorKey.currentContext!;
-    final MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
     final UserState userState = context.read<UserState>();
     try {
       // Load necessary data
-      await SettingsSerivce.loadSettings(context);
+      await context.read<SettingsState>().load();
       await userState.readUser(uid: context.read<AuthState>().currentUserId);
       await context.read<SavedListState>().readUserSavedLists();
 
@@ -94,13 +93,10 @@ class DeepLinkService {
 
   static Future<void> shareMunro(BuildContext context, String munroName, int munroId) async {
     // Log share event
-    AnalyticsService.logEvent(
-      name: 'munro_shared',
-      parameters: {
-        'munro_id': munroId.toString(),
-        'munro_name': munroName,
-      },
-    );
+    context.read<Analytics>().track(AnalyticsEvent.munroShared, props: {
+      AnalyticsProp.munroId: munroId,
+      AnalyticsProp.munroName: munroName,
+    });
 
     // Create a Branch link
     try {

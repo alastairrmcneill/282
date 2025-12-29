@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/config/app_config.dart';
+import 'package:two_eight_two/logging/logging.dart';
 
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -71,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
                   Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
                 );
               } on Exception catch (error, stackTrace) {
-                Log.error(error.toString(), stackTrace: stackTrace);
+                context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                 Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
                 showSnackBar(context, 'Copied email address. Go to email app to send.');
               }
@@ -80,9 +80,9 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
-              MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
-              MunroState munroState = Provider.of<MunroState>(context, listen: false);
+              BulkMunroUpdateState bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
+              MunroCompletionState munroCompletionState = context.read<MunroCompletionState>();
+              MunroState munroState = context.read<MunroState>();
 
               bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
               munroState.clearFilterAndSorting();
@@ -115,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
                   Uri.parse(url),
                 );
               } on Exception catch (error, stackTrace) {
-                Log.error(error.toString(), stackTrace: stackTrace);
+                context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                 Clipboard.setData(ClipboardData(text: url));
                 showSnackBar(context, 'Copied link. Go to browser to open.');
               }

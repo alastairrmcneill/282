@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class CommentsState extends ChangeNotifier {
   final CommentsRepository _commentsRepository;
   final UserState userState;
   final PostsRepository _postsRepository;
-  CommentsState(this._commentsRepository, this.userState, this._postsRepository);
+  final Logger _logger;
+
+  CommentsState(this._commentsRepository, this.userState, this._postsRepository, this._logger);
 
   CommentsStatus _status = CommentsStatus.initial;
   Error _error = Error();
@@ -24,7 +26,7 @@ class CommentsState extends ChangeNotifier {
   String? get commentText => _commentText;
   List<Comment> get comments => _comments;
 
-  Future<void> createComment(BuildContext context) async {
+  Future<void> createComment() async {
     _status = CommentsStatus.submitting;
     notifyListeners();
     try {
@@ -42,12 +44,12 @@ class CommentsState extends ChangeNotifier {
       _status = CommentsStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue posting your comment. Please try again");
     }
   }
 
-  Future<void> getPostComments(BuildContext context) async {
+  Future<void> getPostComments() async {
     if (userState.currentUser == null) return;
     List<String> blockedUsers = userState.blockedUsers;
 
@@ -66,7 +68,7 @@ class CommentsState extends ChangeNotifier {
       _status = CommentsStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving the comments. Please try again.",
@@ -90,7 +92,7 @@ class CommentsState extends ChangeNotifier {
       _status = CommentsStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         code: error.toString(),
         message: "There was an issue retreiving the comments. Please try again.",
@@ -106,7 +108,7 @@ class CommentsState extends ChangeNotifier {
       }
       await _commentsRepository.deleteComment(comment: comment);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue deleting the comment. Please try again.");
     }
   }
@@ -149,7 +151,7 @@ class CommentsState extends ChangeNotifier {
     _error = Error();
     _postId = null;
     _post = null;
-    _commentText;
+    _commentText = null;
     _comments = [];
     notifyListeners();
   }

@@ -16,3 +16,8 @@ export 'munro_completions_repository.dart';
 export 'saved_list_munro_repository.dart';
 export 'profile_repository.dart';
 export 'auth_repository.dart';
+export 'storage_repository.dart';
+export 'settings_repository.dart';
+export 'weather_repository.dart';
+export 'remote_config_respository.dart';
+export 'app_flags-repository.dart';

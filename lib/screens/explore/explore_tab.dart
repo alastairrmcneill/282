@@ -4,7 +4,6 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -32,7 +31,7 @@ class _ExploreTabState extends State<ExploreTab> {
 
   @override
   void initState() {
-    appRouteObserver.updateCurrentScreen(ExploreTab.route);
+    context.read<AppRouteObserver>().updateCurrentScreen(ExploreTab.route);
     super.initState();
   }
 
@@ -58,8 +57,8 @@ class _ExploreTabState extends State<ExploreTab> {
   }
 
   Widget _buildScreen(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    LayoutState layoutState = Provider.of<LayoutState>(context);
+    final munroState = context.watch<MunroState>();
+    final layoutState = context.watch<LayoutState>();
 
     final double screenHeight = MediaQuery.of(context).size.height;
     final double topPadding = MediaQuery.of(context).padding.top;
@@ -84,7 +83,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _isMunroListViewVisible = true;
                 borderRadius = BorderRadius.zero;
 
-                appRouteObserver.updateCurrentScreen(MunroListScreen.route);
+                context.read<AppRouteObserver>().updateCurrentScreen(MunroListScreen.route);
               } else if (position < 0.8) {
                 _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
@@ -101,7 +100,7 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: EdgeInsets.only(
                 bottom: bottomNavBarHeight + bottomPadding,
               ),
-              child: RemoteConfigService.getBool(RCFields.mapboxMapScreen)
+              child: context.read<RemoteConfigState>().config.mapboxMapScreen
                   ? MapboxMapScreen(searchFocusNode: _searchFocusNode)
                   : GoogleMapScreen(searchFocusNode: _searchFocusNode),
             ),
@@ -117,7 +116,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _isSearchVisible = false;
                 _searchFocusNode.unfocus();
                 _hasLoggedSearchOpen = false;
-                appRouteObserver.updateCurrentScreen(ExploreTab.route);
+                context.read<AppRouteObserver>().updateCurrentScreen(ExploreTab.route);
               });
             },
             onSearchTap: () {
@@ -125,7 +124,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _isSearchVisible = true;
                 if (!_hasLoggedSearchOpen) {
                   _hasLoggedSearchOpen = true;
-                  appRouteObserver.updateCurrentScreen(MunroSearchScreen.route);
+                  context.read<AppRouteObserver>().updateCurrentScreen(MunroSearchScreen.route);
                 }
               });
             },

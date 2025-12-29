@@ -11,8 +11,7 @@ class ProfilePhotosWidget extends StatelessWidget {
   const ProfilePhotosWidget({super.key});
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
-
+    final profileState = context.watch<ProfileState>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(

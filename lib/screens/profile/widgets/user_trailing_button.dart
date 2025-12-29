@@ -18,7 +18,6 @@ class UserTrailingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final userState = context.read<UserState>();
     final currentUserFollowerState = context.watch<CurrentUserFollowerState>();
-    final navigationState = Provider.of<NavigationState>(context);
 
     if (userState.currentUser?.uid == profileUserId) return const SizedBox();
 
@@ -31,7 +30,6 @@ class UserTrailingButton extends StatelessWidget {
               onPressed: () async {
                 // Check if logged in or not
                 if (userState.currentUser == null) {
-                  navigationState.setNavigateToRoute = ProfileTab.route;
                   Navigator.of(context).pushNamed(AuthHomeScreen.route);
                 } else {
                   currentUserFollowerState.unfollowUser(
@@ -48,7 +46,6 @@ class UserTrailingButton extends StatelessWidget {
               onPressed: () async {
                 // Check if logged in or not
                 if (userState.currentUser == null) {
-                  navigationState.setNavigateToRoute = ProfileTab.route;
                   Navigator.of(context).pushNamed(AuthHomeScreen.route);
                 } else {
                   currentUserFollowerState.followUser(

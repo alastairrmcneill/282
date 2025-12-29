@@ -9,7 +9,7 @@ class CreatePostSummitDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
+    final createPostState = context.watch<CreatePostState>();
     TextEditingController dateController = TextEditingController(
       text: DateFormat('dd/MM/yy').format(
         createPostState.summitedDate ?? DateTime.now(),

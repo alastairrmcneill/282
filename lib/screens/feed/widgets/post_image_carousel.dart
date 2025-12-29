@@ -18,7 +18,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
     List<String> imageUrls = widget.post.imageUrlsMap.values.expand((element) => element).toList();
 
     if (imageUrls.isEmpty) {

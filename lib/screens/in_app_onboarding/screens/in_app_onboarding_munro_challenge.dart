@@ -16,7 +16,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+    final achievementsState = context.watch<AchievementsState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 30, top: 30),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
@@ -14,9 +15,8 @@ class MunroTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.read<AuthState>().currentUserId;
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    SavedListState savedListState = Provider.of<SavedListState>(context);
+    final munroState = context.read<MunroState>();
+    final savedListState = context.watch<SavedListState>();
 
     Munro munro = munroState.selectedMunro!;
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
@@ -57,17 +57,13 @@ class MunroTitle extends StatelessWidget {
         const SizedBox(width: 8),
         InkWell(
           onTap: () async {
-            AnalyticsService.logEvent(
-              name: "Save Munro Button Clicked",
-              parameters: {
-                "source": "Munro Tile",
-                "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
-                "munro_name": munroState.selectedMunro?.name ?? "",
-                "user_id": userId ?? "",
-              },
-            );
+            context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
+              AnalyticsProp.source: "Munro Tile",
+              AnalyticsProp.munroId: (munroState.selectedMunro?.id ?? 0).toString(),
+              AnalyticsProp.munroName: munroState.selectedMunro?.name ?? "",
+            });
+
             if (userId == null) {
-              navigationState.setNavigateToRoute = HomeScreen.route;
               Navigator.pushNamed(context, AuthHomeScreen.route);
             } else {
               showSaveMunroDialog(context);

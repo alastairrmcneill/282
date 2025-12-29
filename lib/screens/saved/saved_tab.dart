@@ -16,7 +16,7 @@ class SavedTab extends StatefulWidget {
 class _SavedTabState extends State<SavedTab> {
   @override
   void initState() {
-    appRouteObserver.updateCurrentScreen(SavedTab.route);
+    context.read<AppRouteObserver>().updateCurrentScreen(SavedTab.route);
     super.initState();
   }
 

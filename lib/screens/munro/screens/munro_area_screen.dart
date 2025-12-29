@@ -17,7 +17,7 @@ class MunroAreaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String area = args.area;
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
 
     List<Munro> munros = munroState.munroList.where((munro) => munro.area == area).toList();
 

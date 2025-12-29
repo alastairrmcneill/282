@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:two_eight_two/services/services.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,6 +32,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
 
   void _checkAndShowDialog() async {
     if (_hasShownDialog) return;
+    final remoteConfigState = context.read<RemoteConfigState>();
     _hasShownDialog = true;
 
     // check if new version available
@@ -35,14 +40,14 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String appVersion = packageInfo.version;
 
-    String latestAppVersion = RemoteConfigService.getString(RCFields.latestAppVersion);
+    String latestAppVersion = remoteConfigState.config.latestAppVersion;
 
     bool newVersionAvailable = isVersionOlder(appVersion, latestAppVersion);
 
     if (!newVersionAvailable) return;
 
     // Check if user saw dialog today
-    String lastAppUpdateDialogDateString = await SharedPreferencesService.getLastAppUpdateDialogDate();
+    String lastAppUpdateDialogDateString = context.read<AppFlagsRepository>().lastAppUpdateDialogDate;
 
     DateTime lastAppUpdateDialogDate = DateFormat("dd/MM/yyyy").parse(lastAppUpdateDialogDateString);
     DateTime today = DateTime.now();
@@ -50,7 +55,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     if (today.difference(lastAppUpdateDialogDate).inDays < 1) return;
 
     // Show dialog
-    String whatsNew = RemoteConfigService.getString(RCFields.whatsNew);
+    String whatsNew = remoteConfigState.config.whatsNew;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showSurveyDialog(
@@ -86,7 +91,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
   }) {
     List<String> updates = whatsNew.split(';');
 
-    AnalyticsService.logAppUpdateDialogShown();
+    context.read<Analytics>().track(AnalyticsEvent.appUpdateDialogShown);
 
     showDialog(
       context: context,
@@ -95,7 +100,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
           onPopInvoked: (didPop) {
             if (didPop) {
               // Mark shared prefs as seen
-              SharedPreferencesService.setLastAppUpdateDialogDate(DateFormat("dd/MM/yyyy").format(DateTime.now()));
+              context
+                  .read<AppFlagsRepository>()
+                  .setLastAppUpdateDialogDate(DateFormat("dd/MM/yyyy").format(DateTime.now()));
             }
           },
           child: Dialog(
@@ -153,7 +160,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        AnalyticsService.logAppUpdateDialogUpdateNow();
+                        context.read<Analytics>().track(AnalyticsEvent.appUpdateDialogUpdateNow);
                         String url = Platform.isIOS
                             ? "https://apps.apple.com/us/app/282/id6474512889"
                             : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
@@ -162,7 +169,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
                             Uri.parse(url),
                           );
                         } on Exception catch (error, stackTrace) {
-                          Log.error(error.toString(), stackTrace: stackTrace);
+                          context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                           Clipboard.setData(ClipboardData(text: url));
                           showSnackBar(context, 'Copied link. Go to browser to open.');
                         }

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class ReportState extends ChangeNotifier {
   final ReportRepository _repository;
   final UserState _userState;
-  ReportState(this._repository, this._userState);
+  final Logger _logger;
+
+  ReportState(
+    this._repository,
+    this._userState,
+    this._logger,
+  );
 
   ReportStatus _status = ReportStatus.initial;
   Error _error = Error();
@@ -38,7 +44,7 @@ class ReportState extends ChangeNotifier {
       // Update state
       setStatus = ReportStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue reporting the content. Please try again");
     }
   }

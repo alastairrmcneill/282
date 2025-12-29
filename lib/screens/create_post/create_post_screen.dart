@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 import '../screens.dart';
@@ -16,11 +16,9 @@ class CreatePostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
-        return createPostState.status != CreatePostStatus.loading;
-      },
+    final createPostState = context.read<CreatePostState>();
+    return PopScope(
+      canPop: createPostState.status != CreatePostStatus.loading,
       child: Consumer<CreatePostState>(
         builder: (context, createPostState, child) {
           switch (createPostState.status) {
@@ -35,9 +33,9 @@ class CreatePostScreen extends StatelessWidget {
             case CreatePostStatus.loaded:
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (createPostState.editingPost == null) {
-                  // Send to review page
-                  CreateReviewState createReviewState = Provider.of<CreateReviewState>(context, listen: false);
-                  MunroState munroState = Provider.of<MunroState>(context, listen: false);
+                  // Send to review
+                  final createReviewState = context.read<CreateReviewState>();
+                  final munroState = context.read<MunroState>();
                   createReviewState.reset();
                   List<Munro> selectedMunros = munroState.munroList
                       .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
@@ -155,7 +153,7 @@ class CreatePostScreen extends StatelessWidget {
                 _formKey.currentState!.save();
 
                 if (!createPostState.hasImage) {
-                  AnalyticsService.logCreatePostNoPhotos();
+                  context.read<Analytics>().track(AnalyticsEvent.createPostNoPhotosDialogShown);
                   bool? carryOn = await showDialog<bool>(
                     context: context,
                     builder: (BuildContext context) {
@@ -214,7 +212,11 @@ class CreatePostScreen extends StatelessWidget {
                                     icon: const Icon(Icons.cancel_rounded),
                                     label: const Text('No, Skip'),
                                     onPressed: () {
-                                      AnalyticsService.logCreatePostNoPhotosResponse("skip");
+                                      context
+                                          .read<Analytics>()
+                                          .track(AnalyticsEvent.createPostNoPhotosDialogResponse, props: {
+                                        AnalyticsProp.response: "skip",
+                                      });
                                       Navigator.of(context).pop(true);
                                     },
                                   ),
@@ -228,7 +230,11 @@ class CreatePostScreen extends StatelessWidget {
                                     icon: const Icon(Icons.check_circle_rounded),
                                     label: const Text('Yes, Add!'),
                                     onPressed: () {
-                                      AnalyticsService.logCreatePostNoPhotosResponse("add");
+                                      context
+                                          .read<Analytics>()
+                                          .track(AnalyticsEvent.createPostNoPhotosDialogResponse, props: {
+                                        AnalyticsProp.response: "add",
+                                      });
                                       Navigator.of(context).pop(false);
                                     },
                                   ),

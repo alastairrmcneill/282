@@ -54,7 +54,7 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
 
   void _logTabAnalytics(int index) {
     final screenName = index == 0 ? '/feed_tab/global' : '/feed_tab/friends';
-    appRouteObserver.updateCurrentScreen(screenName);
+    context.read<AppRouteObserver>().updateCurrentScreen(screenName);
   }
 
   @override
@@ -65,7 +65,7 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    FeedState feedState = Provider.of<FeedState>(context);
+    final feedState = context.watch<FeedState>();
     return DefaultTabController(
       length: 2,
       child: Scaffold(

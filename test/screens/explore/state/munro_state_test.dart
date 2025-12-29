@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/explore/state/munro_state.dart';
@@ -10,9 +11,13 @@ import 'package:two_eight_two/screens/explore/state/munro_state.dart';
 import 'munro_state_test.mocks.dart';
 
 // Generate mocks
-@GenerateMocks([MunroRepository])
+@GenerateMocks([
+  MunroRepository,
+  Logger,
+])
 void main() {
   late MockMunroRepository mockMunroRepository;
+  late MockLogger mockLogger;
   late MunroState munroState;
 
   // Sample munro data for testing
@@ -78,7 +83,8 @@ void main() {
 
   setUp(() {
     mockMunroRepository = MockMunroRepository();
-    munroState = MunroState(mockMunroRepository);
+    mockLogger = MockLogger();
+    munroState = MunroState(mockMunroRepository, mockLogger);
   });
 
   group('MunroState', () {
@@ -112,6 +118,7 @@ void main() {
         expect(munroState.munroList, sampleMunros);
         expect(munroState.filteredMunroList, sampleMunros);
         verify(mockMunroRepository.getMunroData()).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
       test('should handle error during loading', () async {
@@ -126,6 +133,7 @@ void main() {
         expect(munroState.error.code, contains('Exception: Network error'));
         expect(munroState.error.message, 'There was an issue loading the munro data');
         verify(mockMunroRepository.getMunroData()).called(1);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {

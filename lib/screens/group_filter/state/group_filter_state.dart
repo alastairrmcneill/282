@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class GroupFilterState extends ChangeNotifier {
   final FollowersRepository _followersRepository;
   final MunroCompletionsRepository _munroCompletionRepository;
   final UserState _userState;
   final MunroState _munroState;
-  GroupFilterState(this._userState, this._followersRepository, this._munroState, this._munroCompletionRepository);
+  final Logger _logger;
+  GroupFilterState(
+    this._userState,
+    this._followersRepository,
+    this._munroState,
+    this._munroCompletionRepository,
+    this._logger,
+  );
 
   GroupFilterStatus _status = GroupFilterStatus.initial;
   Error _error = Error();
@@ -35,7 +42,7 @@ class GroupFilterState extends ChangeNotifier {
 
       setStatus = GroupFilterStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue. Please try again.");
     }
   }
@@ -57,7 +64,7 @@ class GroupFilterState extends ChangeNotifier {
 
       setStatus = GroupFilterStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue with the search. Please try again.");
     }
   }
@@ -79,7 +86,7 @@ class GroupFilterState extends ChangeNotifier {
 
       setStatus = GroupFilterStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading more. Please try again.");
     }
   }

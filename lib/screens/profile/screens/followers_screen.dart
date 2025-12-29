@@ -32,7 +32,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
   void initState() {
     super.initState();
 
-    final followersListState = Provider.of<FollowersListState>(context, listen: false);
+    final followersListState = context.read<FollowersListState>();
 
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
@@ -65,7 +65,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
 
   void _logTabAnalytics(int index) {
     final screen = index == 0 ? '/profile/following_tab' : '/profile/followers_tab';
-    appRouteObserver.updateCurrentScreen(screen);
+    context.read<AppRouteObserver>().updateCurrentScreen(screen);
   }
 
   @override

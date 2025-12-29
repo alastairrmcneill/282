@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics_base.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FeedbackSurvey extends StatefulWidget {
@@ -32,13 +32,13 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
   void _checkAndShowSurveyDialog() async {
     if (_hasShownDialog) return;
     _hasShownDialog = true;
+    final appFlagsRepository = context.read<AppFlagsRepository>();
+    int currentFeedbackSurveyNumber = context.read<RemoteConfigState>().config.feedbackSurveyNumber;
 
-    int currentFeedbackSurveyNumber = RemoteConfigService.getInt(RCFields.feedbackSurveyNumber);
-
-    int lastFeedbackSurveyNumber = await SharedPreferencesService.getLastFeedbackSurveyNumber();
+    int lastFeedbackSurveyNumber = appFlagsRepository.lastFeedbackSurveyNumber;
 
     if (lastFeedbackSurveyNumber == -1) {
-      await SharedPreferencesService.setLastFeedbackSurveyNumber(currentFeedbackSurveyNumber);
+      await appFlagsRepository.setLastFeedbackSurveyNumber(currentFeedbackSurveyNumber);
       return;
     }
 
@@ -68,8 +68,10 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
       platform: isIOS ? "iOS" : "Android",
     );
 
-    AnalyticsService.logSurveyAnswered(q1: response1, q2: response2);
-
+    context.read<Analytics>().track(AnalyticsEvent.surveyAnswers, props: {
+      AnalyticsProp.q1: response1.isNotEmpty,
+      AnalyticsProp.q2: response2.isNotEmpty,
+    });
     if (response1.isEmpty && response2.isEmpty) {
       return;
     }
@@ -80,7 +82,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
 
   void _showSurveyDialog(BuildContext context, {required int surveyNumber}) {
     final feedbackRepository = context.read<FeedbackRepository>();
-    AnalyticsService.logSurveyShown();
+    context.read<Analytics>().track(AnalyticsEvent.surveyShown);
 
     showDialog(
       context: context,
@@ -88,7 +90,7 @@ class _FeedbackSurveyState extends State<FeedbackSurvey> {
         return PopScope(
           onPopInvoked: (didPop) {
             if (didPop) {
-              SharedPreferencesService.setLastFeedbackSurveyNumber(surveyNumber);
+              context.read<AppFlagsRepository>().setLastFeedbackSurveyNumber(surveyNumber);
             }
           },
           child: Dialog(

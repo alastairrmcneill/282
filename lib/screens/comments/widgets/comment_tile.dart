@@ -29,7 +29,7 @@ class CommentTile extends StatelessWidget {
         ),
       ];
     } else {
-      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      final reportState = context.read<ReportState>();
       menuItems = [
         MenuItem(
           text: 'Report',
@@ -46,7 +46,7 @@ class CommentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
+    UserState userState = context.watch<UserState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),

@@ -10,7 +10,7 @@ class NotificationSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context);
+    final settingsState = context.watch<SettingsState>();
     return Scaffold(
       appBar: AppBar(),
       body: Column(
@@ -18,12 +18,7 @@ class NotificationSettingsScreen extends StatelessWidget {
           SwitchListTile(
             value: settingsState.enablePushNotifications,
             onChanged: (value) {
-              settingsState.setEnablePushNotifications = value;
-              SettingsSerivce.setBoolSetting(
-                settingName: SettingsFields.pushNotifications,
-                value: value,
-              );
-
+              settingsState.setEnablePushNotifications(value);
               if (value) {
                 // Add FCM Token to database
                 PushNotificationService.applyFCMToken(context);

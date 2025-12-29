@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class ReviewsState extends ChangeNotifier {
   final ReviewsRepository _reviewsRepository;
   final MunroState _munroState;
   final UserState _userState;
+  final Logger _logger;
+
   ReviewsState(
     this._reviewsRepository,
     this._munroState,
     this._userState,
+    this._logger,
   );
 
   ReviewsStatus _status = ReviewsStatus.initial;
@@ -38,7 +41,7 @@ class ReviewsState extends ChangeNotifier {
       setReviews = reviews;
       setStatus = ReviewsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue getting reviews for this munro. Please try again",
         code: error.toString(),
@@ -60,7 +63,7 @@ class ReviewsState extends ChangeNotifier {
       addReviews = reviews;
       setStatus = ReviewsStatus.loaded;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue getting reviews for this munro. Please try again",
         code: error.toString(),
@@ -75,7 +78,7 @@ class ReviewsState extends ChangeNotifier {
 
       removeReview(review);
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue deleting your review. Please try again",
         code: error.toString(),

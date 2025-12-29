@@ -10,7 +10,7 @@ class MunroDirectionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
     return ListTile(
       visualDensity: VisualDensity.compact,
       onTap: () async {

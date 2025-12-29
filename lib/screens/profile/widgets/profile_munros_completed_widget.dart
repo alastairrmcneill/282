@@ -11,7 +11,7 @@ class ProfileMunrosCompletedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
+    final profileState = context.watch<ProfileState>();
 
     int count = 282;
     int progress = profileState.profile?.munrosCompleted ?? 0;

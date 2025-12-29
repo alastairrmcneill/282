@@ -54,10 +54,9 @@ class MunroSummitedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
-    MunroState munroState = Provider.of<MunroState>(context);
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
+    final userState = context.watch<UserState>();
+    final munroState = context.watch<MunroState>();
+    final munroCompletionState = context.watch<MunroCompletionState>();
 
     List<MunroCompletion> completions =
         munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).toList();
@@ -65,7 +64,6 @@ class MunroSummitedWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (userState.currentUser == null) {
-          navigationState.setNavigateToRoute = HomeScreen.route;
           Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
           if (munroState.selectedMunro != null) {

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroCompletionState extends ChangeNotifier {
   final MunroCompletionsRepository repository;
   final UserState userState;
-  MunroCompletionState(this.repository, this.userState);
+  final Logger _logger;
+
+  MunroCompletionState(
+    this.repository,
+    this.userState,
+    this._logger,
+  );
 
   MunroCompletionsStatus _status = MunroCompletionsStatus.initial;
   Error _error = Error();
@@ -32,7 +38,7 @@ class MunroCompletionState extends ChangeNotifier {
       _status = MunroCompletionsStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       _status = MunroCompletionsStatus.error;
       _error = Error(
         code: error.toString(),
@@ -55,7 +61,7 @@ class MunroCompletionState extends ChangeNotifier {
       ];
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       _status = MunroCompletionsStatus.error;
       _error = Error(
         code: error.toString(),
@@ -95,7 +101,7 @@ class MunroCompletionState extends ChangeNotifier {
       ];
       notifyListeners();
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _status = MunroCompletionsStatus.error;
       _error = Error(
         code: e.toString(),
@@ -118,7 +124,7 @@ class MunroCompletionState extends ChangeNotifier {
       _munroCompletions = _munroCompletions.where((mc) => mc.id != munroCompletion.id).toList();
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       _status = MunroCompletionsStatus.error;
       _error = Error(
         message: "There was an issue removing your munro completion",
@@ -150,7 +156,7 @@ class MunroCompletionState extends ChangeNotifier {
 
       notifyListeners();
     } catch (e, st) {
-      Log.error(e.toString(), stackTrace: st);
+      _logger.error(e.toString(), stackTrace: st);
       _status = MunroCompletionsStatus.error;
       _error = Error(
         code: e.toString(),

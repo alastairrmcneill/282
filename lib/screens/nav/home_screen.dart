@@ -33,7 +33,7 @@ class HomeScreenState extends State<HomeScreen> {
     _currentIndex = widget.startingIndex!;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LayoutState layoutState = Provider.of<LayoutState>(context, listen: false);
+      final layoutState = context.read<LayoutState>();
 
       _loadData();
       final RenderBox renderBox = _bottomNavigationKey.currentContext!.findRenderObject() as RenderBox;
@@ -57,7 +57,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future _loadData() async {
-    await SettingsSerivce.loadSettings(context);
+    await context.read<SettingsState>().load();
     final userId = context.read<AuthRepository>().currentUserId;
     await context.read<UserState>().readUser(uid: userId);
 
@@ -72,7 +72,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+    final achievementsState = context.watch<AchievementsState>();
 
     if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
       _showCompletedAchievements();
@@ -129,17 +129,9 @@ class HomeScreenState extends State<HomeScreen> {
         key: _bottomNavigationKey,
         onTap: (value) {
           final userId = context.read<AuthRepository>().currentUserId;
-          final navigationState = context.read<NavigationState>();
 
           if (value == 1 || value == 2 || value == 3) {
             if (userId == null) {
-              // store desired tab route and force auth
-              final route = value == 1
-                  ? FeedTab.route
-                  : value == 2
-                      ? SavedTab.route
-                      : ProfileTab.route;
-              navigationState.setNavigateToRoute = route;
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
               return;
             }

@@ -26,9 +26,9 @@ class PostWidget extends StatelessWidget {
   });
 
   Widget _buildIncludedMunroText(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
-    ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
+    final reviewsState = context.read<ReviewsState>();
     if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
         alignment: Alignment.centerLeft,
@@ -85,8 +85,8 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
-    UserLikeState userLikeState = Provider.of<UserLikeState>(context);
+    final commentsState = context.read<CommentsState>();
+    final userLikeState = context.watch<UserLikeState>();
 
     if (post.includedMunroIds.isEmpty) {
       return const SizedBox();
@@ -149,7 +149,7 @@ class PostWidget extends StatelessWidget {
                           onTap: () {
                             commentsState.reset();
                             commentsState.setPostId = post.uid;
-                            commentsState.getPostComments(context);
+                            commentsState.getPostComments();
                             Navigator.of(context).pushNamed(CommentsScreen.route);
                           },
                           child: const Icon(CupertinoIcons.chat_bubble, size: 22),

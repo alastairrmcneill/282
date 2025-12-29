@@ -10,8 +10,8 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
-    CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
+    final profileState = context.watch<ProfileState>();
+    final currentUserFollowerState = context.watch<CurrentUserFollowerState>();
     return SafeArea(
       top: true,
       bottom: false,

@@ -14,7 +14,7 @@ class InAppOnboardingMunroUpdates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 30, top: 30),

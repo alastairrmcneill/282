@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/weather/weather_screen.dart';
-import 'package:two_eight_two/services/weather_service.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroWeatherWidget extends StatefulWidget {
@@ -21,7 +20,7 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Fetch weather data and update the Provider after the widget has been built
-      WeatherService.getWeather(context);
+      context.read<WeatherState>().getWeather();
     });
   }
 
@@ -47,7 +46,7 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
   }
 
   Widget _buildScreen(BuildContext context, {required WeatherState weatherState}) {
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+    final settingsState = context.read<SettingsState>();
     Weather weather = weatherState.forecast[0];
     return InkWell(
       onTap: () => Navigator.pushNamed(context, WeatherScreen.route),

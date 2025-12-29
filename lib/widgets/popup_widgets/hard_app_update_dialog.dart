@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:two_eight_two/services/services.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,7 +37,7 @@ class _HardAppUpdateDialogState extends State<HardAppUpdateDialog> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     int buildNumber = int.parse(packageInfo.buildNumber);
 
-    int latestBuildNumber = RemoteConfigService.getInt(RCFields.hardUpdateBuildNumber);
+    int latestBuildNumber = context.read<RemoteConfigState>().config.hardUpdateBuildNumber;
 
     bool newVersionAvailable = buildNumber < latestBuildNumber;
 
@@ -52,7 +55,7 @@ class _HardAppUpdateDialogState extends State<HardAppUpdateDialog> {
     BuildContext context, {
     required bool isIOS,
   }) {
-    AnalyticsService.logHardAppUpdateDialogShown();
+    context.read<Analytics>().track(AnalyticsEvent.hardAppUpdateDialogShown);
 
     showDialog(
       context: context,
@@ -138,7 +141,7 @@ class _HardAppUpdateDialogState extends State<HardAppUpdateDialog> {
                         ),
                       ),
                       onPressed: () async {
-                        AnalyticsService.logAppUpdateDialogUpdateNow();
+                        context.read<Analytics>().track(AnalyticsEvent.appUpdateDialogUpdateNow);
                         String url = Platform.isIOS
                             ? "https://apps.apple.com/us/app/282/id6474512889"
                             : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
@@ -148,7 +151,7 @@ class _HardAppUpdateDialogState extends State<HardAppUpdateDialog> {
                             mode: LaunchMode.externalApplication,
                           );
                         } on Exception catch (error, stackTrace) {
-                          Log.error(error.toString(), stackTrace: stackTrace);
+                          context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                           Clipboard.setData(ClipboardData(text: url));
                           showSnackBar(context, 'Copied link. Go to browser to open.');
                         }

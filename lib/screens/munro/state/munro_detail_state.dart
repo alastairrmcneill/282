@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroDetailState extends ChangeNotifier {
   final MunroPicturesRepository _munroPicturesRepository;
   final UserState _userState;
-  MunroDetailState(this._munroPicturesRepository, this._userState);
+  final Logger _logger;
+  MunroDetailState(
+    this._munroPicturesRepository,
+    this._userState,
+    this._logger,
+  );
 
   MunroDetailStatus _galleryStatus = MunroDetailStatus.initial;
   List<MunroPicture> _munroPictures = [];
@@ -32,7 +37,7 @@ class MunroDetailState extends ChangeNotifier {
       _galleryStatus = MunroDetailStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this munro. Please try again.");
     }
   }
@@ -54,7 +59,7 @@ class MunroDetailState extends ChangeNotifier {
       notifyListeners();
       return _munroPictures;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this munro. Please try again.");
       return [];
     }

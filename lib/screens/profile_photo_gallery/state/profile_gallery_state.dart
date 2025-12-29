@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class ProfileGalleryState extends ChangeNotifier {
   final MunroPicturesRepository _munroPicturesRepository;
   final UserState _userState;
+  final Logger _logger;
+
   ProfileGalleryState(
     this._munroPicturesRepository,
     this._userState,
+    this._logger,
   );
 
   ProfileGalleryStatus _status = ProfileGalleryStatus.initial;
@@ -37,7 +40,7 @@ class ProfileGalleryState extends ChangeNotifier {
       _status = ProfileGalleryStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
     }
   }
@@ -59,7 +62,7 @@ class ProfileGalleryState extends ChangeNotifier {
       notifyListeners();
       return pictures;
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
       return [];
     }

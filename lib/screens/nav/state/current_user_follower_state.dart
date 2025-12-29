@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class CurrentUserFollowerState extends ChangeNotifier {
   final FollowersRepository _repository;
   final UserState _userState;
-  CurrentUserFollowerState(this._repository, this._userState);
+  final Logger _logger;
+
+  CurrentUserFollowerState(
+    this._repository,
+    this._userState,
+    this._logger,
+  );
 
   CurrentUserFollowerStatus _status = CurrentUserFollowerStatus.initial;
   Error _error = Error();
@@ -38,7 +44,7 @@ class CurrentUserFollowerState extends ChangeNotifier {
       _status = CurrentUserFollowerStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       _status = CurrentUserFollowerStatus.error;
       _error = Error(message: "There was an issue loading your followers. Please try again.");
       notifyListeners();
@@ -63,7 +69,7 @@ class CurrentUserFollowerState extends ChangeNotifier {
       _status = CurrentUserFollowerStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue following this user. Please try again.");
     }
   }
@@ -85,7 +91,7 @@ class CurrentUserFollowerState extends ChangeNotifier {
       _status = CurrentUserFollowerStatus.loaded;
       notifyListeners();
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue unfollowing this user. Please try again.");
     }
   }

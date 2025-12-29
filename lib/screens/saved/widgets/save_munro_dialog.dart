@@ -4,8 +4,8 @@ import 'package:two_eight_two/screens/notifiers.dart';
 
 // Show dialog to add historical entry to an account
 showSaveMunroDialog(BuildContext context) {
-  MunroState munroState = Provider.of<MunroState>(context, listen: false);
-  SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+  final munroState = context.read<MunroState>();
+  final savedListState = context.read<SavedListState>();
 
   AlertDialog alert = AlertDialog(
     scrollable: true,

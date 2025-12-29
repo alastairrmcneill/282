@@ -19,3 +19,5 @@ export 'blocked_user_relationship.dart';
 export 'munro_completion_model.dart';
 export 'saved_list_munro_model.dart';
 export 'profile_model.dart';
+export 'appsettings_model.dart';
+export 'remote_config_model.dart';
