@@ -16,15 +16,16 @@ class _AppBootstrapState extends State<AppBootstrap> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<RemoteConfigState>().init();
+      context.read<AppBootstrapState>().init();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final rc = context.watch<RemoteConfigState>();
+    final appBootstrapState = context.watch<AppBootstrapState>();
 
-    if (rc.status == RemoteConfigStatus.initial || rc.status == RemoteConfigStatus.loading) {
+    if (appBootstrapState.status == AppBootstrapStatus.initial ||
+        appBootstrapState.status == AppBootstrapStatus.loading) {
       return const SplashScreen();
     }
 

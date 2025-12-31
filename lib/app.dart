@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/app_bootstrap.dart';
 import 'package:two_eight_two/config/app_config.dart';
+import 'package:two_eight_two/app_intent_coordinator.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/support/app_router.dart';
@@ -28,11 +29,13 @@ class App extends StatelessWidget {
       navigatorObservers: [context.read<AppRouteObserver>()],
       onGenerateRoute: AppRouter.generateRoute,
       home: AppBootstrap(
-        child: HardAppUpdateDialog(
-          child: WhatsNewDialog(
-            child: AppUpdateDialog(
-              child: FeedbackSurvey(
-                child: HomeScreen(key: homeScreenKey),
+        child: AppIntentCoordinator(
+          child: HardAppUpdateDialog(
+            child: WhatsNewDialog(
+              child: AppUpdateDialog(
+                child: FeedbackSurvey(
+                  child: HomeScreen(key: homeScreenKey),
+                ),
               ),
             ),
           ),

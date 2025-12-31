@@ -138,6 +138,7 @@ class SettingsScreen extends StatelessWidget {
             onTap: () async {
               await context.read<AuthState>().signOut().then((_) {
                 context.read<MunroCompletionState>().reset();
+                context.read<SavedListState>().reset();
                 Navigator.of(context).pushReplacementNamed(HomeScreen.route);
               });
             },
@@ -151,6 +152,7 @@ class SettingsScreen extends StatelessWidget {
                 onConfirm: () async {
                   await context.read<AuthState>().deleteUser(user!).then((_) {
                     context.read<MunroCompletionState>().reset();
+                    context.read<SavedListState>().reset();
                     Navigator.of(context).pushReplacementNamed(HomeScreen.route);
                   });
                 },

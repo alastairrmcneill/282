@@ -28,7 +28,6 @@ main() async {
   final mixpanel = await Mixpanel.init(config.mixpanelToken, trackAutomaticEvents: true);
 
   await PushNotificationService.initPushNotificaitons();
-  await DeepLinkService.initBranchLinks(flavor: config.env, navigatorKey: navigatorKey);
   MapboxOptions.setAccessToken(config.mapboxToken);
   await Supabase.initialize(
     url: config.supabaseUrl,

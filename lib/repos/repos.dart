@@ -21,3 +21,5 @@ export 'settings_repository.dart';
 export 'weather_repository.dart';
 export 'remote_config_respository.dart';
 export 'app_flags-repository.dart';
+export 'deep_link_repository.dart';
+export 'share_link_repository.dart';

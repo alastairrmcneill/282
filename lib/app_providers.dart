@@ -8,6 +8,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/screens/nav/state/app_bootstrap_state.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'analytics/analytics.dart';
 import 'repos/repos.dart';
@@ -45,6 +46,7 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => SettingsRepository(sharedPreferences)),
       Provider(create: (_) => AppFlagsRepository(sharedPreferences)),
       Provider(create: (_) => WeartherRepository()),
+      Provider(create: (_) => ShareLinkRepository()),
       Provider<Analytics>(
         create: (ctx) => MixpanelAnalytics(
           mixpanel,
@@ -56,6 +58,7 @@ List<SingleChildWidget> buildRepositories(
       ),
       Provider(create: (_) => StorageRepository(firebaseStorage)),
       Provider(create: (_) => RemoteConfigRespository(remoteConfig)),
+      Provider(create: (_) => DeepLinkRepository()),
     ];
 
 List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
@@ -233,6 +236,39 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<FollowersRepository>(),
           ctx.read<MunroState>(),
           ctx.read<MunroCompletionsRepository>(),
+          ctx.read<Logger>(),
+        ),
+      ),
+      ChangeNotifierProvider<ShareMunroState>(
+        create: (ctx) => ShareMunroState(
+          ctx.read<ShareLinkRepository>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
+        ),
+      ),
+      ChangeNotifierProvider<AppIntentState>(
+        create: (ctx) => AppIntentState(
+          ctx.read<Logger>(),
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => DeepLinkState(
+          ctx.read<DeepLinkRepository>(),
+          ctx.read<AppIntentState>(),
+          ctx.read<Logger>(),
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => AppBootstrapState(
+          ctx.read<RemoteConfigState>(),
+          ctx.read<DeepLinkState>(),
+          ctx.read<SettingsState>(),
+          ctx.read<AuthState>(),
+          ctx.read<UserState>(),
+          ctx.read<MunroState>(),
+          ctx.read<MunroCompletionState>(),
+          ctx.read<SavedListState>(),
+          ctx.read<FlavorState>(),
           ctx.read<Logger>(),
         ),
       ),

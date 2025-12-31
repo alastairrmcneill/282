@@ -6,8 +6,9 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MunroTitle extends StatelessWidget {
   const MunroTitle({super.key});
@@ -44,7 +45,17 @@ class MunroTitle extends StatelessWidget {
         ),
         InkWell(
           onTap: () async {
-            await DeepLinkService.shareMunro(context, munro.name, munro.id);
+            final link = await context.read<ShareMunroState>().createShareLink(
+                  munroId: munro.id,
+                  munroName: munro.name,
+                );
+
+            if (link == null) {
+              showSnackBar(context, 'Failed to share link.');
+              return;
+            }
+
+            await SharePlus.instance.share(ShareParams(text: 'Check out ${munro.name} - $link'));
           },
           child: Padding(
             padding: const EdgeInsets.all(4),

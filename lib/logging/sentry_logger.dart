@@ -58,6 +58,7 @@ class SentryLogger implements Logger {
     );
   }
 
+  @override
   void identify(String userId) {
     if (kDebugMode) {
       debugPrint('IDENTIFY: $userId');
@@ -68,6 +69,7 @@ class SentryLogger implements Logger {
     });
   }
 
+  @override
   void clearUser() {
     if (kDebugMode) {
       debugPrint('CLEAR USER');

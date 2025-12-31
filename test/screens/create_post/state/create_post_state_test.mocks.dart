@@ -939,4 +939,22 @@ class MockLogger extends _i1.Mock implements _i10.Logger {
         ),
         returnValueForMissingStub: null,
       );
+
+  @override
+  void identify(String? userId) => super.noSuchMethod(
+        Invocation.method(
+          #identify,
+          [userId],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void clearUser() => super.noSuchMethod(
+        Invocation.method(
+          #clearUser,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
 }

@@ -57,15 +57,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future _loadData() async {
-    await context.read<SettingsState>().load();
-    final userId = context.read<AuthRepository>().currentUserId;
-    await context.read<UserState>().readUser(uid: userId);
-
-    await context.read<MunroState>().loadMunros();
-    await context.read<MunroCompletionState>().loadUserMunroCompletions();
     context.read<AchievementsState>().getUserAchievements();
-    context.read<UserState>().loadBlockedUsers();
-    context.read<SavedListState>().readUserSavedLists();
     context.read<CurrentUserFollowerState>().loadInitial();
     PushNotificationService.checkAndUpdateFCMToken(context);
   }

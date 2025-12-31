@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -54,11 +54,18 @@ class MunroSliverAppBar extends StatelessWidget {
       MenuItem(
         text: "Share",
         onTap: () async {
-          await DeepLinkService.shareMunro(
-            context,
-            munroState.selectedMunro?.name ?? "",
-            munroState.selectedMunro?.id ?? 0,
-          );
+          final link = await context.read<ShareMunroState>().createShareLink(
+                munroId: munroState.selectedMunro?.id ?? 0,
+                munroName: munroState.selectedMunro?.name ?? "",
+              );
+
+          if (link == null) {
+            showSnackBar(context, 'Failed to share link.');
+            return;
+          }
+
+          await SharePlus.instance
+              .share(ShareParams(text: 'Check out ${munroState.selectedMunro?.name ?? "this munro"} - $link'));
         },
       ),
     );

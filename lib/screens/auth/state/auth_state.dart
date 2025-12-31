@@ -88,6 +88,7 @@ class AuthState extends ChangeNotifier {
       await _userState.createUser(appUser: appUser);
 
       await _analytics.identify(firebaseUser.uid);
+      _logger.identify(firebaseUser.uid);
 
       _analytics.track(AnalyticsEvent.signUp, props: {
         AnalyticsProp.method: 'email',
@@ -180,6 +181,7 @@ class AuthState extends ChangeNotifier {
       await _userState.createUser(appUser: appUser);
 
       await _analytics.identify(firebaseUser.uid);
+      _logger.identify(firebaseUser.uid);
 
       if (isNewUser) {
         _analytics.track(AnalyticsEvent.signUp, props: {
@@ -254,6 +256,7 @@ class AuthState extends ChangeNotifier {
       await _userState.createUser(appUser: appUser);
 
       await _analytics.identify(firebaseUser.uid);
+      _logger.identify(firebaseUser.uid);
 
       _analytics.track(AnalyticsEvent.signUp, props: {
         AnalyticsProp.method: 'google',
@@ -303,6 +306,7 @@ class AuthState extends ChangeNotifier {
     _setLoading();
     try {
       _analytics.reset();
+      _logger.clearUser();
       await _authRepo.signOut();
       _userState.reset();
 
@@ -320,6 +324,7 @@ class AuthState extends ChangeNotifier {
     _setLoading();
     try {
       _analytics.reset();
+      _logger.clearUser();
       await _userState.deleteUser(appUser: appUser);
       await _authRepo.deleteAuthUser();
       _status = AuthStatus.initial;

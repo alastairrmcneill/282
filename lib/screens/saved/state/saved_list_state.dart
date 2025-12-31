@@ -217,6 +217,13 @@ class SavedListState extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void reset() {
+    _status = SavedListStatus.initial;
+    _error = Error();
+    _savedLists = [];
+    notifyListeners();
+  }
 }
 
 enum SavedListStatus { initial, loading, loaded, error }
