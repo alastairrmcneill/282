@@ -103,6 +103,7 @@ class AuthRepository {
   bool get supportsGoogleAuthenticate => _googleSignIn.supportsAuthenticate();
 
   Future<UserCredential> signInWithGoogle() async {
+    //TODO fix for android
     if (!_googleSignIn.supportsAuthenticate()) {
       throw Exception(
         "Platform doesn't support authenticate(). Use platform-specific sign-in method.",

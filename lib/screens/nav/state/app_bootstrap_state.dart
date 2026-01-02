@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class AppBootstrapState extends ChangeNotifier {
@@ -12,6 +13,7 @@ class AppBootstrapState extends ChangeNotifier {
   final MunroState _munroState;
   final MunroCompletionState _munroCompletionState;
   final SavedListState _savedListState;
+  final PushNotificationState _pushNotificationState;
   final FlavorState _flavorState;
   final Logger _logger;
 
@@ -24,6 +26,7 @@ class AppBootstrapState extends ChangeNotifier {
     this._munroState,
     this._munroCompletionState,
     this._savedListState,
+    this._pushNotificationState,
     this._flavorState,
     this._logger,
   );
@@ -51,6 +54,7 @@ class AppBootstrapState extends ChangeNotifier {
         _settingsState.load(),
         _munroState.loadMunros(),
         _deepLinkState.init(enableLogging: _flavorState.environment != AppEnvironment.prod),
+        _pushNotificationState.init(),
       ]);
 
       final uid = _authState.currentUserId;
@@ -60,6 +64,7 @@ class AppBootstrapState extends ChangeNotifier {
         await _munroCompletionState.loadUserMunroCompletions();
         await _savedListState.readUserSavedLists();
         await _userState.loadBlockedUsers();
+        await _pushNotificationState.syncTokenIfNeeded();
       }
 
       _status = AppBootstrapStatus.ready;

@@ -1,4 +1,3 @@
-// lib/app_intents/app_intent_coordinator.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -44,6 +43,15 @@ class AppIntentCoordinator extends StatelessWidget {
         munroState.setSelectedMunro = munro;
 
         navigatorKey.currentState!.pushNamed(MunroScreen.route);
+        return;
+
+      case OpenNotificationsIntent():
+        final userId = context.read<UserState>().currentUser?.uid;
+        if (userId == null) return;
+        final notificationsState = context.read<NotificationsState>();
+        await notificationsState.getUserNotifications();
+
+        navigatorKey.currentState!.pushNamed(NotificationsScreen.route);
         return;
 
       case RefreshHomeIntent():

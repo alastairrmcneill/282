@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -59,7 +58,6 @@ class HomeScreenState extends State<HomeScreen> {
   Future _loadData() async {
     context.read<AchievementsState>().getUserAchievements();
     context.read<CurrentUserFollowerState>().loadInitial();
-    PushNotificationService.checkAndUpdateFCMToken(context);
   }
 
   @override

@@ -34,4 +34,5 @@ export 'in_app_onboarding/in_app_onboarding_screen.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_munro_updates.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_welcome.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_munro_challenge.dart';
+export 'in_app_onboarding/screens/in_app_onboarding_notifications.dart';
 export 'group_filter/group_filter_screen.dart';

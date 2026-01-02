@@ -102,7 +102,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
               children: [
                 PageProgressIndicator(
                   currentPageIndex: _currentPage,
-                  totalPages: 3,
+                  totalPages: 4,
                 ),
                 Expanded(
                   child: PageView(
@@ -114,7 +114,8 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                       InAppOnboardingMunroUpdates(),
                       InAppOnboardingMunroChallenge(
                         args: InAppOnboardingMunroChallengeArgs(formKey: widget.formKey),
-                      )
+                      ),
+                      InAppOnboardingNotifications(),
                     ],
                   ),
                 ),
@@ -134,7 +135,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               },
                               child: const Text('Back'),
                             ),
-                      _currentPage == 2
+                      _currentPage == 3
                           ? ElevatedButton(
                               onPressed: () async {
                                 if (!widget.formKey.currentState!.validate()) {
@@ -145,6 +146,7 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                                 munroCompletionState.addBulkCompletions(
                                     munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList);
                                 context.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
+                                context.read<AppFlagsRepository>().setShowInAppOnboarding(false);
                                 context.read<Analytics>().track(AnalyticsEvent.onboardingProgress, props: {
                                   AnalyticsProp.status: "completed",
                                 });
@@ -157,7 +159,18 @@ class _InAppOnboardingState extends State<InAppOnboarding> {
                               child: const Text('Get Started'),
                             )
                           : ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                // Save munro challenge before moving to notifications
+                                if (_currentPage == 2) {
+                                  if (!widget.formKey.currentState!.validate()) {
+                                    return;
+                                  }
+                                  widget.formKey.currentState!.save();
+                                  context.read<AchievementsState>().setMunroChallenge();
+                                  munroCompletionState.addBulkCompletions(
+                                      munroCompletions: bulkMunroUpdateState.bulkMunroUpdateList);
+                                  context.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
+                                }
                                 _pageController.nextPage(
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class NotificationSettingsScreen extends StatelessWidget {
   const NotificationSettingsScreen({super.key});
@@ -17,14 +17,21 @@ class NotificationSettingsScreen extends StatelessWidget {
         children: [
           SwitchListTile(
             value: settingsState.enablePushNotifications,
-            onChanged: (value) {
-              settingsState.setEnablePushNotifications(value);
-              if (value) {
-                // Add FCM Token to database
-                PushNotificationService.applyFCMToken(context);
-              } else {
-                // Remove FCM Token from database
-                PushNotificationService.removeFCMToken(context);
+            onChanged: (value) async {
+              // Optimistically update local preference
+              await settingsState.setEnablePushNotifications(value);
+
+              final ok = await context.read<PushNotificationState>().onPushSettingChanged();
+
+              // If user tried to enable but OS permission denied, revert preference
+              if (value == true && ok == false) {
+                await settingsState.setEnablePushNotifications(false);
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Enable notifications in system settings to receive pushes.')),
+                  );
+                }
               }
             },
             title: const Text('Push notifications'),

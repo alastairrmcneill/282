@@ -10,10 +10,11 @@ import 'dart:ui' as _i6;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:two_eight_two/config/app_config.dart' as _i11;
+import 'package:two_eight_two/config/app_config.dart' as _i12;
 import 'package:two_eight_two/enums/enums.dart' as _i9;
-import 'package:two_eight_two/logging/logging.dart' as _i12;
+import 'package:two_eight_two/logging/logging.dart' as _i13;
 import 'package:two_eight_two/models/models.dart' as _i2;
+import 'package:two_eight_two/push/push_notifications_state.dart' as _i11;
 import 'package:two_eight_two/repos/repos.dart' as _i4;
 import 'package:two_eight_two/screens/notifiers.dart' as _i3;
 
@@ -1510,6 +1511,107 @@ class MockSavedListState extends _i1.Mock implements _i3.SavedListState {
       );
 }
 
+/// A class which mocks [PushNotificationState].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPushNotificationState extends _i1.Mock
+    implements _i11.PushNotificationState {
+  MockPushNotificationState() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(
+        Invocation.getter(#hasListeners),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Future<void> init() => (super.noSuchMethod(
+        Invocation.method(
+          #init,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<bool> onPushSettingChanged() => (super.noSuchMethod(
+        Invocation.method(
+          #onPushSettingChanged,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> enablePush() => (super.noSuchMethod(
+        Invocation.method(
+          #enablePush,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> disablePush() => (super.noSuchMethod(
+        Invocation.method(
+          #disablePush,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<void> syncTokenIfNeeded({bool? force = false}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #syncTokenIfNeeded,
+          [],
+          {#force: force},
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addListener(_i6.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #addListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void removeListener(_i6.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #removeListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
 /// A class which mocks [FlavorState].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -1519,10 +1621,10 @@ class MockFlavorState extends _i1.Mock implements _i3.FlavorState {
   }
 
   @override
-  _i11.AppEnvironment get environment => (super.noSuchMethod(
+  _i12.AppEnvironment get environment => (super.noSuchMethod(
         Invocation.getter(#environment),
-        returnValue: _i11.AppEnvironment.dev,
-      ) as _i11.AppEnvironment);
+        returnValue: _i12.AppEnvironment.dev,
+      ) as _i12.AppEnvironment);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -1570,7 +1672,7 @@ class MockFlavorState extends _i1.Mock implements _i3.FlavorState {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i12.Logger {
+class MockLogger extends _i1.Mock implements _i13.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

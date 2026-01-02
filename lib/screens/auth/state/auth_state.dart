@@ -305,6 +305,12 @@ class AuthState extends ChangeNotifier {
   Future<AuthResult> signOut() async {
     _setLoading();
     try {
+      // Clear FCM token from database before signing out
+      final user = _userState.currentUser;
+      if (user != null) {
+        await _userState.updateUser(appUser: user.copyWith(fcmToken: ''));
+      }
+
       _analytics.reset();
       _logger.clearUser();
       await _authRepo.signOut();

@@ -3,6 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 import 'app_bootstrap_state_test.mocks.dart';
@@ -17,6 +18,7 @@ import 'app_bootstrap_state_test.mocks.dart';
   MunroState,
   MunroCompletionState,
   SavedListState,
+  PushNotificationState,
   FlavorState,
   Logger,
 ])
@@ -30,6 +32,7 @@ void main() {
   late MockMunroCompletionState mockMunroCompletionState;
   late MockSavedListState mockSavedListState;
   late MockFlavorState mockFlavorState;
+  late MockPushNotificationState mockPushNotificationState;
   late MockLogger mockLogger;
   late AppBootstrapState appBootstrapState;
 
@@ -42,6 +45,7 @@ void main() {
     mockMunroState = MockMunroState();
     mockMunroCompletionState = MockMunroCompletionState();
     mockSavedListState = MockSavedListState();
+    mockPushNotificationState = MockPushNotificationState();
     mockFlavorState = MockFlavorState();
     when(mockFlavorState.environment).thenReturn(AppEnvironment.dev);
     mockLogger = MockLogger();
@@ -54,6 +58,7 @@ void main() {
       mockMunroState,
       mockMunroCompletionState,
       mockSavedListState,
+      mockPushNotificationState,
       mockFlavorState,
       mockLogger,
     );
