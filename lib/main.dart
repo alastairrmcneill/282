@@ -28,7 +28,6 @@ main() async {
   final prefs = await SharedPreferences.getInstance();
   final mixpanel = await Mixpanel.init(config.mixpanelToken, trackAutomaticEvents: true);
 
-  // await PushNotificationService.initPushNotificaitons(); //TODO fix
   MapboxOptions.setAccessToken(config.mapboxToken);
   await Supabase.initialize(
     url: config.supabaseUrl,
@@ -45,6 +44,11 @@ main() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+  final googleSignIn = GoogleSignIn.instance;
+  await googleSignIn.initialize(
+    serverClientId: config.googleWebClientId,
+  );
+
   await SentryFlutter.init(
     (options) {
       options.dsn = config.sentryDsn;
@@ -59,7 +63,7 @@ main() async {
         ...buildRepositories(
           Supabase.instance.client,
           FirebaseAuth.instance,
-          GoogleSignIn.instance,
+          googleSignIn,
           prefs,
           mixpanel,
           FirebaseStorage.instance,
