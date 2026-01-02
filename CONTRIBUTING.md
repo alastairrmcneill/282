@@ -422,38 +422,224 @@ If you want to use Apple Sign-In in the development app, you'll need to do the f
 
 ```
 lib/
-├── app.dart                           # Main app widget
-├── main.dart                          # Main entry point (uses config for flavors)
+├── app.dart                           # Main app widget with routing
+├── main.dart                          # Entry point (uses config for flavors)
+├── app_bootstrap.dart                 # App initialization wrapper
+├── app_intent_coordinator.dart        # Deep link and intent handling
+├── app_providers.dart                 # Provider setup and dependency injection
+├── analytics/                         # Analytics abstraction layer
+│   ├── analytics_base.dart           # Analytics interface
+│   └── mixpanel_analytics.dart       # Mixpanel implementation
 ├── config/
-│   └── app_config.dart               # Configuration management
-├── enums/                            # App enumerations
-├── extensions/                       # Dart extensions
-├── helpers/                          # Utility helpers
+│   └── app_config.dart               # Environment configuration
+├── enums/                            # App-wide enumerations
+│   ├── menu_items.dart
+│   └── sort_order.dart
+├── extensions/                       # Dart type extensions
+│   ├── datetime_extension.dart
+│   └── string_extension.dart
+├── helpers/                          # Utility functions
+│   ├── image_helper.dart
+│   └── image_picker_helper.dart
+├── logging/                          # Logging infrastructure
+│   ├── logger.dart                   # Logger interface
+│   └── sentry_logger.dart            # Sentry implementation
 ├── models/                           # Data models
-├── repos/                            # Data repositories
-├── screens/                          # UI screens
-├── services/                         # Business logic services
-├── support/                          # Theme and constants
-└── widgets/                          # Reusable widgets
+│   ├── app_user.dart
+│   ├── munro_model.dart
+│   ├── post_model.dart
+│   ├── munro_completion_model.dart
+│   ├── comment_model.dart
+│   ├── like_model.dart
+│   ├── achievement_model.dart
+│   ├── profile_model.dart
+│   ├── review_model.dart
+│   ├── weather_model.dart
+│   ├── notifications_model.dart
+│   └── [25 total models]
+├── push/                             # Push notification handling
+│   ├── push_background_handler.dart
+│   └── push_notifications_state.dart
+├── repos/                            # Data access layer (27 repositories)
+│   ├── auth_repository.dart
+│   ├── user_repository.dart
+│   ├── munro_repository.dart
+│   ├── munro_completions_repository.dart
+│   ├── posts_repository.dart
+│   ├── comments_repository.dart
+│   ├── likes_repository.dart
+│   ├── followers_repository.dart
+│   ├── profile_repository.dart
+│   ├── reviews_repository.dart
+│   ├── notifications_repository.dart
+│   ├── munro_pictures_repository.dart
+│   ├── user_achievements_repository.dart
+│   ├── saved_list_repository.dart
+│   ├── saved_list_munro_repository.dart
+│   ├── weather_repository.dart
+│   ├── storage_repository.dart
+│   ├── settings_repository.dart
+│   ├── feedback_repository.dart
+│   ├── report_repository.dart
+│   ├── blocked_user_repository.dart
+│   ├── push_notifications_repository.dart
+│   ├── remote_config_respository.dart
+│   ├── deep_link_repository.dart
+│   ├── share_link_repository.dart
+│   └── app_flags-repository.dart
+├── screens/                          # Feature screens (30+ features)
+│   ├── auth/                         # Authentication flows
+│   │   ├── screens/
+│   │   ├── widgets/
+│   │   └── state/
+│   │       ├── auth_state.dart
+│   │       └── user_state.dart
+│   ├── explore/                      # Munro discovery & maps
+│   │   ├── screens/
+│   │   ├── widgets/
+│   │   └── state/
+│   │       └── munro_state.dart
+│   ├── feed/                         # Social feed
+│   │   ├── screens/
+│   │   ├── widgets/
+│   │   └── state/
+│   │       ├── feed_state.dart
+│   │       └── user_like_state.dart
+│   ├── profile/                      # User profiles
+│   │   ├── screens/
+│   │   ├── widgets/
+│   │   └── state/
+│   │       ├── profile_state.dart
+│   │       └── followers_list_state.dart
+│   ├── munro/                        # Munro detail pages
+│   │   ├── screens/
+│   │   ├── widgets/
+│   │   └── state/
+│   │       ├── munro_detail_state.dart
+│   │       └── share_munro_state.dart
+│   ├── create_post/                  # Post creation
+│   ├── comments/                     # Comments & likes
+│   ├── notifications/                # In-app notifications
+│   ├── saved/                        # Saved lists
+│   ├── weather/                      # Weather forecasts
+│   ├── reviews/                      # Munro reviews
+│   ├── achievements/                 # User achievements
+│   ├── settings/                     # App settings
+│   ├── nav/                          # Navigation & global state
+│   │   └── state/
+│   │       ├── app_bootstrap_state.dart
+│   │       ├── app_intent_state.dart
+│   │       ├── layout_state.dart
+│   │       ├── munro_completions_state.dart
+│   │       ├── current_user_follower_state.dart
+│   │       ├── deep_link_state.dart
+│   │       ├── remote_config_state.dart
+│   │       └── flavor_state.dart
+│   └── [30+ total feature modules]
+├── support/                          # App-wide utilities
+│   ├── theme.dart                    # App theming
+│   ├── app_router.dart               # Route configuration
+│   └── app_route_observer.dart       # Analytics route tracking
+└── widgets/                          # Reusable UI components
+    ├── button.dart
+    ├── loading_widget.dart
+    ├── shimmer_box.dart
+    ├── expandable_text.dart
+    ├── full_screen_photo_view.dart
+    └── popup_widgets/                # Dialogs and overlays
+        ├── error_dialog.dart
+        ├── confirmation_dialog.dart
+        └── custom_snack_bar.dart
 ```
 
-## State Management
+## Architecture Overview
 
-The app uses Provider for state management. Key state classes:
+### Repository Pattern
 
-- `UserState`: Current user information
-- `MunroState`: Basic munro data
+The app uses the **Repository pattern** for data access. Each repository encapsulates data operations for a specific domain:
 
-## Services Architecture
+- **Firebase repositories**: Handle authentication (`AuthRepository`) and storage (`StorageRepository`)
+- **Supabase repositories**: Handle database operations for munros, posts, users, etc.
+- **Local repositories**: Handle local preferences (`SettingsRepository`, `AppFlagsRepository`)
+- **Third-party repositories**: Weather, deep links, analytics, etc.
 
-Services handle business logic:
+Repositories are defined in `lib/repos/` and injected via Provider in `app_providers.dart`.
 
-- `AuthService`: Authentication with Firebase
-- `UserService`: User data management
-- `MunroService`: Mountain data and completions
-- `PostService`: Social posts
-- `WeatherService`: Weather information
-- And many more...
+### State Management with Provider
+
+The app uses **Provider** for state management with `ChangeNotifier` classes:
+
+#### Global State (38 total states)
+
+Key global states accessible throughout the app:
+
+- **`UserState`**: Current user data, profile updates
+- **`AuthState`**: Authentication status and operations
+- **`MunroState`**: All munro data, filtering, and completion tracking
+- **`MunroCompletionState`**: User's munro completions
+- **`FeedState`**: Social feed posts
+- **`UserLikeState`**: User's liked posts
+- **`CurrentUserFollowerState`**: Follower relationships
+- **`CreatePostState`**: Post creation flow
+- **`CommentsState`**: Comments on posts
+- **`NotificationsState`**: In-app notifications
+- **`SettingsState`**: App settings and preferences
+- **`RemoteConfigState`**: Firebase Remote Config flags
+- **`FlavorState`**: Development/Production environment
+- **`AppBootstrapState`**: App initialization status
+- **`DeepLinkState`**: Deep link handling
+- **`PushNotificationState`**: Push notification management
+
+#### Screen-Specific States
+
+Each feature screen can have its own `ChangeNotifier` states:
+
+- **`ProfileState`**: User profile data for profile screens
+- **`MunroDetailState`**: Detail data for individual munro screens
+- **`WeatherState`**: Weather data for weather screens
+- **`ReviewsState`**: Reviews for a specific munro
+- **`AchievementsState`**: User achievement progress
+
+### Dependency Injection
+
+All dependencies are configured in **`app_providers.dart`**:
+
+1. **`buildRepositories()`**: Creates all repository providers
+2. **`buildGlobalStates()`**: Creates all global state providers with dependencies
+
+Dependencies are injected using `context.read<T>()` in state classes.
+
+### App Initialization Flow
+
+1. **`main.dart`**: Entry point, initializes Firebase, Supabase, and other services
+2. **`app_providers.dart`**: Sets up all providers (repositories and states)
+3. **`app_bootstrap.dart`**: Shows splash screen while loading initial data via `AppBootstrapState`
+4. **`app_intent_coordinator.dart`**: Handles deep links and app intents (e.g., opening a specific munro)
+5. **`app.dart`**: Main app widget with MaterialApp and routing
+
+### Screen Structure Pattern
+
+Most feature screens follow this structure:
+
+```
+feature_name/
+├── feature_screen.dart              # Main screen widget
+├── screens/                         # Sub-screens
+│   └── detail_screen.dart
+├── widgets/                         # Feature-specific widgets
+│   ├── feature_header.dart
+│   └── feature_list_tile.dart
+└── state/                           # Feature state management
+    └── feature_state.dart
+```
+
+### Data Flow
+
+1. **UI (Screens/Widgets)** → Reads state via `context.watch<State>()`
+2. **User Action** → Calls method on state via `context.read<State>().method()`
+3. **State** → Calls repository methods to fetch/update data
+4. **Repository** → Interacts with Firebase/Supabase/Local storage
+5. **State** → Calls `notifyListeners()` to update UI
 
 ## Building and Running
 
