@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart' hide SentryLogger;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +50,8 @@ main() async {
     serverClientId: config.googleWebClientId,
   );
 
+  final packageInfo = await PackageInfo.fromPlatform();
+
   await SentryFlutter.init(
     (options) {
       options.dsn = config.sentryDsn;
@@ -68,6 +71,7 @@ main() async {
           mixpanel,
           FirebaseStorage.instance,
           FirebaseRemoteConfig.instance,
+          packageInfo,
         ),
         ...buildGlobalStates(config.env),
       ],

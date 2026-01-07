@@ -10,12 +10,14 @@ import 'dart:ui' as _i6;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:two_eight_two/config/app_config.dart' as _i12;
+import 'package:two_eight_two/config/app_config.dart' as _i13;
 import 'package:two_eight_two/enums/enums.dart' as _i9;
-import 'package:two_eight_two/logging/logging.dart' as _i13;
+import 'package:two_eight_two/logging/logging.dart' as _i14;
 import 'package:two_eight_two/models/models.dart' as _i2;
 import 'package:two_eight_two/push/push_notifications_state.dart' as _i11;
 import 'package:two_eight_two/repos/repos.dart' as _i4;
+import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart'
+    as _i12;
 import 'package:two_eight_two/screens/notifiers.dart' as _i3;
 
 // ignore_for_file: type=lint
@@ -1612,6 +1614,52 @@ class MockPushNotificationState extends _i1.Mock
       );
 }
 
+/// A class which mocks [StartupOverlayPolicies].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockStartupOverlayPolicies extends _i1.Mock
+    implements _i12.StartupOverlayPolicies {
+  MockStartupOverlayPolicies() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void maybeEnqueueHardUpdate() => super.noSuchMethod(
+        Invocation.method(
+          #maybeEnqueueHardUpdate,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void maybeEnqueueSoftUpdate() => super.noSuchMethod(
+        Invocation.method(
+          #maybeEnqueueSoftUpdate,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void maybeEnqueueWhatsNew() => super.noSuchMethod(
+        Invocation.method(
+          #maybeEnqueueWhatsNew,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void maybeEnqueueAppSurvey() => super.noSuchMethod(
+        Invocation.method(
+          #maybeEnqueueAppSurvey,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
 /// A class which mocks [FlavorState].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -1621,10 +1669,10 @@ class MockFlavorState extends _i1.Mock implements _i3.FlavorState {
   }
 
   @override
-  _i12.AppEnvironment get environment => (super.noSuchMethod(
+  _i13.AppEnvironment get environment => (super.noSuchMethod(
         Invocation.getter(#environment),
-        returnValue: _i12.AppEnvironment.dev,
-      ) as _i12.AppEnvironment);
+        returnValue: _i13.AppEnvironment.dev,
+      ) as _i13.AppEnvironment);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -1672,7 +1720,7 @@ class MockFlavorState extends _i1.Mock implements _i3.FlavorState {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i13.Logger {
+class MockLogger extends _i1.Mock implements _i14.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

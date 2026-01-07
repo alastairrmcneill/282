@@ -3,16 +3,19 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
-import 'dart:io' as _i7;
-import 'dart:ui' as _i8;
+import 'dart:async' as _i5;
+import 'dart:collection' as _i4;
+import 'dart:io' as _i8;
+import 'dart:ui' as _i9;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:two_eight_two/logging/logging.dart' as _i9;
-import 'package:two_eight_two/models/achievement_model.dart' as _i5;
+import 'package:two_eight_two/logging/logging.dart' as _i11;
+import 'package:two_eight_two/models/achievement_model.dart' as _i6;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
-import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i6;
+import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i7;
+import 'package:two_eight_two/screens/nav/state/overlay_intent_state.dart'
+    as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -72,6 +75,17 @@ class _FakeError_3 extends _i1.SmartFake implements _i3.Error {
         );
 }
 
+class _FakeUnmodifiableListView_4<E> extends _i1.SmartFake
+    implements _i4.UnmodifiableListView<E> {
+  _FakeUnmodifiableListView_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [UserAchievementsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -82,7 +96,7 @@ class MockUserAchievementsRepository extends _i1.Mock
   }
 
   @override
-  _i4.Future<List<_i5.Achievement>> getUserAchievements(
+  _i5.Future<List<_i6.Achievement>> getUserAchievements(
           {required String? userId}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -91,11 +105,11 @@ class MockUserAchievementsRepository extends _i1.Mock
           {#userId: userId},
         ),
         returnValue:
-            _i4.Future<List<_i5.Achievement>>.value(<_i5.Achievement>[]),
-      ) as _i4.Future<List<_i5.Achievement>>);
+            _i5.Future<List<_i6.Achievement>>.value(<_i6.Achievement>[]),
+      ) as _i5.Future<List<_i6.Achievement>>);
 
   @override
-  _i4.Future<_i5.Achievement?> getLatestMunroChallengeAchievement(
+  _i5.Future<_i6.Achievement?> getLatestMunroChallengeAchievement(
           {required String? userId}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -103,27 +117,27 @@ class MockUserAchievementsRepository extends _i1.Mock
           [],
           {#userId: userId},
         ),
-        returnValue: _i4.Future<_i5.Achievement?>.value(),
-      ) as _i4.Future<_i5.Achievement?>);
+        returnValue: _i5.Future<_i6.Achievement?>.value(),
+      ) as _i5.Future<_i6.Achievement?>);
 
   @override
-  _i4.Future<void> updateUserAchievement(
-          {required _i5.Achievement? achievement}) =>
+  _i5.Future<void> updateUserAchievement(
+          {required _i6.Achievement? achievement}) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateUserAchievement,
           [],
           {#achievement: achievement},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [UserState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserState extends _i1.Mock implements _i6.UserState {
+class MockUserState extends _i1.Mock implements _i7.UserState {
   MockUserState() {
     _i1.throwOnMissingStub(this);
   }
@@ -156,10 +170,10 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
       ) as _i2.StorageRepository);
 
   @override
-  _i6.UserStatus get status => (super.noSuchMethod(
+  _i7.UserStatus get status => (super.noSuchMethod(
         Invocation.getter(#status),
-        returnValue: _i6.UserStatus.initial,
-      ) as _i6.UserStatus);
+        returnValue: _i7.UserStatus.initial,
+      ) as _i7.UserStatus);
 
   @override
   _i3.Error get error => (super.noSuchMethod(
@@ -201,88 +215,88 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
       ) as bool);
 
   @override
-  _i4.Future<void> createUser({required _i3.AppUser? appUser}) =>
+  _i5.Future<void> createUser({required _i3.AppUser? appUser}) =>
       (super.noSuchMethod(
         Invocation.method(
           #createUser,
           [],
           {#appUser: appUser},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateUser({required _i3.AppUser? appUser}) =>
+  _i5.Future<void> updateUser({required _i3.AppUser? appUser}) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateUser,
           [],
           {#appUser: appUser},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> readUser({required String? uid}) => (super.noSuchMethod(
+  _i5.Future<void> readUser({required String? uid}) => (super.noSuchMethod(
         Invocation.method(
           #readUser,
           [],
           {#uid: uid},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> deleteUser({required _i3.AppUser? appUser}) =>
+  _i5.Future<void> deleteUser({required _i3.AppUser? appUser}) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteUser,
           [],
           {#appUser: appUser},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> blockUser({required String? userId}) => (super.noSuchMethod(
+  _i5.Future<void> blockUser({required String? userId}) => (super.noSuchMethod(
         Invocation.method(
           #blockUser,
           [],
           {#userId: userId},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> loadBlockedUsers() => (super.noSuchMethod(
+  _i5.Future<void> loadBlockedUsers() => (super.noSuchMethod(
         Invocation.method(
           #loadBlockedUsers,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateProfileVisibility(String? newValue) =>
+  _i5.Future<void> updateProfileVisibility(String? newValue) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateProfileVisibility,
           [newValue],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<dynamic> updateProfile({
+  _i5.Future<dynamic> updateProfile({
     required _i3.AppUser? appUser,
-    _i7.File? profilePicture,
+    _i8.File? profilePicture,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -293,8 +307,8 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
             #profilePicture: profilePicture,
           },
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
 
   @override
   void reset() => super.noSuchMethod(
@@ -306,7 +320,7 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
       );
 
   @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -315,7 +329,87 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
       );
 
   @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #removeListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [OverlayIntentState].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockOverlayIntentState extends _i1.Mock
+    implements _i10.OverlayIntentState {
+  MockOverlayIntentState() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.UnmodifiableListView<_i3.OverlayIntent> get pending =>
+      (super.noSuchMethod(
+        Invocation.getter(#pending),
+        returnValue: _FakeUnmodifiableListView_4<_i3.OverlayIntent>(
+          this,
+          Invocation.getter(#pending),
+        ),
+      ) as _i4.UnmodifiableListView<_i3.OverlayIntent>);
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(
+        Invocation.getter(#hasListeners),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  void enqueue(_i3.OverlayIntent? intent) => super.noSuchMethod(
+        Invocation.method(
+          #enqueue,
+          [intent],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void clear() => super.noSuchMethod(
+        Invocation.method(
+          #clear,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #addListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -345,7 +439,7 @@ class MockUserState extends _i1.Mock implements _i6.UserState {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i9.Logger {
+class MockLogger extends _i1.Mock implements _i11.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

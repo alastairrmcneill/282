@@ -21,4 +21,5 @@ export 'saved_list_munro_model.dart';
 export 'profile_model.dart';
 export 'appsettings_model.dart';
 export 'remote_config_model.dart';
-export 'intents_model.dart';
+export 'navigation_intent_model.dart';
+export 'overlay_intent_model.dart';

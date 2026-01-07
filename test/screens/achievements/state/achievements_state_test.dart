@@ -12,11 +12,13 @@ import 'achievements_state_test.mocks.dart';
 @GenerateMocks([
   UserAchievementsRepository,
   UserState,
+  OverlayIntentState,
   Logger,
 ])
 void main() {
   late MockUserAchievementsRepository mockUserAchievementsRepository;
   late MockUserState mockUserState;
+  late MockOverlayIntentState mockOverlayIntentState;
   late MockLogger mockLogger;
   late AchievementsState achievementsState;
 
@@ -84,9 +86,15 @@ void main() {
   setUp(() {
     mockUserAchievementsRepository = MockUserAchievementsRepository();
     mockUserState = MockUserState();
+    mockOverlayIntentState = MockOverlayIntentState();
     mockLogger = MockLogger();
 
-    achievementsState = AchievementsState(mockUserAchievementsRepository, mockUserState, mockLogger);
+    achievementsState = AchievementsState(
+      mockUserAchievementsRepository,
+      mockUserState,
+      mockOverlayIntentState,
+      mockLogger,
+    );
 
     // Setup default user state
     when(mockUserState.currentUser).thenReturn(sampleUser);
@@ -98,7 +106,6 @@ void main() {
         expect(achievementsState.status, AchievementsStatus.initial);
         expect(achievementsState.error, isA<Error>());
         expect(achievementsState.achievements, isEmpty);
-        expect(achievementsState.recentlyCompletedAchievements, isEmpty);
         expect(achievementsState.currentAchievement, isNull);
         expect(achievementsState.achievementFormCount, 0);
       });
@@ -116,8 +123,6 @@ void main() {
         // Assert
         expect(achievementsState.status, AchievementsStatus.loaded);
         expect(achievementsState.achievements, sampleAchievements);
-        expect(achievementsState.recentlyCompletedAchievements, hasLength(1));
-        expect(achievementsState.recentlyCompletedAchievements.first.achievementId, 'total_count_10');
         verify(mockUserAchievementsRepository.getUserAchievements(userId: 'user123')).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
@@ -193,8 +198,11 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        expect(achievementsState.recentlyCompletedAchievements, hasLength(1));
-        expect(achievementsState.recentlyCompletedAchievements.first.achievementId, 'total_count_10');
+        verify(mockOverlayIntentState.enqueue(argThat(
+                isA<AchievementCompleteIntent>().having((intent) => intent.achievements, 'achievements',
+                    contains(predicate<Achievement>((achievement) => achievement.achievementId == 'total_count_10'))),
+                named: 'intent')))
+            .called(1);
       });
 
       test('should call unacknowledgeAchievement for achievements that need reset', () async {
@@ -390,34 +398,6 @@ void main() {
         expect(notified, true);
       });
 
-      test('setRecentlyCompletedAchievements should update list and notify listeners', () {
-        // Arrange
-        bool notified = false;
-        achievementsState.addListener(() => notified = true);
-        final completedAchievements = [sampleAchievements[0]];
-
-        // Act
-        achievementsState.setRecentlyCompletedAchievements = completedAchievements;
-
-        // Assert
-        expect(achievementsState.recentlyCompletedAchievements, completedAchievements);
-        expect(notified, true);
-      });
-
-      test('addRecentlyCompletedAchievement should add to list and notify listeners', () {
-        // Arrange
-        bool notified = false;
-        achievementsState.addListener(() => notified = true);
-        final newAchievement = sampleAchievements[0];
-
-        // Act
-        achievementsState.addRecentlyCompletedAchievement = newAchievement;
-
-        // Assert
-        expect(achievementsState.recentlyCompletedAchievements, contains(newAchievement));
-        expect(notified, true);
-      });
-
       test('setCurrentAchievement should update current achievement and notify listeners', () {
         // Arrange
         bool notified = false;
@@ -465,7 +445,6 @@ void main() {
         achievementsState.setStatus = AchievementsStatus.loaded;
         achievementsState.setError = Error(code: 'test', message: 'test');
         achievementsState.setCurrentAchievement = sampleAchievements[0];
-        achievementsState.setRecentlyCompletedAchievements = [sampleAchievements[0]];
         achievementsState.setAchievementFormCount = 25;
         achievementsState.setAchievements = sampleAchievements;
 
@@ -476,7 +455,6 @@ void main() {
         expect(achievementsState.status, AchievementsStatus.initial);
         expect(achievementsState.error, isA<Error>());
         expect(achievementsState.currentAchievement, isNull);
-        expect(achievementsState.recentlyCompletedAchievements, isEmpty);
         expect(achievementsState.achievementFormCount, 0);
         // Achievements should remain
         expect(achievementsState.achievements, sampleAchievements);
@@ -487,7 +465,6 @@ void main() {
         achievementsState.setStatus = AchievementsStatus.loaded;
         achievementsState.setError = Error(code: 'test', message: 'test');
         achievementsState.setCurrentAchievement = sampleAchievements[0];
-        achievementsState.setRecentlyCompletedAchievements = [sampleAchievements[0]];
         achievementsState.setAchievementFormCount = 25;
         achievementsState.setAchievements = sampleAchievements;
 
@@ -498,7 +475,6 @@ void main() {
         expect(achievementsState.status, AchievementsStatus.initial);
         expect(achievementsState.error, isA<Error>());
         expect(achievementsState.currentAchievement, isNull);
-        expect(achievementsState.recentlyCompletedAchievements, isEmpty);
         expect(achievementsState.achievementFormCount, 0);
         expect(achievementsState.achievements, isEmpty);
       });
@@ -532,7 +508,6 @@ void main() {
         // Assert
         expect(achievementsState.status, AchievementsStatus.loaded);
         expect(achievementsState.achievements, isEmpty);
-        expect(achievementsState.recentlyCompletedAchievements, isEmpty);
       });
 
       test('should handle achievements with null acknowledgedAt dates', () async {
@@ -559,8 +534,11 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        expect(achievementsState.recentlyCompletedAchievements, hasLength(1));
-        expect(achievementsState.recentlyCompletedAchievements.first.acknowledgedAt, isNull);
+        verify(mockOverlayIntentState.enqueue(argThat(
+                isA<AchievementCompleteIntent>().having((intent) => intent.achievements, 'achievements',
+                    contains(predicate<Achievement>((achievement) => achievement.achievementId == 'null_ack'))),
+                named: 'intent')))
+            .called(1);
       });
 
       test('should handle user with empty uid', () async {
@@ -616,8 +594,11 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        expect(achievementsState.achievements, hasLength(2));
-        expect(achievementsState.recentlyCompletedAchievements, hasLength(2));
+        verify(mockOverlayIntentState.enqueue(argThat(
+                isA<AchievementCompleteIntent>().having((intent) => intent.achievements, 'achievements',
+                    contains(predicate<Achievement>((achievement) => achievement.achievementId == 'monthly'))),
+                named: 'intent')))
+            .called(1);
       });
     });
 

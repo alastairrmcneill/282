@@ -12,29 +12,29 @@ import 'deep_link_state_test.mocks.dart';
 // Generate mocks
 @GenerateMocks([
   DeepLinkRepository,
-  AppIntentState,
+  NavigationIntentState,
   Logger,
 ])
 void main() {
   late MockDeepLinkRepository mockDeepLinkRepository;
-  late MockAppIntentState mockAppIntentState;
+  late MockNavigationIntentState mockNavigationIntentState;
   late MockLogger mockLogger;
   late DeepLinkState deepLinkState;
 
-  late StreamController<AppIntent> eventStreamController;
+  late StreamController<NavigationIntent> eventStreamController;
 
   setUp(() {
     mockDeepLinkRepository = MockDeepLinkRepository();
-    mockAppIntentState = MockAppIntentState();
+    mockNavigationIntentState = MockNavigationIntentState();
     mockLogger = MockLogger();
     deepLinkState = DeepLinkState(
       mockDeepLinkRepository,
-      mockAppIntentState,
+      mockNavigationIntentState,
       mockLogger,
     );
 
     // Create a fresh stream controller for each test
-    eventStreamController = StreamController<AppIntent>.broadcast();
+    eventStreamController = StreamController<NavigationIntent>.broadcast();
 
     // Default mock behavior for DeepLinkRepository
     when(mockDeepLinkRepository.events).thenAnswer((_) => eventStreamController.stream);
@@ -104,7 +104,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
 
       test('should enqueue multiple intents from repository events', () async {
@@ -125,9 +125,9 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent1)).called(1);
-        verify(mockAppIntentState.enqueue(intent2)).called(1);
-        verify(mockAppIntentState.enqueue(intent3)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent1)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent2)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent3)).called(1);
       });
 
       test('should handle error during repository initialization', () async {
@@ -144,7 +144,7 @@ void main() {
           error: anyNamed('error'),
           stackTrace: anyNamed('stackTrace'),
         )).called(1);
-        verifyNever(mockAppIntentState.enqueue(any));
+        verifyNever(mockNavigationIntentState.enqueue(any));
       });
 
       test('should handle error when accessing events stream', () async {
@@ -161,7 +161,7 @@ void main() {
           error: anyNamed('error'),
           stackTrace: anyNamed('stackTrace'),
         )).called(1);
-        verifyNever(mockAppIntentState.enqueue(any));
+        verifyNever(mockNavigationIntentState.enqueue(any));
       });
 
       test('should only initialize once even when called multiple times', () async {
@@ -193,7 +193,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert - should only enqueue once since we didn't subscribe twice
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
     });
     group('Event Stream Handling', () {
@@ -209,7 +209,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
 
       test('should handle RefreshHomeIntent', () async {
@@ -224,7 +224,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
 
       test('should handle rapid succession of intents', () async {
@@ -243,7 +243,7 @@ void main() {
 
         // Assert
         for (final intent in intents) {
-          verify(mockAppIntentState.enqueue(intent)).called(1);
+          verify(mockNavigationIntentState.enqueue(intent)).called(1);
         }
       });
 
@@ -267,15 +267,15 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent1)).called(1);
-        verify(mockAppIntentState.enqueue(intent2)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent1)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent2)).called(1);
       });
     });
 
     group('Edge Cases', () {
       test('should handle stream errors gracefully during initialization', () async {
         // Arrange
-        final errorStreamController = StreamController<AppIntent>.broadcast();
+        final errorStreamController = StreamController<NavigationIntent>.broadcast();
         when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
         when(mockDeepLinkRepository.events).thenAnswer((_) => errorStreamController.stream);
 
@@ -305,7 +305,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
 
       test('should handle OpenMunroIntent with negative munro ID', () async {
@@ -320,7 +320,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
 
       test('should handle OpenMunroIntent with large munro ID', () async {
@@ -335,7 +335,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(intent)).called(1);
+        verify(mockNavigationIntentState.enqueue(intent)).called(1);
       });
 
       test('should handle same intent being sent multiple times', () async {
@@ -353,8 +353,8 @@ void main() {
         eventStreamController.add(intent);
         await Future.delayed(Duration(milliseconds: 50));
 
-        // Assert - each should be enqueued (deduplication happens in AppIntentState)
-        verify(mockAppIntentState.enqueue(intent)).called(3);
+        // Assert - each should be enqueued (deduplication happens in NavigationIntentState)
+        verify(mockNavigationIntentState.enqueue(intent)).called(3);
       });
 
       test('should handle async initialization completing after dispose', () async {

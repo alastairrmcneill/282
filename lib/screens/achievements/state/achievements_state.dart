@@ -7,20 +7,24 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class AchievementsState extends ChangeNotifier {
   final UserAchievementsRepository _userAchievementsRepository;
   final UserState _userState;
+  final OverlayIntentState _overlayIntentState;
   final Logger _logger;
-  AchievementsState(this._userAchievementsRepository, this._userState, this._logger);
+  AchievementsState(
+    this._userAchievementsRepository,
+    this._userState,
+    this._overlayIntentState,
+    this._logger,
+  );
 
   AchievementsStatus _status = AchievementsStatus.initial;
   Error _error = Error();
   List<Achievement> _achievements = [];
-  List<Achievement> _recentlyCompletedAchievements = [];
   Achievement? _currentAchievement;
   int _achievementFormCount = 0;
 
   AchievementsStatus get status => _status;
   Error get error => _error;
   List<Achievement> get achievements => _achievements;
-  List<Achievement> get recentlyCompletedAchievements => _recentlyCompletedAchievements;
   Achievement? get currentAchievement => _currentAchievement;
   int get achievementFormCount => _achievementFormCount;
 
@@ -38,7 +42,9 @@ class AchievementsState extends ChangeNotifier {
           .where((achievement) => achievement.completed && achievement.acknowledgedAt == null)
           .toList();
 
-      _recentlyCompletedAchievements = achievementsToShow;
+      if (achievementsToShow.isNotEmpty) {
+        _overlayIntentState.enqueue(AchievementCompleteIntent(achievements: achievementsToShow));
+      }
 
       List<Achievement> achievementsToReset = allUserAchievements
           .where((achievement) => !achievement.completed && achievement.acknowledgedAt != null)
@@ -106,16 +112,6 @@ class AchievementsState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setRecentlyCompletedAchievements(List<Achievement> achievements) {
-    _recentlyCompletedAchievements = achievements;
-    notifyListeners();
-  }
-
-  set addRecentlyCompletedAchievement(Achievement achievement) {
-    _recentlyCompletedAchievements.add(achievement);
-    notifyListeners();
-  }
-
   set setCurrentAchievement(Achievement? achievement) {
     _currentAchievement = achievement;
     notifyListeners();
@@ -130,7 +126,6 @@ class AchievementsState extends ChangeNotifier {
     _status = AchievementsStatus.initial;
     _error = Error();
     _currentAchievement = null;
-    _recentlyCompletedAchievements = [];
     _achievementFormCount = 0;
   }
 

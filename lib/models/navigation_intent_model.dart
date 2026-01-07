@@ -1,10 +1,10 @@
-sealed class AppIntent {
-  const AppIntent();
+sealed class NavigationIntent {
+  const NavigationIntent();
 
   String get dedupeKey;
 }
 
-final class OpenMunroIntent extends AppIntent {
+final class OpenMunroIntent extends NavigationIntent {
   final int munroId;
   const OpenMunroIntent({required this.munroId});
 
@@ -12,14 +12,14 @@ final class OpenMunroIntent extends AppIntent {
   String get dedupeKey => 'open_munro:$munroId';
 }
 
-final class RefreshHomeIntent extends AppIntent {
+final class RefreshHomeIntent extends NavigationIntent {
   const RefreshHomeIntent();
 
   @override
   String get dedupeKey => 'refresh_home';
 }
 
-final class OpenNotificationsIntent extends AppIntent {
+final class OpenNotificationsIntent extends NavigationIntent {
   const OpenNotificationsIntent();
 
   @override

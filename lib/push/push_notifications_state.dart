@@ -11,7 +11,7 @@ class PushNotificationState extends ChangeNotifier {
   final PushNotificationRepository _repo;
   final SettingsState _settings;
   final UserState _userState;
-  final AppIntentState _intents;
+  final NavigationIntentState _intents;
   final Logger _logger;
   PushNotificationState(
     this._repo,

@@ -17,14 +17,14 @@ import 'push_notifications_state_test.mocks.dart';
   PushNotificationRepository,
   SettingsState,
   UserState,
-  AppIntentState,
+  NavigationIntentState,
   Logger,
 ])
 void main() {
   late MockPushNotificationRepository mockPushNotificationRepository;
   late MockSettingsState mockSettingsState;
   late MockUserState mockUserState;
-  late MockAppIntentState mockAppIntentState;
+  late MockNavigationIntentState mockNavigationIntentState;
   late MockLogger mockLogger;
   late PushNotificationState pushNotificationState;
 
@@ -114,7 +114,7 @@ void main() {
     mockPushNotificationRepository = MockPushNotificationRepository();
     mockSettingsState = MockSettingsState();
     mockUserState = MockUserState();
-    mockAppIntentState = MockAppIntentState();
+    mockNavigationIntentState = MockNavigationIntentState();
     mockLogger = MockLogger();
 
     // Create stream controllers for mocking
@@ -133,7 +133,7 @@ void main() {
       mockPushNotificationRepository,
       mockSettingsState,
       mockUserState,
-      mockAppIntentState,
+      mockNavigationIntentState,
       mockLogger,
     );
   });
@@ -168,7 +168,7 @@ void main() {
 
         // Assert
         verify(mockPushNotificationRepository.getInitialMessage()).called(1);
-        verify(mockAppIntentState.enqueue(any)).called(1);
+        verify(mockNavigationIntentState.enqueue(any)).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
       });
 
@@ -181,7 +181,7 @@ void main() {
 
         // Assert
         verify(mockPushNotificationRepository.getInitialMessage()).called(1);
-        verifyNever(mockAppIntentState.enqueue(any));
+        verifyNever(mockNavigationIntentState.enqueue(any));
       });
 
       test('should subscribe to notification opened stream', () async {
@@ -199,7 +199,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockAppIntentState.enqueue(any)).called(1);
+        verify(mockNavigationIntentState.enqueue(any)).called(1);
       });
 
       test('should subscribe to token refresh stream and sync token', () async {
@@ -687,7 +687,7 @@ void main() {
         await pushNotificationState.init();
 
         // Assert - Should still enqueue intent even with empty message
-        verify(mockAppIntentState.enqueue(any)).called(1);
+        verify(mockNavigationIntentState.enqueue(any)).called(1);
       });
     });
   });

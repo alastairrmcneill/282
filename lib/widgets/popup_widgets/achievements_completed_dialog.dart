@@ -1,22 +1,20 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/achievements/state/achievements_state.dart';
 import 'package:two_eight_two/screens/achievements/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class AchievementsCompletedScreen extends StatefulWidget {
-  final VoidCallback? onDismiss;
-
-  const AchievementsCompletedScreen({super.key, this.onDismiss});
-
-  static const String route = "/achievements_completed";
+class AchievementsCompletedDialog extends StatefulWidget {
+  final List<Achievement> recentlyCompletedAchievements;
+  const AchievementsCompletedDialog({super.key, required this.recentlyCompletedAchievements});
 
   @override
-  State<AchievementsCompletedScreen> createState() => _AchievementsCompletedScreenState();
+  State<AchievementsCompletedDialog> createState() => _AchievementsCompletedDialogState();
 }
 
-class _AchievementsCompletedScreenState extends State<AchievementsCompletedScreen> {
+class _AchievementsCompletedDialogState extends State<AchievementsCompletedDialog> {
   late ConfettiController confettiController;
   @override
   void initState() {
@@ -70,7 +68,7 @@ class _AchievementsCompletedScreenState extends State<AchievementsCompletedScree
                           textAlign: TextAlign.center,
                         ),
                         const PaddedDivider(),
-                        ...achievementsState.recentlyCompletedAchievements.map(
+                        ...widget.recentlyCompletedAchievements.map(
                           (e) => AchievementCompletedWidget(achievement: e),
                         ),
                         const SizedBox(height: 20),
@@ -85,10 +83,9 @@ class _AchievementsCompletedScreenState extends State<AchievementsCompletedScree
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        for (var achievement in achievementsState.recentlyCompletedAchievements) {
+                        for (var achievement in widget.recentlyCompletedAchievements) {
                           achievementsState.acknowledgeAchievement(achievement: achievement);
                         }
-                        achievementsState.setRecentlyCompletedAchievements = [];
                         Navigator.of(context).pop();
                       },
                       child: const Text('Woohoo!'),

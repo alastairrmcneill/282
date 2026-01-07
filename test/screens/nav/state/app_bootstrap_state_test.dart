@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/push/push.dart';
+import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 import 'app_bootstrap_state_test.mocks.dart';
@@ -19,6 +20,7 @@ import 'app_bootstrap_state_test.mocks.dart';
   MunroCompletionState,
   SavedListState,
   PushNotificationState,
+  StartupOverlayPolicies,
   FlavorState,
   Logger,
 ])
@@ -33,6 +35,7 @@ void main() {
   late MockSavedListState mockSavedListState;
   late MockFlavorState mockFlavorState;
   late MockPushNotificationState mockPushNotificationState;
+  late StartupOverlayPolicies mockStartupOverlayPolicies;
   late MockLogger mockLogger;
   late AppBootstrapState appBootstrapState;
 
@@ -46,6 +49,7 @@ void main() {
     mockMunroCompletionState = MockMunroCompletionState();
     mockSavedListState = MockSavedListState();
     mockPushNotificationState = MockPushNotificationState();
+    mockStartupOverlayPolicies = MockStartupOverlayPolicies();
     mockFlavorState = MockFlavorState();
     when(mockFlavorState.environment).thenReturn(AppEnvironment.dev);
     mockLogger = MockLogger();
@@ -59,6 +63,7 @@ void main() {
       mockMunroCompletionState,
       mockSavedListState,
       mockPushNotificationState,
+      mockStartupOverlayPolicies,
       mockFlavorState,
       mockLogger,
     );
@@ -96,6 +101,12 @@ void main() {
         verifyNever(mockSavedListState.readUserSavedLists());
         verifyNever(mockUserState.loadBlockedUsers());
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
+
+        // Verify startup overlay policies are called
+        verify(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).called(1);
       });
 
       test('should initialize successfully when user is authenticated', () async {
@@ -125,6 +136,12 @@ void main() {
         verify(mockSavedListState.readUserSavedLists()).called(1);
         verify(mockUserState.loadBlockedUsers()).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
+
+        // Verify startup overlay policies are called
+        verify(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).called(1);
       });
 
       test('should not initialize twice if already started', () async {
@@ -160,6 +177,12 @@ void main() {
         expect(appBootstrapState.error, testError);
         expect(appBootstrapState.isReady, false);
         verify(mockLogger.error(any, error: testError, stackTrace: anyNamed('stackTrace'))).called(1);
+
+        // Verify startup overlay policies are NOT called on error
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueHardUpdate());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueWhatsNew());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueAppSurvey());
       });
 
       test('should handle error during settings load', () async {
@@ -705,6 +728,187 @@ void main() {
 
       test('should have exactly 4 values', () {
         expect(AppBootstrapStatus.values.length, 4);
+      });
+    });
+
+    group('StartupOverlayPolicies', () {
+      test('should call all overlay policy methods after successful initialization', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn(null);
+        when(mockRemoteConfigState.init()).thenAnswer((_) async => Future.value());
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+
+        // Act
+        await appBootstrapState.init();
+
+        // Assert
+        expect(appBootstrapState.status, AppBootstrapStatus.ready);
+        verify(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).called(1);
+      });
+
+      test('should call overlay policy methods in correct order', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn(null);
+        when(mockRemoteConfigState.init()).thenAnswer((_) async => Future.value());
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+
+        final callOrder = <String>[];
+        when(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).thenAnswer((_) {
+          callOrder.add('hardUpdate');
+        });
+        when(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).thenAnswer((_) {
+          callOrder.add('softUpdate');
+        });
+        when(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).thenAnswer((_) {
+          callOrder.add('whatsNew');
+        });
+        when(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).thenAnswer((_) {
+          callOrder.add('appSurvey');
+        });
+
+        // Act
+        await appBootstrapState.init();
+
+        // Assert
+        expect(callOrder, ['hardUpdate', 'softUpdate', 'whatsNew', 'appSurvey']);
+      });
+
+      test('should not call overlay policies if initialization fails', () async {
+        // Arrange
+        final testError = Exception('Initialization error');
+        when(mockAuthState.currentUserId).thenReturn(null);
+        when(mockRemoteConfigState.init()).thenThrow(testError);
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+
+        // Act
+        await appBootstrapState.init();
+
+        // Assert
+        expect(appBootstrapState.status, AppBootstrapStatus.error);
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueHardUpdate());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueWhatsNew());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueAppSurvey());
+      });
+
+      test('should call overlay policies on each retry', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn(null);
+        when(mockRemoteConfigState.init()).thenAnswer((_) async => Future.value());
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+
+        // Act
+        await appBootstrapState.init();
+        await appBootstrapState.retry();
+        await appBootstrapState.retry();
+
+        // Assert
+        // Should be called 3 times (once for init, twice for retries)
+        verify(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).called(3);
+        verify(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).called(3);
+        verify(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).called(3);
+        verify(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).called(3);
+      });
+
+      test('should call overlay policies after successful retry following error', () async {
+        // Arrange
+        final testError = Exception('First attempt error');
+        when(mockAuthState.currentUserId).thenReturn(null);
+        when(mockRemoteConfigState.init()).thenThrow(testError);
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+
+        // First attempt fails
+        await appBootstrapState.init();
+
+        // Verify policies not called on error
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueHardUpdate());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueWhatsNew());
+        verifyNever(mockStartupOverlayPolicies.maybeEnqueueAppSurvey());
+
+        // Now make it succeed
+        when(mockRemoteConfigState.init()).thenAnswer((_) async => Future.value());
+
+        // Act
+        await appBootstrapState.retry();
+
+        // Assert
+        expect(appBootstrapState.status, AppBootstrapStatus.ready);
+        verify(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).called(1);
+      });
+
+      test('should call overlay policies with authenticated user', () async {
+        // Arrange
+        const testUid = 'testUser123';
+        when(mockAuthState.currentUserId).thenReturn(testUid);
+        when(mockRemoteConfigState.init()).thenAnswer((_) async => Future.value());
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+        when(mockUserState.readUser(uid: anyNamed('uid'))).thenAnswer((_) async => Future.value());
+        when(mockMunroCompletionState.loadUserMunroCompletions()).thenAnswer((_) async => Future.value());
+        when(mockSavedListState.readUserSavedLists()).thenAnswer((_) async => Future.value());
+        when(mockUserState.loadBlockedUsers()).thenAnswer((_) async => Future.value());
+
+        // Act
+        await appBootstrapState.init();
+
+        // Assert
+        expect(appBootstrapState.status, AppBootstrapStatus.ready);
+        verify(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).called(1);
+        verify(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).called(1);
+      });
+
+      test('should only call overlay policies after bootstrap status is ready', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn(null);
+        when(mockRemoteConfigState.init()).thenAnswer((_) async {
+          await Future.delayed(Duration(milliseconds: 50));
+          return Future.value();
+        });
+        when(mockSettingsState.load()).thenAnswer((_) async => Future.value());
+        when(mockMunroState.loadMunros()).thenAnswer((_) async => Future.value());
+
+        final callOrder = <String>[];
+        appBootstrapState.addListener(() {
+          if (appBootstrapState.status == AppBootstrapStatus.ready) {
+            callOrder.add('status_ready');
+          }
+        });
+
+        when(mockStartupOverlayPolicies.maybeEnqueueHardUpdate()).thenAnswer((_) {
+          callOrder.add('hardUpdate');
+        });
+        when(mockStartupOverlayPolicies.maybeEnqueueSoftUpdate()).thenAnswer((_) {
+          callOrder.add('softUpdate');
+        });
+        when(mockStartupOverlayPolicies.maybeEnqueueWhatsNew()).thenAnswer((_) {
+          callOrder.add('whatsNew');
+        });
+        when(mockStartupOverlayPolicies.maybeEnqueueAppSurvey()).thenAnswer((_) {
+          callOrder.add('appSurvey');
+        });
+
+        // Act
+        await appBootstrapState.init();
+
+        // Assert - overlay policies should be called after status is ready
+        expect(callOrder.indexOf('status_ready'), lessThan(callOrder.indexOf('hardUpdate')));
+        expect(callOrder.indexOf('status_ready'), lessThan(callOrder.indexOf('softUpdate')));
+        expect(callOrder.indexOf('status_ready'), lessThan(callOrder.indexOf('whatsNew')));
+        expect(callOrder.indexOf('status_ready'), lessThan(callOrder.indexOf('appSurvey')));
       });
     });
   });

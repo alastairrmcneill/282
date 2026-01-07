@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -42,19 +43,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _showCompletedAchievements() async {
-    Future.delayed(Duration(seconds: 1));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AchievementsCompletedScreen(),
-        );
-      }
-    });
-  }
-
   Future _loadData() async {
     context.read<AchievementsState>().getUserAchievements();
     context.read<CurrentUserFollowerState>().loadInitial();
@@ -62,12 +50,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final achievementsState = context.watch<AchievementsState>();
-
-    if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
-      _showCompletedAchievements();
-    }
-
     return Consumer<UserState>(
       builder: (context, userState, child) {
         switch (userState.status) {
@@ -146,6 +128,25 @@ class HomeScreenState extends State<HomeScreen> {
           }
 
           setState(() => _currentIndex = value);
+
+          if (userId != null) {
+            bool showBulkMunroDialog = context.read<AppFlagsRepository>().showBulkMunroDialog;
+            if (showBulkMunroDialog) {
+              context.read<OverlayIntentState>().enqueue(BulkMunroUpdateDialogIntent());
+            }
+
+            final thisYearMunroChallenge = context.read<AchievementsState>().achievements.where((achievement) =>
+                achievement.type == AchievementTypes.annualGoal &&
+                achievement.criteriaValue == DateTime.now().year.toString());
+
+            if (thisYearMunroChallenge.isEmpty) return;
+
+            if (thisYearMunroChallenge.first.criteriaCount == 0) {
+              context
+                  .read<OverlayIntentState>()
+                  .enqueue(AnnualMunroChallengeDialogIntent(achievement: thisYearMunroChallenge.first));
+            }
+          }
         },
         currentIndex: _currentIndex,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),

@@ -48,11 +48,6 @@ class AppRouter {
           builder: (_) => MunroScreen(),
           settings: settings,
         );
-      case AchievementsCompletedScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const AchievementsCompletedScreen(),
-          settings: settings,
-        );
       case AchievementDetailScreen.route:
         final args = settings.arguments as AchievementDetailsScreenArgs;
         return MaterialPageRoute(

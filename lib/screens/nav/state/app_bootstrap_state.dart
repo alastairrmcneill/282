@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/push/push.dart';
+import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class AppBootstrapState extends ChangeNotifier {
@@ -14,6 +15,7 @@ class AppBootstrapState extends ChangeNotifier {
   final MunroCompletionState _munroCompletionState;
   final SavedListState _savedListState;
   final PushNotificationState _pushNotificationState;
+  final StartupOverlayPolicies _startupOverlayPolicies;
   final FlavorState _flavorState;
   final Logger _logger;
 
@@ -27,6 +29,7 @@ class AppBootstrapState extends ChangeNotifier {
     this._munroCompletionState,
     this._savedListState,
     this._pushNotificationState,
+    this._startupOverlayPolicies,
     this._flavorState,
     this._logger,
   );
@@ -70,6 +73,11 @@ class AppBootstrapState extends ChangeNotifier {
       _status = AppBootstrapStatus.ready;
       _error = null;
       notifyListeners();
+
+      _startupOverlayPolicies.maybeEnqueueHardUpdate();
+      _startupOverlayPolicies.maybeEnqueueSoftUpdate();
+      _startupOverlayPolicies.maybeEnqueueWhatsNew();
+      _startupOverlayPolicies.maybeEnqueueAppSurvey();
     } catch (error, stacktrace) {
       _logger.error('Startup init failed', error: error, stackTrace: stacktrace);
       _status = AppBootstrapStatus.error;

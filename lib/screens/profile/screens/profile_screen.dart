@@ -137,7 +137,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildScreen(BuildContext context, ProfileState profileState) {
     UserLikeState userLikeState = context.read<UserLikeState>();
     CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
-    if (profileState.isCurrentUser) showGoToBulkMunroDialog(context);
 
     return Scaffold(
       appBar: AppBar(

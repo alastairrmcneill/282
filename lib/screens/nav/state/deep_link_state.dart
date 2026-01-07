@@ -12,12 +12,12 @@ class DeepLinkIntent {
 
 class DeepLinkState extends ChangeNotifier {
   final DeepLinkRepository _repo;
-  final AppIntentState _intents;
+  final NavigationIntentState _intents;
   final Logger _logger;
 
   DeepLinkState(this._repo, this._intents, this._logger);
 
-  StreamSubscription<AppIntent>? _sub;
+  StreamSubscription<NavigationIntent>? _sub;
   bool _started = false;
 
   Future<void> init({required bool enableLogging}) async {

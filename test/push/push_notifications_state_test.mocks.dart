@@ -15,7 +15,8 @@ import 'package:two_eight_two/logging/logging.dart' as _i13;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i4;
 import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i10;
-import 'package:two_eight_two/screens/nav/state/app_intent_state.dart' as _i12;
+import 'package:two_eight_two/screens/nav/state/navigation_intent_state.dart'
+    as _i12;
 import 'package:two_eight_two/screens/settings/state/settings_state.dart'
     as _i7;
 
@@ -557,22 +558,24 @@ class MockUserState extends _i1.Mock implements _i10.UserState {
       );
 }
 
-/// A class which mocks [AppIntentState].
+/// A class which mocks [NavigationIntentState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAppIntentState extends _i1.Mock implements _i12.AppIntentState {
-  MockAppIntentState() {
+class MockNavigationIntentState extends _i1.Mock
+    implements _i12.NavigationIntentState {
+  MockNavigationIntentState() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.UnmodifiableListView<_i3.AppIntent> get pending => (super.noSuchMethod(
+  _i5.UnmodifiableListView<_i3.NavigationIntent> get pending =>
+      (super.noSuchMethod(
         Invocation.getter(#pending),
-        returnValue: _FakeUnmodifiableListView_5<_i3.AppIntent>(
+        returnValue: _FakeUnmodifiableListView_5<_i3.NavigationIntent>(
           this,
           Invocation.getter(#pending),
         ),
-      ) as _i5.UnmodifiableListView<_i3.AppIntent>);
+      ) as _i5.UnmodifiableListView<_i3.NavigationIntent>);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -581,7 +584,7 @@ class MockAppIntentState extends _i1.Mock implements _i12.AppIntentState {
       ) as bool);
 
   @override
-  void enqueue(_i3.AppIntent? intent) => super.noSuchMethod(
+  void enqueue(_i3.NavigationIntent? intent) => super.noSuchMethod(
         Invocation.method(
           #enqueue,
           [intent],

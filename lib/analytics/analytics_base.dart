@@ -25,6 +25,9 @@ class AnalyticsEvent {
   static const saveMunroButtonClicked = 'save_munro_button_clicked';
   static const groupViewFilterApplied = 'group_view_filter_applied';
   static const authHomeCloseButtonTapped = 'auth_home_close_button_tapped';
+  static const bulkMunroUpdateDidalogShown = 'bulk_munro_update_dialog_shown';
+  static const annualMunroChallengeDialogShown = 'annual_munro_challenge_dialog_shown';
+  static const annualMunroChallengeDialogConfirmed = 'annual_munro_challenge_dialog_confirmed';
 }
 
 class AnalyticsProp {

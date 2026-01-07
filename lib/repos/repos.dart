@@ -24,3 +24,4 @@ export 'app_flags-repository.dart';
 export 'deep_link_repository.dart';
 export 'share_link_repository.dart';
 export 'push_notifications_repository.dart';
+export 'app_info_repository.dart';

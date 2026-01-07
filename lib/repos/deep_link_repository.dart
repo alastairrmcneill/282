@@ -4,9 +4,9 @@ import 'package:two_eight_two/models/models.dart';
 
 class DeepLinkRepository {
   StreamSubscription<Map>? _sub;
-  final _controller = StreamController<AppIntent>.broadcast();
+  final _controller = StreamController<NavigationIntent>.broadcast();
 
-  Stream<AppIntent> get events => _controller.stream;
+  Stream<NavigationIntent> get events => _controller.stream;
 
   Future<void> init({required bool enableLogging}) async {
     await FlutterBranchSdk.init(

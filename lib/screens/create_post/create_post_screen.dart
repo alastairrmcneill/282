@@ -41,11 +41,11 @@ class CreatePostScreen extends StatelessWidget {
                       .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
                       .toList();
                   createReviewState.setMunrosToReview = selectedMunros;
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    HomeScreen.route,
-                    (Route<dynamic> route) => false,
-                  );
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //   context,
+                  //   HomeScreen.route,
+                  //   (Route<dynamic> route) => false,
+                  // );
                   Navigator.of(context).pushNamed(CreateReviewsScreen.route);
                 } else {
                   if (Navigator.of(context).canPop()) {

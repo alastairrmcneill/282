@@ -6,17 +6,17 @@ import 'package:two_eight_two/screens/screens.dart';
 
 import 'app.dart';
 
-class AppIntentCoordinator extends StatelessWidget {
-  const AppIntentCoordinator({super.key, required this.child});
+class NavigationIntentCoordinator extends StatelessWidget {
+  const NavigationIntentCoordinator({super.key, required this.child});
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final next = context.watch<AppIntentState>().next;
+    final next = context.watch<NavigationIntentState>().next;
 
     if (next != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final intent = context.read<AppIntentState>().consumeNext();
+        final intent = context.read<NavigationIntentState>().consumeNext();
         if (intent == null) return;
 
         await _handleIntent(context, intent);
@@ -26,7 +26,7 @@ class AppIntentCoordinator extends StatelessWidget {
     return child;
   }
 
-  Future<void> _handleIntent(BuildContext context, AppIntent intent) async {
+  Future<void> _handleIntent(BuildContext context, NavigationIntent intent) async {
     switch (intent) {
       case OpenMunroIntent(:final munroId):
         final munroState = context.read<MunroState>();

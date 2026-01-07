@@ -4,6 +4,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ import 'package:two_eight_two/support/app_route_observer.dart';
 import 'analytics/analytics.dart';
 import 'repos/repos.dart';
 import 'config/app_config.dart';
+import 'screens/nav/state/startup_overlay_policies.dart';
 import 'screens/notifiers.dart';
 
 List<SingleChildWidget> buildRepositories(
@@ -24,6 +26,7 @@ List<SingleChildWidget> buildRepositories(
   Mixpanel mixpanel,
   FirebaseStorage firebaseStorage,
   FirebaseRemoteConfig remoteConfig,
+  PackageInfo packageInfo,
 ) =>
     [
       Provider(create: (_) => AuthRepository(firebaseAuth, googleSignIn)),
@@ -63,9 +66,20 @@ List<SingleChildWidget> buildRepositories(
       Provider<PushNotificationRepository>(
         create: (_) => PushNotificationRepository(FirebaseMessaging.instance),
       ),
+      Provider<AppInfoRepository>(create: (_) => AppInfoRepository(packageInfo)),
     ];
 
 List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
+      ChangeNotifierProvider<NavigationIntentState>(
+        create: (ctx) => NavigationIntentState(
+          ctx.read<Logger>(),
+        ),
+      ),
+      ChangeNotifierProvider<OverlayIntentState>(
+        create: (ctx) => OverlayIntentState(
+          ctx.read<Logger>(),
+        ),
+      ),
       ChangeNotifierProvider<RemoteConfigState>(
         create: (ctx) => RemoteConfigState(
           ctx.read<RemoteConfigRespository>(),
@@ -202,6 +216,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => AchievementsState(
           ctx.read<UserAchievementsRepository>(),
           ctx.read<UserState>(),
+          ctx.read<OverlayIntentState>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -250,15 +265,10 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Logger>(),
         ),
       ),
-      ChangeNotifierProvider<AppIntentState>(
-        create: (ctx) => AppIntentState(
-          ctx.read<Logger>(),
-        ),
-      ),
       ChangeNotifierProvider(
         create: (ctx) => DeepLinkState(
           ctx.read<DeepLinkRepository>(),
-          ctx.read<AppIntentState>(),
+          ctx.read<NavigationIntentState>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -267,8 +277,25 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<PushNotificationRepository>(),
           ctx.read<SettingsState>(),
           ctx.read<UserState>(),
-          ctx.read<AppIntentState>(),
+          ctx.read<NavigationIntentState>(),
           ctx.read<Logger>(),
+        ),
+      ),
+      ProxyProvider4<RemoteConfigState, OverlayIntentState, AppFlagsRepository, AppInfoRepository,
+          StartupOverlayPolicies>(
+        update: (
+          _,
+          remoteConfig,
+          overlays,
+          flags,
+          appInfo,
+          __,
+        ) =>
+            StartupOverlayPolicies(
+          remoteConfig,
+          overlays,
+          flags,
+          appInfo,
         ),
       ),
       ChangeNotifierProvider(
@@ -282,6 +309,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<MunroCompletionState>(),
           ctx.read<SavedListState>(),
           ctx.read<PushNotificationState>(),
+          ctx.read<StartupOverlayPolicies>(),
           ctx.read<FlavorState>(),
           ctx.read<Logger>(),
         ),

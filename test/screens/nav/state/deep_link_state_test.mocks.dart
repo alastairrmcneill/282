@@ -11,7 +11,8 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:two_eight_two/logging/logging.dart' as _i8;
 import 'package:two_eight_two/models/models.dart' as _i5;
 import 'package:two_eight_two/repos/deep_link_repository.dart' as _i3;
-import 'package:two_eight_two/screens/nav/state/app_intent_state.dart' as _i6;
+import 'package:two_eight_two/screens/nav/state/navigation_intent_state.dart'
+    as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -49,10 +50,10 @@ class MockDeepLinkRepository extends _i1.Mock
   }
 
   @override
-  _i4.Stream<_i5.AppIntent> get events => (super.noSuchMethod(
+  _i4.Stream<_i5.NavigationIntent> get events => (super.noSuchMethod(
         Invocation.getter(#events),
-        returnValue: _i4.Stream<_i5.AppIntent>.empty(),
-      ) as _i4.Stream<_i5.AppIntent>);
+        returnValue: _i4.Stream<_i5.NavigationIntent>.empty(),
+      ) as _i4.Stream<_i5.NavigationIntent>);
 
   @override
   _i4.Future<void> init({required bool? enableLogging}) => (super.noSuchMethod(
@@ -76,22 +77,24 @@ class MockDeepLinkRepository extends _i1.Mock
       ) as _i4.Future<void>);
 }
 
-/// A class which mocks [AppIntentState].
+/// A class which mocks [NavigationIntentState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAppIntentState extends _i1.Mock implements _i6.AppIntentState {
-  MockAppIntentState() {
+class MockNavigationIntentState extends _i1.Mock
+    implements _i6.NavigationIntentState {
+  MockNavigationIntentState() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.UnmodifiableListView<_i5.AppIntent> get pending => (super.noSuchMethod(
+  _i2.UnmodifiableListView<_i5.NavigationIntent> get pending =>
+      (super.noSuchMethod(
         Invocation.getter(#pending),
-        returnValue: _FakeUnmodifiableListView_0<_i5.AppIntent>(
+        returnValue: _FakeUnmodifiableListView_0<_i5.NavigationIntent>(
           this,
           Invocation.getter(#pending),
         ),
-      ) as _i2.UnmodifiableListView<_i5.AppIntent>);
+      ) as _i2.UnmodifiableListView<_i5.NavigationIntent>);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -100,7 +103,7 @@ class MockAppIntentState extends _i1.Mock implements _i6.AppIntentState {
       ) as bool);
 
   @override
-  void enqueue(_i5.AppIntent? intent) => super.noSuchMethod(
+  void enqueue(_i5.NavigationIntent? intent) => super.noSuchMethod(
         Invocation.method(
           #enqueue,
           [intent],
