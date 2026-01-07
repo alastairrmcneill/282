@@ -141,7 +141,7 @@ class HomeScreenState extends State<HomeScreen> {
 
             if (thisYearMunroChallenge.isEmpty) return;
 
-            if (thisYearMunroChallenge.first.criteriaCount == 0) {
+            if (thisYearMunroChallenge.first.annualTarget == 0) {
               context
                   .read<OverlayIntentState>()
                   .enqueue(AnnualMunroChallengeDialogIntent(achievement: thisYearMunroChallenge.first));
