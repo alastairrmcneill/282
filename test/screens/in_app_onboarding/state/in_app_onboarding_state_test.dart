@@ -366,7 +366,8 @@ void main() {
         // Assert
         expect(result, false);
         expect(inAppOnboardingState.status, InAppOnboardingStatus.loaded);
-        expect(inAppOnboardingState.error.message, 'Please enable notifications in system settings to receive updates.');
+        expect(
+            inAppOnboardingState.error.message, 'Please enable notifications in system settings to receive updates.');
         verify(mockSettingsState.setEnablePushNotifications(true)).called(1);
         verify(mockPushNotificationState.enablePush()).called(1);
         verify(mockSettingsState.setEnablePushNotifications(false)).called(1);
@@ -522,7 +523,8 @@ void main() {
         when(mockBulkMunroUpdateState.addedMunroCompletions).thenReturn(addedCompletions);
         when(mockAchievementsState.achievementFormCount).thenReturn(5);
         when(mockAchievementsState.setMunroChallenge()).thenAnswer((_) async => {});
-        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions'))).thenAnswer((_) async => {});
+        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions')))
+            .thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowBulkMunroDialog(any)).thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowInAppOnboarding(any, any)).thenAnswer((_) async => {});
 
@@ -564,7 +566,8 @@ void main() {
         // Arrange
         when(mockBulkMunroUpdateState.addedMunroCompletions).thenReturn([]);
         when(mockAchievementsState.setMunroChallenge()).thenAnswer((_) async => {});
-        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions'))).thenThrow(Exception('Bulk add error'));
+        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions')))
+            .thenThrow(Exception('Bulk add error'));
 
         // Act
         await inAppOnboardingState.completeOnboarding();
@@ -579,7 +582,8 @@ void main() {
         // Arrange
         when(mockBulkMunroUpdateState.addedMunroCompletions).thenReturn([]);
         when(mockAchievementsState.setMunroChallenge()).thenAnswer((_) async => {});
-        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions'))).thenAnswer((_) async => {});
+        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions')))
+            .thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowBulkMunroDialog(any)).thenThrow(Exception('Flag error'));
 
         // Act
@@ -598,7 +602,8 @@ void main() {
         when(mockAchievementsState.setMunroChallenge()).thenAnswer((_) async {
           await Future.delayed(Duration(milliseconds: 100));
         });
-        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions'))).thenAnswer((_) async => {});
+        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions')))
+            .thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowBulkMunroDialog(any)).thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowInAppOnboarding(any, any)).thenAnswer((_) async => {});
 
@@ -618,7 +623,8 @@ void main() {
         when(mockBulkMunroUpdateState.addedMunroCompletions).thenReturn([]);
         when(mockAchievementsState.achievementFormCount).thenReturn(0);
         when(mockAchievementsState.setMunroChallenge()).thenAnswer((_) async => {});
-        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions'))).thenAnswer((_) async => {});
+        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions')))
+            .thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowBulkMunroDialog(any)).thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowInAppOnboarding(any, any)).thenAnswer((_) async => {});
 
@@ -839,7 +845,8 @@ void main() {
         when(mockBulkMunroUpdateState.addedMunroCompletions).thenReturn([]);
         when(mockAchievementsState.achievementFormCount).thenReturn(0);
         when(mockAchievementsState.setMunroChallenge()).thenAnswer((_) async => {});
-        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions'))).thenAnswer((_) async => {});
+        when(mockMunroCompletionState.addBulkCompletions(munroCompletions: anyNamed('munroCompletions')))
+            .thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowBulkMunroDialog(any)).thenAnswer((_) async => {});
         when(mockAppFlagsRepository.setShowInAppOnboarding(any, any)).thenAnswer((_) async => {});
 
