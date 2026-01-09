@@ -1,5 +1,6 @@
 {
   "APP_ENV": "dev",
+  "GOOGLE_WEB_CLIENT_ID": "your_google_web_client_id",
   "WEATHER_API_KEY": "your_weather_api_key",
   "MIXPANEL_TOKEN": "your_mixpanel_token",
   "MAPBOX_TOKEN": "your_mapbox_token",

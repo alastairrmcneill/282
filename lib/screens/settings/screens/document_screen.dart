@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:two_eight_two/services/services.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -50,7 +51,7 @@ class DocumentScreen extends StatelessWidget {
                               Uri.parse(url),
                             );
                           } on Exception catch (error, stackTrace) {
-                            Log.error(error.toString(), stackTrace: stackTrace);
+                            context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                             Clipboard.setData(ClipboardData(text: url));
                             showSnackBar(context, 'Copied link. Go to browser to open.');
                           }

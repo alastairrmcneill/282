@@ -3,7 +3,6 @@ import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/create_review/widgets/widgets.dart";
 import "package:two_eight_two/screens/notifiers.dart";
-import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
 class EditReviewScreen extends StatelessWidget {
@@ -47,7 +46,7 @@ class EditReviewScreen extends StatelessWidget {
   }
 
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
     Munro munro = munroState.munroList.firstWhere(
       (element) => element.id == createReviewState.editingReview!.munroId,
       orElse: () => Munro.empty,
@@ -101,7 +100,9 @@ class EditReviewScreen extends StatelessWidget {
                     _formKey.currentState!.save();
 
                     if (createReviewState.status == CreateReviewStatus.initial) {
-                      ReviewService.editReview(context);
+                      createReviewState.editReview(
+                        onReviewUpdated: (newReview) => context.read<ReviewsState>().replaceReview = newReview,
+                      );
                     }
                   },
                   child: const Text("Submit"),

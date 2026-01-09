@@ -9,7 +9,7 @@ class CreatePostDurationPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
+    final createPostState = context.watch<CreatePostState>();
     Duration? pickedDuration = createPostState.duration ?? Duration.zero;
 
     TextEditingController durationController = TextEditingController(

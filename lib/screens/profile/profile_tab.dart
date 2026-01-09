@@ -1,27 +1,40 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/screens/screens.dart';
-import 'package:two_eight_two/support/app_route_observer.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
-class ProfileTab extends StatefulWidget {
+class ProfileTab extends StatelessWidget {
   static const String route = '/profile_tab';
   const ProfileTab({super.key});
 
   @override
-  State<ProfileTab> createState() => _ProfileTabState();
-}
-
-class _ProfileTabState extends State<ProfileTab> {
-  @override
-  void initState() {
-    appRouteObserver.updateCurrentScreen(ProfileTab.route);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: ProfileScreen(),
+    final auth = context.read<AuthState>();
+    final userId = auth.currentUserId;
+
+    if (userId == null) {
+      // No auth, no ProfileState
+      return const CenterText(text: 'Please log in');
+    }
+
+    return ChangeNotifierProvider<ProfileState>(
+      create: (ctx) => ProfileState(
+        ctx.read<ProfileRepository>(),
+        ctx.read<MunroPicturesRepository>(),
+        ctx.read<PostsRepository>(),
+        ctx.read<UserState>(),
+        ctx.read<UserLikeState>(),
+        ctx.read<MunroCompletionsRepository>(),
+        ctx.read<Logger>(),
+      )..loadProfileFromUserId(userId: userId),
+      child: Scaffold(
+        body: ProfileScreen(
+          userId: userId,
+        ),
+      ),
     );
   }
 }

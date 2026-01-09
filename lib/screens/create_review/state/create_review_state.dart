@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class CreateReviewState extends ChangeNotifier {
+  final ReviewsRepository _reviewsRepository;
+  final UserState _userState;
+  final MunroState _munroState;
+  final Logger _logger;
+  CreateReviewState(
+    this._reviewsRepository,
+    this._userState,
+    this._munroState,
+    this._logger,
+  );
   CreateReviewStatus _status = CreateReviewStatus.initial;
   Error _error = Error();
   List<Munro> _munrosToReview = [];
@@ -19,6 +32,66 @@ class CreateReviewState extends ChangeNotifier {
   int get currentMunroRating => _currentMunroRating;
   String get currentMunroReview => _currentMunroReview;
   Review? get editingReview => _editingReview;
+
+  Future<void> createReview() async {
+    try {
+      setStatus = CreateReviewStatus.loading;
+
+      for (var key in _reviews.keys) {
+        Review review = Review(
+          authorId: _userState.currentUser?.uid ?? "",
+          authorDisplayName: _userState.currentUser?.displayName ?? "",
+          authorProfilePictureURL: _userState.currentUser?.profilePictureURL,
+          dateTime: DateTime.now().toUtc(),
+          rating: _reviews[key]![ReviewFields.rating] ?? 0,
+          text: _reviews[key]!["review"] ?? "",
+          munroId: key,
+        );
+
+        // Upload to database
+
+        await _reviewsRepository.create(review: review);
+      }
+
+      _munroState.loadMunros();
+
+      setStatus = CreateReviewStatus.loaded;
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(
+        message: "There was an issue posting your review. Please try again",
+        code: error.toString(),
+      );
+    }
+  }
+
+  Future editReview({
+    required void Function(Review newReview) onReviewUpdated,
+  }) async {
+    try {
+      setStatus = CreateReviewStatus.loading;
+
+      Review review = _editingReview!;
+
+      Review newReview = review.copyWith(
+        rating: _currentMunroRating,
+        text: _currentMunroReview,
+      );
+
+      // Send to database
+      await _reviewsRepository.update(review: newReview);
+
+      onReviewUpdated(newReview);
+      _munroState.loadMunros();
+      setStatus = CreateReviewStatus.loaded;
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(
+        message: "There was an issue editing your review. Please try again",
+        code: error.toString(),
+      );
+    }
+  }
 
   set setStatus(CreateReviewStatus searchStatus) {
     _status = searchStatus;

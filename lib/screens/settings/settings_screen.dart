@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/config/app_config.dart';
+import 'package:two_eight_two/logging/logging.dart';
 
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,8 +19,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context);
-    FlavorState flavorState = Provider.of<FlavorState>(context, listen: false);
+    final user = context.read<UserState>().currentUser;
+    FlavorState flavorState = context.read<FlavorState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -72,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
                   Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
                 );
               } on Exception catch (error, stackTrace) {
-                Log.error(error.toString(), stackTrace: stackTrace);
+                context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                 Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
                 showSnackBar(context, 'Copied email address. Go to email app to send.');
               }
@@ -81,9 +80,9 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              BulkMunroUpdateState bulkMunroUpdateState = Provider.of<BulkMunroUpdateState>(context, listen: false);
-              MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context, listen: false);
-              MunroState munroState = Provider.of<MunroState>(context, listen: false);
+              BulkMunroUpdateState bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
+              MunroCompletionState munroCompletionState = context.read<MunroCompletionState>();
+              MunroState munroState = context.read<MunroState>();
 
               bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
               munroState.clearFilterAndSorting();
@@ -116,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
                   Uri.parse(url),
                 );
               } on Exception catch (error, stackTrace) {
-                Log.error(error.toString(), stackTrace: stackTrace);
+                context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                 Clipboard.setData(ClipboardData(text: url));
                 showSnackBar(context, 'Copied link. Go to browser to open.');
               }
@@ -137,7 +136,11 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             onTap: () async {
-              await AuthService.signOut(context);
+              await context.read<AuthState>().signOut().then((_) {
+                context.read<MunroCompletionState>().reset();
+                context.read<SavedListState>().reset();
+                Navigator.of(context).pushReplacementNamed(HomeScreen.route);
+              });
             },
             title: const Text("Sign out"),
           ),
@@ -147,7 +150,11 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 message: "Are you sure you want to delete account and all associated data?",
                 onConfirm: () async {
-                  await AuthService.deleteUser(context, appUser: user!);
+                  await context.read<AuthState>().deleteUser(user!).then((_) {
+                    context.read<MunroCompletionState>().reset();
+                    context.read<SavedListState>().reset();
+                    Navigator.of(context).pushReplacementNamed(HomeScreen.route);
+                  });
                 },
               );
             },

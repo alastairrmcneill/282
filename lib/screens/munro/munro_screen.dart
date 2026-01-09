@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroScreen extends StatefulWidget {
@@ -19,20 +19,24 @@ class _MunroScreenState extends State<MunroScreen> {
 
   @override
   void initState() {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    AnalyticsService.logMunroViewed(
-      munroId: (munroState.selectedMunro?.id ?? 0).toString(),
-      munroName: munroState.selectedMunro?.name ?? "",
+    final munroState = context.read<MunroState>();
+    context.read<Analytics>().track(
+      AnalyticsEvent.munroViewed,
+      props: {
+        AnalyticsProp.munroId: (munroState.selectedMunro?.id ?? 0).toString(),
+        AnalyticsProp.munroName: munroState.selectedMunro?.name ?? "",
+      },
     );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final munroState = context.watch<MunroState>();
     return Scaffold(
       floatingActionButton: const MunroSummitedButton(),
       body: RefreshIndicator(
-        onRefresh: () => MunroService.loadMunroData(context),
+        onRefresh: () => munroState.loadMunros(),
         child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),

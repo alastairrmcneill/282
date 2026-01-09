@@ -11,8 +11,8 @@ class ProfileMunroChallengeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+    final profileState = context.watch<ProfileState>();
+    final achievementsState = context.watch<AchievementsState>();
 
     String annualGoalId = profileState.profile?.annualGoalId ?? '';
     int year = profileState.profile?.annualGoalYear ?? 2025;

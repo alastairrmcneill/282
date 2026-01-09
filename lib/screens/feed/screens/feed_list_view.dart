@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FeedListView extends StatefulWidget {
@@ -29,7 +30,7 @@ class _FeedListViewState extends State<FeedListView> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    FeedState feedState = Provider.of<FeedState>(context, listen: false);
+    final feedState = context.read<FeedState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -68,6 +69,7 @@ class _FeedListViewState extends State<FeedListView> {
   }
 
   Widget _buildScreen(BuildContext context, FeedState feedState) {
+    UserLikeState userLikeState = context.read<UserLikeState>();
     return RefreshIndicator(
       onRefresh: () async {
         widget.refreshPosts();
@@ -97,6 +99,40 @@ class _FeedListViewState extends State<FeedListView> {
                             (Post post) => PostWidget(
                               post: post,
                               inFeed: true,
+                              onEdit: () async {
+                                final createPostState = context.read<CreatePostState>();
+                                final settingsState = context.read<SettingsState>();
+
+                                createPostState.reset();
+                                createPostState.loadPost = post;
+                                createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+
+                                final updated = await Navigator.of(context).pushNamed<Post>(
+                                  CreatePostScreen.route,
+                                );
+                                if (updated != null) {
+                                  context.read<FeedState>().updatePost(updated);
+                                }
+                              },
+                              onDelete: () async {
+                                final createPostState = context.read<CreatePostState>();
+                                await createPostState.deletePost(post: post);
+
+                                context.read<FeedState>().removePost(post);
+                              },
+                              onLikeTap: () async {
+                                if (userLikeState.likedPosts.contains(post.uid)) {
+                                  userLikeState.unLikePost(
+                                    post: post,
+                                    onPostUpdated: feedState.updatePost,
+                                  );
+                                } else {
+                                  userLikeState.likePost(
+                                    post: post,
+                                    onPostUpdated: feedState.updatePost,
+                                  );
+                                }
+                              },
                             ),
                           )
                           .toList(),

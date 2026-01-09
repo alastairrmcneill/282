@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 
 class MunroState extends ChangeNotifier {
+  final MunroRepository munroRepository;
+  final Logger _logger;
+  MunroState(this.munroRepository, this._logger);
+
   MunroStatus _status = MunroStatus.initial;
   Error _error = Error();
   List<Munro> _munroList = [];
@@ -34,6 +40,28 @@ class MunroState extends ChangeNotifier {
   Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;
+
+  Future<void> loadMunros() async {
+    _status = MunroStatus.loading;
+    notifyListeners();
+
+    try {
+      _munroList = await munroRepository.getMunroData();
+      _status = MunroStatus.loaded;
+      notifyListeners();
+      _filter();
+      _createPostFilter();
+      _bulkMunroUpdateFilter();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = MunroStatus.error;
+      _error = Error(
+        code: error.toString(),
+        message: "There was an issue loading the munro data",
+      );
+      notifyListeners();
+    }
+  }
 
   void syncCompletedIds(Set<int> ids) {
     if (_completedMunroIds.length == ids.length && _completedMunroIds.containsAll(ids)) return;

@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class UserSearchState extends ChangeNotifier {
+  final UserRepository _userRepository;
+  final UserState _userState;
+  final Logger _logger;
+
+  UserSearchState(
+    this._userRepository,
+    this._userState,
+    this._logger,
+  );
+
   SearchStatus _status = SearchStatus.initial;
   List<AppUser> _users = [];
   Error _error = Error();
@@ -9,6 +22,58 @@ class UserSearchState extends ChangeNotifier {
   List<AppUser> get users => _users;
   SearchStatus get status => _status;
   Error get error => _error;
+
+  Future<void> search({required String query}) async {
+    if (_userState.currentUser == null) return;
+
+    try {
+      setStatus = SearchStatus.loading;
+
+      List<String> blockedUsers = _userState.blockedUsers;
+
+      // Search
+      _users = await _userRepository.readUsersByName(
+        searchTerm: query.toLowerCase(),
+        excludedAuthorIds: blockedUsers,
+        offset: 0,
+      );
+
+      _status = SearchStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue with the search. Please try again.");
+    }
+  }
+
+  Future<void> paginateSearch({required String query}) async {
+    if (_userState.currentUser == null) return;
+
+    try {
+      setStatus = SearchStatus.paginating;
+
+      List<String> blockedUsers = _userState.blockedUsers;
+
+      // Search
+      final users = await _userRepository.readUsersByName(
+        searchTerm: query.toLowerCase(),
+        excludedAuthorIds: blockedUsers,
+        offset: _users.length,
+      );
+      _users.addAll(users);
+      _status = SearchStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue with the search. Please try again.");
+    }
+  }
+
+  void clearSearch() {
+    _status = SearchStatus.initial;
+    _users = [];
+    notifyListeners();
+  }
 
   set setStatus(SearchStatus searchStatus) {
     _status = searchStatus;

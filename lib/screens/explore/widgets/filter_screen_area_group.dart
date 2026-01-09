@@ -28,7 +28,7 @@ class _FilterScreenAreaGroupState extends State<FilterScreenAreaGroup> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

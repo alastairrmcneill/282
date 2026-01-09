@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/services/services.dart';
 
 import '../screens/profile/screens/screens.dart';
 
@@ -21,8 +20,10 @@ class CircularProfilePicture extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (profileUid == null) return;
-        ProfileService.loadUserFromUid(context, userId: profileUid!);
-        Navigator.of(context).pushNamed(ProfileScreen.route);
+        Navigator.of(context).pushNamed(
+          ProfileScreen.route,
+          arguments: ProfileScreenArgs(userId: profileUid!),
+        );
       },
       child: Container(
         width: radius * 2,

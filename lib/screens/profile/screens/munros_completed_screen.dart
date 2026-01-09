@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class MunrosCompletedScreenArgs {
+  final List<MunroCompletion> munroCompletions;
+  final bool isCurrentUser;
+
+  MunrosCompletedScreenArgs({required this.munroCompletions, required this.isCurrentUser});
+}
+
 class MunrosCompletedScreen extends StatefulWidget {
+  final List<MunroCompletion> munroCompletions;
+  final bool isCurrentUser;
+
   static const String route = '/profile/munros_completed';
-  const MunrosCompletedScreen({super.key});
+  const MunrosCompletedScreen({
+    super.key,
+    required this.munroCompletions,
+    required this.isCurrentUser,
+  });
 
   @override
   State<MunrosCompletedScreen> createState() => _MunrosCompletedScreenState();
@@ -35,7 +50,7 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
   void _logTabAnalytics(int index) {
     final screenName =
         index == 0 ? '${MunrosCompletedScreen.route}/completed' : '${MunrosCompletedScreen.route}/remaining';
-    appRouteObserver.updateCurrentScreen(screenName);
+    context.read<AppRouteObserver>().updateCurrentScreen(screenName);
   }
 
   @override
@@ -46,10 +61,15 @@ class _MunrosCompletedScreenState extends State<MunrosCompletedScreen> with Sing
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    ProfileState profileState = Provider.of<ProfileState>(context);
+    final munroState = context.watch<MunroState>();
+    MunroCompletionState munroCompletionState = context.watch<MunroCompletionState>();
 
-    final completedMunroIds = profileState.munroCompletions.map((mc) => mc.munroId).toSet();
+    Set<int> completedMunroIds = {};
+    if (widget.isCurrentUser) {
+      completedMunroIds = munroCompletionState.completedMunroIds;
+    } else {
+      completedMunroIds = widget.munroCompletions.map((mc) => mc.munroId).toSet();
+    }
 
     final completedMunros = munroState.munroList.where((munro) => completedMunroIds.contains(munro.id)).toList();
     final remainingMunros = munroState.munroList.where((munro) => !completedMunroIds.contains(munro.id)).toList();

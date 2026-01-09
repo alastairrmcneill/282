@@ -5,7 +5,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/likes_screen.dart';
 import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsScreen extends StatefulWidget {
@@ -20,13 +19,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
+    final commentsState = context.read<CommentsState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           commentsState.status != CommentsStatus.paginating) {
-        CommentsService.paginatePostComments(context);
+        commentsState.paginatePostComments();
       }
     });
     super.initState();
@@ -79,7 +78,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, CommentsState commentsState) {
-    LikesState likesState = Provider.of<LikesState>(context);
+    CommentsState commentsState = context.watch<CommentsState>();
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -89,7 +89,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               flex: 1,
               child: RefreshIndicator(
                 onRefresh: () async {
-                  CommentsService.getPostComments(context);
+                  await commentsState.getPostComments();
                 },
                 child: ListView(
                   controller: _scrollController,
@@ -143,10 +143,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        likesState.reset();
-                        likesState.setPostId = commentsState.postId;
-                        LikeService.getPostLikes(context);
-                        Navigator.of(context).pushNamed(LikesScreen.route);
+                        Navigator.of(context).pushNamed(
+                          LikesScreen.route,
+                          arguments: LikesScreenArgs(postId: commentsState.post.uid),
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -161,11 +161,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         ),
                       ),
                     ),
-                    ...commentsState.comments
-                        .map((Comment comment) => CommentTile(
-                              comment: comment,
-                            ))
-                        .toList(),
+                    ...commentsState.comments.map(
+                      (Comment comment) => CommentTile(
+                        comment: comment,
+                      ),
+                    ),
                   ],
                 ),
               ),

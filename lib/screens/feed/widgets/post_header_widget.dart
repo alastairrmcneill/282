@@ -5,12 +5,19 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostHeader extends StatelessWidget {
   final Post post;
-  const PostHeader({super.key, required this.post});
+  final Future<void> Function() onEdit;
+  final Future<void> Function() onDelete;
+
+  const PostHeader({
+    super.key,
+    required this.post,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   Widget _buildPopUpMenu(
     BuildContext context, {
@@ -24,22 +31,19 @@ class PostHeader extends StatelessWidget {
       menuItems = [
         MenuItem(
           text: 'Edit',
-          onTap: () {
-            createPostState.reset();
-            createPostState.loadPost = post;
-            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-            Navigator.of(context).pushNamed(CreatePostScreen.route);
+          onTap: () async {
+            await onEdit.call();
           },
         ),
         MenuItem(
           text: 'Delete',
-          onTap: () {
-            PostService.deletePost(context, post: post);
+          onTap: () async {
+            await onDelete.call();
           },
         ),
       ];
     } else {
-      ReportState reportState = Provider.of<ReportState>(context, listen: false);
+      final reportState = context.read<ReportState>();
       menuItems = [
         MenuItem(
           text: 'Report',
@@ -56,9 +60,9 @@ class PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context, listen: false);
+    final createPostState = context.read<CreatePostState>();
+    final settingsState = context.read<SettingsState>();
+    final userState = context.read<UserState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
@@ -79,8 +83,10 @@ class PostHeader extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      ProfileService.loadUserFromUid(context, userId: post.authorId);
-                      Navigator.of(context).pushNamed(ProfileScreen.route);
+                      Navigator.of(context).pushNamed(
+                        ProfileScreen.route,
+                        arguments: ProfileScreenArgs(userId: post.authorId),
+                      );
                     },
                     child: Text(
                       post.authorDisplayName,

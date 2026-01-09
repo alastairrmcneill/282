@@ -12,7 +12,7 @@ class MunroSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
 
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

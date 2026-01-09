@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class MunroCompletionState extends ChangeNotifier {
+  final MunroCompletionsRepository repository;
+  final UserState userState;
+  final Logger _logger;
+
+  MunroCompletionState(
+    this.repository,
+    this.userState,
+    this._logger,
+  );
+
   MunroCompletionsStatus _status = MunroCompletionsStatus.initial;
   Error _error = Error();
   List<MunroCompletion> _munroCompletions = [];
@@ -11,17 +24,149 @@ class MunroCompletionState extends ChangeNotifier {
   List<MunroCompletion> get munroCompletions => _munroCompletions;
   Set<int> get completedMunroIds => _munroCompletions.map((c) => c.munroId).toSet();
 
-  set setMunroCompletions(List<MunroCompletion> munroCompletions) {
-    _munroCompletions = munroCompletions;
+  Future<void> loadUserMunroCompletions() async {
+    if (userState.currentUser == null) {
+      setError(Error(message: 'You must be logged in to load munro completions.'));
+      return;
+    }
+
+    _status = MunroCompletionsStatus.loading;
     notifyListeners();
+
+    try {
+      _munroCompletions = await repository.getUserMunroCompletions(userId: userState.currentUser!.uid ?? "");
+      _status = MunroCompletionsStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = MunroCompletionsStatus.error;
+      _error = Error(
+        code: error.toString(),
+        message: "There was an issue loading the munro completions",
+      );
+      notifyListeners();
+    }
   }
 
-  set setStatus(MunroCompletionsStatus searchStatus) {
-    _status = searchStatus;
-    notifyListeners();
+  Future<void> addBulkCompletions({required List<MunroCompletion> munroCompletions}) async {
+    if (userState.currentUser == null) {
+      setError(Error(message: 'You must be logged in to add munro completions.'));
+      return;
+    }
+    try {
+      await repository.create(munroCompletions);
+      _munroCompletions = [
+        ..._munroCompletions,
+        ...munroCompletions,
+      ];
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = MunroCompletionsStatus.error;
+      _error = Error(
+        code: error.toString(),
+        message: "There was an issue adding the munro completions",
+      );
+      notifyListeners();
+    }
   }
 
-  set setError(Error error) {
+  Future<void> markMunrosAsCompleted({
+    required List<int> munroIds,
+    required DateTime summitDateTime,
+    String? postId,
+  }) async {
+    if (userState.currentUser == null) {
+      setError(Error(message: 'You must be logged in to mark munros as completed.'));
+      return;
+    }
+
+    try {
+      final newCompletions = munroIds
+          .map(
+            (id) => MunroCompletion(
+              userId: userState.currentUser!.uid ?? "",
+              munroId: id,
+              postId: postId,
+              dateTimeCompleted: summitDateTime,
+            ),
+          )
+          .toList();
+
+      await repository.create(newCompletions);
+
+      _munroCompletions = [
+        ..._munroCompletions,
+        ...newCompletions,
+      ];
+      notifyListeners();
+    } catch (e, st) {
+      _logger.error(e.toString(), stackTrace: st);
+      _status = MunroCompletionsStatus.error;
+      _error = Error(
+        code: e.toString(),
+        message: 'There was an issue marking your munros as completed',
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeMunroCompletion({
+    required MunroCompletion munroCompletion,
+  }) async {
+    if (userState.currentUser == null) {
+      setError(Error(message: 'You must be logged in to remove munro completions.'));
+      return;
+    }
+    try {
+      await repository.delete(munroCompletionId: munroCompletion.id ?? "");
+
+      _munroCompletions = _munroCompletions.where((mc) => mc.id != munroCompletion.id).toList();
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = MunroCompletionsStatus.error;
+      _error = Error(
+        message: "There was an issue removing your munro completion",
+        code: error.toString(),
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeCompletionsByMunroIdsAndPost({
+    required List<int> munroIds,
+    required String postId,
+  }) async {
+    if (userState.currentUser == null) {
+      setError(Error(message: 'You must be logged in to remove munro completions.'));
+      return;
+    }
+    try {
+      await repository.deleteByMunroIdsAndPostId(
+        munroIds: munroIds,
+        postId: postId,
+      );
+
+      _munroCompletions = _munroCompletions.where((mc) {
+        final matchMunro = munroIds.contains(mc.munroId);
+        final matchPost = mc.postId == postId;
+        return !(matchMunro && matchPost);
+      }).toList();
+
+      notifyListeners();
+    } catch (e, st) {
+      _logger.error(e.toString(), stackTrace: st);
+      _status = MunroCompletionsStatus.error;
+      _error = Error(
+        code: e.toString(),
+        message: 'There was an issue removing your munro completions',
+      );
+      notifyListeners();
+    }
+  }
+
+  void setError(Error error) {
     _status = MunroCompletionsStatus.error;
     _error = error;
     notifyListeners();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class BulkMunroUpdateScreen extends StatefulWidget {
   static const String route = '/bulk_munro_update';
@@ -19,15 +19,15 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
   @override
   void initState() {
     super.initState();
-    SharedPreferencesService.setShowBulkMunroDialog(false);
+    context.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final bulkMunroUpdateState = context.watch<BulkMunroUpdateState>();
 
-    print("Building BulkMunroUpdateScreen");
-    print("Filtered Munro List Length: ${munroState.filteredMunroList.length}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bulk Munro Update'),
@@ -35,7 +35,10 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              MunroCompletionService.bulkUpdateMunros(context);
+
+              munroCompletionState.addBulkCompletions(
+                munroCompletions: bulkMunroUpdateState.addedMunroCompletions,
+              );
             },
             child: const Text("Save"),
           ),
@@ -47,13 +50,13 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           hintText: "Search Munros",
           onSearchTap: () {},
           onChanged: (value) {
-            munroState.setFilterString = value;
+            munroState.setBulkMunroUpdateFilterString = value;
           },
           onClear: () {
-            munroState.setFilterString = ''; // Chanhge to friends
+            munroState.setBulkMunroUpdateFilterString = '';
           },
         ),
-        ...munroState.filteredMunroList.map((Munro munro) {
+        ...munroState.bulkMunroUpdateList.map((Munro munro) {
           return BulkMunroUpdateListTile(munro: munro);
         }),
       ]),

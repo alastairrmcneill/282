@@ -1,7 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 
 class UserState extends ChangeNotifier {
+  final UserRepository userRepository;
+  final BlockedUserRepository blockedUserRepository;
+  final StorageRepository storageRepository;
+  final Logger _logger;
+
+  UserState(
+    this.userRepository,
+    this.blockedUserRepository,
+    this.storageRepository,
+    this._logger,
+  );
+
   UserStatus _status = UserStatus.initial;
   Error _error = Error();
   AppUser? _currentUser;
@@ -12,15 +28,143 @@ class UserState extends ChangeNotifier {
   AppUser? get currentUser => _currentUser;
   List<String> get blockedUsers => _blockedUsers;
 
-  set setStatus(UserStatus searchStatus) {
-    _status = searchStatus;
+  Future<void> createUser({required AppUser appUser}) async {
+    _status = UserStatus.loading;
     notifyListeners();
+    try {
+      await userRepository.create(appUser: appUser);
+      _status = UserStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = UserStatus.error;
+      _error = Error(code: error.toString(), message: "There was an error creating the account.");
+      notifyListeners();
+    }
   }
 
-  set setError(Error error) {
-    _status = UserStatus.error;
-    _error = error;
+  Future<void> updateUser({required AppUser appUser}) async {
+    _status = UserStatus.loading;
     notifyListeners();
+    try {
+      await userRepository.update(appUser: appUser);
+      _currentUser = appUser;
+      _status = UserStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = UserStatus.error;
+      _error = Error(code: error.toString(), message: "There was an error updating the account.");
+      notifyListeners();
+    }
+  }
+
+  Future<void> readUser({required String? uid}) async {
+    _status = UserStatus.loading;
+    notifyListeners();
+    try {
+      if (uid == null) {
+        _status = UserStatus.loaded;
+        notifyListeners();
+        return;
+      }
+
+      AppUser? appUser = await userRepository.readUserFromUid(uid: uid);
+      _currentUser = appUser;
+      _status = UserStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = UserStatus.error;
+      _error = Error(code: error.toString(), message: "There was an error fetching the account.");
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteUser({required AppUser appUser}) async {
+    _status = UserStatus.loading;
+    notifyListeners();
+    try {
+      await userRepository.deleteUserWithUID(uid: appUser.uid!);
+      _currentUser = null;
+      _status = UserStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = UserStatus.error;
+      _error = Error(code: error.toString(), message: "There was an error deleting the account.");
+      notifyListeners();
+    }
+  }
+
+  Future<void> blockUser({required String userId}) async {
+    try {
+      if (_currentUser == null) return;
+
+      BlockedUserRelationship blockedUserRelationship = BlockedUserRelationship(
+        userId: _currentUser!.uid!,
+        blockedUserId: userId,
+        dateTimeBlocked: DateTime.now(),
+      );
+
+      await blockedUserRepository.blockUser(blockedUserRelationship: blockedUserRelationship);
+
+      _blockedUsers = [..._blockedUsers, userId];
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> loadBlockedUsers() async {
+    try {
+      if (_currentUser == null) return;
+
+      // Load the blocked users list
+      List<String> blockedUsers = await blockedUserRepository.getBlockedUsersForUid(
+        userId: _currentUser!.uid!,
+      );
+
+      // Update the state with the blocked users
+      _blockedUsers = blockedUsers;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> updateProfileVisibility(String newValue) async {
+    if (_currentUser == null) return;
+
+    AppUser updatedUser = _currentUser!.copyWith(profileVisibility: newValue);
+    updateUser(appUser: updatedUser);
+  }
+
+  Future updateProfile({required AppUser appUser, File? profilePicture}) async {
+    try {
+      if (_currentUser == null) return;
+      _status = UserStatus.loading;
+      notifyListeners();
+
+      String? photoURL;
+      if (profilePicture != null) {
+        photoURL = await storageRepository.uploadImage(imageFile: profilePicture, type: ImageUploadType.profile);
+        appUser.profilePictureURL = photoURL;
+      }
+
+      // Update Auth
+      // await AuthService.updateAuthUser(appUser: appUser); // TODO: come back to
+
+      // Update user database
+      await updateUser(appUser: appUser);
+      _status = UserStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = UserStatus.error;
+      _error = Error(code: error.toString(), message: "There was an issue updating the profile.");
+      notifyListeners();
+    }
   }
 
   set setCurrentUser(AppUser? appUser) {
@@ -33,17 +177,12 @@ class UserState extends ChangeNotifier {
     notifyListeners();
   }
 
-  reset() {
+  void reset() {
     _status = UserStatus.initial;
     _error = Error();
     _currentUser = null;
     _blockedUsers = [];
     notifyListeners();
-  }
-
-  void setCurrentUserWithNotify(AppUser newAppUser, {required bool notify}) {
-    _currentUser = newAppUser;
-    if (notify) notifyListeners();
   }
 }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreateMunroChallengeScreen extends StatelessWidget {
@@ -85,7 +84,7 @@ class CreateMunroChallengeScreen extends StatelessWidget {
                           return;
                         }
                         _formKey.currentState!.save();
-                        AchievementService.setMunroChallenge(context);
+                        achievementsState.setMunroChallenge();
                         Navigator.of(context).pop();
                       },
                       child: const Text('Create Munro Challenge'),

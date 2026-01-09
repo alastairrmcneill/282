@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class NotificationIconButton extends StatelessWidget {
   const NotificationIconButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    NotificationsState notificationsState = Provider.of<NotificationsState>(context, listen: false);
+    final notificationsState = context.read<NotificationsState>();
     return IconButton(
       onPressed: () {
-        NotificationsService.getUserNotifications(context);
+        notificationsState.getUserNotifications();
         Navigator.of(context).pushNamed(NotificationsScreen.route);
       },
       icon: Stack(

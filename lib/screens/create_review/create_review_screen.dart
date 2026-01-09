@@ -4,7 +4,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_review/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreateReviewsScreen extends StatelessWidget {
@@ -112,7 +111,7 @@ class CreateReviewsScreen extends StatelessWidget {
                         }
                         _formKey.currentState!.save();
 
-                        ReviewService.createReview(context);
+                        createReviewState.createReview();
                       },
                       child: const Text("Submit"),
                     ),

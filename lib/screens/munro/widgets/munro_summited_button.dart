@@ -8,25 +8,22 @@ class MunroSummitedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context, listen: false);
-    CreatePostState createPostState = Provider.of<CreatePostState>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+    final munroState = context.read<MunroState>();
+    final userState = context.read<UserState>();
+    final createPostState = context.read<CreatePostState>();
+    final settingsState = context.read<SettingsState>();
 
     return SizedBox(
       width: 150,
       child: FloatingActionButton(
         onPressed: () {
           if (userState.currentUser == null) {
-            navigationState.setNavigateToRoute = HomeScreen.route;
             Navigator.of(context).pushNamed(AuthHomeScreen.route);
           } else {
             createPostState.reset();
             if (munroState.selectedMunro != null) {
               createPostState.addMunro(munroState.selectedMunro!.id);
               createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-              navigationState.setNavigateToRoute = HomeScreen.route;
               Navigator.of(context).pushNamed(CreatePostScreen.route);
             }
           }

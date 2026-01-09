@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics_base.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/analytics_service.dart';
 
 class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
+  AppRouteObserver(this._analytics);
+
+  final Analytics _analytics;
+
   String? _previousScreen;
   DateTime? _previousScreenStartTime;
 
@@ -26,34 +30,33 @@ class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   }
 
   void _trackScreenTransition(Route? newRoute, Route? oldRoute) {
-    final String? newScreen = _getScreenName(newRoute);
-    if (newScreen == _previousScreen) return;
+    final newScreen = _getScreenName(newRoute);
 
-    if (newScreen != null) {
-      final now = DateTime.now();
+    if (newScreen == null || newScreen == _previousScreen) return;
 
-      if (_previousScreen != null && _previousScreenStartTime != null) {
-        final duration = now.difference(_previousScreenStartTime!);
-        AnalyticsService.logEvent(
-          name: 'Screen Viewed',
-          parameters: {
-            'screen': newScreen,
-            'previous_screen': _previousScreen ?? "",
-            'duration_seconds': duration.inSeconds.toString(),
-          },
-        );
-      } else {
-        AnalyticsService.logEvent(
-          name: 'Screen Viewed',
-          parameters: {
-            'screen': newScreen,
-          },
-        );
-      }
+    final now = DateTime.now();
 
-      _previousScreen = newScreen;
-      _previousScreenStartTime = now;
+    if (_previousScreen != null && _previousScreenStartTime != null) {
+      final duration = now.difference(_previousScreenStartTime!);
+      _analytics.track(
+        AnalyticsEvent.screenViewed,
+        props: {
+          AnalyticsProp.screen: newScreen,
+          AnalyticsProp.previousScreen: _previousScreen!,
+          AnalyticsProp.durationSeconds: duration.inSeconds,
+        },
+      );
+    } else {
+      _analytics.track(
+        AnalyticsEvent.screenViewed,
+        props: {
+          AnalyticsProp.screen: newScreen,
+        },
+      );
     }
+
+    _previousScreen = newScreen;
+    _previousScreenStartTime = now;
   }
 
   String? _getScreenName(Route? route) {
@@ -70,30 +73,28 @@ class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   }
 
   String? _getActiveTabRouteFromHome() {
-    if (homeScreenKey.currentState != null) {
-      return homeScreenKey.currentState!.currentTabRoute;
-    }
-    return null;
+    return homeScreenKey.currentState?.currentTabRoute;
   }
 
   void updateCurrentScreen(String newScreen) {
+    // keep if you truly need manual overrides, otherwise delete
     final now = DateTime.now();
     if (newScreen == _previousScreen) return;
 
     if (_previousScreen != null && _previousScreenStartTime != null) {
       final duration = now.difference(_previousScreenStartTime!);
-      AnalyticsService.logEvent(
-        name: 'Screen Viewed',
-        parameters: {
-          'screen': newScreen,
-          'previous_screen': _previousScreen!,
-          'duration_seconds': duration.inSeconds.toString(),
+      _analytics.track(
+        AnalyticsEvent.screenViewed,
+        props: {
+          AnalyticsProp.screen: newScreen,
+          AnalyticsProp.previousScreen: _previousScreen!,
+          AnalyticsProp.durationSeconds: duration.inSeconds,
         },
       );
     } else {
-      AnalyticsService.logEvent(
-        name: 'Screen Viewed',
-        parameters: {'screen': newScreen},
+      _analytics.track(
+        AnalyticsEvent.screenViewed,
+        props: {AnalyticsProp.screen: newScreen},
       );
     }
 
@@ -101,5 +102,3 @@ class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
     _previousScreenStartTime = now;
   }
 }
-
-final AppRouteObserver appRouteObserver = AppRouteObserver(); // 👈 global instance

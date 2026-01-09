@@ -394,41 +394,41 @@ VALUES
 -- 5. POSTS
 -- =========================
 INSERT INTO posts (
-  firebase_id,
   author_id,
   title,
   description,
-  privacy
+  privacy,
+  date_time_created
 ) VALUES
-  ('post_user1_1',  'user_1',  'Sunrise on a classic ridge',  'Early start, calm winds, perfect inversion over the glens.',        'public'),
-  ('post_user1_2',  'user_1',  'Solo winter wander',          'Icy paths but worth it for the views and quiet.',                    'public'),
+  ('user_1',  'Sunrise on a classic ridge',  'Early start, calm winds, perfect inversion over the glens.',         'public', NOW() - INTERVAL '1 minute'),
+  ('user_1',  'Solo winter wander',          'Icy paths but worth it for the views and quiet.',                    'public', NOW() - INTERVAL '5 minutes'),
 
-  ('post_user2_1',  'user_2',  'Big munro round',             'Linked a few nearby tops into one long day out.',                    'public'),
-  ('post_user2_2',  'user_2',  'Short evening hill',          'Quick leg stretcher after work, beautiful sunset colours.',          'public'),
+  ('user_2',  'Big munro round',             'Linked a few nearby tops into one long day out.',                    'public', NOW() - INTERVAL '1 hour'),
+  ('user_2',  'Short evening hill',          'Quick leg stretcher after work, beautiful sunset colours.',          'public', NOW() - INTERVAL '6 hours'),
 
-  ('post_user3_1',  'user_3',  'First winter munro',          'Nervous at first but crampons made all the difference.',             'public'),
-  ('post_user3_2',  'user_3',  'Blue sky day',                'Could see for miles, barely any wind, perfect picnic spot.',         'public'),
+  ('user_3',  'First winter munro',          'Nervous at first but crampons made all the difference.',             'public', NOW() - INTERVAL '1 day'),
+  ('user_3',  'Blue sky day',                'Could see for miles, barely any wind, perfect picnic spot.',         'public', NOW() - INTERVAL '2 days'),
 
-  ('post_user4_1',  'user_4',  'Photography mission',         'Chased the light all day, cloud shadows racing over the corries.',   'public'),
-  ('post_user4_2',  'user_4',  'Cloud inversion heaven',      'Peaks poking above a sea of cloud, one for the memory bank.',        'public'),
+  ('user_4',  'Photography mission',         'Chased the light all day, cloud shadows racing over the corries.',   'public', NOW() - INTERVAL '3 days'),
+  ('user_4',  'Cloud inversion heaven',      'Peaks poking above a sea of cloud, one for the memory bank.',        'public', NOW() - INTERVAL '5 days'),
 
-  ('post_user5_1',  'user_5',  'Scrambly ridge fun',          'Bit airy in places but rock was dry and solid.',                      'public'),
-  ('post_user5_2',  'user_5',  'Wet but worth it',            'Rained most of the day, but the summit cleared right at the end.',   'public'),
+  ('user_5',  'Scrambly ridge fun',          'Bit airy in places but rock was dry and solid.',                     'public', NOW() - INTERVAL '1 week'),
+  ('user_5',  'Wet but worth it',            'Rained most of the day, but the summit cleared right at the end.',   'public', NOW() - INTERVAL '10 days'),
 
-  ('post_user6_1',  'user_6',  'Fast and light round',        'Jogged the flats and hiked the steep bits, legs are done.',          'public'),
-  ('post_user6_2',  'user_6',  'Lunchtime dash',              'Snuck in a quick summit on my lunch break.',                          'public'),
+  ('user_6',  'Fast and light round',        'Jogged the flats and hiked the steep bits, legs are done.',          'public', NOW() - INTERVAL '2 weeks'),
+  ('user_6',  'Lunchtime dash',              'Snuck in a quick summit on my lunch break.',                         'public', NOW() - INTERVAL '3 weeks'),
 
-  ('post_user7_1',  'user_7',  'Snowy ridge day',             'Spindrift everywhere, proper winter conditions.',                     'public'),
-  ('post_user7_2',  'user_7',  'Steep gully climb',           'Short but steep route, very satisfying topping out onto the ridge.', 'public'),
+  ('user_7',  'Snowy ridge day',             'Spindrift everywhere, proper winter conditions.',                    'public', NOW() - INTERVAL '1 month'),
+  ('user_7',  'Steep gully climb',           'Short but steep route, very satisfying topping out onto the ridge.', 'public', NOW() - INTERVAL '2 months'),
 
-  ('post_user8_1',  'user_8',  'First ever munro',            'Legs hurt, heart happy. Can’t wait for the next one.',               'public'),
-  ('post_user8_2',  'user_8',  'Cloudy but calm',             'No views at the top but loved the path through the forest.',         'public'),
+  ('user_8',  'First ever munro',            'Legs hurt, heart happy. Can’t wait for the next one.',               'public', NOW() - INTERVAL '3 months'),
+  ('user_8',  'Cloudy but calm',             'No views at the top but loved the path through the forest.',         'public', NOW() - INTERVAL '6 months'),
 
-  ('post_user9_1',  'user_9',  'Guiding a friend',            'Showed a friend my favourite hill, they are hooked now.',            'public'),
-  ('post_user9_2',  'user_9',  'Navigation practice',         'Whiteout on top, great excuse to practice bearings.',                 'public'),
+  ('user_9',  'Guiding a friend',            'Showed a friend my favourite hill, they are hooked now.',            'public', NOW() - INTERVAL '9 months'),
+  ('user_9',  'Navigation practice',         'Whiteout on top, great excuse to practice bearings.',                'public', NOW() - INTERVAL '11 months'),
 
-  ('post_user10_1', 'user_10', 'Weekend road trip',           'Drove up after work and camped near the start, magic morning.',      'public'),
-  ('post_user10_2', 'user_10', 'Solo misty summit',           'Summit in the mist but a peaceful day out.',                         'public');
+  ('user_10', 'Weekend road trip',           'Drove up after work and camped near the start, magic morning.',      'public', NOW() - INTERVAL '1 year'),
+  ('user_10', 'Solo misty summit',           'Summit in the mist but a peaceful day out.',                         'public', NOW() - INTERVAL '13 months');
 
 -- =========================
 -- 6. MUNRO COMPLETIONS
@@ -436,47 +436,47 @@ INSERT INTO posts (
 INSERT INTO munro_completions (user_id, munro_id, post_id)
 VALUES
   -- user 1
-  ('user_1', 1, (SELECT id FROM posts WHERE firebase_id = 'post_user1_1')),
-  ('user_1', 2, (SELECT id FROM posts WHERE firebase_id = 'post_user1_1')),
-  ('user_1', 3, (SELECT id FROM posts WHERE firebase_id = 'post_user1_2')),
+  ('user_1', 1, (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge')),
+  ('user_1', 2, (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge')),
+  ('user_1', 3, (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Solo winter wander')),
 
   -- user 2
-  ('user_2', 1, (SELECT id FROM posts WHERE firebase_id = 'post_user2_1')),
-  ('user_2', 2, (SELECT id FROM posts WHERE firebase_id = 'post_user2_1')),
-  ('user_2', 3, (SELECT id FROM posts WHERE firebase_id = 'post_user2_1')),
-  ('user_2', 4, (SELECT id FROM posts WHERE firebase_id = 'post_user2_2')),
+  ('user_2', 1, (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round')),
+  ('user_2', 2, (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round')),
+  ('user_2', 3, (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round')),
+  ('user_2', 4, (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Short evening hill')),
 
   -- user 3
-  ('user_3', 3, (SELECT id FROM posts WHERE firebase_id = 'post_user3_1')),
-  ('user_3', 4, (SELECT id FROM posts WHERE firebase_id = 'post_user3_2')),
+  ('user_3', 3, (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro')),
+  ('user_3', 4, (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'Blue sky day')),
 
   -- user 4
-  ('user_4', 2, (SELECT id FROM posts WHERE firebase_id = 'post_user4_1')),
-  ('user_4', 5, (SELECT id FROM posts WHERE firebase_id = 'post_user4_2')),
+  ('user_4', 2, (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Photography mission')),
+  ('user_4', 5, (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Cloud inversion heaven')),
 
   -- user 5
-  ('user_5', 4, (SELECT id FROM posts WHERE firebase_id = 'post_user5_1')),
-  ('user_5', 5, (SELECT id FROM posts WHERE firebase_id = 'post_user5_2')),
+  ('user_5', 4, (SELECT id FROM posts WHERE author_id = 'user_5' AND title = 'Scrambly ridge fun')),
+  ('user_5', 5, (SELECT id FROM posts WHERE author_id = 'user_5' AND title = 'Wet but worth it')),
 
   -- user 6
-  ('user_6', 1, (SELECT id FROM posts WHERE firebase_id = 'post_user6_1')),
-  ('user_6', 3, (SELECT id FROM posts WHERE firebase_id = 'post_user6_2')),
+  ('user_6', 1, (SELECT id FROM posts WHERE author_id = 'user_6' AND title = 'Fast and light round')),
+  ('user_6', 3, (SELECT id FROM posts WHERE author_id = 'user_6' AND title = 'Lunchtime dash')),
 
   -- user 7
-  ('user_7', 5, (SELECT id FROM posts WHERE firebase_id = 'post_user7_1')),
-  ('user_7', 4, (SELECT id FROM posts WHERE firebase_id = 'post_user7_2')),
+  ('user_7', 5, (SELECT id FROM posts WHERE author_id = 'user_7' AND title = 'Snowy ridge day')),
+  ('user_7', 4, (SELECT id FROM posts WHERE author_id = 'user_7' AND title = 'Steep gully climb')),
 
   -- user 8
-  ('user_8', 1, (SELECT id FROM posts WHERE firebase_id = 'post_user8_1')),
-  ('user_8', 2, (SELECT id FROM posts WHERE firebase_id = 'post_user8_2')),
+  ('user_8', 1, (SELECT id FROM posts WHERE author_id = 'user_8' AND title = 'First ever munro')),
+  ('user_8', 2, (SELECT id FROM posts WHERE author_id = 'user_8' AND title = 'Cloudy but calm')),
 
   -- user 9
-  ('user_9', 3, (SELECT id FROM posts WHERE firebase_id = 'post_user9_1')),
-  ('user_9', 4, (SELECT id FROM posts WHERE firebase_id = 'post_user9_2')),
+  ('user_9', 3, (SELECT id FROM posts WHERE author_id = 'user_9' AND title = 'Guiding a friend')),
+  ('user_9', 4, (SELECT id FROM posts WHERE author_id = 'user_9' AND title = 'Navigation practice')),
 
   -- user 10
-  ('user_10', 5, (SELECT id FROM posts WHERE firebase_id = 'post_user10_1')),
-  ('user_10', 2, (SELECT id FROM posts WHERE firebase_id = 'post_user10_2'));
+  ('user_10', 1, (SELECT id FROM posts WHERE author_id = 'user_10' AND title = 'Weekend road trip')),
+  ('user_10', 2, (SELECT id FROM posts WHERE author_id = 'user_10' AND title = 'Solo misty summit'));
 
 -- =========================
 -- 7. MUNRO PICTURES
@@ -488,13 +488,13 @@ INSERT INTO munro_pictures (
   post_id,
   privacy
 ) VALUES
-  (1, 'user_1',  'https://media.istockphoto.com/id/1648507204/photo/mountain-peaks-of-italian-alps-isolated-on-white-background.jpg?s=2048x2048&w=is&k=20&c=ndo9gYzAYSLooamGwLLzgRfoJow_ZAUorYrDeDOoy2Y=',  (SELECT id FROM posts WHERE firebase_id = 'post_user1_1'),  'public'),
-  (2, 'user_2',  'https://media.istockphoto.com/id/1485674658/photo/autumn-forest-scenery-with-road-of-fall-leaves-and-warm-light-illumining-the-gold-foliage-in.jpg?s=2048x2048&w=is&k=20&c=07JiCQDxyu4m11f3RX8fBlGBibUa5jBRV1qLQ9Rpe5Y=',    (SELECT id FROM posts WHERE firebase_id = 'post_user2_1'),  'public'),
-  (3, 'user_3',  'https://media.istockphoto.com/id/1480973465/photo/autumn-forest-scenery-with-road-of-fall-leaves-and-warm-light-illumining-the-gold-foliage-in.jpg?s=2048x2048&w=is&k=20&c=YBEYqy4c8wv_9l_1ijeHN_HbcNQf45f7Fhq4Oi9rnPc=',   (SELECT id FROM posts WHERE firebase_id = 'post_user3_1'),  'public'),
-  (4, 'user_4',  'https://media.istockphoto.com/id/926750858/photo/mont-blanc-above-the-clouds.jpg?s=2048x2048&w=is&k=20&c=nctM7J-zQ9bMdCfy32g7RLLco3q-AENknNBDPFuCuJ0=',    (SELECT id FROM posts WHERE firebase_id = 'post_user4_1'),  'public'),
-  (5, 'user_5',  'https://media.istockphoto.com/id/2189078978/photo/valley-trail-from-a-high-view-in-the-dolomites.jpg?s=2048x2048&w=is&k=20&c=fjzp053kvTjHzeXcKA-wp2a9_kd__nbIGUzvk8yhNYY=',   (SELECT id FROM posts WHERE firebase_id = 'post_user5_1'),  'public'),
-  (2, 'user_7',  'https://media.istockphoto.com/id/1370772148/photo/track-and-mountains-in-valle-del-lago-somiedo-nature-park-asturias-spain.jpg?s=2048x2048&w=is&k=20&c=6tChnmJwcSRuMzVmVjYXVHWk4EjqN7c2TkJckjPyOlE=',  (SELECT id FROM posts WHERE firebase_id = 'post_user7_1'),  'public'),
-  (1, 'user_9',  'https://media.istockphoto.com/id/1856417077/photo/dolomites-seceda-at-sunrise-a-golden-spectacle-graces-the-rugged-landscape-casting-warmth-on.jpg?s=2048x2048&w=is&k=20&c=8wSzNoBzyJh6nrKqKpe5NaH2_eHnjFr27AFHah9lw_I=',   (SELECT id FROM posts WHERE firebase_id = 'post_user9_1'),  'public');
+  (1, 'user_1',  'https://media.istockphoto.com/id/1648507204/photo/mountain-peaks-of-italian-alps-isolated-on-white-background.jpg?s=2048x2048&w=is&k=20&c=ndo9gYzAYSLooamGwLLzgRfoJow_ZAUorYrDeDOoy2Y=',  (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge'),  'public'),
+  (2, 'user_2',  'https://media.istockphoto.com/id/1485674658/photo/autumn-forest-scenery-with-road-of-fall-leaves-and-warm-light-illumining-the-gold-foliage-in.jpg?s=2048x2048&w=is&k=20&c=07JiCQDxyu4m11f3RX8fBlGBibUa5jBRV1qLQ9Rpe5Y=',    (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round'),  'public'),
+  (3, 'user_3',  'https://media.istockphoto.com/id/1480973465/photo/autumn-forest-scenery-with-road-of-fall-leaves-and-warm-light-illumining-the-gold-foliage-in.jpg?s=2048x2048&w=is&k=20&c=YBEYqy4c8wv_9l_1ijeHN_HbcNQf45f7Fhq4Oi9rnPc=',   (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro'),  'public'),
+  (4, 'user_4',  'https://media.istockphoto.com/id/926750858/photo/mont-blanc-above-the-clouds.jpg?s=2048x2048&w=is&k=20&c=nctM7J-zQ9bMdCfy32g7RLLco3q-AENknNBDPFuCuJ0=',    (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Photography mission'),  'public'),
+  (5, 'user_5',  'https://media.istockphoto.com/id/2189078978/photo/valley-trail-from-a-high-view-in-the-dolomites.jpg?s=2048x2048&w=is&k=20&c=fjzp053kvTjHzeXcKA-wp2a9_kd__nbIGUzvk8yhNYY=',   (SELECT id FROM posts WHERE author_id = 'user_5' AND title = 'Scrambly ridge fun'),  'public'),
+  (2, 'user_7',  'https://media.istockphoto.com/id/1370772148/photo/track-and-mountains-in-valle-del-lago-somiedo-nature-park-asturias-spain.jpg?s=2048x2048&w=is&k=20&c=6tChnmJwcSRuMzVmVjYXVHWk4EjqN7c2TkJckjPyOlE=',  (SELECT id FROM posts WHERE author_id = 'user_7' AND title = 'Snowy ridge day'),  'public'),
+  (1, 'user_9',  'https://media.istockphoto.com/id/1856417077/photo/dolomites-seceda-at-sunrise-a-golden-spectacle-graces-the-rugged-landscape-casting-warmth-on.jpg?s=2048x2048&w=is&k=20&c=8wSzNoBzyJh6nrKqKpe5NaH2_eHnjFr27AFHah9lw_I=',   (SELECT id FROM posts WHERE author_id = 'user_9' AND title = 'Guiding a friend'),  'public');
 
 -- =========================
 -- 8. LIKES
@@ -502,58 +502,58 @@ INSERT INTO munro_pictures (
 INSERT INTO likes (user_id, post_id)
 VALUES
   -- Likes on Alice's first post
-  ('user_2',  (SELECT id FROM posts WHERE firebase_id = 'post_user1_1')),
-  ('user_3',  (SELECT id FROM posts WHERE firebase_id = 'post_user1_1')),
-  ('user_4',  (SELECT id FROM posts WHERE firebase_id = 'post_user1_1')),
+  ('user_2',  (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge')),
+  ('user_3',  (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge')),
+  ('user_4',  (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge')),
 
   -- Likes on Ben's big round
-  ('user_1',  (SELECT id FROM posts WHERE firebase_id = 'post_user2_1')),
-  ('user_3',  (SELECT id FROM posts WHERE firebase_id = 'post_user2_1')),
-  ('user_5',  (SELECT id FROM posts WHERE firebase_id = 'post_user2_1')),
+  ('user_1',  (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round')),
+  ('user_3',  (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round')),
+  ('user_5',  (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round')),
 
   -- Likes on Cara's winter munro
-  ('user_1',  (SELECT id FROM posts WHERE firebase_id = 'post_user3_1')),
-  ('user_2',  (SELECT id FROM posts WHERE firebase_id = 'post_user3_1')),
-  ('user_6',  (SELECT id FROM posts WHERE firebase_id = 'post_user3_1')),
+  ('user_1',  (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro')),
+  ('user_2',  (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro')),
+  ('user_6',  (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro')),
 
   -- Likes on Dan's inversion post
-  ('user_1',  (SELECT id FROM posts WHERE firebase_id = 'post_user4_2')),
-  ('user_5',  (SELECT id FROM posts WHERE firebase_id = 'post_user4_2')),
-  ('user_7',  (SELECT id FROM posts WHERE firebase_id = 'post_user4_2')),
+  ('user_1',  (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Cloud inversion heaven')),
+  ('user_5',  (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Cloud inversion heaven')),
+  ('user_7',  (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Cloud inversion heaven')),
 
   -- Some random likes
-  ('user_8',  (SELECT id FROM posts WHERE firebase_id = 'post_user8_1')),
-  ('user_9',  (SELECT id FROM posts WHERE firebase_id = 'post_user10_1')),
-  ('user_10', (SELECT id FROM posts WHERE firebase_id = 'post_user5_1'));
+  ('user_8',  (SELECT id FROM posts WHERE author_id = 'user_8' AND title = 'First ever munro')),
+  ('user_9',  (SELECT id FROM posts WHERE author_id = 'user_10' AND title = 'Weekend road trip')),
+  ('user_10', (SELECT id FROM posts WHERE author_id = 'user_5' AND title = 'Scrambly ridge fun'));
 
 -- =========================
 -- 9. COMMENTS
 -- =========================
 INSERT INTO comments (author_id, post_id, text)
 VALUES
-  ('user_2', (SELECT id FROM posts WHERE firebase_id = 'post_user1_1'),
+  ('user_2', (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge'),
     'That inversion looks unreal, amazing day!'),
-  ('user_3', (SELECT id FROM posts WHERE firebase_id = 'post_user1_1'),
+  ('user_3', (SELECT id FROM posts WHERE author_id = 'user_1' AND title = 'Sunrise on a classic ridge'),
     'Adding this ridge to my must-do list.'),
 
-  ('user_1', (SELECT id FROM posts WHERE firebase_id = 'post_user2_1'),
+  ('user_1', (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round'),
     'Huge day out, nice work!'),
-  ('user_5', (SELECT id FROM posts WHERE firebase_id = 'post_user2_1'),
+  ('user_5', (SELECT id FROM posts WHERE author_id = 'user_2' AND title = 'Big munro round'),
     'What time did you start to fit all that in?'),
 
-  ('user_1', (SELECT id FROM posts WHERE firebase_id = 'post_user3_1'),
+  ('user_1', (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro'),
     'Love a good winter day, conditions looked perfect.'),
-  ('user_6', (SELECT id FROM posts WHERE firebase_id = 'post_user3_1'),
+  ('user_6', (SELECT id FROM posts WHERE author_id = 'user_3' AND title = 'First winter munro'),
     'Great job on your first winter munro!'),
 
-  ('user_3', (SELECT id FROM posts WHERE firebase_id = 'post_user4_2'),
+  ('user_3', (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Cloud inversion heaven'),
     'Those photos are stunning.'),
-  ('user_7', (SELECT id FROM posts WHERE firebase_id = 'post_user4_2'),
+  ('user_7', (SELECT id FROM posts WHERE author_id = 'user_4' AND title = 'Cloud inversion heaven'),
     'Sea of cloud shots never get old.'),
 
-  ('user_9', (SELECT id FROM posts WHERE firebase_id = 'post_user8_1'),
+  ('user_9', (SELECT id FROM posts WHERE author_id = 'user_8' AND title = 'First ever munro'),
     'Welcome to the munro club!'),
-  ('user_10', (SELECT id FROM posts WHERE firebase_id = 'post_user10_1'),
+  ('user_10', (SELECT id FROM posts WHERE author_id = 'user_10' AND title = 'Weekend road trip'),
     'Road trips and hills are the best combo.');
 
 -- =========================

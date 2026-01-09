@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class GroupFilterScreen extends StatefulWidget {
@@ -22,31 +21,33 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
 
   @override
   void initState() {
-    GroupFilterState groupFilterState = Provider.of<GroupFilterState>(context, listen: false);
-    final user = Provider.of<AppUser?>(context, listen: false);
+    GroupFilterState groupFilterState = context.read<GroupFilterState>();
+
+    final userId = context.read<AuthState>().currentUserId;
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           groupFilterState.status != GroupFilterStatus.paginating) {
-        GroupFilterService.paginateSearch(context, query: _searchController.text.trim());
+        groupFilterState.paginateSearch(query: _searchController.text.trim());
       }
     });
 
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      GroupFilterService.getInitialFriends(context, userId: user?.uid ?? '');
+      groupFilterState.getInitialFriends(userId: userId ?? '');
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    GroupFilterState groupFilterState = context.read<GroupFilterState>();
     return Scaffold(
       appBar: AppBar(
         leading: CustomAppBarBackButton(
           onPressed: () {
-            GroupFilterService.clearSelection(context);
+            groupFilterState.clearSelection();
             Navigator.pop(context);
           },
         ),
@@ -55,12 +56,12 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
           hintText: "Find friends",
           onClear: () {
             _searchController.clear();
-            GroupFilterService.clearSearch(context);
+            groupFilterState.clearSearch();
           },
           onSearchTap: () {},
           onChanged: (value) {
             if (value.trim().length >= 2) {
-              GroupFilterService.search(context, query: value.trim());
+              groupFilterState.search(query: value.trim());
             }
           },
         ),
@@ -122,9 +123,9 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                               : null,
                           onTap: () {
                             if (groupFilterState.selectedFriendsUids.contains(followingRelationship.targetId)) {
-                              groupFilterState.removeSelectedFriend(followingRelationship.targetId);
+                              groupFilterState.removeSelectedFriend(uid: followingRelationship.targetId);
                             } else {
-                              groupFilterState.addSelectedFriend(followingRelationship.targetId);
+                              groupFilterState.addSelectedFriend(uid: followingRelationship.targetId);
                             }
                           },
                         );
@@ -139,7 +140,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    GroupFilterService.clearSelection(context);
+                    groupFilterState.clearSelection();
                   },
                   child: const Text("Clear"),
                 ),
@@ -147,8 +148,8 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                   onPressed: groupFilterState.selectedFriendsUids.isNotEmpty
                       ? () async {
                           // Run the filter
-                          AnalyticsService.logEvent(name: "Group View Filter Applied");
-                          await GroupFilterService.filterMunrosBySelection(context);
+                          context.read<Analytics>().track(AnalyticsEvent.groupViewFilterApplied);
+                          await groupFilterState.filterMunrosBySelection();
                           Navigator.pop(context);
                         }
                       : null,

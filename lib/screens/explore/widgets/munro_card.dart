@@ -4,7 +4,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroCard extends StatelessWidget {
   final Munro munro;
@@ -12,7 +11,8 @@ class MunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     double width = MediaQuery.of(context).size.width - 60;
 
@@ -21,8 +21,8 @@ class MunroCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           munroState.setSelectedMunro = munro;
-          MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
-          ReviewService.getMunroReviews(context);
+          munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
+          context.read<ReviewsState>().getMunroReviews();
           Navigator.of(context).pushNamed(MunroScreen.route);
         },
         child: Column(

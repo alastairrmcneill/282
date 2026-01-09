@@ -9,7 +9,7 @@ class MunroCardTitleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context);
+    final settingsState = context.watch<SettingsState>();
     return Expanded(
       flex: 1,
       child: Column(

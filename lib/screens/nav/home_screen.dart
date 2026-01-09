@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -33,7 +33,7 @@ class HomeScreenState extends State<HomeScreen> {
     _currentIndex = widget.startingIndex!;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LayoutState layoutState = Provider.of<LayoutState>(context, listen: false);
+      final layoutState = context.read<LayoutState>();
 
       _loadData();
       final RenderBox renderBox = _bottomNavigationKey.currentContext!.findRenderObject() as RenderBox;
@@ -43,38 +43,13 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _showCompletedAchievements() async {
-    Future.delayed(Duration(seconds: 1));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AchievementsCompletedScreen(),
-        );
-      }
-    });
-  }
-
   Future _loadData() async {
-    await SettingsSerivce.loadSettings(context);
-    await UserService.readCurrentUser(context);
-    MunroService.loadMunroData(context);
-    MunroCompletionService.getUserMunroCompletions(context);
-    AchievementService.getUserAchievements(context);
-    BlockedUserService.loadBlockedUsers(context);
-    SavedListService.readUserSavedLists(context);
-    PushNotificationService.checkAndUpdateFCMToken(context);
+    context.read<AchievementsState>().getUserAchievements();
+    context.read<CurrentUserFollowerState>().loadInitial();
   }
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
-
-    if (achievementsState.recentlyCompletedAchievements.isNotEmpty) {
-      _showCompletedAchievements();
-    }
-
     return Consumer<UserState>(
       builder: (context, userState, child) {
         switch (userState.status) {
@@ -87,7 +62,11 @@ class HomeScreenState extends State<HomeScreen> {
                 children: [
                   CenterText(text: userState.error.message),
                   ElevatedButton(
-                    onPressed: () => AuthService.signOut(context),
+                    onPressed: () async {
+                      await context.read<AuthState>().signOut().then((_) {
+                        context.read<MunroCompletionState>().reset();
+                      });
+                    },
                     child: const Text('Sign Out'),
                   ),
                 ],
@@ -116,57 +95,56 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildScreen(BuildContext context, UserState userState) {
-    final user = Provider.of<AppUser?>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    ProfileState profileState = Provider.of<ProfileState>(context, listen: false);
-    FollowersState followersState = Provider.of<FollowersState>(context, listen: false);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         key: _bottomNavigationKey,
         onTap: (value) {
-          // Reset notifiers
-          profileState.clear();
-          followersState.clear();
+          final userId = context.read<AuthRepository>().currentUserId;
 
-          // Check which screen
+          if (value == 1 || value == 2 || value == 3) {
+            if (userId == null) {
+              Navigator.of(context).pushNamed(AuthHomeScreen.route);
+              return;
+            }
+          }
+
+          if (value == 1) {
+            final feedState = context.read<FeedState>();
+            final notificationsState = context.read<NotificationsState>();
+            feedState.getGlobalFeed();
+            feedState.getFriendsFeed();
+            notificationsState.getUserNotifications();
+          }
+
+          if (value == 2) {
+            context.read<SavedListState>().readUserSavedLists();
+          }
+
           if (value == 0) {
+            final munroState = context.read<MunroState>();
             munroState.setSelectedMunro = null;
             munroState.setSelectedMunroId = null;
-            setState(() => _currentIndex = value);
           }
-          if (value == 1) {
-            if (user == null) {
-              navigationState.setNavigateToRoute = FeedTab.route;
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
-            } else {
-              // Navigate to feed
-              PostService.getGlobalFeed(context);
-              PostService.getFriendsFeed(context);
-              NotificationsService.getUserNotifications(context);
-              setState(() => _currentIndex = value);
+
+          setState(() => _currentIndex = value);
+
+          if (userId != null) {
+            bool showBulkMunroDialog = context.read<AppFlagsRepository>().showBulkMunroDialog;
+            if (showBulkMunroDialog) {
+              context.read<OverlayIntentState>().enqueue(BulkMunroUpdateDialogIntent());
             }
-          }
-          if (value == 2) {
-            if (user == null) {
-              navigationState.setNavigateToRoute = SavedTab.route;
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
-            } else {
-              // Navigate to saved
-              SavedListService.readUserSavedLists(context);
-              setState(() => _currentIndex = value);
-            }
-          }
-          if (value == 3) {
-            if (user == null) {
-              navigationState.setNavigateToRoute = ProfileTab.route;
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
-            } else {
-              // Navigate to profile
-              ProfileService.loadUserFromUid(context, userId: user.uid!);
-              setState(() => _currentIndex = value);
+
+            final thisYearMunroChallenge = context.read<AchievementsState>().achievements.where((achievement) =>
+                achievement.type == AchievementTypes.annualGoal &&
+                achievement.criteriaValue == DateTime.now().year.toString());
+
+            if (thisYearMunroChallenge.isEmpty) return;
+
+            if (thisYearMunroChallenge.first.annualTarget == null || thisYearMunroChallenge.first.annualTarget == 0) {
+              context
+                  .read<OverlayIntentState>()
+                  .enqueue(AnnualMunroChallengeDialogIntent(achievement: thisYearMunroChallenge.first));
             }
           }
         },

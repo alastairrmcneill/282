@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/push/push.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
-import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import '../screens/screens.dart';
@@ -45,11 +50,6 @@ class AppRouter {
           builder: (_) => MunroScreen(),
           settings: settings,
         );
-      case AchievementsCompletedScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const AchievementsCompletedScreen(),
-          settings: settings,
-        );
       case AchievementDetailScreen.route:
         final args = settings.arguments as AchievementDetailsScreenArgs;
         return MaterialPageRoute(
@@ -90,10 +90,104 @@ class AppRouter {
           settings: settings,
         );
       case ProfileScreen.route:
+        final args = settings.arguments as ProfileScreenArgs;
+
         return MaterialPageRoute(
-          builder: (_) => const ProfileScreen(),
+          builder: (context) {
+            return ChangeNotifierProvider<ProfileState>(
+              create: (ctx) => ProfileState(
+                ctx.read<ProfileRepository>(),
+                ctx.read<MunroPicturesRepository>(),
+                ctx.read<PostsRepository>(),
+                ctx.read<UserState>(),
+                ctx.read<UserLikeState>(),
+                ctx.read<MunroCompletionsRepository>(),
+                ctx.read<Logger>(),
+              )..loadProfileFromUserId(userId: args.userId),
+              child: ProfileScreen(
+                userId: args.userId,
+              ),
+            );
+          },
           settings: settings,
         );
+
+      case FollowersFollowingScreen.route:
+        final args = settings.arguments as FollowersFollowingScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return ChangeNotifierProvider<FollowersListState>(
+              create: (ctx) => FollowersListState(
+                ctx.read<FollowersRepository>(),
+                ctx.read<UserState>(),
+                ctx.read<Logger>(),
+              )..loadInitialFollowersAndFollowing(userId: args.userId),
+              child: FollowersFollowingScreen(
+                userId: args.userId,
+              ),
+            );
+          },
+          settings: settings,
+        );
+
+      case LikesScreen.route:
+        final args = settings.arguments as LikesScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return ChangeNotifierProvider(
+              create: (ctx) => LikesState(
+                ctx.read<LikesRepository>(),
+                ctx.read<UserState>(),
+                ctx.read<Logger>(),
+              )..getPostLikes(postId: args.postId),
+              child: LikesScreen(postId: args.postId),
+            );
+          },
+          settings: settings,
+        );
+
+      case UserSearchScreen.route:
+        return MaterialPageRoute(
+          builder: (context) {
+            return ChangeNotifierProvider<UserSearchState>(
+              create: (ctx) => UserSearchState(
+                ctx.read<UserRepository>(),
+                ctx.read<UserState>(),
+                ctx.read<Logger>(),
+              )..clearSearch(),
+              child: const UserSearchScreen(),
+            );
+          },
+          settings: settings,
+        );
+
+      case InAppOnboardingScreen.route:
+        final args = settings.arguments as InAppOnboardingScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return ChangeNotifierProvider<InAppOnboardingState>(
+              create: (ctx) => InAppOnboardingState(
+                ctx.read<UserState>(),
+                ctx.read<MunroCompletionState>(),
+                ctx.read<BulkMunroUpdateState>(),
+                ctx.read<AchievementsState>(),
+                ctx.read<UserAchievementsRepository>(),
+                ctx.read<MunroState>(),
+                ctx.read<AppFlagsRepository>(),
+                ctx.read<SettingsState>(),
+                ctx.read<PushNotificationState>(),
+                ctx.read<Analytics>(),
+                ctx.read<Logger>(),
+              ),
+              child: InAppOnboardingScreen(args: args),
+            );
+          },
+          settings: settings,
+        );
+
       case CommentsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const CommentsScreen(),
@@ -141,11 +235,7 @@ class AppRouter {
           builder: (_) => const BulkMunroUpdateScreen(),
           settings: settings,
         );
-      case LikesScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const LikesScreen(),
-          settings: settings,
-        );
+
       case CreatePostScreen.route:
         return MaterialPageRoute(
           builder: (_) => CreatePostScreen(),
@@ -167,25 +257,10 @@ class AppRouter {
           builder: (_) => const FilterScreen(),
           settings: settings,
         );
-      case InAppOnboarding.route:
-        return MaterialPageRoute(
-          builder: (_) => InAppOnboarding(),
-          settings: settings,
-        );
-      case InAppOnboardingFindFriends.route:
-        return MaterialPageRoute(
-          builder: (_) => InAppOnboardingFindFriends(),
-          settings: settings,
-        );
       case InAppOnboardingMunroChallenge.route:
         final args = settings.arguments as InAppOnboardingMunroChallengeArgs;
         return MaterialPageRoute(
           builder: (_) => InAppOnboardingMunroChallenge(args: args),
-          settings: settings,
-        );
-      case InAppOnboardingMunroUpdates.route:
-        return MaterialPageRoute(
-          builder: (_) => InAppOnboardingMunroUpdates(),
           settings: settings,
         );
       case InAppOnboardingWelcome.route:
@@ -225,19 +300,29 @@ class AppRouter {
           builder: (_) => const MunroChallengeDetailScreen(),
           settings: settings,
         );
-      case FollowersFollowingScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const FollowersFollowingScreen(),
-          settings: settings,
-        );
+
       case MunrosCompletedScreen.route:
+        final args = settings.arguments as MunrosCompletedScreenArgs;
         return MaterialPageRoute(
-          builder: (_) => const MunrosCompletedScreen(),
+          builder: (_) => MunrosCompletedScreen(
+            munroCompletions: args.munroCompletions,
+            isCurrentUser: args.isCurrentUser,
+          ),
           settings: settings,
         );
       case ProfilePhotoGallery.route:
+        final args = settings.arguments as ProfilePhotoGalleryArgs;
         return MaterialPageRoute(
-          builder: (_) => const ProfilePhotoGallery(),
+          builder: (context) {
+            return ChangeNotifierProvider(
+              create: (ctx) => ProfileGalleryState(
+                ctx.read<MunroPicturesRepository>(),
+                ctx.read<UserState>(),
+                ctx.read<Logger>(),
+              )..getMunroPictures(profileId: args.userId),
+              child: ProfilePhotoGallery(args: args),
+            );
+          },
           settings: settings,
         );
       case SettingsScreen.route:
@@ -273,11 +358,6 @@ class AppRouter {
       case SplashScreen.route:
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),
-          settings: settings,
-        );
-      case UserSearchScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const UserSearchScreen(),
           settings: settings,
         );
       case WhatsNewScreen.route:

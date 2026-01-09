@@ -6,17 +6,29 @@ import 'package:two_eight_two/screens/comments/screens/screens.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostWidget extends StatelessWidget {
   final Post post;
   final bool inFeed;
-  const PostWidget({super.key, required this.post, this.inFeed = true});
+  final Future<void> Function() onEdit;
+  final Future<void> Function() onDelete;
+  final Future<void> Function() onLikeTap;
+
+  const PostWidget({
+    super.key,
+    required this.post,
+    this.inFeed = true,
+    required this.onEdit,
+    required this.onDelete,
+    required this.onLikeTap,
+  });
 
   Widget _buildIncludedMunroText(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
+    final reviewsState = context.read<ReviewsState>();
     if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
         alignment: Alignment.centerLeft,
@@ -30,8 +42,8 @@ class PostWidget extends StatelessWidget {
                     (m) => m.id == post.includedMunroIds[i],
                     orElse: () => Munro.empty,
                   );
-                  MunroPictureService.getMunroPictures(context, munroId: post.includedMunroIds[i], count: 4);
-                  ReviewService.getMunroReviews(context);
+                  munroDetailState.loadMunroPictures(munroId: post.includedMunroIds[i], count: 4);
+                  reviewsState.getMunroReviews();
                   Navigator.of(context).pushNamed(MunroScreen.route);
                 },
                 child: Text.rich(
@@ -73,9 +85,8 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CommentsState commentsState = Provider.of<CommentsState>(context, listen: false);
-    UserLikeState userLikeState = Provider.of<UserLikeState>(context);
-    LikesState likesState = Provider.of<LikesState>(context);
+    final commentsState = context.read<CommentsState>();
+    final userLikeState = context.watch<UserLikeState>();
 
     if (post.includedMunroIds.isEmpty) {
       return const SizedBox();
@@ -87,7 +98,11 @@ class PostWidget extends StatelessWidget {
         color: MyColors.backgroundColor,
         child: Column(
           children: [
-            PostHeader(post: post),
+            PostHeader(
+              post: post,
+              onEdit: onEdit,
+              onDelete: onDelete,
+            ),
             PostImagesCarousel(post: post),
             const SizedBox(height: 10),
             Padding(
@@ -111,13 +126,7 @@ class PostWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            if (userLikeState.likedPosts.contains(post.uid)) {
-                              LikeService.unLikePost(context, post: post, inFeed: inFeed);
-                            } else {
-                              LikeService.likePost(context, post: post, inFeed: inFeed);
-                            }
-                          },
+                          onTap: onLikeTap,
                           child: userLikeState.likedPosts.contains(post.uid)
                               ? const Icon(CupertinoIcons.heart_fill)
                               : const Icon(CupertinoIcons.heart),
@@ -125,10 +134,10 @@ class PostWidget extends StatelessWidget {
                         const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () {
-                            likesState.reset();
-                            likesState.setPostId = post.uid;
-                            LikeService.getPostLikes(context);
-                            Navigator.of(context).pushNamed(LikesScreen.route);
+                            Navigator.of(context).pushNamed(
+                              LikesScreen.route,
+                              arguments: LikesScreenArgs(postId: post.uid),
+                            );
                           },
                           child: Text(
                             post.likes == 1 ? "1 like" : "${post.likes} likes",
@@ -140,7 +149,7 @@ class PostWidget extends StatelessWidget {
                           onTap: () {
                             commentsState.reset();
                             commentsState.setPostId = post.uid;
-                            CommentsService.getPostComments(context);
+                            commentsState.getPostComments();
                             Navigator.of(context).pushNamed(CommentsScreen.route);
                           },
                           child: const Icon(CupertinoIcons.chat_bubble, size: 22),

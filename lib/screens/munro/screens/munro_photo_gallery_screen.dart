@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/notifiers.dart";
-import "package:two_eight_two/services/services.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
 class MunroPhotoGallery extends StatefulWidget {
@@ -17,14 +16,14 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context, listen: false);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           munroDetailState.galleryStatus != MunroDetailStatus.paginating) {
-        MunroPictureService.paginateMunroPictures(context, munroId: munroState.selectedMunro!.id);
+        munroDetailState.paginateMunroPictures(munroId: munroState.selectedMunro!.id);
       }
     });
     super.initState();
@@ -38,8 +37,8 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    MunroDetailState munroDetailState = Provider.of<MunroDetailState>(context);
+    final munroState = context.read<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +64,7 @@ class _MunroPhotoGalleryState extends State<MunroPhotoGallery> {
                   initialIndex: index,
                   fetchMorePhotos: () async {
                     List<MunroPicture> newPhotos =
-                        await MunroPictureService.paginateMunroPictures(context, munroId: munroState.selectedMunro!.id);
+                        await munroDetailState.paginateMunroPictures(munroId: munroState.selectedMunro!.id);
                     return newPhotos;
                   },
                 );

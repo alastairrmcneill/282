@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -17,7 +16,7 @@ class SavedTab extends StatefulWidget {
 class _SavedTabState extends State<SavedTab> {
   @override
   void initState() {
-    appRouteObserver.updateCurrentScreen(SavedTab.route);
+    context.read<AppRouteObserver>().updateCurrentScreen(SavedTab.route);
     super.initState();
   }
 
@@ -36,7 +35,7 @@ class _SavedTabState extends State<SavedTab> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => SavedListService.readUserSavedLists(context),
+        onRefresh: () => context.read<SavedListState>().readUserSavedLists(),
         child: Consumer<SavedListState>(
           builder: (context, savedListState, child) {
             switch (savedListState.status) {

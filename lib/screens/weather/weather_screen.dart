@@ -20,8 +20,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    WeatherState weatherState = Provider.of<WeatherState>(context);
+    final munroState = context.watch<MunroState>();
+    final weatherState = context.watch<WeatherState>();
 
     return Scaffold(
       appBar: AppBar(
