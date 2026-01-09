@@ -95,12 +95,11 @@ class AuthState extends ChangeNotifier {
         AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
       });
 
-      _setAuthenticated();
-
       // State doesn’t navigate – just tell UI what to do.
-      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
 
-      return AuthResult(success: true, showOnboarding: showOnboarding);
+      _setAuthenticated();
+      return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } catch (e, st) {
       _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
@@ -117,11 +116,16 @@ class AuthState extends ChangeNotifier {
     try {
       await _authRepo.signInWithEmail(email: email, password: password);
 
+      // Load essential user data after successful authentication
+      if (currentUserId != null) {
+        await _userState.readUser(uid: currentUserId);
+        await _userState.loadBlockedUsers();
+      }
+
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
+
       _setAuthenticated();
-
-      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
-
-      return AuthResult(success: true, showOnboarding: showOnboarding);
+      return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } catch (e, st) {
       _logger.error(e.toString(), stackTrace: st);
       _setError(e.toString());
@@ -190,11 +194,16 @@ class AuthState extends ChangeNotifier {
         });
       }
 
+      // Load essential user data after successful authentication
+      if (currentUserId != null) {
+        await _userState.readUser(uid: currentUserId);
+        await _userState.loadBlockedUsers();
+      }
+
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
+
       _setAuthenticated();
-
-      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
-
-      return AuthResult(success: true, showOnboarding: showOnboarding);
+      return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } on SignInWithAppleAuthorizationException catch (e, st) {
       _logger.error(e.toString(), stackTrace: st);
 
@@ -263,11 +272,16 @@ class AuthState extends ChangeNotifier {
         AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
       });
 
+      // Load essential user data after successful authentication
+      if (currentUserId != null) {
+        await _userState.readUser(uid: currentUserId);
+        await _userState.loadBlockedUsers();
+      }
+
+      final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
+
       _setAuthenticated();
-
-      final showOnboarding = _appFlagsRepository.showInAppOnboarding;
-
-      return AuthResult(success: true, showOnboarding: showOnboarding);
+      return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } on GoogleSignInException catch (e, st) {
       _logger.error("Google Sign In Error: $e", stackTrace: st);
       if (e.code == GoogleSignInExceptionCode.canceled) {
@@ -348,12 +362,14 @@ enum AuthStatus { initial, loading, authenticated, error }
 
 class AuthResult {
   final bool success;
+  final String? userId;
   final bool showOnboarding;
   final bool canceled;
   final String? errorMessage;
 
   AuthResult({
     required this.success,
+    this.userId,
     this.showOnboarding = false,
     this.canceled = false,
     this.errorMessage,

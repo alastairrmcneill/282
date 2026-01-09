@@ -24,7 +24,6 @@ class BulkMunroUpdateListTile extends StatelessWidget {
     var alreadySummited = alreadySummitedDates.isNotEmpty;
 
     if (alreadySummited) {
-      print("Already summited munro: ${munro.name} on ${alreadySummitedDates[0]}");
       return AlreadySummitedMunroListTile(munro: munro, summitedDate: alreadySummitedDates[0]);
     }
 

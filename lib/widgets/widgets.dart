@@ -10,6 +10,7 @@ export 'popup_widgets/app_whats_new_dialog.dart';
 export 'popup_widgets/hard_app_update_dialog.dart';
 export 'popup_widgets/achievements_completed_dialog.dart';
 export 'popup_widgets/annual_munro_challenge_dialog.dart';
+export 'popup_widgets/blocking_loading_overlay.dart';
 export 'loading_widget.dart';
 export 'centered_text.dart';
 export 'circle_profile_piucture.dart';

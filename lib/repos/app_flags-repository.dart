@@ -49,9 +49,9 @@ class AppFlagsRepository {
     if (!ok) throw Exception('Failed to persist $_kFirstAppVersion');
   }
 
-  bool get showInAppOnboarding => _prefs.getBool(_kShowInAppOnboarding) ?? true;
-  Future<void> setShowInAppOnboarding(bool v) async {
-    final ok = await _prefs.setBool(_kShowInAppOnboarding, v);
+  bool showInAppOnboarding(String userId) => _prefs.getBool("$_kShowInAppOnboarding-$userId") ?? true;
+  Future<void> setShowInAppOnboarding(String userId, bool v) async {
+    final ok = await _prefs.setBool("$_kShowInAppOnboarding-$userId", v);
     if (!ok) throw Exception('Failed to persist $_kShowInAppOnboarding');
   }
 

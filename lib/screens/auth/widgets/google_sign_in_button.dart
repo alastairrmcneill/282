@@ -24,13 +24,15 @@ class GoogleSignInButton extends StatelessWidget {
         ),
         onPressed: () async {
           final authResult = await context.read<AuthState>().signInWithGoogle();
-          if (authResult.success && authResult.showOnboarding) {
-            Navigator.pushNamedAndRemoveUntil(
+          if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
+            Navigator.pushNamed(
               context,
-              InAppOnboarding.route,
-              (route) => false,
+              InAppOnboardingScreen.route,
+              arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
             );
-          } else {
+          } else if (authResult.success) {
+            // Load munro completions before navigating to home
+            await context.read<MunroCompletionState>().loadUserMunroCompletions();
             Navigator.pushNamedAndRemoveUntil(
               context,
               HomeScreen.route,

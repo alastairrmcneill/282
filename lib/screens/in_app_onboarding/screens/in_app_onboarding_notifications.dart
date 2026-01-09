@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:two_eight_two/push/push.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 
 class InAppOnboardingNotifications extends StatelessWidget {
   const InAppOnboardingNotifications({super.key});
@@ -12,7 +9,7 @@ class InAppOnboardingNotifications extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 100, right: 30, left: 30),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Icon(
@@ -31,61 +28,8 @@ class InAppOnboardingNotifications extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: () async {
-              await _handleEnableNotifications(context);
-            },
-            child: const Text('Enable Notifications'),
-          ),
-          const SizedBox(height: 15),
-          TextButton(
-            onPressed: () async {
-              await _handleDenyNotifications(context);
-            },
-            child: const Text('Not Now'),
-          ),
         ],
       ),
     );
-  }
-
-  Future<void> _handleEnableNotifications(BuildContext context) async {
-    final settingsState = context.read<SettingsState>();
-    final pushState = context.read<PushNotificationState>();
-
-    // Update settings to enable
-    await settingsState.setEnablePushNotifications(true);
-
-    // Request permission and sync token
-    final granted = await pushState.enablePush();
-
-    // If OS permission denied, revert setting
-    if (!granted) {
-      await settingsState.setEnablePushNotifications(false);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enable notifications in system settings to receive updates.'),
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _handleDenyNotifications(BuildContext context) async {
-    final settingsState = context.read<SettingsState>();
-    final pushNotificationState = context.read<PushNotificationState>();
-    final userState = context.read<UserState>();
-
-    // Update local settings to disabled
-    await settingsState.setEnablePushNotifications(false);
-    await pushNotificationState.disablePush();
-
-    // Clear FCM token from database
-    final user = userState.currentUser;
-    if (user != null) {
-      await userState.updateUser(appUser: user.copyWith(fcmToken: ''));
-    }
   }
 }

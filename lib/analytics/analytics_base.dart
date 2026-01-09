@@ -54,4 +54,7 @@ class AnalyticsProp {
   static const response = 'response';
 
   static const source = 'source';
+
+  static var munroCompletionsAdded = "munro_completions_added";
+  static var munroChallengeCount = "munro_challenge_count";
 }

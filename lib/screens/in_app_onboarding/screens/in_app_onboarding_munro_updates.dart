@@ -9,7 +9,6 @@ import 'package:two_eight_two/support/theme.dart';
 
 class InAppOnboardingMunroUpdates extends StatelessWidget {
   final FocusNode searchFocusNode = FocusNode();
-  static const String route = '/in_app_onboarding/munro_updates';
   InAppOnboardingMunroUpdates({super.key});
 
   @override

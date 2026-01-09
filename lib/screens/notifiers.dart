@@ -10,6 +10,7 @@ export 'explore/state/munro_state.dart';
 export 'feed/state/feed_state.dart';
 export 'feed/state/user_like_state.dart';
 export 'group_filter/state/group_filter_state.dart';
+export 'in_app_onboarding/state/in_app_onboarding_state.dart';
 export 'munro/state/munro_detail_state.dart';
 export 'munro/state/share_munro_state.dart';
 export 'nav/state/app_bootstrap_state.dart';

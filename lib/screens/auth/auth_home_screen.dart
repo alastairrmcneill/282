@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class AuthHomeScreen extends StatefulWidget {
   const AuthHomeScreen({super.key});
@@ -19,6 +21,8 @@ class AuthHomeScreen extends StatefulWidget {
 class _AuthHomeScreenState extends State<AuthHomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthState>().status == AuthStatus.loading;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -158,6 +162,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
               ),
             ),
           ),
+          if (isLoading) BlockingLoadingOverlay(),
         ],
       ),
     );

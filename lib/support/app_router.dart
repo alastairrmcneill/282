@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
@@ -161,6 +162,28 @@ class AppRouter {
           settings: settings,
         );
 
+      case InAppOnboardingScreen.route:
+        final args = settings.arguments as InAppOnboardingScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return ChangeNotifierProvider<InAppOnboardingState>(
+              create: (ctx) => InAppOnboardingState(
+                ctx.read<UserState>(),
+                ctx.read<MunroCompletionState>(),
+                ctx.read<BulkMunroUpdateState>(),
+                ctx.read<AchievementsState>(),
+                ctx.read<UserAchievementsRepository>(),
+                ctx.read<MunroState>(),
+                ctx.read<AppFlagsRepository>(),
+                ctx.read<Analytics>(),
+              ),
+              child: InAppOnboardingScreen(args: args),
+            );
+          },
+          settings: settings,
+        );
+
       case CommentsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const CommentsScreen(),
@@ -230,20 +253,10 @@ class AppRouter {
           builder: (_) => const FilterScreen(),
           settings: settings,
         );
-      case InAppOnboarding.route:
-        return MaterialPageRoute(
-          builder: (_) => InAppOnboarding(),
-          settings: settings,
-        );
       case InAppOnboardingMunroChallenge.route:
         final args = settings.arguments as InAppOnboardingMunroChallengeArgs;
         return MaterialPageRoute(
           builder: (_) => InAppOnboardingMunroChallenge(args: args),
-          settings: settings,
-        );
-      case InAppOnboardingMunroUpdates.route:
-        return MaterialPageRoute(
-          builder: (_) => InAppOnboardingMunroUpdates(),
           settings: settings,
         );
       case InAppOnboardingWelcome.route:
