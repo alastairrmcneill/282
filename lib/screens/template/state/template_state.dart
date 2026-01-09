@@ -20,9 +20,7 @@ class TemplateState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setError(
-    Error error,
-  ) {
+  set setError(Error error) {
     _status = TemplateStatus.error;
     _error = error;
     _logger.error(error.message);

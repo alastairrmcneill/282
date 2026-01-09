@@ -10,9 +10,11 @@ import 'dart:ui' as _i7;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i9;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:two_eight_two/analytics/analytics_base.dart' as _i11;
+import 'package:two_eight_two/analytics/analytics_base.dart' as _i12;
 import 'package:two_eight_two/enums/enums.dart' as _i8;
+import 'package:two_eight_two/logging/logging.dart' as _i13;
 import 'package:two_eight_two/models/models.dart' as _i3;
+import 'package:two_eight_two/push/push_notifications_state.dart' as _i11;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/notifiers.dart' as _i4;
 
@@ -1324,10 +1326,274 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as _i5.Future<void>);
 }
 
+/// A class which mocks [SettingsState].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSettingsState extends _i1.Mock implements _i4.SettingsState {
+  MockSettingsState() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.SettingsStatus get status => (super.noSuchMethod(
+        Invocation.getter(#status),
+        returnValue: _i4.SettingsStatus.initial,
+      ) as _i4.SettingsStatus);
+
+  @override
+  _i3.Error get error => (super.noSuchMethod(
+        Invocation.getter(#error),
+        returnValue: _FakeError_3(
+          this,
+          Invocation.getter(#error),
+        ),
+      ) as _i3.Error);
+
+  @override
+  bool get enablePushNotifications => (super.noSuchMethod(
+        Invocation.getter(#enablePushNotifications),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  bool get metricHeight => (super.noSuchMethod(
+        Invocation.getter(#metricHeight),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  bool get metricTemperature => (super.noSuchMethod(
+        Invocation.getter(#metricTemperature),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  String get defaultPostVisibility => (super.noSuchMethod(
+        Invocation.getter(#defaultPostVisibility),
+        returnValue: _i10.dummyValue<String>(
+          this,
+          Invocation.getter(#defaultPostVisibility),
+        ),
+      ) as String);
+
+  @override
+  set setError(_i3.Error? error) => super.noSuchMethod(
+        Invocation.setter(
+          #setError,
+          error,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(
+        Invocation.getter(#hasListeners),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Future<void> load() => (super.noSuchMethod(
+        Invocation.method(
+          #load,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> update(_i3.AppSettings? newAppSettings) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #update,
+          [newAppSettings],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setEnablePushNotifications(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setEnablePushNotifications,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setMetricHeight(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setMetricHeight,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setMetricTemperature(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setMetricTemperature,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setDefaultPostVisibility(String? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setDefaultPostVisibility,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #addListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #removeListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [PushNotificationState].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPushNotificationState extends _i1.Mock
+    implements _i11.PushNotificationState {
+  MockPushNotificationState() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(
+        Invocation.getter(#hasListeners),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Future<void> init() => (super.noSuchMethod(
+        Invocation.method(
+          #init,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<bool> onPushSettingChanged() => (super.noSuchMethod(
+        Invocation.method(
+          #onPushSettingChanged,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> enablePush() => (super.noSuchMethod(
+        Invocation.method(
+          #enablePush,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> disablePush() => (super.noSuchMethod(
+        Invocation.method(
+          #disablePush,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<void> syncTokenIfNeeded({bool? force = false}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #syncTokenIfNeeded,
+          [],
+          {#force: force},
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #addListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #removeListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i11.Analytics {
+class MockAnalytics extends _i1.Mock implements _i12.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -1366,4 +1632,83 @@ class MockAnalytics extends _i1.Mock implements _i11.Analytics {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+}
+
+/// A class which mocks [Logger].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLogger extends _i1.Mock implements _i13.Logger {
+  MockLogger() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void error(
+    String? message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #error,
+          [message],
+          {
+            #error: error,
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void fatal(
+    Object? error, {
+    StackTrace? stackTrace,
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #fatal,
+          [error],
+          {
+            #stackTrace: stackTrace,
+            #context: context,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void info(
+    String? message, {
+    Map<String, Object?>? context,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #info,
+          [message],
+          {#context: context},
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void identify(String? userId) => super.noSuchMethod(
+        Invocation.method(
+          #identify,
+          [userId],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void clearUser() => super.noSuchMethod(
+        Invocation.method(
+          #clearUser,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
 }

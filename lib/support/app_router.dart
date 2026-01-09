@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
@@ -176,7 +177,10 @@ class AppRouter {
                 ctx.read<UserAchievementsRepository>(),
                 ctx.read<MunroState>(),
                 ctx.read<AppFlagsRepository>(),
+                ctx.read<SettingsState>(),
+                ctx.read<PushNotificationState>(),
                 ctx.read<Analytics>(),
+                ctx.read<Logger>(),
               ),
               child: InAppOnboardingScreen(args: args),
             );

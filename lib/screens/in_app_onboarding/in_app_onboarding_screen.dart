@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics_base.dart';
-import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -35,54 +34,16 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
   }
 
   void _onPageChanged(int newPage) {
-    context.read<InAppOnboardingState>().setCurrentPage = newPage;
+    final state = context.read<InAppOnboardingState>();
+    state.setCurrentPage = newPage;
+
     // Log screen view on every page change
-    context.read<InAppOnboardingState>().analytics.track(
+    state.analytics.track(
       AnalyticsEvent.onboardingScreenViewed,
       props: {
         AnalyticsProp.screenIndex: newPage,
       },
     );
-  }
-
-  Future<void> _handleEnableNotifications(BuildContext context) async {
-    final settingsState = context.read<SettingsState>();
-    final pushState = context.read<PushNotificationState>();
-
-    // Update settings to enable
-    await settingsState.setEnablePushNotifications(true);
-
-    // Request permission and sync token
-    final granted = await pushState.enablePush();
-
-    // If OS permission denied, revert setting
-    if (!granted) {
-      await settingsState.setEnablePushNotifications(false);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enable notifications in system settings to receive updates.'),
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _handleDenyNotifications(BuildContext context) async {
-    final settingsState = context.read<SettingsState>();
-    final pushNotificationState = context.read<PushNotificationState>();
-    final userState = context.read<UserState>();
-
-    // Update local settings to disabled
-    await settingsState.setEnablePushNotifications(false);
-    await pushNotificationState.disablePush();
-
-    // Clear FCM token from database
-    final user = userState.currentUser;
-    if (user != null) {
-      await userState.updateUser(appUser: user.copyWith(fcmToken: ''));
-    }
   }
 
   Widget _buildPrimaryButton(InAppOnboardingState inAppOnboardingState) {
@@ -146,14 +107,25 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
         {
           return ElevatedButton(
             onPressed: () async {
-              await _handleEnableNotifications(context);
+              final success = await inAppOnboardingState.handleEnableNotifications();
+
+              if (!success && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(inAppOnboardingState.error.message),
+                  ),
+                );
+              }
+
               await inAppOnboardingState.completeOnboarding();
 
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomeScreen.route,
-                (Route<dynamic> route) => false,
-              );
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  HomeScreen.route,
+                  (Route<dynamic> route) => false,
+                );
+              }
             },
             child: const Text('Enable Notifications'),
           );
@@ -171,14 +143,16 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
         {
           return TextButton(
             onPressed: () async {
-              await _handleDenyNotifications(context);
+              await inAppOnboardingState.handleDenyNotifications();
               await inAppOnboardingState.completeOnboarding();
 
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomeScreen.route,
-                (Route<dynamic> route) => false,
-              );
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  HomeScreen.route,
+                  (Route<dynamic> route) => false,
+                );
+              }
             },
             child: const Text('Skip'),
           );
