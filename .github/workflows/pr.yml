@@ -7,24 +7,54 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
+  build_and_test:
+    name: Build and Test
+    runs-on: macos-14 # Maybe switch in future to save costs
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Use Xcode 16
+        uses: maxim-lobanov/setup-xcode@v1
         with:
-          distribution: "zulu"
-          java-version: "17"
+          xcode-version: latest
 
-      - name: Setup Flutter
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
-          cache: true
+          flutter-version: "3.38.1"
+
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Decode Android keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE_64 }}" | base64 --decode > android/app/upload-keystore.jks
+
+      - name: Decode Android key properties
+        run: echo "${{ secrets.ANDROID_KEY_PROPERTIES_BASE_64 }}" | base64 --decode > android/key.properties
+
+      - name: Decode prod.json file
+        run: echo "${{ secrets.PROD_CONFIG_BASE_64 }}" | base64 --decode > config/prod.json
+
+      - name: Decode google-services.json
+        run: echo "${{ secrets.ANDROID_GOOGLE_SERVICES_JSON_BASE_64 }}" | base64 --decode > android/app/google-services.json
+
+      - name: Decode AndroidManifest.xml
+        run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
+
+      - name: Decode branch-config.json file
+        run: echo "${{ secrets.BRANCH_CONFIG_BASE_64 }}" | base64 --decode > assets/branch-config.json
+
+      - name: Decode google sign in files
+        run: |
+          echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_1_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_1_FILE_PATH }}
+          echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_2_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_2_FILE_PATH }}
+          echo "${{ secrets.ANDROID_GOOGLE_SIGN_IN_3_BASE_64 }}" | base64 --decode > ${{ secrets.ANDROID_GOOGLE_SIGN_IN_3_FILE_PATH }}
+
+      - name: Decode GoogleServices-Info.plist
+        run: |
+          echo "${{ secrets.IOS_GOOGLE_SERVICES_INFO_BASE64 }}" | base64 --decode > ios/config/production/GoogleService-Info.plist
+
+      - name: Decode App Delegate
+        run: |
+          echo "${{ secrets.IOS_APP_DELEGATE_BASE64 }}" | base64 --decode > ios/Runner/AppDelegate.swift
 
       - name: Get dependencies
         run: flutter pub get
