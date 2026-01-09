@@ -198,11 +198,15 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        verify(mockOverlayIntentState.enqueue(argThat(
-                isA<AchievementCompleteIntent>().having((intent) => intent.achievements, 'achievements',
-                    contains(predicate<Achievement>((achievement) => achievement.achievementId == 'total_count_10'))),
-                named: 'intent')))
-            .called(1);
+        verify(mockOverlayIntentState.enqueue(
+          argThat(
+            isA<AchievementCompleteIntent>().having(
+              (intent) => intent.achievements,
+              'achievements',
+              contains(predicate<Achievement>((achievement) => achievement.achievementId == 'total_count_10')),
+            ),
+          ),
+        )).called(1);
       });
 
       test('should call unacknowledgeAchievement for achievements that need reset', () async {
@@ -230,16 +234,23 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        verify(mockUserAchievementsRepository.updateUserAchievement(
-                achievement: argThat(
-                    predicate<Achievement>((achievement) =>
-                        achievement.acknowledgedAt == null && achievement.achievementId == 'needs_reset'),
-                    named: 'achievement')))
-            .called(1);
+        final captured = verify(mockUserAchievementsRepository.updateUserAchievement(
+          achievement: captureAnyNamed('achievement'),
+        )).captured;
+        expect(captured.length, 1);
+        final capturedAchievement = captured[0] as Achievement;
+        expect(capturedAchievement.acknowledgedAt, isNull);
+        expect(capturedAchievement.achievementId, 'needs_reset');
       });
     });
 
     group('acknowledgeAchievement', () {
+      setUp(() {
+        resetMockitoState();
+        reset(mockUserAchievementsRepository);
+        reset(mockLogger);
+      });
+
       test('should successfully acknowledge an achievement', () async {
         // Arrange
         final achievementToAcknowledge = sampleAchievements[0];
@@ -270,6 +281,12 @@ void main() {
     });
 
     group('unacknowledgeAchievement', () {
+      setUp(() {
+        resetMockitoState();
+        reset(mockUserAchievementsRepository);
+        reset(mockLogger);
+      });
+
       test('should successfully unacknowledge an achievement', () async {
         // Arrange
         final achievementToUnacknowledge = sampleAchievements[1];
@@ -300,6 +317,12 @@ void main() {
     });
 
     group('setMunroChallenge', () {
+      setUp(() {
+        resetMockitoState();
+        reset(mockUserAchievementsRepository);
+        reset(mockLogger);
+      });
+
       test('should successfully set munro challenge', () async {
         // Arrange
         final challengeAchievement = sampleAchievements[1];
@@ -497,6 +520,14 @@ void main() {
     });
 
     group('Edge Cases', () {
+      setUp(() {
+        resetMockitoState();
+        reset(mockUserAchievementsRepository);
+        reset(mockUserState);
+        reset(mockOverlayIntentState);
+        when(mockUserState.currentUser).thenReturn(sampleUser);
+      });
+
       test('should handle empty achievements list', () async {
         // Arrange
         when(mockUserAchievementsRepository.getUserAchievements(userId: 'user123'))
@@ -534,11 +565,15 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        verify(mockOverlayIntentState.enqueue(argThat(
-                isA<AchievementCompleteIntent>().having((intent) => intent.achievements, 'achievements',
-                    contains(predicate<Achievement>((achievement) => achievement.achievementId == 'null_ack'))),
-                named: 'intent')))
-            .called(1);
+        verify(mockOverlayIntentState.enqueue(
+          argThat(
+            isA<AchievementCompleteIntent>().having(
+              (intent) => intent.achievements,
+              'achievements',
+              contains(predicate<Achievement>((achievement) => achievement.achievementId == 'null_ack')),
+            ),
+          ),
+        )).called(1);
       });
 
       test('should handle user with empty uid', () async {
@@ -594,15 +629,24 @@ void main() {
         await achievementsState.getUserAchievements();
 
         // Assert
-        verify(mockOverlayIntentState.enqueue(argThat(
-                isA<AchievementCompleteIntent>().having((intent) => intent.achievements, 'achievements',
-                    contains(predicate<Achievement>((achievement) => achievement.achievementId == 'monthly'))),
-                named: 'intent')))
-            .called(1);
+        verify(mockOverlayIntentState.enqueue(
+          argThat(
+            isA<AchievementCompleteIntent>().having(
+              (intent) => intent.achievements,
+              'achievements',
+              contains(predicate<Achievement>((achievement) => achievement.achievementId == 'monthly')),
+            ),
+          ),
+        )).called(1);
       });
     });
 
     group('ChangeNotifier', () {
+      setUp(() {
+        resetMockitoState();
+        reset(mockUserAchievementsRepository);
+      });
+
       test('should notify listeners when loading achievements', () async {
         // Arrange
         when(mockUserAchievementsRepository.getUserAchievements(userId: 'user123'))
