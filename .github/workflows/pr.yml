@@ -63,7 +63,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Build APK
-        run: flutter build apk --debug
+        run: flutter build appbundle --debug --flavor production
 
       - name: Build iOS (no codesign)
-        run: flutter build ios --debug --no-codesign
+        run: flutter build ios --debug --flavor production --no-codesign
