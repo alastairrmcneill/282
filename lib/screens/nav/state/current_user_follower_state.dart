@@ -35,7 +35,7 @@ class CurrentUserFollowerState extends ChangeNotifier {
         return;
       }
 
-      final followingUsers = await _repository.getFollowingFromUid(
+      final followingUsers = await _repository.getAllFollowingFromUid(
         sourceId: _userState.currentUser?.uid ?? "",
         excludedUserIds: _userState.blockedUsers,
       );
