@@ -97,7 +97,7 @@ void main() {
 
       test('should return true when following user', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -116,7 +116,7 @@ void main() {
     group('loadInitial', () {
       test('should load following successfully', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -129,7 +129,7 @@ void main() {
         expect(currentUserFollowerState.isFollowing('user1'), true);
         expect(currentUserFollowerState.isFollowing('user2'), true);
         expect(currentUserFollowerState.isFollowing('user3'), true);
-        verify(mockFollowersRepository.getFollowingFromUid(
+        verify(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: 'currentUserId',
           excludedUserIds: [],
         )).called(1);
@@ -140,7 +140,7 @@ void main() {
         // Arrange
         final blockedUsers = ['blockedUser1', 'blockedUser2'];
         when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -149,7 +149,7 @@ void main() {
         await currentUserFollowerState.loadInitial();
 
         // Assert
-        verify(mockFollowersRepository.getFollowingFromUid(
+        verify(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: 'currentUserId',
           excludedUserIds: blockedUsers,
         )).called(1);
@@ -164,7 +164,7 @@ void main() {
 
         // Assert
         expect(currentUserFollowerState.status, CurrentUserFollowerStatus.loaded);
-        verifyNever(mockFollowersRepository.getFollowingFromUid(
+        verifyNever(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         ));
@@ -172,7 +172,7 @@ void main() {
 
       test('should handle error during loading', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenThrow(Exception('Network error'));
@@ -188,7 +188,7 @@ void main() {
 
       test('should set status to loading during async operation', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async {
@@ -209,7 +209,7 @@ void main() {
 
       test('should handle empty following list', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => []);
@@ -298,7 +298,7 @@ void main() {
 
       test('should maintain existing following when adding new', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -322,7 +322,7 @@ void main() {
     group('unfollowUser', () {
       test('should unfollow user successfully', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -364,7 +364,7 @@ void main() {
 
       test('should handle error during unfollow', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -388,7 +388,7 @@ void main() {
 
       test('should set status to loading during async operation', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -447,7 +447,7 @@ void main() {
     group('reset', () {
       test('should reset all state to initial values', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -471,7 +471,7 @@ void main() {
     group('Edge Cases', () {
       test('should handle empty following list from repository', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => []);
@@ -488,7 +488,7 @@ void main() {
         // Arrange
         final blockedUsers = ['blocked1', 'blocked2', 'blocked3', 'blocked4'];
         when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -497,7 +497,7 @@ void main() {
         await currentUserFollowerState.loadInitial();
 
         // Assert
-        verify(mockFollowersRepository.getFollowingFromUid(
+        verify(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: 'currentUserId',
           excludedUserIds: blockedUsers,
         )).called(1);
@@ -540,7 +540,7 @@ void main() {
             sourceProfilePictureURL: null,
           ),
         ];
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => followingWithNullURL);
@@ -560,7 +560,7 @@ void main() {
           displayName: 'Current User',
         );
         when(mockUserState.currentUser).thenReturn(userWithNullUid);
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -569,7 +569,7 @@ void main() {
         await currentUserFollowerState.loadInitial();
 
         // Assert
-        verify(mockFollowersRepository.getFollowingFromUid(
+        verify(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: '',
           excludedUserIds: [],
         )).called(1);
@@ -579,7 +579,7 @@ void main() {
     group('ChangeNotifier', () {
       test('should notify listeners when loading', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -612,7 +612,7 @@ void main() {
 
       test('should notify listeners when unfollowing user', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -652,7 +652,7 @@ void main() {
       });
 
       test('should not notify listeners when resetting', () {
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async => sampleFollowing);
@@ -671,7 +671,7 @@ void main() {
 
       test('should notify listeners multiple times during async operation', () async {
         // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
+        when(mockFollowersRepository.getAllFollowingFromUid(
           sourceId: anyNamed('sourceId'),
           excludedUserIds: anyNamed('excludedUserIds'),
         )).thenAnswer((_) async {

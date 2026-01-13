@@ -65,6 +65,36 @@ class FollowersRepository {
     return response.map((doc) => FollowingRelationship.fromJSON(doc)).toList();
   }
 
+  Future<List<FollowingRelationship>> getAllFollowingFromUid({
+    required String sourceId,
+    required List<String> excludedUserIds,
+  }) async {
+    const int pageSize = 1000;
+    int offset = 0;
+
+    final List<FollowingRelationship> all = [];
+
+    while (true) {
+      final response = await _view
+          .select()
+          .not(FollowingRelationshipFields.targetId, 'in', excludedUserIds)
+          .eq(FollowingRelationshipFields.sourceId, sourceId)
+          .order(FollowingRelationshipFields.targetDisplayName, ascending: true)
+          .range(offset, offset + pageSize - 1);
+
+      final page = response.map((doc) => FollowingRelationship.fromJSON(doc)).toList();
+
+      all.addAll(page);
+
+      // If we got fewer than pageSize rows, we've reached the end.
+      if (page.length < pageSize) break;
+
+      offset += pageSize;
+    }
+
+    return all;
+  }
+
   Future<List<FollowingRelationship>> searchFollowing({
     required String sourceId,
     required String searchTerm,

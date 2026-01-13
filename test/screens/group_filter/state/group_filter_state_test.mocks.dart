@@ -191,6 +191,24 @@ class MockFollowersRepository extends _i1.Mock
       ) as _i4.Future<List<_i3.FollowingRelationship>>);
 
   @override
+  _i4.Future<List<_i3.FollowingRelationship>> getAllFollowingFromUid({
+    required String? sourceId,
+    required List<String>? excludedUserIds,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getAllFollowingFromUid,
+          [],
+          {
+            #sourceId: sourceId,
+            #excludedUserIds: excludedUserIds,
+          },
+        ),
+        returnValue: _i4.Future<List<_i3.FollowingRelationship>>.value(
+            <_i3.FollowingRelationship>[]),
+      ) as _i4.Future<List<_i3.FollowingRelationship>>);
+
+  @override
   _i4.Future<List<_i3.FollowingRelationship>> searchFollowing({
     required String? sourceId,
     required String? searchTerm,

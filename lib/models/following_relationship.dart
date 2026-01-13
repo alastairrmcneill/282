@@ -28,11 +28,11 @@ class FollowingRelationship {
     return FollowingRelationship(
       sourceId: json[FollowingRelationshipFields.sourceId] as String,
       targetId: json[FollowingRelationshipFields.targetId] as String,
-      targetDisplayName: json[FollowingRelationshipFields.targetDisplayName] as String,
+      targetDisplayName: json[FollowingRelationshipFields.targetDisplayName] as String?,
       targetProfilePictureURL: json[FollowingRelationshipFields.targetProfilePictureURL] as String?,
       targetSearchName: json[FollowingRelationshipFields.targetSearchName] as String? ??
-          json[FollowingRelationshipFields.targetDisplayName] as String,
-      sourceDisplayName: json[FollowingRelationshipFields.sourceDisplayName] as String,
+          json[FollowingRelationshipFields.targetDisplayName] as String?,
+      sourceDisplayName: json[FollowingRelationshipFields.sourceDisplayName] as String?,
       sourceProfilePictureURL: json[FollowingRelationshipFields.sourceProfilePictureURL] as String?,
     );
   }
