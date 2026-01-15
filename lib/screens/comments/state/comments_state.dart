@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -8,9 +9,16 @@ class CommentsState extends ChangeNotifier {
   final CommentsRepository _commentsRepository;
   final UserState userState;
   final PostsRepository _postsRepository;
+  final Analytics _analytics;
   final Logger _logger;
 
-  CommentsState(this._commentsRepository, this.userState, this._postsRepository, this._logger);
+  CommentsState(
+    this._commentsRepository,
+    this.userState,
+    this._postsRepository,
+    this._analytics,
+    this._logger,
+  );
 
   CommentsStatus _status = CommentsStatus.initial;
   Error _error = Error();
@@ -43,6 +51,13 @@ class CommentsState extends ChangeNotifier {
       _commentText = null;
       _status = CommentsStatus.loaded;
       notifyListeners();
+
+      _analytics.track(
+        AnalyticsEvent.createComment,
+        props: {
+          AnalyticsProp.postId: _postId!,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue posting your comment. Please try again");
@@ -107,6 +122,13 @@ class CommentsState extends ChangeNotifier {
         notifyListeners();
       }
       await _commentsRepository.deleteComment(comment: comment);
+
+      _analytics.track(
+        AnalyticsEvent.deleteComment,
+        props: {
+          AnalyticsProp.postId: _postId!,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue deleting the comment. Please try again.");
@@ -139,14 +161,14 @@ class CommentsState extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeComment(Comment comment) {
+  void removeComment(Comment comment) {
     if (_comments.contains(comment)) {
       _comments.remove(comment);
     }
     notifyListeners();
   }
 
-  reset() {
+  void reset() {
     _status = CommentsStatus.initial;
     _error = Error();
     _postId = null;

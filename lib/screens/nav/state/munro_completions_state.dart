@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -7,11 +8,13 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class MunroCompletionState extends ChangeNotifier {
   final MunroCompletionsRepository repository;
   final UserState userState;
+  final Analytics _analytics;
   final Logger _logger;
 
   MunroCompletionState(
     this.repository,
     this.userState,
+    this._analytics,
     this._logger,
   );
 
@@ -60,6 +63,9 @@ class MunroCompletionState extends ChangeNotifier {
         ...munroCompletions,
       ];
       notifyListeners();
+      _analytics.track(AnalyticsEvent.bulkMunroCompletionsAdded, props: {
+        AnalyticsProp.munroCompletionsAdded: munroCompletions.length,
+      });
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       _status = MunroCompletionsStatus.error;

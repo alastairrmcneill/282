@@ -60,10 +60,6 @@ class SentryLogger implements Logger {
 
   @override
   void identify(String userId) {
-    if (kDebugMode) {
-      debugPrint('IDENTIFY: $userId');
-      return;
-    }
     Sentry.configureScope((scope) {
       scope.setUser(SentryUser(id: userId));
     });
@@ -71,10 +67,6 @@ class SentryLogger implements Logger {
 
   @override
   void clearUser() {
-    if (kDebugMode) {
-      debugPrint('CLEAR USER');
-      return;
-    }
     Sentry.configureScope((scope) {
       scope.setUser(null);
     });

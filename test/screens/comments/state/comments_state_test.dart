@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -13,12 +14,14 @@ import 'comments_state_test.mocks.dart';
   CommentsRepository,
   UserState,
   PostsRepository,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockCommentsRepository mockCommentsRepository;
   late MockUserState mockUserState;
   late MockPostsRepository mockPostsRepository;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late CommentsState commentsState;
 
@@ -81,12 +84,14 @@ void main() {
     mockCommentsRepository = MockCommentsRepository();
     mockUserState = MockUserState();
     mockPostsRepository = MockPostsRepository();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
 
     commentsState = CommentsState(
       mockCommentsRepository,
       mockUserState,
       mockPostsRepository,
+      mockAnalytics,
       mockLogger,
     );
 

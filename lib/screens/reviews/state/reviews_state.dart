@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -8,12 +9,14 @@ class ReviewsState extends ChangeNotifier {
   final ReviewsRepository _reviewsRepository;
   final MunroState _munroState;
   final UserState _userState;
+  final Analytics _analytics;
   final Logger _logger;
 
   ReviewsState(
     this._reviewsRepository,
     this._munroState,
     this._userState,
+    this._analytics,
     this._logger,
   );
 
@@ -77,6 +80,13 @@ class ReviewsState extends ChangeNotifier {
       _munroState.loadMunros();
 
       removeReview(review);
+
+      _analytics.track(
+        AnalyticsEvent.deleteReview,
+        props: {
+          AnalyticsProp.reviewId: review.uid,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(

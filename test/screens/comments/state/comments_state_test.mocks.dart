@@ -9,7 +9,8 @@ import 'dart:ui' as _i7;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
-import 'package:two_eight_two/logging/logging.dart' as _i9;
+import 'package:two_eight_two/analytics/analytics_base.dart' as _i9;
+import 'package:two_eight_two/logging/logging.dart' as _i10;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i5;
@@ -469,10 +470,54 @@ class MockPostsRepository extends _i1.Mock implements _i2.PostsRepository {
       ) as _i4.Future<dynamic>);
 }
 
+/// A class which mocks [Analytics].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAnalytics extends _i1.Mock implements _i9.Analytics {
+  MockAnalytics() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> track(
+    String? name, {
+    Map<String, Object?>? props,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #track,
+          [name],
+          {#props: props},
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> identify(String? userId) => (super.noSuchMethod(
+        Invocation.method(
+          #identify,
+          [userId],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> reset() => (super.noSuchMethod(
+        Invocation.method(
+          #reset,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+}
+
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i9.Logger {
+class MockLogger extends _i1.Mock implements _i10.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

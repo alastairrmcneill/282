@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -13,12 +14,14 @@ import 'feed_state_test.mocks.dart';
   PostsRepository,
   UserState,
   UserLikeState,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockPostsRepository mockPostsRepository;
   late MockUserState mockUserState;
   late MockUserLikeState mockUserLikeState;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late FeedState feedState;
 
@@ -100,11 +103,13 @@ void main() {
     mockPostsRepository = MockPostsRepository();
     mockUserState = MockUserState();
     mockUserLikeState = MockUserLikeState();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
     feedState = FeedState(
       mockPostsRepository,
       mockUserState,
       mockUserLikeState,
+      mockAnalytics,
       mockLogger,
     );
 
