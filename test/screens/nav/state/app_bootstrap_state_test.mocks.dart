@@ -471,6 +471,24 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
       ) as bool);
 
   @override
+  void init() => super.noSuchMethod(
+        Invocation.method(
+          #init,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i5.Future<_i3.AuthResult> registerWithEmail(
           {required _i2.RegistrationData? registrationData}) =>
       (super.noSuchMethod(
@@ -609,15 +627,6 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
         Invocation.method(
           #removeListener,
           [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
         ),
         returnValueForMissingStub: null,
       );

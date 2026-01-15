@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -8,11 +9,14 @@ class CreateReviewState extends ChangeNotifier {
   final ReviewsRepository _reviewsRepository;
   final UserState _userState;
   final MunroState _munroState;
+  final Analytics _analytics;
   final Logger _logger;
+
   CreateReviewState(
     this._reviewsRepository,
     this._userState,
     this._munroState,
+    this._analytics,
     this._logger,
   );
   CreateReviewStatus _status = CreateReviewStatus.initial;
@@ -51,6 +55,15 @@ class CreateReviewState extends ChangeNotifier {
         // Upload to database
 
         await _reviewsRepository.create(review: review);
+
+        await _analytics.track(
+          AnalyticsEvent.createReview,
+          props: {
+            AnalyticsProp.rating: review.rating,
+            AnalyticsProp.text: review.text,
+            AnalyticsProp.munroId: review.munroId,
+          },
+        );
       }
 
       _munroState.loadMunros();
@@ -84,6 +97,15 @@ class CreateReviewState extends ChangeNotifier {
       onReviewUpdated(newReview);
       _munroState.loadMunros();
       setStatus = CreateReviewStatus.loaded;
+
+      _analytics.track(
+        AnalyticsEvent.editReview,
+        props: {
+          AnalyticsProp.rating: review.rating,
+          AnalyticsProp.text: review.text,
+          AnalyticsProp.munroId: review.munroId,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
@@ -123,7 +145,7 @@ class CreateReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  setMunroRating(int munroId, int rating) {
+  void setMunroRating(int munroId, int rating) {
     if (_reviews.containsKey(munroId)) {
       _reviews[munroId]!["rating"] = rating;
     } else {
@@ -132,7 +154,7 @@ class CreateReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  setMunroReview(int munroId, String review) {
+  void setMunroReview(int munroId, String review) {
     if (_reviews.containsKey(munroId)) {
       _reviews[munroId]!["review"] = review;
     } else {
@@ -153,7 +175,7 @@ class CreateReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  reset() {
+  void reset() {
     _status = CreateReviewStatus.initial;
     _error = Error();
     _munrosToReview = [];

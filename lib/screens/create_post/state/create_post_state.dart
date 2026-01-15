@@ -129,6 +129,9 @@ class CreatePostState extends ChangeNotifier {
         props: {
           AnalyticsProp.privacy: post.privacy,
           AnalyticsProp.showPrivacyOption: showPrivacyOption,
+          AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
+          AnalyticsProp.imagesAdded:
+              addedImageUrlsMap.values.fold<int>(0, (previousValue, element) => previousValue + element.length),
         },
       );
 
@@ -228,6 +231,17 @@ class CreatePostState extends ChangeNotifier {
       Post newPostState = newPost.copyWith(imageUrlsMap: updatedImageURLsMap);
 
       setStatus = CreatePostStatus.loaded;
+
+      _analytics.track(
+        AnalyticsEvent.editPost,
+        props: {
+          AnalyticsProp.postId: post.uid,
+          AnalyticsProp.privacy: post.privacy,
+          AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
+          AnalyticsProp.imagesAdded:
+              addedImageUrlsMap.values.fold<int>(0, (previousValue, element) => previousValue + element.length),
+        },
+      );
       return newPostState;
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
@@ -275,6 +289,12 @@ class CreatePostState extends ChangeNotifier {
   Future deletePost({required Post post}) async {
     try {
       _postsRepository.deletePostWithUID(uid: post.uid);
+      _analytics.track(
+        AnalyticsEvent.deletePost,
+        props: {
+          AnalyticsProp.postId: post.uid,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       _status = CreatePostStatus.error;

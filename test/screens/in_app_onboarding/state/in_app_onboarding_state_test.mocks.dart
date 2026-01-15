@@ -10,7 +10,7 @@ import 'dart:ui' as _i7;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i9;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:two_eight_two/analytics/analytics_base.dart' as _i12;
+import 'package:two_eight_two/analytics/analytics.dart' as _i12;
 import 'package:two_eight_two/enums/enums.dart' as _i8;
 import 'package:two_eight_two/logging/logging.dart' as _i13;
 import 'package:two_eight_two/models/models.dart' as _i3;

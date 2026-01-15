@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -7,11 +8,13 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class UserLikeState extends ChangeNotifier {
   final LikesRepository _repository;
   final UserState _userState;
+  final Analytics _analytics;
   final Logger _logger;
 
   UserLikeState(
     this._repository,
     this._userState,
+    this._analytics,
     this._logger,
   );
 
@@ -52,6 +55,12 @@ class UserLikeState extends ChangeNotifier {
 
     Post newPost = post.copyWith(likes: post.likes + 1);
     onPostUpdated(newPost);
+    _analytics.track(
+      AnalyticsEvent.likePost,
+      props: {
+        AnalyticsProp.postId: post.uid,
+      },
+    );
   }
 
   Future<void> unLikePost({
@@ -73,6 +82,13 @@ class UserLikeState extends ChangeNotifier {
 
     Post newPost = post.copyWith(likes: post.likes - 1);
     onPostUpdated(newPost);
+
+    _analytics.track(
+      AnalyticsEvent.unlikePost,
+      props: {
+        AnalyticsProp.postId: post.uid,
+      },
+    );
   }
 
   Future<void> getLikedPostIds({required List<Post> posts}) async {

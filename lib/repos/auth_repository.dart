@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:two_eight_two/models/models.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth;
@@ -9,8 +8,7 @@ class AuthRepository {
 
   AuthRepository(this._auth, this._googleSignIn);
 
-  Stream<AppUser?> get appUserStream =>
-      _auth.authStateChanges().map((user) => user != null ? AppUser.appUserFromFirebaseUser(user) : null);
+  Stream<String?> get authIdChanges => _auth.authStateChanges().map((user) => user?.uid);
 
   String? get currentUserId => _auth.currentUser?.uid;
   User? get firebaseUser => _auth.currentUser;
@@ -51,22 +49,6 @@ class AuthRepository {
   Future<void> signOut() async {
     await _auth.signOut();
   }
-
-  //   Future<void> updateAuthUser({
-  //   String? displayName,
-  //   String? photoUrl,
-  // }) async {
-  //   final user = _auth.currentUser;
-  //   if (user == null) return;
-
-  //   if (displayName != null) {
-  //     await user.updateDisplayName(displayName);
-  //   }
-  //   if (photoUrl != null) {
-  //     await user.updatePhotoURL(photoUrl);
-  //   }
-  //   await user.reload();
-  // }
 
   Future<void> deleteAuthUser() async {
     await _auth.currentUser?.delete();

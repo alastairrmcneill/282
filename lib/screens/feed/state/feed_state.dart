@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -8,12 +9,14 @@ class FeedState extends ChangeNotifier {
   final PostsRepository _postsRepository;
   final UserState _userState;
   final UserLikeState _userLikeState;
+  final Analytics _analytics;
   final Logger _logger;
 
   FeedState(
     this._postsRepository,
     this._userState,
     this._userLikeState,
+    this._analytics,
     this._logger,
   );
 
@@ -82,6 +85,12 @@ class FeedState extends ChangeNotifier {
 
       _friendsPosts.addAll(newPosts);
       setStatus = FeedStatus.loaded;
+      _analytics.track(
+        AnalyticsEvent.paginateFriendsFeed,
+        props: {
+          AnalyticsProp.postCount: _friendsPosts.length,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading your feed. Please try again.");
@@ -139,6 +148,12 @@ class FeedState extends ChangeNotifier {
 
       _globalPosts.addAll(newPosts);
       setStatus = FeedStatus.loaded;
+      _analytics.track(
+        AnalyticsEvent.paginateGlobalFeed,
+        props: {
+          AnalyticsProp.postCount: _globalPosts.length,
+        },
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading your feed. Please try again.");

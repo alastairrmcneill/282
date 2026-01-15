@@ -52,6 +52,8 @@ class AppBootstrapState extends ChangeNotifier {
     notifyListeners();
 
     try {
+      _authState.init();
+
       await Future.wait([
         _remoteConfig.init(),
         _settingsState.load(),
