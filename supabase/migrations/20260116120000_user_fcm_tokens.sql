@@ -69,6 +69,8 @@ CREATE TRIGGER user_fcm_tokens_updated_at
   EXECUTE FUNCTION update_user_fcm_tokens_updated_at();
 
 -- Update vu_profiles view to not depend on fcm_token column before dropping it
+DROP VIEW IF EXISTS vu_profiles;
+
 CREATE OR REPLACE VIEW vu_profiles AS
 SELECT  
   u.id,
