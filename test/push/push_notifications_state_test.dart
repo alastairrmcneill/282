@@ -15,16 +15,20 @@ import 'push_notifications_state_test.mocks.dart';
 // Generate mocks
 @GenerateMocks([
   PushNotificationRepository,
+  FcmTokenRepository,
   SettingsState,
   UserState,
   NavigationIntentState,
+  AppInfoRepository,
   Logger,
 ])
 void main() {
   late MockPushNotificationRepository mockPushNotificationRepository;
+  late MockFcmTokenRepository mockFcmTokenRepository;
   late MockSettingsState mockSettingsState;
   late MockUserState mockUserState;
   late MockNavigationIntentState mockNavigationIntentState;
+  late MockAppInfoRepository mockAppInfoRepository;
   late MockLogger mockLogger;
   late PushNotificationState pushNotificationState;
 
@@ -108,13 +112,14 @@ void main() {
       displayName: 'Test User',
       firstName: 'Test',
       lastName: 'User',
-      fcmToken: 'existing_token_123',
     );
 
     mockPushNotificationRepository = MockPushNotificationRepository();
+    mockFcmTokenRepository = MockFcmTokenRepository();
     mockSettingsState = MockSettingsState();
     mockUserState = MockUserState();
     mockNavigationIntentState = MockNavigationIntentState();
+    mockAppInfoRepository = MockAppInfoRepository();
     mockLogger = MockLogger();
 
     // Create stream controllers for mocking
@@ -128,12 +133,29 @@ void main() {
     when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'default_token');
     when(mockSettingsState.enablePushNotifications).thenReturn(true);
     when(mockUserState.currentUser).thenReturn(sampleUser);
+    when(mockAppInfoRepository.version).thenReturn('1.0.0');
+    when(mockFcmTokenRepository.upsertToken(
+      userId: anyNamed('userId'),
+      deviceId: anyNamed('deviceId'),
+      token: anyNamed('token'),
+      platform: anyNamed('platform'),
+      appVersion: anyNamed('appVersion'),
+      osVersion: anyNamed('osVersion'),
+      deviceModel: anyNamed('deviceModel'),
+    )).thenAnswer((_) async {});
+    when(mockFcmTokenRepository.setTokenPushEnabled(
+      userId: anyNamed('userId'),
+      deviceId: anyNamed('deviceId'),
+      enabled: anyNamed('enabled'),
+    )).thenAnswer((_) async {});
 
     pushNotificationState = PushNotificationState(
       mockPushNotificationRepository,
+      mockFcmTokenRepository,
       mockSettingsState,
       mockUserState,
       mockNavigationIntentState,
+      mockAppInfoRepository,
       mockLogger,
     );
   });
@@ -278,14 +300,17 @@ void main() {
       test('should call disablePush when push notifications are disabled', () async {
         // Arrange
         when(mockSettingsState.enablePushNotifications).thenReturn(false);
-        when(mockPushNotificationRepository.deleteToken()).thenAnswer((_) async => {});
 
         // Act
         final result = await pushNotificationState.onPushSettingChanged();
 
         // Assert
         expect(result, true);
-        verify(mockPushNotificationRepository.deleteToken()).called(1);
+        verify(mockFcmTokenRepository.setTokenPushEnabled(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          enabled: false,
+        )).called(1);
       });
     });
 
@@ -343,100 +368,93 @@ void main() {
       });
 
       test('should sync token with force flag when enabling push', () async {
-        // Arrange
-        final userWithToken = AppUser(
-          uid: 'testUser123',
-          fcmToken: 'old_token',
-        );
-        when(mockUserState.currentUser).thenReturn(userWithToken);
         when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'old_token');
 
         // Act
         final result = await pushNotificationState.enablePush();
 
-        // Assert - should still update even with same token due to force flag
+        // Assert - should still upsert token due to force flag
         expect(result, true);
-        verify(mockUserState.updateUser(appUser: anyNamed('appUser'))).called(1);
+        verify(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        )).called(1);
       });
     });
 
     group('disablePush', () {
       test('should disable push notifications successfully', () async {
-        // Arrange
-        when(mockPushNotificationRepository.deleteToken()).thenAnswer((_) async => {});
-
         // Act
         final result = await pushNotificationState.disablePush();
 
         // Assert
         expect(result, true);
-        verify(mockPushNotificationRepository.deleteToken()).called(1);
-        verify(mockUserState.updateUser(appUser: anyNamed('appUser'))).called(1);
+        verify(mockFcmTokenRepository.setTokenPushEnabled(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          enabled: false,
+        )).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
       });
 
-      test('should clear backend token when disabling push', () async {
-        // Arrange
-        when(mockPushNotificationRepository.deleteToken()).thenAnswer((_) async => {});
-
+      test('should set push_enabled to false when disabling push', () async {
         // Act
         await pushNotificationState.disablePush();
 
         // Assert
-        final captured = verify(mockUserState.updateUser(appUser: captureAnyNamed('appUser'))).captured;
-        expect(captured.length, 1);
-        final updatedUser = captured[0] as AppUser;
-        expect(updatedUser.fcmToken, '');
+        verify(mockFcmTokenRepository.setTokenPushEnabled(
+          userId: 'testUser123',
+          deviceId: anyNamed('deviceId'),
+          enabled: false,
+        )).called(1);
       });
 
       test('should return true when user is null', () async {
         // Arrange
         when(mockUserState.currentUser).thenReturn(null);
-        when(mockPushNotificationRepository.deleteToken()).thenAnswer((_) async => {});
 
         // Act
         final result = await pushNotificationState.disablePush();
 
         // Assert
         expect(result, true);
-        verify(mockPushNotificationRepository.deleteToken()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
+        verifyNever(mockFcmTokenRepository.setTokenPushEnabled(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          enabled: anyNamed('enabled'),
+        ));
       });
 
-      test('should return true when user already has empty fcmToken', () async {
+      test('should return true when user uid is null', () async {
         // Arrange
-        final userWithNoToken = AppUser(uid: 'testUser123', fcmToken: '');
-        when(mockUserState.currentUser).thenReturn(userWithNoToken);
-        when(mockPushNotificationRepository.deleteToken()).thenAnswer((_) async => {});
+        final userWithNullUid = AppUser(uid: null);
+        when(mockUserState.currentUser).thenReturn(userWithNullUid);
 
         // Act
         final result = await pushNotificationState.disablePush();
 
         // Assert
         expect(result, true);
-        verify(mockPushNotificationRepository.deleteToken()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
-      });
-
-      test('should return true when user has null fcmToken', () async {
-        // Arrange
-        final userWithNullToken = AppUser(uid: 'testUser123', fcmToken: null);
-        when(mockUserState.currentUser).thenReturn(userWithNullToken);
-        when(mockPushNotificationRepository.deleteToken()).thenAnswer((_) async => {});
-
-        // Act
-        final result = await pushNotificationState.disablePush();
-
-        // Assert
-        expect(result, true);
-        verify(mockPushNotificationRepository.deleteToken()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
+        verifyNever(mockFcmTokenRepository.setTokenPushEnabled(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          enabled: anyNamed('enabled'),
+        ));
       });
 
       test('should handle errors during disable push', () async {
         // Arrange
-        when(mockPushNotificationRepository.deleteToken()).thenThrow(Exception('Delete token error'));
+        when(mockFcmTokenRepository.setTokenPushEnabled(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          enabled: anyNamed('enabled'),
+        )).thenThrow(Exception('Database error'));
 
         // Act
         final result = await pushNotificationState.disablePush();
@@ -459,7 +477,15 @@ void main() {
         // Assert
         verify(mockPushNotificationRepository.requestPermission()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
-        verify(mockUserState.updateUser(appUser: anyNamed('appUser'))).called(1);
+        verify(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        )).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
       });
 
@@ -497,7 +523,15 @@ void main() {
         // Assert
         verify(mockPushNotificationRepository.requestPermission()).called(1);
         verifyNever(mockPushNotificationRepository.getToken());
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
+        verifyNever(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        ));
       });
 
       test('should not sync when token is null', () async {
@@ -511,7 +545,15 @@ void main() {
         // Assert
         verify(mockPushNotificationRepository.requestPermission()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
+        verifyNever(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        ));
       });
 
       test('should not sync when token is empty', () async {
@@ -525,24 +567,38 @@ void main() {
         // Assert
         verify(mockPushNotificationRepository.requestPermission()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
+        verifyNever(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        ));
       });
 
-      test('should not sync when token matches current user token and force is false', () async {
-        // Arrange
+      test('should always sync token (no longer skips matching tokens)', () async {
+        // Arrange - now we always upsert since we're using the new FCM tokens table
         when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'existing_token_123');
 
         // Act
         await pushNotificationState.syncTokenIfNeeded();
 
-        // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
-        verify(mockPushNotificationRepository.getToken()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
+        // Assert - now we always upsert to keep last_used_at updated
+        verify(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        )).called(1);
       });
 
-      test('should sync when token matches but force is true', () async {
+      test('should sync when force is true', () async {
         // Arrange
         when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'existing_token_123');
@@ -553,10 +609,18 @@ void main() {
         // Assert
         verify(mockPushNotificationRepository.requestPermission()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
-        verify(mockUserState.updateUser(appUser: anyNamed('appUser'))).called(1);
+        verify(mockFcmTokenRepository.upsertToken(
+          userId: anyNamed('userId'),
+          deviceId: anyNamed('deviceId'),
+          token: anyNamed('token'),
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        )).called(1);
       });
 
-      test('should update user with new token', () async {
+      test('should upsert token with correct parameters', () async {
         // Arrange
         when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'brand_new_token_999');
@@ -565,10 +629,15 @@ void main() {
         await pushNotificationState.syncTokenIfNeeded();
 
         // Assert
-        final captured = verify(mockUserState.updateUser(appUser: captureAnyNamed('appUser'))).captured;
-        expect(captured.length, 1);
-        final updatedUser = captured[0] as AppUser;
-        expect(updatedUser.fcmToken, 'brand_new_token_999');
+        verify(mockFcmTokenRepository.upsertToken(
+          userId: 'testUser123',
+          deviceId: anyNamed('deviceId'),
+          token: 'brand_new_token_999',
+          platform: anyNamed('platform'),
+          appVersion: '1.0.0',
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        )).called(1);
       });
 
       test('should handle errors during token sync gracefully', () async {
@@ -661,8 +730,8 @@ void main() {
 
       test('should handle user changing during token sync', () async {
         // Arrange
-        final user1 = AppUser(uid: 'user1', fcmToken: 'token1');
-        final user2 = AppUser(uid: 'user2', fcmToken: 'token2');
+        final user1 = AppUser(uid: 'user1');
+        final user2 = AppUser(uid: 'user2');
 
         when(mockUserState.currentUser).thenReturn(user1);
         when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
@@ -675,8 +744,16 @@ void main() {
         // Act
         await pushNotificationState.syncTokenIfNeeded();
 
-        // Assert - Should use the user at the time updateUser is called
-        verify(mockUserState.updateUser(appUser: anyNamed('appUser'))).called(1);
+        // Assert - Should upsert token for the initial user
+        verify(mockFcmTokenRepository.upsertToken(
+          userId: 'user1',
+          deviceId: anyNamed('deviceId'),
+          token: 'new_token',
+          platform: anyNamed('platform'),
+          appVersion: anyNamed('appVersion'),
+          osVersion: anyNamed('osVersion'),
+          deviceModel: anyNamed('deviceModel'),
+        )).called(1);
       });
 
       test('should not crash when repository returns empty RemoteMessage', () async {

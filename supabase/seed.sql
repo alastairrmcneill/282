@@ -347,22 +347,21 @@ INSERT INTO users (
   last_name,
   bio,
   profile_picture_url,
-  fcm_token,
   app_version,
   platform,
   sign_in_method,
   profile_visibility
 ) VALUES
-  ('user_1',  'Alice',   'Hillwalker', 'Loves long ridge walks and sunrise starts.',  'https://randomuser.me/api/portraits/lego/0.jpg', NULL, '1.0.0', 'ios',     'password', 'public'),
-  ('user_2',  'Ben',     'Ridge',      'Bagging munros whenever the weather allows.', 'https://randomuser.me/api/portraits/lego/1.jpg', NULL, '1.0.0', 'android', 'password', 'public'),
-  ('user_3',  'Cara',    'Loch',       'Fair-weather hiker and cake enthusiast.',     'https://randomuser.me/api/portraits/lego/2.jpg', NULL, '1.0.0', 'ios',     'google',   'public'),
-  ('user_4',  'Dan',     'Summit',     'Photographer chasing inversions.',            'https://randomuser.me/api/portraits/lego/3.jpg', NULL, '1.0.0', 'android', 'apple',    'public'),
-  ('user_5',  'Ella',    'Glen',       'Slow and steady, loves scrambles.',           'https://randomuser.me/api/portraits/lego/4.jpg', NULL, '1.0.0', 'web',     'password', 'public'),
-  ('user_6',  'Finn',    'Burn',       'Trail runner ticking off rounds.',            'https://randomuser.me/api/portraits/lego/5.jpg', NULL, '1.0.0', 'ios',     'google',   'public'),
-  ('user_7',  'Grace',   'Corrie',     'Always up for a winter climb.',               'https://randomuser.me/api/portraits/lego/6.jpg', NULL, '1.0.0', 'android', 'password', 'public'),
-  ('user_8',  'Hugo',    'Stob',       'New to munros, excited to explore.',          'https://randomuser.me/api/portraits/lego/7.jpg', NULL, '1.0.0', 'web',     'password', 'public'),
-  ('user_9',  'Isla',    'Beinn',      'Local guide and route planner.',              NULL, NULL, '1.0.0', 'ios',     'apple',    'public'),
-  ('user_10', 'Jamie',   'Corran',     'Weekend warrior from the city.',              NULL, NULL, '1.0.0', 'android', 'google',   'public');
+  ('user_1',  'Alice',   'Hillwalker', 'Loves long ridge walks and sunrise starts.',  'https://randomuser.me/api/portraits/lego/0.jpg', '1.0.0', 'ios',     'password', 'public'),
+  ('user_2',  'Ben',     'Ridge',      'Bagging munros whenever the weather allows.', 'https://randomuser.me/api/portraits/lego/1.jpg', '1.0.0', 'android', 'password', 'public'),
+  ('user_3',  'Cara',    'Loch',       'Fair-weather hiker and cake enthusiast.',     'https://randomuser.me/api/portraits/lego/2.jpg', '1.0.0', 'ios',     'google',   'public'),
+  ('user_4',  'Dan',     'Summit',     'Photographer chasing inversions.',            'https://randomuser.me/api/portraits/lego/3.jpg', '1.0.0', 'android', 'apple',    'public'),
+  ('user_5',  'Ella',    'Glen',       'Slow and steady, loves scrambles.',           'https://randomuser.me/api/portraits/lego/4.jpg', '1.0.0', 'web',     'password', 'public'),
+  ('user_6',  'Finn',    'Burn',       'Trail runner ticking off rounds.',            'https://randomuser.me/api/portraits/lego/5.jpg', '1.0.0', 'ios',     'google',   'public'),
+  ('user_7',  'Grace',   'Corrie',     'Always up for a winter climb.',               'https://randomuser.me/api/portraits/lego/6.jpg', '1.0.0', 'android', 'password', 'public'),
+  ('user_8',  'Hugo',    'Stob',       'New to munros, excited to explore.',          'https://randomuser.me/api/portraits/lego/7.jpg', '1.0.0', 'web',     'password', 'public'),
+  ('user_9',  'Isla',    'Beinn',      'Local guide and route planner.',              NULL, '1.0.0', 'ios',     'apple',    'public'),
+  ('user_10', 'Jamie',   'Corran',     'Weekend warrior from the city.',              NULL, '1.0.0', 'android', 'google',   'public');
 
 -- =========================
 -- 4. FOLLOWERS

@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/helpers/device_info_helper.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -15,6 +16,7 @@ class AuthState extends ChangeNotifier {
   final AuthRepository _authRepo;
   final UserState _userState;
   final AppFlagsRepository _appFlagsRepository;
+  final FcmTokenRepository _fcmTokenRepo;
   final Analytics _analytics;
   final Logger _logger;
 
@@ -22,6 +24,7 @@ class AuthState extends ChangeNotifier {
     this._authRepo,
     this._userState,
     this._appFlagsRepository,
+    this._fcmTokenRepo,
     this._analytics,
     this._logger,
   );
@@ -332,11 +335,22 @@ class AuthState extends ChangeNotifier {
     _setLoading();
     try {
       await _analytics.track(AnalyticsEvent.signOut);
-      // Clear FCM token from database before signing out
+
+      // Deactivate FCM token for this device before signing out
       final user = _userState.currentUser;
-      if (user != null) {
-        await _userState.updateUser(appUser: user.copyWith(fcmToken: ''));
+      if (user != null && user.uid != null) {
+        try {
+          final deviceInfo = await DeviceInfoHelper.getDeviceInfo();
+          await _fcmTokenRepo.deactivateToken(
+            userId: user.uid!,
+            deviceId: deviceInfo.deviceId,
+          );
+        } catch (e, st) {
+          // Log but don't fail sign-out if token deactivation fails
+          _logger.error('Failed to deactivate FCM token', error: e, stackTrace: st);
+        }
       }
+
       await _authRepo.signOut();
       _userState.reset();
 

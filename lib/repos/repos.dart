@@ -1,4 +1,5 @@
 export 'comments_repository.dart';
+export 'fcm_token_repository.dart';
 export 'followers_repository.dart';
 export 'munro_repository.dart';
 export 'posts_repository.dart';

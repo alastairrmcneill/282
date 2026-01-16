@@ -66,6 +66,9 @@ List<SingleChildWidget> buildRepositories(
       Provider<PushNotificationRepository>(
         create: (_) => PushNotificationRepository(FirebaseMessaging.instance),
       ),
+      Provider<FcmTokenRepository>(
+        create: (_) => FcmTokenRepository(Supabase.instance.client),
+      ),
       Provider<AppInfoRepository>(create: (_) => AppInfoRepository(packageInfo)),
     ];
 
@@ -99,6 +102,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<AuthRepository>(),
           ctx.read<UserState>(),
           ctx.read<AppFlagsRepository>(),
+          ctx.read<FcmTokenRepository>(),
           ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
@@ -281,9 +285,11 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ChangeNotifierProvider<PushNotificationState>(
         create: (ctx) => PushNotificationState(
           ctx.read<PushNotificationRepository>(),
+          ctx.read<FcmTokenRepository>(),
           ctx.read<SettingsState>(),
           ctx.read<UserState>(),
           ctx.read<NavigationIntentState>(),
+          ctx.read<AppInfoRepository>(),
           ctx.read<Logger>(),
         ),
       ),

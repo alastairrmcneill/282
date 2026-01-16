@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:two_eight_two/helpers/device_info_helper.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -9,15 +10,19 @@ import 'package:two_eight_two/screens/notifiers.dart';
 
 class PushNotificationState extends ChangeNotifier {
   final PushNotificationRepository _repo;
+  final FcmTokenRepository _fcmTokenRepo;
   final SettingsState _settings;
   final UserState _userState;
   final NavigationIntentState _intents;
+  final AppInfoRepository _appInfo;
   final Logger _logger;
   PushNotificationState(
     this._repo,
+    this._fcmTokenRepo,
     this._settings,
     this._userState,
     this._intents,
+    this._appInfo,
     this._logger,
   );
 
@@ -77,15 +82,16 @@ class PushNotificationState extends ChangeNotifier {
 
   Future<bool> disablePush() async {
     try {
-      // Optional: remove local FCM token so device stops receiving.
-      await _repo.deleteToken();
-
-      // Ensure backend token is cleared.
       final user = _userState.currentUser;
-      if (user == null) return true;
+      if (user == null || user.uid == null) return true;
 
-      if ((user.fcmToken ?? '').isEmpty) return true;
-      await _userState.updateUser(appUser: user.copyWith(fcmToken: ''));
+      final deviceInfo = await DeviceInfoHelper.getDeviceInfo();
+      await _fcmTokenRepo.setTokenPushEnabled(
+        userId: user.uid!,
+        deviceId: deviceInfo.deviceId,
+        enabled: false,
+      );
+
       return true;
     } catch (e, st) {
       _logger.error('Disable push failed', error: e, stackTrace: st);
@@ -98,7 +104,7 @@ class PushNotificationState extends ChangeNotifier {
     if (!_settings.enablePushNotifications) return;
 
     final user = _userState.currentUser;
-    if (user == null) return;
+    if (user == null || user.uid == null) return;
 
     try {
       final perm = await _repo.requestPermission();
@@ -107,9 +113,20 @@ class PushNotificationState extends ChangeNotifier {
       final token = await _repo.getToken();
       if (token == null || token.isEmpty) return;
 
-      if (!force && user.fcmToken == token) return;
+      // Get device info and app version
+      final deviceInfo = await DeviceInfoHelper.getDeviceInfo();
+      final appVersion = _appInfo.version;
 
-      await _userState.updateUser(appUser: user.copyWith(fcmToken: token));
+      // Upsert token to user_fcm_tokens table
+      await _fcmTokenRepo.upsertToken(
+        userId: user.uid!,
+        deviceId: deviceInfo.deviceId,
+        token: token,
+        platform: deviceInfo.platform,
+        appVersion: appVersion,
+        osVersion: deviceInfo.osVersion,
+        deviceModel: deviceInfo.deviceModel,
+      );
     } catch (e, st) {
       _logger.error('Sync FCM token failed', error: e, stackTrace: st);
     }

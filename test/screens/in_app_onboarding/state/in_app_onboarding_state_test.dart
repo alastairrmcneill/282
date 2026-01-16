@@ -49,7 +49,6 @@ void main() {
       displayName: 'Test User',
       profilePictureURL: 'https://example.com/profile.jpg',
       searchName: 'test user',
-      fcmToken: 'sample_fcm_token',
     );
 
     sampleMunroCompletions = [
@@ -428,7 +427,6 @@ void main() {
         // Arrange
         when(mockSettingsState.setEnablePushNotifications(any)).thenAnswer((_) async => {});
         when(mockPushNotificationState.disablePush()).thenAnswer((_) async => true);
-        when(mockUserState.updateUser(appUser: anyNamed('appUser'))).thenAnswer((_) async => {});
 
         // Act
         await inAppOnboardingState.handleDenyNotifications();
@@ -436,10 +434,6 @@ void main() {
         // Assert
         verify(mockSettingsState.setEnablePushNotifications(false)).called(1);
         verify(mockPushNotificationState.disablePush()).called(1);
-        final captured = verify(mockUserState.updateUser(appUser: captureAnyNamed('appUser'))).captured;
-        expect(captured.length, 1);
-        final updatedUser = captured[0] as AppUser;
-        expect(updatedUser.fcmToken, '');
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingProgress,
           props: {
@@ -461,7 +455,6 @@ void main() {
         // Assert
         verify(mockSettingsState.setEnablePushNotifications(false)).called(1);
         verify(mockPushNotificationState.disablePush()).called(1);
-        verifyNever(mockUserState.updateUser(appUser: anyNamed('appUser')));
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingProgress,
           props: {
@@ -483,27 +476,12 @@ void main() {
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
-      test('should handle error when updating user fails', () async {
-        // Arrange
-        when(mockSettingsState.setEnablePushNotifications(any)).thenAnswer((_) async => {});
-        when(mockPushNotificationState.disablePush()).thenAnswer((_) async => true);
-        when(mockUserState.updateUser(appUser: anyNamed('appUser'))).thenThrow(Exception('Update error'));
-
-        // Act
-        await inAppOnboardingState.handleDenyNotifications();
-
-        // Assert
-        expect(inAppOnboardingState.error.message, 'An error occurred while processing your choice.');
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
-      });
-
       test('should set status to completing during async operation', () async {
         // Arrange
         when(mockSettingsState.setEnablePushNotifications(any)).thenAnswer((_) async {
           await Future.delayed(Duration(milliseconds: 100));
         });
         when(mockPushNotificationState.disablePush()).thenAnswer((_) async => true);
-        when(mockUserState.updateUser(appUser: anyNamed('appUser'))).thenAnswer((_) async => {});
 
         // Act
         final future = inAppOnboardingState.handleDenyNotifications();
@@ -753,24 +731,6 @@ void main() {
 
         // Assert - all calls use the same currentUser.uid from sampleUser
         verify(mockUserAchievementsRepository.getLatestMunroChallengeAchievement(userId: 'user123')).called(3);
-      });
-
-      test('should handle null fcm token when denying notifications', () async {
-        // Arrange
-        final userWithoutToken = sampleUser.copyWith(fcmToken: null);
-        when(mockUserState.currentUser).thenReturn(userWithoutToken);
-        when(mockSettingsState.setEnablePushNotifications(any)).thenAnswer((_) async => {});
-        when(mockPushNotificationState.disablePush()).thenAnswer((_) async => true);
-        when(mockUserState.updateUser(appUser: anyNamed('appUser'))).thenAnswer((_) async => {});
-
-        // Act
-        await inAppOnboardingState.handleDenyNotifications();
-
-        // Assert
-        final captured = verify(mockUserState.updateUser(appUser: captureAnyNamed('appUser'))).captured;
-        expect(captured.length, 1);
-        final updatedUser = captured[0] as AppUser;
-        expect(updatedUser.fcmToken, '');
       });
     });
 
