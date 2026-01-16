@@ -173,6 +173,157 @@ class MockPushNotificationRepository extends _i1.Mock
       ) as _i6.Future<_i2.RemoteMessage?>);
 }
 
+/// A class which mocks [FcmTokenRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockFcmTokenRepository extends _i1.Mock
+    implements _i4.FcmTokenRepository {
+  MockFcmTokenRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<void> upsertToken({
+    required String? userId,
+    required String? deviceId,
+    required String? token,
+    required String? platform,
+    String? appVersion,
+    String? osVersion,
+    String? deviceModel,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #upsertToken,
+          [],
+          {
+            #userId: userId,
+            #deviceId: deviceId,
+            #token: token,
+            #platform: platform,
+            #appVersion: appVersion,
+            #osVersion: osVersion,
+            #deviceModel: deviceModel,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setTokenPushEnabled({
+    required String? userId,
+    required String? deviceId,
+    required bool? enabled,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setTokenPushEnabled,
+          [],
+          {
+            #userId: userId,
+            #deviceId: deviceId,
+            #enabled: enabled,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> deactivateToken({
+    required String? userId,
+    required String? deviceId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deactivateToken,
+          [],
+          {
+            #userId: userId,
+            #deviceId: deviceId,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> activateToken({
+    required String? userId,
+    required String? deviceId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #activateToken,
+          [],
+          {
+            #userId: userId,
+            #deviceId: deviceId,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> deleteToken({
+    required String? userId,
+    required String? deviceId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deleteToken,
+          [],
+          {
+            #userId: userId,
+            #deviceId: deviceId,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> deleteTokenByValue(String? token) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteTokenByValue,
+          [token],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<List<Map<String, dynamic>>> getMyDevices(String? userId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getMyDevices,
+          [userId],
+        ),
+        returnValue: _i6.Future<List<Map<String, dynamic>>>.value(
+            <Map<String, dynamic>>[]),
+      ) as _i6.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i6.Future<void> updateLastUsedAt({
+    required String? userId,
+    required String? deviceId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateLastUsedAt,
+          [],
+          {
+            #userId: userId,
+            #deviceId: deviceId,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+}
+
 /// A class which mocks [SettingsState].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -636,6 +787,30 @@ class MockNavigationIntentState extends _i1.Mock
         ),
         returnValueForMissingStub: null,
       );
+}
+
+/// A class which mocks [AppInfoRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAppInfoRepository extends _i1.Mock implements _i4.AppInfoRepository {
+  MockAppInfoRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String get version => (super.noSuchMethod(
+        Invocation.getter(#version),
+        returnValue: _i8.dummyValue<String>(
+          this,
+          Invocation.getter(#version),
+        ),
+      ) as String);
+
+  @override
+  int get buildNumber => (super.noSuchMethod(
+        Invocation.getter(#buildNumber),
+        returnValue: 0,
+      ) as int);
 }
 
 /// A class which mocks [Logger].

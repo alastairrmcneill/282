@@ -8,7 +8,6 @@ class AppUser {
   String? searchName;
   String? bio;
   String? profilePictureURL;
-  String? fcmToken;
   final String? appVersion;
   final String? platform;
   final String? signInMethod;
@@ -23,7 +22,6 @@ class AppUser {
     this.lastName,
     this.profilePictureURL,
     this.bio,
-    this.fcmToken,
     this.appVersion,
     this.platform,
     this.signInMethod,
@@ -38,7 +36,6 @@ class AppUser {
       AppUserFields.lastName: lastName,
       AppUserFields.bio: bio,
       AppUserFields.profilePictureURL: profilePictureURL,
-      AppUserFields.fcmToken: fcmToken,
       AppUserFields.appVersion: appVersion,
       AppUserFields.platform: platform,
       AppUserFields.signInMethod: signInMethod,
@@ -55,7 +52,6 @@ class AppUser {
       searchName: json[AppUserFields.searchName] as String?,
       bio: json[AppUserFields.bio] as String?,
       profilePictureURL: json[AppUserFields.profilePictureURL] as String?,
-      fcmToken: json[AppUserFields.fcmToken] as String?,
       appVersion: json[AppUserFields.appVersion] as String?,
       platform: json[AppUserFields.platform] as String?,
       signInMethod: json[AppUserFields.signInMethod] as String?,
@@ -72,7 +68,6 @@ class AppUser {
     String? lastName,
     String? profilePictureURL,
     String? bio,
-    String? fcmToken,
     String? appVersion,
     String? platform,
     String? signInMethod,
@@ -87,7 +82,6 @@ class AppUser {
       lastName: lastName ?? this.lastName,
       profilePictureURL: profilePictureURL ?? this.profilePictureURL,
       bio: bio ?? this.bio,
-      fcmToken: fcmToken ?? this.fcmToken,
       appVersion: appVersion ?? this.appVersion,
       platform: platform ?? this.platform,
       signInMethod: signInMethod ?? this.signInMethod,
@@ -112,7 +106,6 @@ class AppUser {
       ${AppUserFields.lastName}: $lastName,
       ${AppUserFields.profilePictureURL}: $profilePictureURL,
       ${AppUserFields.bio}: $bio,
-      ${AppUserFields.fcmToken}:$fcmToken,
       ${AppUserFields.appVersion}: $appVersion,
       ${AppUserFields.platform}: $platform,
       ${AppUserFields.signInMethod}: $signInMethod,
@@ -129,7 +122,6 @@ class AppUserFields {
   static String lastName = 'last_name';
   static String profilePictureURL = 'profile_picture_url';
   static String bio = 'bio';
-  static String fcmToken = 'fcm_token';
   static String appVersion = 'app_version';
   static String platform = 'platform';
   static String signInMethod = 'sign_in_method';

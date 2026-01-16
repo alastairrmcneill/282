@@ -131,12 +131,6 @@ class InAppOnboardingState extends ChangeNotifier {
       await settingsState.setEnablePushNotifications(false);
       await pushNotificationState.disablePush();
 
-      // Clear FCM token from database
-      final user = userState.currentUser;
-      if (user != null) {
-        await userState.updateUser(appUser: user.copyWith(fcmToken: ''));
-      }
-
       await analytics.track(
         AnalyticsEvent.onboardingProgress,
         props: {
