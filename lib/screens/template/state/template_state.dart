@@ -1,11 +1,16 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class TemplateState extends ChangeNotifier {
+  final Analytics _analytics;
   final Logger _logger;
 
   TemplateState(
+    this._analytics,
     this._logger,
   );
 
@@ -23,12 +28,7 @@ class TemplateState extends ChangeNotifier {
   set setError(Error error) {
     _status = TemplateStatus.error;
     _error = error;
-    _logger.error(error.message);
     notifyListeners();
-  }
-
-  void logError(Exception exception, StackTrace stackTrace) {
-    _logger.error(exception.toString(), stackTrace: stackTrace);
   }
 
   void reset() {

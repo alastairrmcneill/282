@@ -44,8 +44,11 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future _loadData() async {
-    context.read<AchievementsState>().getUserAchievements();
-    context.read<CurrentUserFollowerState>().loadInitial();
+    await context.read<AchievementsState>().getUserAchievements();
+    await context.read<CurrentUserFollowerState>().loadInitial();
+
+    await context.read<GlobalCompletionState>().fetchGlobalCompletionCount();
+    // await context.read<LocalStorageRepository>().setGlobalCompletionCount(0);
   }
 
   @override
@@ -107,6 +110,10 @@ class HomeScreenState extends State<HomeScreen> {
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
               return;
             }
+          }
+
+          if (value == 0) {
+            context.read<GlobalCompletionState>().fetchGlobalCompletionCount();
           }
 
           if (value == 1) {

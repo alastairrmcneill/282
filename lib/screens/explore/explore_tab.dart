@@ -64,7 +64,7 @@ class _ExploreTabState extends State<ExploreTab> {
     final double topPadding = MediaQuery.of(context).padding.top;
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
     final double bottomNavBarHeight = layoutState.bottomNavBarHeight;
-    const double headerHeight = 60;
+    const double headerHeight = 90;
 
     return Scaffold(
       body: Stack(
