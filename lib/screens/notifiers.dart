@@ -6,6 +6,7 @@ export 'comments/state/comments_state.dart';
 export 'comments/state/likes_state.dart';
 export 'create_post/state/create_post_state.dart';
 export 'create_review/state/create_review_state.dart';
+export 'explore/state/global_completion_state.dart';
 export 'explore/state/munro_state.dart';
 export 'feed/state/feed_state.dart';
 export 'feed/state/user_like_state.dart';

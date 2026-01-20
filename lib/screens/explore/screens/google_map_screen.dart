@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/app_flags-repository.dart';
+import 'package:two_eight_two/repos/app_flags_repository.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 

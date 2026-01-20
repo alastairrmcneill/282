@@ -47,8 +47,10 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => SavedListRepository(client)),
       Provider(create: (_) => SavedListMunroRepository(client)),
       Provider(create: (_) => UserAchievementsRepository(client)),
+      Provider(create: (_) => GlobalCompletionCountRepository(client)),
       Provider(create: (_) => SettingsRepository(sharedPreferences)),
       Provider(create: (_) => AppFlagsRepository(sharedPreferences)),
+      Provider(create: (_) => LocalStorageRepository(sharedPreferences)),
       Provider(create: (_) => WeartherRepository()),
       Provider(create: (_) => ShareLinkRepository()),
       Provider<Analytics>(
@@ -128,6 +130,13 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           munroState.syncCompletedIds(completions.completedMunroIds);
           return munroState;
         },
+      ),
+      ChangeNotifierProvider<GlobalCompletionState>(
+        create: (ctx) => GlobalCompletionState(
+          ctx.read<GlobalCompletionCountRepository>(),
+          ctx.read<LocalStorageRepository>(),
+          ctx.read<Logger>(),
+        )..loadFromLocalStorage(),
       ),
       ChangeNotifierProvider<UserLikeState>(
         create: (ctx) => UserLikeState(
