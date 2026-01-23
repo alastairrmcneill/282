@@ -46,10 +46,9 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
         isLoading = true;
       });
 
-      List<MunroPicture> newPhotos = await widget.args.fetchMorePhotos();
+      await widget.args.fetchMorePhotos();
 
       setState(() {
-        photos.addAll(newPhotos);
         isLoading = false;
       });
     }
