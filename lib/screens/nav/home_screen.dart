@@ -48,7 +48,6 @@ class HomeScreenState extends State<HomeScreen> {
     await context.read<CurrentUserFollowerState>().loadInitial();
 
     await context.read<GlobalCompletionState>().fetchGlobalCompletionCount();
-    // await context.read<LocalStorageRepository>().setGlobalCompletionCount(0);
   }
 
   @override

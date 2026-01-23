@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -41,24 +41,43 @@ class MunroPictureGallery extends StatelessWidget {
       child: Wrap(
         runAlignment: WrapAlignment.start,
         spacing: 5,
-        children: munroDetailState.munroPictures.take(4).toList().asMap().entries.map((entry) {
-          int index = entry.key;
-          MunroPicture munroPicture = entry.value;
+        children: munroDetailState.munroPictures.take(4).map((munroPicture) {
           return ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: SizedBox(
               width: (MediaQuery.of(context).size.width - 60) / 4,
               height: (MediaQuery.of(context).size.width - 60) / 4,
-              child: ClickableImage(
-                image: munroPicture,
-                munroPictures: munroDetailState.munroPictures,
-                initialIndex: index,
-                fetchMorePhotos: () async {
-                  List<MunroPicture> newPhotos = await munroDetailState.paginateMunroPictures(
-                    munroId: munroState.selectedMunro!.id,
-                  );
-                  return newPhotos;
+              child: InkWell(
+                onTap: () {
+                  munroDetailState.loadMunroPictures(munroId: munroState.selectedMunro!.id);
+                  Navigator.of(context).pushNamed(MunroPhotoGallery.route);
                 },
+                child: CachedNetworkImage(
+                  progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                    child: LinearProgressIndicator(
+                      value: downloadProgress.progress,
+                    ),
+                  ),
+                  imageUrl: munroPicture.imageUrl,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error),
+                          Text(
+                            error.toString().contains('ClientException with SocketException: Connection reset by peer')
+                                ? "Error loading image. Please check your internet connection and try again."
+                                : error.toString(),
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           );
