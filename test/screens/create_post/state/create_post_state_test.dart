@@ -59,7 +59,7 @@ void main() {
       title: 'Summer Hike',
       description: 'A great day on the hills',
       dateTimeCreated: DateTime(2024, 6, 15, 10, 30),
-      summitedDateTime: DateTime(2024, 6, 15, 10, 30),
+      dateTimeCompleted: DateTime(2024, 6, 15, 10, 30),
       imageUrlsMap: {},
       includedMunroIds: [1, 2],
       privacy: Privacy.public,
@@ -91,7 +91,19 @@ void main() {
     // Default mock behavior for MunroCompletionState
     when(mockMunroCompletionState.markMunrosAsCompleted(
       munroIds: anyNamed('munroIds'),
-      summitDateTime: anyNamed('summitDateTime'),
+      dateTimeCompleted: anyNamed('dateTimeCompleted'),
+      completionDate: anyNamed('completionDate'),
+      completionStartTime: anyNamed('completionStartTime'),
+      completionDuration: anyNamed('completionDuration'),
+      postId: anyNamed('postId'),
+    )).thenAnswer((_) async => {});
+
+    when(mockMunroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+      munroIds: anyNamed('munroIds'),
+      dateTimeCompleted: anyNamed('dateTimeCompleted'),
+      completionDate: anyNamed('completionDate'),
+      completionStartTime: anyNamed('completionStartTime'),
+      completionDuration: anyNamed('completionDuration'),
       postId: anyNamed('postId'),
     )).thenAnswer((_) async => {});
 
@@ -117,9 +129,9 @@ void main() {
         expect(createPostState.error, isA<Error>());
         expect(createPostState.title, isNull);
         expect(createPostState.description, isNull);
-        expect(createPostState.summitedDate, isNull);
-        expect(createPostState.startTime, isNull);
-        expect(createPostState.duration, isNull);
+        expect(createPostState.completionDate, isNull);
+        expect(createPostState.completionStartTime, isNull);
+        expect(createPostState.completionDuration, isNull);
         expect(createPostState.existingImages, isEmpty);
         expect(createPostState.addedImages, isEmpty);
         expect(createPostState.deletedImages, isEmpty);
@@ -157,20 +169,20 @@ void main() {
         expect(createPostState.description, 'A wonderful day in the mountains');
       });
 
-      test('setSummitedDate should update summited date', () {
-        createPostState.setSummitedDate = sampleDate;
-        expect(createPostState.summitedDate, sampleDate);
+      test('setCompletionDate should update completion date', () {
+        createPostState.setCompletionDate = sampleDate;
+        expect(createPostState.completionDate, sampleDate);
       });
 
-      test('setStartTime should update start time', () {
-        createPostState.setStartTime = sampleTime;
-        expect(createPostState.startTime, sampleTime);
+      test('setCompletionStartTime should update completion start time', () {
+        createPostState.setCompletionStartTime = sampleTime;
+        expect(createPostState.completionStartTime, sampleTime);
       });
 
-      test('setDuration should update duration', () {
+      test('setCompletionDuration should update completion duration', () {
         final duration = const Duration(hours: 5, minutes: 30);
-        createPostState.setDuration = duration;
-        expect(createPostState.duration, duration);
+        createPostState.setCompletionDuration = duration;
+        expect(createPostState.completionDuration, duration);
       });
 
       test('setPostPrivacy should update post privacy', () {
@@ -185,7 +197,9 @@ void main() {
 
         expect(createPostState.editingPost, samplePost);
         expect(createPostState.title, samplePost.title);
-        expect(createPostState.summitedDate, samplePost.summitedDateTime);
+        expect(createPostState.completionDate, samplePost.completionDate);
+        expect(createPostState.completionStartTime, samplePost.completionStartTime);
+        expect(createPostState.completionDuration, samplePost.completionDuration);
         expect(createPostState.description, samplePost.description);
         expect(createPostState.existingImages, samplePost.imageUrlsMap);
         expect(createPostState.addedImages, isEmpty);
@@ -194,28 +208,6 @@ void main() {
         expect(createPostState.addedMunroIds, isEmpty);
         expect(createPostState.deletedMunroIds, isEmpty);
         expect(createPostState.postPrivacy, samplePost.privacy);
-      });
-
-      test('should extract correct time from post summited date', () {
-        createPostState.loadPost = samplePost;
-
-        expect(createPostState.startTime?.hour, samplePost.summitedDateTime?.hour);
-        expect(createPostState.startTime?.minute, samplePost.summitedDateTime?.minute);
-      });
-
-      test('should handle post with null summited date', () {
-        final postWithNullDate = Post(
-          uid: 'post123',
-          authorId: 'currentUser',
-          title: 'Test Post',
-          summitedDateTime: null,
-        );
-
-        createPostState.loadPost = postWithNullDate;
-
-        expect(createPostState.summitedDate, isNull);
-        expect(createPostState.startTime?.hour, 12);
-        expect(createPostState.startTime?.minute, 0);
       });
     });
 
@@ -320,9 +312,9 @@ void main() {
         // Arrange
         createPostState.setTitle = 'Test Title';
         createPostState.setDescription = 'Test Description';
-        createPostState.setSummitedDate = sampleDate;
-        createPostState.setStartTime = sampleTime;
-        createPostState.setDuration = const Duration(hours: 5);
+        createPostState.setCompletionDate = sampleDate;
+        createPostState.setCompletionStartTime = sampleTime;
+        createPostState.setCompletionDuration = const Duration(hours: 5);
         createPostState.setPostPrivacy = Privacy.private;
         createPostState.setStatus = CreatePostStatus.loaded;
         createPostState.addMunro(1);
@@ -337,9 +329,9 @@ void main() {
         expect(createPostState.error, isA<Error>());
         expect(createPostState.title, isNull);
         expect(createPostState.description, isNull);
-        expect(createPostState.summitedDate, isNull);
-        expect(createPostState.startTime, isNull);
-        expect(createPostState.duration, isNull);
+        expect(createPostState.completionDate, isNull);
+        expect(createPostState.completionStartTime, isNull);
+        expect(createPostState.completionDuration, isNull);
         expect(createPostState.existingImages, isEmpty);
         expect(createPostState.addedImages, isEmpty);
         expect(createPostState.deletedImages, isEmpty);
@@ -392,7 +384,7 @@ void main() {
         final uploadedURL2 = 'https://example.com/image2.jpg';
 
         createPostState.setTitle = 'Test Post';
-        createPostState.setSummitedDate = sampleDate;
+        createPostState.setCompletionDate = sampleDate;
         createPostState.addMunro(1);
         createPostState.addImage(munroId: 1, image: mockFile1);
         createPostState.addImage(munroId: 1, image: mockFile2);
@@ -454,7 +446,7 @@ void main() {
       test('should create post without images and not call storage repository', () async {
         // Arrange
         createPostState.setTitle = 'Test Post';
-        createPostState.setSummitedDate = sampleDate;
+        createPostState.setCompletionDate = sampleDate;
         createPostState.addMunro(1);
 
         when(mockPostsRepository.create(post: anyNamed('post'))).thenAnswer((_) async => 'post123');
@@ -466,6 +458,333 @@ void main() {
 
         // Assert
         verifyNever(mockStorageRepository.uploadImage(imageFile: anyNamed('imageFile'), type: anyNamed('type')));
+      });
+    });
+
+    group('createPost - dateTimeCompleted population', () {
+      late RemoteConfig mockConfig;
+
+      setUp(() {
+        mockConfig = RemoteConfig.defaultConfig;
+        when(mockRemoteConfigState.config).thenReturn(mockConfig);
+        when(mockPostsRepository.create(post: anyNamed('post'))).thenAnswer((_) async => 'post123');
+        when(mockMunroPicturesRepository.createMunroPictures(munroPictures: anyNamed('munroPictures')))
+            .thenAnswer((_) async {});
+      });
+
+      test('should use both completionDate and completionStartTime when both are provided', () async {
+        // Arrange
+        final testDate = DateTime(2024, 6, 15);
+        final testTime = const TimeOfDay(hour: 14, minute: 30);
+        final expectedDateTime = DateTime(2024, 6, 15, 14, 30);
+
+        createPostState.setCompletionDate = testDate;
+        createPostState.setCompletionStartTime = testTime;
+        createPostState.addMunro(1);
+
+        // Act
+        await createPostState.createPost();
+
+        // Assert
+        verify(mockMunroCompletionState.markMunrosAsCompleted(
+          munroIds: [1],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: testDate,
+          completionStartTime: testTime,
+          completionDuration: null,
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should use completionDate with current time when completionStartTime is null', () async {
+        // Arrange
+        final testDate = DateTime(2024, 6, 15);
+        createPostState.setCompletionDate = testDate;
+        createPostState.setCompletionStartTime = null;
+        createPostState.addMunro(1);
+
+        // Act
+        final beforeCall = DateTime.now();
+        await createPostState.createPost();
+        final afterCall = DateTime.now();
+
+        // Assert
+        final captured = verify(mockMunroCompletionState.markMunrosAsCompleted(
+          munroIds: [1],
+          dateTimeCompleted: captureAnyNamed('dateTimeCompleted'),
+          completionDate: testDate,
+          completionStartTime: null,
+          completionDuration: null,
+          postId: 'post123',
+        )).captured.single as DateTime;
+
+        expect(captured.year, testDate.year);
+        expect(captured.month, testDate.month);
+        expect(captured.day, testDate.day);
+        expect(captured.hour, greaterThanOrEqualTo(beforeCall.hour));
+        expect(captured.hour, lessThanOrEqualTo(afterCall.hour));
+      });
+
+      test('should use current date with completionStartTime when completionDate is null', () async {
+        // Arrange
+        final testTime = const TimeOfDay(hour: 14, minute: 30);
+        createPostState.setCompletionDate = null;
+        createPostState.setCompletionStartTime = testTime;
+        createPostState.addMunro(1);
+
+        // Act
+        final beforeCall = DateTime.now();
+        await createPostState.createPost();
+        final afterCall = DateTime.now();
+
+        // Assert
+        final captured = verify(mockMunroCompletionState.markMunrosAsCompleted(
+          munroIds: [1],
+          dateTimeCompleted: captureAnyNamed('dateTimeCompleted'),
+          completionDate: null,
+          completionStartTime: testTime,
+          completionDuration: null,
+          postId: 'post123',
+        )).captured.single as DateTime;
+
+        expect(captured.year, greaterThanOrEqualTo(beforeCall.year));
+        expect(captured.year, lessThanOrEqualTo(afterCall.year));
+        expect(captured.month, greaterThanOrEqualTo(beforeCall.month));
+        expect(captured.month, lessThanOrEqualTo(afterCall.month));
+        expect(captured.day, greaterThanOrEqualTo(beforeCall.day));
+        expect(captured.day, lessThanOrEqualTo(afterCall.day));
+        expect(captured.hour, testTime.hour);
+        expect(captured.minute, testTime.minute);
+      });
+
+      test('should use current date and time when both completionDate and completionStartTime are null', () async {
+        // Arrange
+        createPostState.setCompletionDate = null;
+        createPostState.setCompletionStartTime = null;
+        createPostState.addMunro(1);
+
+        // Act
+        final now = DateTime.now();
+        await createPostState.createPost();
+
+        // Assert
+        final captured = verify(mockMunroCompletionState.markMunrosAsCompleted(
+          munroIds: [1],
+          dateTimeCompleted: captureAnyNamed('dateTimeCompleted'),
+          completionDate: null,
+          completionStartTime: null,
+          completionDuration: null,
+          postId: 'post123',
+        )).captured.single as DateTime;
+
+        // The dateTimeCompleted is constructed with only year, month, day, hour, minute
+        // So seconds and milliseconds will be 0
+        expect(captured.year, now.year);
+        expect(captured.month, now.month);
+        expect(captured.day, now.day);
+        expect(captured.hour, now.hour);
+        // Minute could be the same or one more if we crossed a minute boundary
+        expect(captured.minute, anyOf(now.minute, now.minute + 1));
+        expect(captured.second, 0);
+        expect(captured.millisecond, 0);
+      });
+
+      test('should pass completionDuration when provided', () async {
+        // Arrange
+        final testDate = DateTime(2024, 6, 15);
+        final testTime = const TimeOfDay(hour: 14, minute: 30);
+        final testDuration = const Duration(hours: 3, minutes: 45);
+        final expectedDateTime = DateTime(2024, 6, 15, 14, 30);
+
+        createPostState.setCompletionDate = testDate;
+        createPostState.setCompletionStartTime = testTime;
+        createPostState.setCompletionDuration = testDuration;
+        createPostState.addMunro(1);
+
+        // Act
+        await createPostState.createPost();
+
+        // Assert
+        verify(mockMunroCompletionState.markMunrosAsCompleted(
+          munroIds: [1],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: testDate,
+          completionStartTime: testTime,
+          completionDuration: testDuration,
+          postId: 'post123',
+        )).called(1);
+      });
+    });
+
+    group('editPost - dateTimeCompleted population', () {
+      late Post postWithCompletionData;
+
+      setUp(() {
+        postWithCompletionData = samplePost.copyWith(
+          dateTimeCompleted: DateTime(2024, 6, 15, 10, 30),
+          completionDate: DateTime(2024, 6, 15),
+          completionStartTime: const TimeOfDay(hour: 10, minute: 30),
+          completionDuration: const Duration(hours: 4),
+        );
+        when(mockPostsRepository.update(post: anyNamed('post'))).thenAnswer((_) async {});
+        when(mockMunroPicturesRepository.createMunroPictures(munroPictures: anyNamed('munroPictures')))
+            .thenAnswer((_) async {});
+      });
+
+      test('should use new completionDate and completionStartTime when both are provided', () async {
+        // Arrange
+        final newDate = DateTime(2024, 7, 20);
+        final newTime = const TimeOfDay(hour: 15, minute: 45);
+        final expectedDateTime = DateTime(2024, 7, 20, 15, 45);
+
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.setCompletionDate = newDate;
+        createPostState.setCompletionStartTime = newTime;
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        verify(mockMunroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: newDate,
+          completionStartTime: newTime,
+          completionDuration: const Duration(hours: 4),
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should use new completionDate with original time when completionStartTime is null', () async {
+        // Arrange
+        final newDate = DateTime(2024, 7, 20);
+        final expectedDateTime = DateTime(2024, 7, 20, 10, 30);
+
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.setCompletionDate = newDate;
+        createPostState.setCompletionStartTime = null;
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        verify(mockMunroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: newDate,
+          completionStartTime: null,
+          completionDuration: const Duration(hours: 4),
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should use original date with new completionStartTime when completionDate is null', () async {
+        // Arrange
+        final newTime = const TimeOfDay(hour: 15, minute: 45);
+        final expectedDateTime = DateTime(2024, 6, 15, 15, 45);
+
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.setCompletionDate = null;
+        createPostState.setCompletionStartTime = newTime;
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        verify(mockMunroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: null,
+          completionStartTime: newTime,
+          completionDuration: const Duration(hours: 4),
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should use original date and time when both new values are null', () async {
+        // Arrange
+        final expectedDateTime = DateTime(2024, 6, 15, 10, 30);
+
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.setCompletionDate = null;
+        createPostState.setCompletionStartTime = null;
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        verify(mockMunroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: null,
+          completionStartTime: null,
+          completionDuration: const Duration(hours: 4),
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should update completionDuration when provided', () async {
+        // Arrange
+        final newDuration = const Duration(hours: 5, minutes: 30);
+        final expectedDateTime = DateTime(2024, 6, 15, 10, 30);
+
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.setCompletionDuration = newDuration;
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        // When only duration is set, date and time come from the loaded post
+        verify(mockMunroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: DateTime(2024, 6, 15),
+          completionStartTime: const TimeOfDay(hour: 10, minute: 30),
+          completionDuration: newDuration,
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should call markMunrosAsCompleted for newly added munros', () async {
+        // Arrange
+        final newDate = DateTime(2024, 7, 20);
+        final newTime = const TimeOfDay(hour: 15, minute: 45);
+        final expectedDateTime = DateTime(2024, 7, 20, 15, 45);
+
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.setCompletionDate = newDate;
+        createPostState.setCompletionStartTime = newTime;
+        createPostState.addMunro(3);
+        createPostState.addMunro(4);
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        verify(mockMunroCompletionState.markMunrosAsCompleted(
+          munroIds: [3, 4],
+          dateTimeCompleted: expectedDateTime,
+          completionDate: newDate,
+          completionStartTime: newTime,
+          completionDuration: const Duration(hours: 4),
+          postId: 'post123',
+        )).called(1);
+      });
+
+      test('should call removeCompletionsByMunroIdsAndPost for deleted munros', () async {
+        // Arrange
+        createPostState.loadPost = postWithCompletionData;
+        createPostState.removeMunro(1);
+
+        // Act
+        await createPostState.editPost();
+
+        // Assert
+        verify(mockMunroCompletionState.removeCompletionsByMunroIdsAndPost(
+          munroIds: [1],
+          postId: 'post123',
+        )).called(1);
       });
     });
 
