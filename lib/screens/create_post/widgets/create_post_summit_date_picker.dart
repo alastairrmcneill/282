@@ -12,7 +12,7 @@ class CreatePostSummitDatePicker extends StatelessWidget {
     final createPostState = context.watch<CreatePostState>();
     TextEditingController dateController = TextEditingController(
       text: DateFormat('dd/MM/yy').format(
-        createPostState.summitedDate ?? DateTime.now(),
+        createPostState.completionDate ?? DateTime.now(),
       ),
     );
 
@@ -34,7 +34,7 @@ class CreatePostSummitDatePicker extends StatelessWidget {
         if (pickedStartDate != null) {
           DateTime date = pickedStartDate!.add(const Duration(hours: 12));
 
-          createPostState.setSummitedDate = date;
+          createPostState.setCompletionDate = date;
         }
       },
       validator: (value) {

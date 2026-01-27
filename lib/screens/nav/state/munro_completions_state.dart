@@ -79,7 +79,10 @@ class MunroCompletionState extends ChangeNotifier {
 
   Future<void> markMunrosAsCompleted({
     required List<int> munroIds,
-    required DateTime summitDateTime,
+    required DateTime dateTimeCompleted,
+    DateTime? completionDate,
+    TimeOfDay? completionStartTime,
+    Duration? completionDuration,
     String? postId,
   }) async {
     if (userState.currentUser == null) {
@@ -94,7 +97,10 @@ class MunroCompletionState extends ChangeNotifier {
               userId: userState.currentUser!.uid ?? "",
               munroId: id,
               postId: postId,
-              dateTimeCompleted: summitDateTime,
+              dateTimeCompleted: dateTimeCompleted,
+              completionDate: completionDate,
+              completionStartTime: completionStartTime,
+              completionDuration: completionDuration,
             ),
           )
           .toList();

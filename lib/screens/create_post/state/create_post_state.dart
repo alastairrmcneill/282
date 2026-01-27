@@ -32,9 +32,9 @@ class CreatePostState extends ChangeNotifier {
   Error _error = Error();
   String? _title;
   String? _description;
-  DateTime? _summitedDate;
-  TimeOfDay? _startTime;
-  Duration? _duration;
+  DateTime? _completionDate;
+  TimeOfDay? _completionStartTime;
+  Duration? _completionDuration;
   Map<int, List<String>> _existingImages = {};
   Map<int, List<File>> _addedImages = {};
   Set<String> _deletedImages = {};
@@ -48,9 +48,9 @@ class CreatePostState extends ChangeNotifier {
   Error get error => _error;
   String? get title => _title;
   String? get description => _description;
-  DateTime? get summitedDate => _summitedDate;
-  TimeOfDay? get startTime => _startTime;
-  Duration? get duration => _duration;
+  DateTime? get completionDate => _completionDate;
+  TimeOfDay? get completionStartTime => _completionStartTime;
+  Duration? get completionDuration => _completionDuration;
   Map<int, List<String>> get existingImages => _existingImages;
   Map<int, List<File>> get addedImages => _addedImages;
   Set<String> get deletedImages => _deletedImages;
@@ -98,23 +98,38 @@ class CreatePostState extends ChangeNotifier {
         title = _title!;
       }
 
-      DateTime postDateTime = DateTime.now().toUtc();
+      // Get munro completion date and time
+      var now = DateTime.now();
 
-      // Get summitDateTime by combining date and time
-      DateTime? summitDateTime = DateTime(
-        _summitedDate?.year ?? postDateTime.year,
-        _summitedDate?.month ?? postDateTime.month,
-        _summitedDate?.day ?? postDateTime.day,
-        _startTime?.hour ?? 12,
-        _startTime?.minute ?? 0,
-      );
+      DateTime? dateTimeCompleted;
+      if (_completionDate != null) {
+        dateTimeCompleted = DateTime(
+          _completionDate!.year,
+          _completionDate!.month,
+          _completionDate!.day,
+          0,
+          0,
+        );
+      } else {
+        dateTimeCompleted = now;
+      }
+
+      if (_completionStartTime != null) {
+        dateTimeCompleted = DateTime(
+          dateTimeCompleted.year,
+          dateTimeCompleted.month,
+          dateTimeCompleted.day,
+          _completionStartTime!.hour,
+          _completionStartTime!.minute,
+        );
+      }
 
       // Create post object
       Post post = Post(
         authorId: _userState.currentUser?.uid ?? "",
         title: title,
         description: _description,
-        dateTimeCreated: postDateTime,
+        dateTimeCreated: now,
         privacy: _postPrivacy ?? Privacy.public,
       );
 
@@ -127,6 +142,10 @@ class CreatePostState extends ChangeNotifier {
       _analytics.track(
         AnalyticsEvent.createPost,
         props: {
+          AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
+          AnalyticsProp.completionStartTime:
+              _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
+          AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
           AnalyticsProp.privacy: post.privacy,
           AnalyticsProp.showPrivacyOption: showPrivacyOption,
           AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
@@ -138,7 +157,10 @@ class CreatePostState extends ChangeNotifier {
       // Complete munros
       await _munroCompletionState.markMunrosAsCompleted(
         munroIds: selectedMunroIds.toList(),
-        summitDateTime: summitDateTime,
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
         postId: postId,
       );
 
@@ -153,7 +175,9 @@ class CreatePostState extends ChangeNotifier {
       setStatus = CreatePostStatus.loaded;
       return post.copyWith(
         uid: postId,
-        summitedDateTime: summitDateTime,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
         imageUrlsMap: addedImageUrlsMap,
       );
     } catch (error, stackTrace) {
@@ -184,18 +208,36 @@ class CreatePostState extends ChangeNotifier {
       Post post = _editingPost!;
 
       // Get summitDateTime by combining date and time
-      DateTime? summitDateTime = DateTime(
-        _summitedDate?.year ?? post.summitedDateTime!.year,
-        _summitedDate?.month ?? post.summitedDateTime!.month,
-        _summitedDate?.day ?? post.summitedDateTime!.day,
-        _startTime?.hour ?? 12,
-        _startTime?.minute ?? 0,
-      );
+      DateTime? dateTimeCompleted;
+
+      if (_completionDate != null) {
+        dateTimeCompleted = DateTime(
+          _completionDate!.year,
+          _completionDate!.month,
+          _completionDate!.day,
+          0,
+          0,
+        );
+      } else {
+        dateTimeCompleted = post.dateTimeCompleted!;
+      }
+
+      if (_completionStartTime != null) {
+        dateTimeCompleted = DateTime(
+          dateTimeCompleted.year,
+          dateTimeCompleted.month,
+          dateTimeCompleted.day,
+          _completionStartTime!.hour,
+          _completionStartTime!.minute,
+        );
+      }
 
       Post newPost = post.copyWith(
         title: _title,
         description: _description,
-        summitedDateTime: summitDateTime,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
         privacy: _postPrivacy ?? Privacy.public,
       );
 
@@ -204,7 +246,10 @@ class CreatePostState extends ChangeNotifier {
 
       _munroCompletionState.markMunrosAsCompleted(
         munroIds: _addedMunroIds.toList(),
-        summitDateTime: newPost.summitedDateTime!,
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
         postId: post.uid,
       );
 
@@ -236,6 +281,10 @@ class CreatePostState extends ChangeNotifier {
         AnalyticsEvent.editPost,
         props: {
           AnalyticsProp.postId: post.uid,
+          AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
+          AnalyticsProp.completionStartTime:
+              _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
+          AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
           AnalyticsProp.privacy: post.privacy,
           AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
           AnalyticsProp.imagesAdded:
@@ -323,18 +372,18 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setSummitedDate(DateTime? summitedDate) {
-    _summitedDate = summitedDate;
+  set setCompletionDate(DateTime? completionDate) {
+    _completionDate = completionDate;
     notifyListeners();
   }
 
-  set setStartTime(TimeOfDay? startTime) {
-    _startTime = startTime;
+  set setCompletionStartTime(TimeOfDay? completionStartTime) {
+    _completionStartTime = completionStartTime;
     notifyListeners();
   }
 
-  set setDuration(Duration? duration) {
-    _duration = duration;
+  set setCompletionDuration(Duration? completionDuration) {
+    _completionDuration = completionDuration;
     notifyListeners();
   }
 
@@ -346,9 +395,9 @@ class CreatePostState extends ChangeNotifier {
   set loadPost(Post post) {
     _editingPost = post;
     _title = post.title;
-    _summitedDate = post.summitedDateTime;
-    _startTime = TimeOfDay.fromDateTime(post.summitedDateTime ?? DateTime(0, 0, 0, 12, 0));
-    _duration = post.duration;
+    _completionDate = post.completionDate;
+    _completionStartTime = post.completionStartTime;
+    _completionDuration = post.completionDuration;
     _description = post.description;
     _existingImages = post.imageUrlsMap;
     _addedImages = {};
@@ -360,12 +409,12 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  addMunro(int munroId) {
+  void addMunro(int munroId) {
     _addedMunroIds.add(munroId);
     notifyListeners();
   }
 
-  removeMunro(int munroId) {
+  void removeMunro(int munroId) {
     if (_existingMunroIds.contains(munroId)) {
       _existingMunroIds.remove(munroId);
       _deletedMunroIds.add(munroId);
@@ -387,7 +436,7 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  addImage({required int munroId, required File image}) {
+  void addImage({required int munroId, required File image}) {
     if (_addedImages[munroId] == null) _addedImages[munroId] = [];
 
     _addedImages[munroId]!.add(image);
@@ -395,14 +444,14 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeImage({required int munroId, required int index}) {
+  void removeImage({required int munroId, required int index}) {
     if (_addedImages[munroId] == null) return;
 
     _addedImages[munroId]!.removeAt(index);
     notifyListeners();
   }
 
-  removeExistingImage({required int munroId, required String url}) {
+  void removeExistingImage({required int munroId, required String url}) {
     if (_existingImages[munroId] == null) return;
     if (_existingImages[munroId]!.contains(url)) {
       _existingImages[munroId]!.remove(url);
@@ -411,12 +460,12 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  reset() {
+  void reset() {
     _title = null;
     _description = null;
-    _summitedDate = null;
-    _startTime = null;
-    _duration = null;
+    _completionDate = null;
+    _completionStartTime = null;
+    _completionDuration = null;
     _editingPost = null;
     _existingImages = {};
     _addedImages = {};
