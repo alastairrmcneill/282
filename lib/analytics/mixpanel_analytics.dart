@@ -21,6 +21,8 @@ class MixpanelAnalytics implements Analytics {
   @override
   Future<void> identify(String userId) async {
     try {
+      var annonId = await _mixpanel.getDistinctId();
+      _mixpanel.alias(userId, annonId);
       await _mixpanel.identify(userId);
     } catch (e, st) {
       _logger.error('Analytics.identify failed: userId=$userId, error=$e', stackTrace: st);
