@@ -471,15 +471,6 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
       ) as bool);
 
   @override
-  void init() => super.noSuchMethod(
-        Invocation.method(
-          #init,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   void dispose() => super.noSuchMethod(
         Invocation.method(
           #dispose,
