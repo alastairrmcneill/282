@@ -1,4 +1,6 @@
+import 'package:flutter/src/material/time.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class MunroCompletionsRepository {
@@ -34,5 +36,25 @@ class MunroCompletionsRepository {
     required String postId,
   }) async {
     await _table.delete().eq(MunroCompletionFields.postId, postId).inFilter(MunroCompletionFields.munroId, munroIds);
+  }
+
+  Future<void> updateByMunroIdsAndPostId({
+    required List<int> munroIds,
+    required String postId,
+    required DateTime dateTimeCompleted,
+    DateTime? completionDate,
+    TimeOfDay? completionStartTime,
+    Duration? completionDuration,
+  }) async {
+    await _table
+        .update({
+          MunroCompletionFields.dateTimeCompleted: dateTimeCompleted.toIso8601String(),
+          if (completionDate != null) MunroCompletionFields.completionDate: completionDate.toIso8601String(),
+          if (completionStartTime != null)
+            MunroCompletionFields.completionStartTime: completionStartTime.format24Hour(),
+          if (completionDuration != null) MunroCompletionFields.completionDuration: completionDuration.inSeconds,
+        })
+        .eq(MunroCompletionFields.postId, postId)
+        .inFilter(MunroCompletionFields.munroId, munroIds);
   }
 }

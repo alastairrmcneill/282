@@ -109,15 +109,6 @@ class PostWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  // Align(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Text(
-                  //     post.title,
-                  //     maxLines: 2,
-                  //     overflow: TextOverflow.ellipsis,
-                  //     style: Theme.of(context).textTheme.titleLarge,
-                  //   ),
-                  // ),
                   _buildIncludedMunroText(context),
                   _buildDescription(context),
                   Padding(

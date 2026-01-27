@@ -79,7 +79,10 @@ class MunroCompletionState extends ChangeNotifier {
 
   Future<void> markMunrosAsCompleted({
     required List<int> munroIds,
-    required DateTime summitDateTime,
+    required DateTime dateTimeCompleted,
+    DateTime? completionDate,
+    TimeOfDay? completionStartTime,
+    Duration? completionDuration,
     String? postId,
   }) async {
     if (userState.currentUser == null) {
@@ -94,7 +97,10 @@ class MunroCompletionState extends ChangeNotifier {
               userId: userState.currentUser!.uid ?? "",
               munroId: id,
               postId: postId,
-              dateTimeCompleted: summitDateTime,
+              dateTimeCompleted: dateTimeCompleted,
+              completionDate: completionDate,
+              completionStartTime: completionStartTime,
+              completionDuration: completionDuration,
             ),
           )
           .toList();
@@ -158,6 +164,55 @@ class MunroCompletionState extends ChangeNotifier {
         final matchMunro = munroIds.contains(mc.munroId);
         final matchPost = mc.postId == postId;
         return !(matchMunro && matchPost);
+      }).toList();
+
+      notifyListeners();
+    } catch (e, st) {
+      _logger.error(e.toString(), stackTrace: st);
+      _status = MunroCompletionsStatus.error;
+      _error = Error(
+        code: e.toString(),
+        message: 'There was an issue removing your munro completions',
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateMunroCompletionsByMunroIdsAndPost({
+    required List<int> munroIds,
+    required String postId,
+    required DateTime dateTimeCompleted,
+    DateTime? completionDate,
+    TimeOfDay? completionStartTime,
+    Duration? completionDuration,
+  }) async {
+    if (userState.currentUser == null) {
+      setError(Error(message: 'You must be logged in to remove munro completions.'));
+      return;
+    }
+
+    try {
+      await repository.updateByMunroIdsAndPostId(
+        munroIds: munroIds,
+        postId: postId,
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: completionDate,
+        completionStartTime: completionStartTime,
+        completionDuration: completionDuration,
+      );
+
+      _munroCompletions = _munroCompletions.map((mc) {
+        final matchMunro = munroIds.contains(mc.munroId);
+        final matchPost = mc.postId == postId;
+        if (matchMunro && matchPost) {
+          return mc.copyWith(
+            dateTimeCompleted: dateTimeCompleted,
+            completionDate: completionDate,
+            completionStartTime: completionStartTime,
+            completionDuration: completionDuration,
+          );
+        }
+        return mc;
       }).toList();
 
       notifyListeners();

@@ -7,14 +7,15 @@ import 'dart:async' as _i5;
 import 'dart:io' as _i6;
 import 'dart:ui' as _i7;
 
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i9;
+import 'package:flutter/material.dart' as _i8;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:two_eight_two/analytics/analytics.dart' as _i12;
-import 'package:two_eight_two/enums/enums.dart' as _i8;
-import 'package:two_eight_two/logging/logging.dart' as _i13;
+import 'package:mockito/src/dummies.dart' as _i11;
+import 'package:two_eight_two/analytics/analytics.dart' as _i13;
+import 'package:two_eight_two/enums/enums.dart' as _i9;
+import 'package:two_eight_two/logging/logging.dart' as _i14;
 import 'package:two_eight_two/models/models.dart' as _i3;
-import 'package:two_eight_two/push/push_notifications_state.dart' as _i11;
+import 'package:two_eight_two/push/push_notifications_state.dart' as _i12;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/notifiers.dart' as _i4;
 
@@ -426,7 +427,10 @@ class MockMunroCompletionState extends _i1.Mock
   @override
   _i5.Future<void> markMunrosAsCompleted({
     required List<int>? munroIds,
-    required DateTime? summitDateTime,
+    required DateTime? dateTimeCompleted,
+    DateTime? completionDate,
+    _i8.TimeOfDay? completionStartTime,
+    Duration? completionDuration,
     String? postId,
   }) =>
       (super.noSuchMethod(
@@ -435,7 +439,10 @@ class MockMunroCompletionState extends _i1.Mock
           [],
           {
             #munroIds: munroIds,
-            #summitDateTime: summitDateTime,
+            #dateTimeCompleted: dateTimeCompleted,
+            #completionDate: completionDate,
+            #completionStartTime: completionStartTime,
+            #completionDuration: completionDuration,
             #postId: postId,
           },
         ),
@@ -468,6 +475,32 @@ class MockMunroCompletionState extends _i1.Mock
           {
             #munroIds: munroIds,
             #postId: postId,
+          },
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> updateMunroCompletionsByMunroIdsAndPost({
+    required List<int>? munroIds,
+    required String? postId,
+    required DateTime? dateTimeCompleted,
+    DateTime? completionDate,
+    _i8.TimeOfDay? completionStartTime,
+    Duration? completionDuration,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateMunroCompletionsByMunroIdsAndPost,
+          [],
+          {
+            #munroIds: munroIds,
+            #postId: postId,
+            #dateTimeCompleted: dateTimeCompleted,
+            #completionDate: completionDate,
+            #completionStartTime: completionStartTime,
+            #completionDuration: completionDuration,
           },
         ),
         returnValue: _i5.Future<void>.value(),
@@ -953,10 +986,10 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       ) as List<_i3.Munro>);
 
   @override
-  _i8.SortOrder get sortOrder => (super.noSuchMethod(
+  _i9.SortOrder get sortOrder => (super.noSuchMethod(
         Invocation.getter(#sortOrder),
-        returnValue: _i8.SortOrder.alphabetical,
-      ) as _i8.SortOrder);
+        returnValue: _i9.SortOrder.alphabetical,
+      ) as _i9.SortOrder);
 
   @override
   _i3.FilterOptions get filterOptions => (super.noSuchMethod(
@@ -1040,7 +1073,7 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i9.LatLngBounds? bounds) => super.noSuchMethod(
+  set setLatLngBounds(_i10.LatLngBounds? bounds) => super.noSuchMethod(
         Invocation.setter(
           #setLatLngBounds,
           bounds,
@@ -1049,7 +1082,7 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       );
 
   @override
-  set setSortOrder(_i8.SortOrder? sortOrder) => super.noSuchMethod(
+  set setSortOrder(_i9.SortOrder? sortOrder) => super.noSuchMethod(
         Invocation.setter(
           #setSortOrder,
           sortOrder,
@@ -1196,7 +1229,7 @@ class MockAppFlagsRepository extends _i1.Mock
   @override
   String get lastAppUpdateDialogDate => (super.noSuchMethod(
         Invocation.getter(#lastAppUpdateDialogDate),
-        returnValue: _i10.dummyValue<String>(
+        returnValue: _i11.dummyValue<String>(
           this,
           Invocation.getter(#lastAppUpdateDialogDate),
         ),
@@ -1370,7 +1403,7 @@ class MockSettingsState extends _i1.Mock implements _i4.SettingsState {
   @override
   String get defaultPostVisibility => (super.noSuchMethod(
         Invocation.getter(#defaultPostVisibility),
-        returnValue: _i10.dummyValue<String>(
+        returnValue: _i11.dummyValue<String>(
           this,
           Invocation.getter(#defaultPostVisibility),
         ),
@@ -1493,7 +1526,7 @@ class MockSettingsState extends _i1.Mock implements _i4.SettingsState {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPushNotificationState extends _i1.Mock
-    implements _i11.PushNotificationState {
+    implements _i12.PushNotificationState {
   MockPushNotificationState() {
     _i1.throwOnMissingStub(this);
   }
@@ -1593,7 +1626,7 @@ class MockPushNotificationState extends _i1.Mock
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i12.Analytics {
+class MockAnalytics extends _i1.Mock implements _i13.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -1637,7 +1670,7 @@ class MockAnalytics extends _i1.Mock implements _i12.Analytics {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i13.Logger {
+class MockLogger extends _i1.Mock implements _i14.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

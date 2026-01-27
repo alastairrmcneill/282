@@ -68,4 +68,7 @@ class AnalyticsProp {
   static const rating = "rating";
   static const text = "text";
   static const postCount = "post_count";
+  static var completionDate = "completion_date";
+  static var completionStartTime = "completion_start_time";
+  static var completionDuration = "completion_duration";
 }

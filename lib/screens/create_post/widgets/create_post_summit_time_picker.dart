@@ -10,8 +10,8 @@ class CreatePostSummitTimePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final createPostState = context.watch<CreatePostState>();
     TextEditingController timeController = TextEditingController(
-      text: createPostState.startTime != null
-          ? createPostState.startTime!.format(context)
+      text: createPostState.completionStartTime != null
+          ? createPostState.completionStartTime!.format(context)
           : const TimeOfDay(hour: 12, minute: 0).format(context),
     );
 
@@ -32,7 +32,7 @@ class CreatePostSummitTimePicker extends StatelessWidget {
         );
 
         if (pickedStartTime != null) {
-          createPostState.setStartTime = pickedStartTime;
+          createPostState.setCompletionStartTime = pickedStartTime;
         }
       },
       validator: (value) {

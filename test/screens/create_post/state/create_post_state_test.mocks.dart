@@ -7,10 +7,11 @@ import 'dart:async' as _i5;
 import 'dart:io' as _i7;
 import 'dart:ui' as _i8;
 
+import 'package:flutter/material.dart' as _i9;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:two_eight_two/analytics/analytics.dart' as _i9;
-import 'package:two_eight_two/logging/logging.dart' as _i10;
+import 'package:two_eight_two/analytics/analytics.dart' as _i10;
+import 'package:two_eight_two/logging/logging.dart' as _i11;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/notifiers.dart' as _i4;
@@ -648,7 +649,10 @@ class MockMunroCompletionState extends _i1.Mock
   @override
   _i5.Future<void> markMunrosAsCompleted({
     required List<int>? munroIds,
-    required DateTime? summitDateTime,
+    required DateTime? dateTimeCompleted,
+    DateTime? completionDate,
+    _i9.TimeOfDay? completionStartTime,
+    Duration? completionDuration,
     String? postId,
   }) =>
       (super.noSuchMethod(
@@ -657,7 +661,10 @@ class MockMunroCompletionState extends _i1.Mock
           [],
           {
             #munroIds: munroIds,
-            #summitDateTime: summitDateTime,
+            #dateTimeCompleted: dateTimeCompleted,
+            #completionDate: completionDate,
+            #completionStartTime: completionStartTime,
+            #completionDuration: completionDuration,
             #postId: postId,
           },
         ),
@@ -690,6 +697,32 @@ class MockMunroCompletionState extends _i1.Mock
           {
             #munroIds: munroIds,
             #postId: postId,
+          },
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> updateMunroCompletionsByMunroIdsAndPost({
+    required List<int>? munroIds,
+    required String? postId,
+    required DateTime? dateTimeCompleted,
+    DateTime? completionDate,
+    _i9.TimeOfDay? completionStartTime,
+    Duration? completionDuration,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateMunroCompletionsByMunroIdsAndPost,
+          [],
+          {
+            #munroIds: munroIds,
+            #postId: postId,
+            #dateTimeCompleted: dateTimeCompleted,
+            #completionDate: completionDate,
+            #completionStartTime: completionStartTime,
+            #completionDuration: completionDuration,
           },
         ),
         returnValue: _i5.Future<void>.value(),
@@ -839,7 +872,7 @@ class MockRemoteConfigState extends _i1.Mock implements _i4.RemoteConfigState {
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i9.Analytics {
+class MockAnalytics extends _i1.Mock implements _i10.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -883,7 +916,7 @@ class MockAnalytics extends _i1.Mock implements _i9.Analytics {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i10.Logger {
+class MockLogger extends _i1.Mock implements _i11.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

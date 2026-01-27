@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -288,7 +289,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: munroIds,
-          summitDateTime: summitDateTime,
+          dateTimeCompleted: summitDateTime,
           postId: postId,
         );
 
@@ -310,7 +311,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: munroIds,
-          summitDateTime: summitDateTime,
+          dateTimeCompleted: summitDateTime,
         );
 
         // Assert
@@ -329,7 +330,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: munroIds,
-          summitDateTime: summitDateTime,
+          dateTimeCompleted: summitDateTime,
         );
 
         // Assert
@@ -347,7 +348,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: munroIds,
-          summitDateTime: summitDateTime,
+          dateTimeCompleted: summitDateTime,
         );
 
         // Assert
@@ -370,7 +371,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: munroIds,
-          summitDateTime: summitDateTime,
+          dateTimeCompleted: summitDateTime,
         );
 
         // Assert
@@ -554,6 +555,236 @@ void main() {
       });
     });
 
+    group('updateMunroCompletionsByMunroIdsAndPost', () {
+      test('should update completions by munro IDs and post ID successfully', () async {
+        // Arrange - start with some completions
+        when(mockMunroCompletionsRepository.getUserMunroCompletions(
+          userId: anyNamed('userId'),
+        )).thenAnswer((_) async => sampleMunroCompletions);
+        await munroCompletionState.loadUserMunroCompletions();
+
+        final newDateTime = DateTime(2024, 12, 25, 10, 0);
+        final newCompletionDate = DateTime(2024, 12, 25);
+        final newStartTime = TimeOfDay(hour: 8, minute: 30);
+        final newDuration = Duration(hours: 5, minutes: 30);
+
+        when(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).thenAnswer((_) async => {});
+
+        // Act - update completions for munro IDs 1 and 2 with post1
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          postId: 'post1',
+          dateTimeCompleted: newDateTime,
+          completionDate: newCompletionDate,
+          completionStartTime: newStartTime,
+          completionDuration: newDuration,
+        );
+
+        // Assert
+        expect(munroCompletionState.munroCompletions.length, 3);
+        final updatedCompletion1 = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 1);
+        final updatedCompletion2 = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 2);
+        final unchangedCompletion = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 3);
+
+        expect(updatedCompletion1.dateTimeCompleted, newDateTime);
+        expect(updatedCompletion1.completionDate, newCompletionDate);
+        expect(updatedCompletion1.completionStartTime, newStartTime);
+        expect(updatedCompletion1.completionDuration, newDuration);
+
+        expect(updatedCompletion2.dateTimeCompleted, newDateTime);
+        expect(updatedCompletion2.completionDate, newCompletionDate);
+        expect(updatedCompletion2.completionStartTime, newStartTime);
+        expect(updatedCompletion2.completionDuration, newDuration);
+
+        // Munro 3 should remain unchanged
+        expect(unchangedCompletion.dateTimeCompleted, DateTime(2024, 7, 20, 9, 0));
+
+        verify(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: [1, 2],
+          postId: 'post1',
+          dateTimeCompleted: newDateTime,
+          completionDate: newCompletionDate,
+          completionStartTime: newStartTime,
+          completionDuration: newDuration,
+        )).called(1);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+      });
+
+      test('should only update completions matching both munro ID and post ID', () async {
+        // Arrange - start with some completions
+        when(mockMunroCompletionsRepository.getUserMunroCompletions(
+          userId: anyNamed('userId'),
+        )).thenAnswer((_) async => sampleMunroCompletions);
+        await munroCompletionState.loadUserMunroCompletions();
+
+        final newDateTime = DateTime(2024, 12, 31, 12, 0);
+
+        when(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).thenAnswer((_) async => {});
+
+        // Act - try to update munro 3 with post1 (shouldn't match as munro 3 has postId = null)
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [3],
+          postId: 'post1',
+          dateTimeCompleted: newDateTime,
+        );
+
+        // Assert - munro 3 should remain unchanged as it doesn't match the post ID
+        final unchangedCompletion = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 3);
+        expect(unchangedCompletion.dateTimeCompleted, DateTime(2024, 7, 20, 9, 0));
+      });
+
+      test('should update with only required dateTimeCompleted parameter', () async {
+        // Arrange - start with some completions
+        when(mockMunroCompletionsRepository.getUserMunroCompletions(
+          userId: anyNamed('userId'),
+        )).thenAnswer((_) async => sampleMunroCompletions);
+        await munroCompletionState.loadUserMunroCompletions();
+
+        final newDateTime = DateTime(2025, 1, 15, 14, 0);
+
+        when(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).thenAnswer((_) async => {});
+
+        // Act - update with only dateTimeCompleted
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1],
+          postId: 'post1',
+          dateTimeCompleted: newDateTime,
+        );
+
+        // Assert
+        final updatedCompletion = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 1);
+        expect(updatedCompletion.dateTimeCompleted, newDateTime);
+        verify(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: [1],
+          postId: 'post1',
+          dateTimeCompleted: newDateTime,
+          completionDate: null,
+          completionStartTime: null,
+          completionDuration: null,
+        )).called(1);
+      });
+
+      test('should handle error when user is not logged in', () async {
+        // Arrange
+        reset(mockUserState);
+        when(mockUserState.currentUser).thenReturn(null);
+
+        // Act
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1],
+          postId: 'post1',
+          dateTimeCompleted: DateTime.now(),
+        );
+
+        // Assert
+        expect(munroCompletionState.status, MunroCompletionsStatus.error);
+        expect(munroCompletionState.error.message, 'You must be logged in to remove munro completions.');
+        verifyNever(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        ));
+      });
+
+      test('should handle error during update', () async {
+        // Arrange - start with some completions
+        when(mockMunroCompletionsRepository.getUserMunroCompletions(
+          userId: anyNamed('userId'),
+        )).thenAnswer((_) async => sampleMunroCompletions);
+        await munroCompletionState.loadUserMunroCompletions();
+
+        when(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).thenThrow(Exception('Update failed'));
+
+        final originalCompletion = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 1);
+        final originalDateTime = originalCompletion.dateTimeCompleted;
+
+        // Act
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          postId: 'post1',
+          dateTimeCompleted: DateTime.now(),
+        );
+
+        // Assert
+        expect(munroCompletionState.status, MunroCompletionsStatus.error);
+        expect(munroCompletionState.error.message, 'There was an issue removing your munro completions');
+        // Original completion should remain unchanged
+        final unchangedCompletion = munroCompletionState.munroCompletions.firstWhere((c) => c.munroId == 1);
+        expect(unchangedCompletion.dateTimeCompleted, originalDateTime);
+        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+      });
+
+      test('should handle empty munro IDs list', () async {
+        // Arrange - start with some completions
+        when(mockMunroCompletionsRepository.getUserMunroCompletions(
+          userId: anyNamed('userId'),
+        )).thenAnswer((_) async => sampleMunroCompletions);
+        await munroCompletionState.loadUserMunroCompletions();
+
+        when(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).thenAnswer((_) async => {});
+
+        final initialCompletion = munroCompletionState.munroCompletions.first;
+        final initialDateTime = initialCompletion.dateTimeCompleted;
+
+        // Act
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [],
+          postId: 'post1',
+          dateTimeCompleted: DateTime.now(),
+        );
+
+        // Assert - no completions should be updated
+        final unchangedCompletion = munroCompletionState.munroCompletions.first;
+        expect(unchangedCompletion.dateTimeCompleted, initialDateTime);
+        verify(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).called(1);
+      });
+    });
+
     group('setError', () {
       test('should set error and status', () {
         // Arrange
@@ -592,6 +823,7 @@ void main() {
     group('completedMunroIds', () {
       test('should return set of completed munro IDs', () async {
         // Arrange
+        munroCompletionState.reset();
         when(mockMunroCompletionsRepository.getUserMunroCompletions(
           userId: anyNamed('userId'),
         )).thenAnswer((_) async => sampleMunroCompletions);
@@ -606,6 +838,8 @@ void main() {
 
       test('should handle duplicate munro IDs in completions', () async {
         // Arrange - create completions with duplicate munro IDs
+        munroCompletionState.reset();
+        reset(mockMunroCompletionsRepository);
         final duplicateCompletions = [
           MunroCompletion(
             id: 'completion1',
@@ -639,6 +873,8 @@ void main() {
       test('should handle user with null uid', () async {
         // Arrange
         reset(mockUserState);
+        reset(mockMunroCompletionsRepository);
+        munroCompletionState.reset();
         final userWithNullUid = AppUser(
           uid: null,
           displayName: 'Test User',
@@ -659,6 +895,8 @@ void main() {
 
       test('should handle completion with null id during removal', () async {
         // Arrange
+        reset(mockMunroCompletionsRepository);
+        munroCompletionState.reset();
         final completionWithNullId = MunroCompletion(
           id: null,
           userId: 'testUserId',
@@ -688,6 +926,8 @@ void main() {
 
       test('should handle empty munro IDs list when marking as completed', () async {
         // Arrange
+        reset(mockMunroCompletionsRepository);
+        munroCompletionState.reset();
         final emptyMunroIds = <int>[];
         final summitDateTime = DateTime.now();
         when(mockMunroCompletionsRepository.create(any)).thenAnswer((_) async => {});
@@ -695,7 +935,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: emptyMunroIds,
-          summitDateTime: summitDateTime,
+          dateTimeCompleted: summitDateTime,
         );
 
         // Assert
@@ -705,6 +945,8 @@ void main() {
 
       test('should handle empty munro IDs list when removing by IDs and post', () async {
         // Arrange - start with some completions
+        reset(mockMunroCompletionsRepository);
+        munroCompletionState.reset();
         when(mockMunroCompletionsRepository.getUserMunroCompletions(
           userId: anyNamed('userId'),
         )).thenAnswer((_) async => sampleMunroCompletions);
@@ -781,7 +1023,7 @@ void main() {
         // Act
         await munroCompletionState.markMunrosAsCompleted(
           munroIds: [1],
-          summitDateTime: DateTime.now(),
+          dateTimeCompleted: DateTime.now(),
         );
 
         // Assert
@@ -830,6 +1072,36 @@ void main() {
         await munroCompletionState.removeCompletionsByMunroIdsAndPost(
           munroIds: [1, 2],
           postId: 'post1',
+        );
+
+        // Assert
+        expect(notified, true);
+      });
+
+      test('should notify listeners when updating completions by IDs and post', () async {
+        // Arrange
+        when(mockMunroCompletionsRepository.getUserMunroCompletions(
+          userId: anyNamed('userId'),
+        )).thenAnswer((_) async => sampleMunroCompletions);
+        await munroCompletionState.loadUserMunroCompletions();
+
+        when(mockMunroCompletionsRepository.updateByMunroIdsAndPostId(
+          munroIds: anyNamed('munroIds'),
+          postId: anyNamed('postId'),
+          dateTimeCompleted: anyNamed('dateTimeCompleted'),
+          completionDate: anyNamed('completionDate'),
+          completionStartTime: anyNamed('completionStartTime'),
+          completionDuration: anyNamed('completionDuration'),
+        )).thenAnswer((_) async => {});
+
+        bool notified = false;
+        munroCompletionState.addListener(() => notified = true);
+
+        // Act
+        await munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+          munroIds: [1, 2],
+          postId: 'post1',
+          dateTimeCompleted: DateTime.now(),
         );
 
         // Assert

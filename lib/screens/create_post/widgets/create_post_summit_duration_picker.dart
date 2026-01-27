@@ -10,7 +10,7 @@ class CreatePostDurationPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final createPostState = context.watch<CreatePostState>();
-    Duration? pickedDuration = createPostState.duration ?? Duration.zero;
+    Duration? pickedDuration = createPostState.completionDuration ?? Duration.zero;
 
     TextEditingController durationController = TextEditingController(
       text: formatDuration(pickedDuration),
@@ -27,7 +27,7 @@ class CreatePostDurationPicker extends StatelessWidget {
         );
 
         if (duration != null) {
-          createPostState.setDuration = duration;
+          createPostState.setCompletionDuration = duration;
           durationController.text = formatDuration(duration);
         }
       },
