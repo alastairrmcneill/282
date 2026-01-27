@@ -107,11 +107,12 @@ class _FeedListViewState extends State<FeedListView> {
                                 createPostState.loadPost = post;
                                 createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
 
-                                final updated = await Navigator.of(context).pushNamed<Post>(
+                                final result = await Navigator.of(context).pushNamed(
                                   CreatePostScreen.route,
                                 );
-                                if (updated != null) {
-                                  context.read<FeedState>().updatePost(updated);
+
+                                if (result is Post) {
+                                  context.read<FeedState>().updatePost(result);
                                 }
                               },
                               onDelete: () async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class MunroCompletion {
   String? id;
@@ -34,10 +35,7 @@ class MunroCompletion {
             ? DateTime.parse(json[MunroCompletionFields.completionDate] as String)
             : null,
         completionStartTime: json[MunroCompletionFields.completionStartTime] != null
-            ? TimeOfDay(
-                hour: int.parse((json[MunroCompletionFields.completionStartTime] as String).split(":")[0]),
-                minute: int.parse((json[MunroCompletionFields.completionStartTime] as String).split(":")[1]),
-              )
+            ? TimeOfDayExtension.from24Hour(json[MunroCompletionFields.completionStartTime] as String)
             : null,
         completionDuration: json[MunroCompletionFields.completionDuration] != null
             ? Duration(seconds: json[MunroCompletionFields.completionDuration] as int)
@@ -52,9 +50,33 @@ class MunroCompletion {
         MunroCompletionFields.dateTimeCompleted: dateTimeCompleted.toIso8601String(),
         MunroCompletionFields.postId: postId,
         if (completionDate != null) MunroCompletionFields.completionDate: completionDate!.toIso8601String(),
-        if (completionStartTime != null) MunroCompletionFields.completionStartTime: completionStartTime,
+        if (completionStartTime != null) MunroCompletionFields.completionStartTime: completionStartTime!.format24Hour(),
         if (completionDuration != null) MunroCompletionFields.completionDuration: completionDuration!.inSeconds,
       };
+
+  MunroCompletion copyWith({
+    String? id,
+    DateTime? dateTimeCreated,
+    String? userId,
+    int? munroId,
+    DateTime? dateTimeCompleted,
+    String? postId,
+    DateTime? completionDate,
+    TimeOfDay? completionStartTime,
+    Duration? completionDuration,
+  }) {
+    return MunroCompletion(
+      id: id ?? this.id,
+      dateTimeCreated: dateTimeCreated ?? this.dateTimeCreated,
+      userId: userId ?? this.userId,
+      munroId: munroId ?? this.munroId,
+      dateTimeCompleted: dateTimeCompleted ?? this.dateTimeCompleted,
+      postId: postId ?? this.postId,
+      completionDate: completionDate ?? this.completionDate,
+      completionStartTime: completionStartTime ?? this.completionStartTime,
+      completionDuration: completionDuration ?? this.completionDuration,
+    );
+  }
 }
 
 class MunroCompletionFields {

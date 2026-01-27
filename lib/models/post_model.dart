@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class Post {
@@ -81,10 +82,7 @@ class Post {
     }
 
     if (json[PostFields.completionStartTime] != null) {
-      completionStartTime = TimeOfDay(
-        hour: int.parse((json[PostFields.completionStartTime] as String).split(":")[0]),
-        minute: int.parse((json[PostFields.completionStartTime] as String).split(":")[1]),
-      );
+      completionStartTime = TimeOfDayExtension.from24Hour(json[PostFields.completionStartTime] as String);
     }
 
     if (json[PostFields.completionDuration] != null) {

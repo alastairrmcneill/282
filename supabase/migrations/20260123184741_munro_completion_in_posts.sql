@@ -38,6 +38,12 @@ SELECT
   ) AS included_munro_ids,
 
   (
+    SELECT (min(mc.date_time_completed))::TIMESTAMPTZ
+    FROM munro_completions mc
+    WHERE mc.post_id = p.id
+  ) AS date_time_completed,
+
+  (
     SELECT (min(mc.completion_date))::DATE
     FROM munro_completions mc
     WHERE mc.post_id = p.id

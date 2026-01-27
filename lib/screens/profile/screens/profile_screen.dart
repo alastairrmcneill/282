@@ -207,12 +207,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           createPostState.loadPost = post;
                                           createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
 
-                                          final updated = await Navigator.of(context).pushNamed<Post>(
+                                          final result = await Navigator.of(context).pushNamed(
                                             CreatePostScreen.route,
                                           );
 
-                                          if (updated != null) {
-                                            context.read<ProfileState>().updatePost(updated);
+                                          if (result is Post) {
+                                            context.read<ProfileState>().updatePost(result);
                                           }
                                         },
                                         onDelete: () async {

@@ -101,28 +101,14 @@ class CreatePostState extends ChangeNotifier {
       // Get munro completion date and time
       var now = DateTime.now();
 
-      DateTime? dateTimeCompleted;
-      if (_completionDate != null) {
-        dateTimeCompleted = DateTime(
-          _completionDate!.year,
-          _completionDate!.month,
-          _completionDate!.day,
-          0,
-          0,
-        );
-      } else {
-        dateTimeCompleted = now;
-      }
-
-      if (_completionStartTime != null) {
-        dateTimeCompleted = DateTime(
-          dateTimeCompleted.year,
-          dateTimeCompleted.month,
-          dateTimeCompleted.day,
-          _completionStartTime!.hour,
-          _completionStartTime!.minute,
-        );
-      }
+      // Get summitDateTime by combining date and time
+      DateTime dateTimeCompleted = DateTime(
+        _completionDate?.year ?? now.year,
+        _completionDate?.month ?? now.month,
+        _completionDate?.day ?? now.day,
+        _completionStartTime?.hour ?? now.hour,
+        _completionStartTime?.minute ?? now.minute,
+      );
 
       // Create post object
       Post post = Post(
@@ -208,29 +194,13 @@ class CreatePostState extends ChangeNotifier {
       Post post = _editingPost!;
 
       // Get summitDateTime by combining date and time
-      DateTime? dateTimeCompleted;
-
-      if (_completionDate != null) {
-        dateTimeCompleted = DateTime(
-          _completionDate!.year,
-          _completionDate!.month,
-          _completionDate!.day,
-          0,
-          0,
-        );
-      } else {
-        dateTimeCompleted = post.dateTimeCompleted!;
-      }
-
-      if (_completionStartTime != null) {
-        dateTimeCompleted = DateTime(
-          dateTimeCompleted.year,
-          dateTimeCompleted.month,
-          dateTimeCompleted.day,
-          _completionStartTime!.hour,
-          _completionStartTime!.minute,
-        );
-      }
+      DateTime dateTimeCompleted = DateTime(
+        _completionDate?.year ?? post.dateTimeCompleted!.year,
+        _completionDate?.month ?? post.dateTimeCompleted!.month,
+        _completionDate?.day ?? post.dateTimeCompleted!.day,
+        _completionStartTime?.hour ?? post.dateTimeCompleted!.hour,
+        _completionStartTime?.minute ?? post.dateTimeCompleted!.minute,
+      );
 
       Post newPost = post.copyWith(
         title: _title,
@@ -255,6 +225,15 @@ class CreatePostState extends ChangeNotifier {
 
       _munroCompletionState.removeCompletionsByMunroIdsAndPost(
         munroIds: _deletedMunroIds.toList(),
+        postId: post.uid,
+      );
+
+      _munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+        munroIds: _existingMunroIds.toList(),
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
         postId: post.uid,
       );
 
