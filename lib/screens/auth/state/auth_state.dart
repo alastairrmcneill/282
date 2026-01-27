@@ -56,19 +56,6 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void init() {
-    _authSub ??= _authRepo.authIdChanges.listen((uid) async {
-      if (uid == null) {
-        await _analytics.reset();
-        _logger.clearUser();
-        return;
-      } else {
-        await _analytics.identify(uid);
-        _logger.identify(uid);
-      }
-    });
-  }
-
   @override
   void dispose() {
     _authSub?.cancel();
@@ -111,6 +98,8 @@ class AuthState extends ChangeNotifier {
 
       await _userState.createUser(appUser: appUser);
 
+      if (currentUserId != null) await _analytics.identify(currentUserId!);
+
       _analytics.track(AnalyticsEvent.signUp, props: {
         AnalyticsProp.method: 'email',
         AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
@@ -139,6 +128,7 @@ class AuthState extends ChangeNotifier {
 
       // Load essential user data after successful authentication
       if (currentUserId != null) {
+        await _analytics.identify(currentUserId!);
         await _userState.readUser(uid: currentUserId);
         await _userState.loadBlockedUsers();
       }
@@ -165,6 +155,8 @@ class AuthState extends ChangeNotifier {
       if (firebaseUser == null) {
         throw Exception("User not returned from Apple sign-in.");
       }
+
+      if (currentUserId != null) await _analytics.identify(currentUserId!);
 
       String displayName = "${result.givenName ?? ""} ${result.familyName ?? ""}".trim();
       String firstName = result.givenName ?? "";
@@ -251,6 +243,8 @@ class AuthState extends ChangeNotifier {
       if (firebaseUser == null) {
         throw Exception("User not returned from Google sign-in.");
       }
+
+      if (currentUserId != null) await _analytics.identify(currentUserId!);
 
       final googleDisplayName = firebaseUser.displayName ?? "";
       final names = googleDisplayName.split(" ");
@@ -345,6 +339,7 @@ class AuthState extends ChangeNotifier {
             userId: user.uid!,
             deviceId: deviceInfo.deviceId,
           );
+          await _analytics.reset();
         } catch (e, st) {
           // Log but don't fail sign-out if token deactivation fails
           _logger.error('Failed to deactivate FCM token', error: e, stackTrace: st);
@@ -371,6 +366,7 @@ class AuthState extends ChangeNotifier {
 
       await _userState.deleteUser(appUser: appUser);
       await _authRepo.deleteAuthUser();
+      await _analytics.reset();
       _status = AuthStatus.initial;
       notifyListeners();
       return AuthResult(success: true);
