@@ -13,7 +13,7 @@ class MunroDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.watch<MunroState>();
+    final munroDetailState = context.watch<MunroDetailState>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,7 +24,7 @@ class MunroDescription extends StatelessWidget {
         const SizedBox(height: 8),
         RichText(
           text: TextSpan(
-            text: "${munroState.selectedMunro?.description ?? ""} ",
+            text: "${munroDetailState.selectedMunro?.description ?? ""} ",
             style: Theme.of(context).textTheme.bodyMedium,
             children: <TextSpan>[
               TextSpan(
@@ -37,16 +37,16 @@ class MunroDescription extends StatelessWidget {
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     context.read<Analytics>().track(AnalyticsEvent.walkHighlandsMunroLinkClicked, props: {
-                      AnalyticsProp.munroId: munroState.selectedMunro?.id ?? 0,
-                      AnalyticsProp.munroName: munroState.selectedMunro?.name ?? "",
+                      AnalyticsProp.munroId: munroDetailState.selectedMunro?.id ?? 0,
+                      AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
                     });
                     try {
                       await launchUrl(
-                        Uri.parse(munroState.selectedMunro?.link ?? ""),
+                        Uri.parse(munroDetailState.selectedMunro?.link ?? ""),
                       );
                     } on Exception catch (error, stackTrace) {
                       context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
-                      Clipboard.setData(ClipboardData(text: munroState.selectedMunro?.link ?? ""));
+                      Clipboard.setData(ClipboardData(text: munroDetailState.selectedMunro?.link ?? ""));
                       showSnackBar(context, 'Copied link. Go to browser to open.');
                     }
                   },

@@ -37,7 +37,7 @@ class MunroSaveButton extends StatelessWidget {
           if (userId == null) {
             Navigator.pushNamed(context, AuthHomeScreen.route);
           } else {
-            munroState.setSelectedMunro = munro;
+            munroState.setSelectedMunroId = munro.id;
             showSaveMunroDialog(context);
           }
         },

@@ -14,7 +14,6 @@ class MunroState extends ChangeNotifier {
   Error _error = Error();
   List<Munro> _munroList = [];
   int? _selectedMunroId;
-  Munro? _selectedMunro;
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
   LatLngBounds? _latLngBounds;
@@ -37,7 +36,6 @@ class MunroState extends ChangeNotifier {
   FilterOptions get filterOptions => _filterOptions;
   bool get isFilterOptionsSet => _isFilterOptionsSet;
   int? get selectedMunroId => _selectedMunroId;
-  Munro? get selectedMunro => _selectedMunro;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;
 
@@ -85,11 +83,6 @@ class MunroState extends ChangeNotifier {
     _munroList = munroList;
     notifyListeners();
     _filter();
-  }
-
-  set setSelectedMunro(Munro? selectedMunro) {
-    _selectedMunro = selectedMunro;
-    notifyListeners();
   }
 
   set setSelectedMunroId(int? selectedMunroId) {
@@ -212,7 +205,6 @@ class MunroState extends ChangeNotifier {
     _status = MunroStatus.initial;
     _error = Error();
     _munroList = [];
-    _selectedMunro;
     _filteredMunroList = [];
     _filterString = '';
     _createPostFilteredMunroList = [];

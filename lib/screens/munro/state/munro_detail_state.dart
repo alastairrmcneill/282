@@ -8,6 +8,7 @@ class MunroDetailState extends ChangeNotifier {
   final MunroPicturesRepository _munroPicturesRepository;
   final UserState _userState;
   final Logger _logger;
+
   MunroDetailState(
     this._munroPicturesRepository,
     this._userState,
@@ -15,12 +16,26 @@ class MunroDetailState extends ChangeNotifier {
   );
 
   MunroDetailStatus _galleryStatus = MunroDetailStatus.initial;
+  Munro? _selectedMunro;
   List<MunroPicture> _munroPictures = [];
   Error _error = Error();
 
   MunroDetailStatus get galleryStatus => _galleryStatus;
+  Munro? get selectedMunro => _selectedMunro;
   List<MunroPicture> get munroPictures => _munroPictures;
   Error get error => _error;
+
+  Future<void> init(Munro munro) async {
+    _selectedMunro = munro;
+
+    for (var commonlyClimbed in munro.commonlyClimbedWith) {
+      print(commonlyClimbed);
+    }
+
+    loadMunroPictures(munroId: munro.id, count: 4);
+
+    notifyListeners();
+  }
 
   Future<void> loadMunroPictures({required int munroId, int count = 18}) async {
     try {

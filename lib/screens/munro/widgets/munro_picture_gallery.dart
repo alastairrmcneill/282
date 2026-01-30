@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/munro/screens/munro_photo_gallery_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroPictureGallery extends StatelessWidget {
@@ -29,7 +29,7 @@ class MunroPictureGallery extends StatelessWidget {
     );
   }
 
-  Widget _buildPictureRow(BuildContext context, MunroDetailState munroDetailState, MunroState munroState) {
+  Widget _buildPictureRow(BuildContext context, MunroDetailState munroDetailState) {
     if (munroDetailState.munroPictures.isEmpty) {
       return const Center(
         child: Text("No pictures available"),
@@ -49,8 +49,13 @@ class MunroPictureGallery extends StatelessWidget {
               height: (MediaQuery.of(context).size.width - 60) / 4,
               child: InkWell(
                 onTap: () {
-                  munroDetailState.loadMunroPictures(munroId: munroState.selectedMunro!.id);
-                  Navigator.of(context).pushNamed(MunroPhotoGallery.route);
+                  Navigator.of(context).pushNamed(
+                    PhotoGalleryRoutes.munroGallery,
+                    arguments: MunroPhotoGalleryArgs(
+                      munroId: munroDetailState.selectedMunro!.id,
+                      munroName: munroDetailState.selectedMunro!.name,
+                    ),
+                  );
                 },
                 child: CachedNetworkImage(
                   progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
@@ -88,15 +93,19 @@ class MunroPictureGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
     final munroDetailState = context.watch<MunroDetailState>();
 
     return Column(
       children: [
         InkWell(
           onTap: () {
-            munroDetailState.loadMunroPictures(munroId: munroState.selectedMunro!.id);
-            Navigator.of(context).pushNamed(MunroPhotoGallery.route);
+            Navigator.of(context).pushNamed(
+              PhotoGalleryRoutes.munroGallery,
+              arguments: MunroPhotoGalleryArgs(
+                munroId: munroDetailState.selectedMunro!.id,
+                munroName: munroDetailState.selectedMunro!.name,
+              ),
+            );
           },
           child: Container(
             color: Colors.transparent,
@@ -130,7 +139,7 @@ class MunroPictureGallery extends StatelessWidget {
                 case MunroDetailStatus.error:
                   return CenterText(text: munroDetailState.error.message);
                 default:
-                  return _buildPictureRow(context, munroDetailState, munroState);
+                  return _buildPictureRow(context, munroDetailState);
               }
             },
           ),

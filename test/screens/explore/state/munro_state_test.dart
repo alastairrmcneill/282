@@ -40,6 +40,7 @@ void main() {
       saved: false,
       averageRating: 4.5,
       reviewCount: 150,
+      commonlyClimbedWith: [],
     ),
     Munro(
       id: 2,
@@ -59,6 +60,13 @@ void main() {
       saved: false,
       averageRating: 4.2,
       reviewCount: 85,
+      commonlyClimbedWith: [
+        MunroCommonlyClimbedWith(
+          munroId: 2,
+          climbedWithId: 3,
+          togetherCount: 10,
+        ),
+      ],
     ),
     Munro(
       id: 3,
@@ -78,6 +86,13 @@ void main() {
       saved: true,
       averageRating: 4.8,
       reviewCount: 200,
+      commonlyClimbedWith: [
+        MunroCommonlyClimbedWith(
+          munroId: 3,
+          climbedWithId: 2,
+          togetherCount: 10,
+        ),
+      ],
     ),
   ];
 
@@ -95,7 +110,6 @@ void main() {
         expect(munroState.munroList, isEmpty);
         expect(munroState.filteredMunroList, isEmpty);
         expect(munroState.selectedMunroId, isNull);
-        expect(munroState.selectedMunro, isNull);
         expect(munroState.sortOrder, SortOrder.alphabetical);
         expect(munroState.latLngBounds, isNull);
         expect(munroState.filterOptions, isA<FilterOptions>());
@@ -205,11 +219,6 @@ void main() {
 
         expect(munroState.munroList, sampleMunros);
         expect(munroState.filteredMunroList, sampleMunros);
-      });
-
-      test('setSelectedMunro should update selected munro', () {
-        munroState.setSelectedMunro = sampleMunros.first;
-        expect(munroState.selectedMunro, sampleMunros.first);
       });
 
       test('setSelectedMunroId should update selected munro ID', () {
@@ -467,7 +476,6 @@ void main() {
     group('reset', () {
       setUp(() {
         munroState.setMunroList = sampleMunros;
-        munroState.setSelectedMunro = sampleMunros.first;
         munroState.setFilterString = 'test';
         munroState.setCreatePostFilterString = 'test';
         munroState.setBulkMunroUpdateFilterString = 'test';
@@ -510,6 +518,7 @@ void main() {
           pictureURL: 'https://example.com/pic.jpg',
           startingPointURL: 'https://maps.google.com',
           saved: false,
+          commonlyClimbedWith: [],
         );
 
         munroState.setMunroList = [munroWithNullExtra];
@@ -537,6 +546,7 @@ void main() {
           saved: false,
           averageRating: null,
           reviewCount: null,
+          commonlyClimbedWith: [],
         );
 
         munroState.setMunroList = [munroWithNulls, sampleMunros.first];

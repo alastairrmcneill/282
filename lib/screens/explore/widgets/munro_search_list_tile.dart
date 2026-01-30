@@ -11,9 +11,7 @@ class MunroSearchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.watch<MunroState>();
-    final munroDetailState = context.watch<MunroDetailState>();
-    final settingsState = context.watch<SettingsState>();
+    final settingsState = context.read<SettingsState>();
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -28,10 +26,8 @@ class MunroSearchListTile extends StatelessWidget {
       ),
       visualDensity: VisualDensity.comfortable,
       onTap: () {
-        munroState.setSelectedMunro = munro;
-        munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
-        context.read<ReviewsState>().getMunroReviews();
-        Navigator.of(context).pushNamed(MunroScreen.route);
+        context.read<ReviewsState>().getMunroReviews(munro.id);
+        Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
       },
     );
   }

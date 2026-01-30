@@ -55,6 +55,7 @@ void main() {
         pictureURL: 'https://example.com/ben-nevis.jpg',
         startingPointURL: 'https://example.com/ben-nevis-start',
         saved: false,
+        commonlyClimbedWith: [],
       ),
       Munro(
         id: 2,
@@ -72,6 +73,7 @@ void main() {
         pictureURL: 'https://example.com/ben-macdui.jpg',
         startingPointURL: 'https://example.com/ben-macdui-start',
         saved: false,
+        commonlyClimbedWith: [],
       ),
     ];
 

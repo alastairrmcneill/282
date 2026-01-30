@@ -17,7 +17,7 @@ class ProfilePhotosWidget extends StatelessWidget {
           InkWell(
             onTap: () {
               Navigator.of(context).pushNamed(
-                ProfilePhotoGallery.route,
+                PhotoGalleryRoutes.profileGallery,
                 arguments: ProfilePhotoGalleryArgs(
                   userId: profileState.profile?.id ?? '',
                   displayName: profileState.profile?.displayName ?? 'User',
@@ -57,7 +57,7 @@ class ProfilePhotosWidget extends StatelessWidget {
                     child: Wrap(
                       runAlignment: WrapAlignment.start,
                       spacing: 5,
-                      children: profileState.profilePhotos.take(4).map((profilePhoto) {
+                      children: profileState.profilePhotos.map((profilePhoto) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: SizedBox(
@@ -66,7 +66,7 @@ class ProfilePhotosWidget extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 Navigator.of(context).pushNamed(
-                                  ProfilePhotoGallery.route,
+                                  PhotoGalleryRoutes.profileGallery,
                                   arguments: ProfilePhotoGalleryArgs(
                                     userId: profileState.profile?.id ?? '',
                                     displayName: profileState.profile?.displayName ?? 'User',

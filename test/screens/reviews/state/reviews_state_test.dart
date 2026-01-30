@@ -48,6 +48,7 @@ void main() {
       saved: false,
       averageRating: 4.5,
       reviewCount: 10,
+      commonlyClimbedWith: [],
     );
 
     // Sample review data for testing
@@ -101,7 +102,7 @@ void main() {
     when(mockUserState.blockedUsers).thenReturn([]);
 
     // Default mock behavior for MunroState
-    when(mockMunroState.selectedMunro).thenReturn(sampleMunro);
+    when(mockMunroState.selectedMunroId).thenReturn(sampleMunro.id);
   });
 
   group('ReviewsState', () {
@@ -123,7 +124,7 @@ void main() {
         )).thenAnswer((_) async => sampleReviews);
 
         // Act
-        await reviewsState.getMunroReviews();
+        await reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert
         expect(reviewsState.status, ReviewsStatus.loaded);
@@ -147,7 +148,7 @@ void main() {
         )).thenAnswer((_) async => sampleReviews);
 
         // Act
-        await reviewsState.getMunroReviews();
+        await reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert
         verify(mockReviewsRepository.readReviewsFromMunro(
@@ -166,7 +167,7 @@ void main() {
         )).thenThrow(Exception('Network error'));
 
         // Act
-        await reviewsState.getMunroReviews();
+        await reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert
         expect(reviewsState.status, ReviewsStatus.error);
@@ -186,7 +187,7 @@ void main() {
         });
 
         // Act
-        final future = reviewsState.getMunroReviews();
+        final future = reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert intermediate state
         expect(reviewsState.status, ReviewsStatus.loading);
@@ -194,26 +195,6 @@ void main() {
         // Wait for completion
         await future;
         expect(reviewsState.status, ReviewsStatus.loaded);
-      });
-
-      test('should handle null selectedMunro', () async {
-        // Arrange
-        when(mockMunroState.selectedMunro).thenReturn(null);
-        when(mockReviewsRepository.readReviewsFromMunro(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-        )).thenAnswer((_) async => sampleReviews);
-
-        // Act
-        await reviewsState.getMunroReviews();
-
-        // Assert
-        verify(mockReviewsRepository.readReviewsFromMunro(
-          munroId: 0,
-          excludedAuthorIds: [],
-          offset: 0,
-        )).called(1);
       });
     });
 
@@ -242,7 +223,7 @@ void main() {
         )).thenAnswer((_) async => additionalReviews);
 
         // Act
-        await reviewsState.paginateMunroReviews();
+        await reviewsState.paginateMunroReviews(sampleMunro.id);
 
         // Assert
         expect(reviewsState.status, ReviewsStatus.loaded);
@@ -268,7 +249,7 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await reviewsState.paginateMunroReviews();
+        await reviewsState.paginateMunroReviews(sampleMunro.id);
 
         // Assert
         verify(mockReviewsRepository.readReviewsFromMunro(
@@ -291,7 +272,7 @@ void main() {
         final initialCount = reviewsState.reviews.length;
 
         // Act
-        await reviewsState.paginateMunroReviews();
+        await reviewsState.paginateMunroReviews(sampleMunro.id);
 
         // Assert
         expect(reviewsState.status, ReviewsStatus.error);
@@ -314,7 +295,7 @@ void main() {
         });
 
         // Act
-        final future = reviewsState.paginateMunroReviews();
+        final future = reviewsState.paginateMunroReviews(sampleMunro.id);
 
         // Assert intermediate state
         expect(reviewsState.status, ReviewsStatus.paginating);
@@ -322,27 +303,6 @@ void main() {
         // Wait for completion
         await future;
         expect(reviewsState.status, ReviewsStatus.loaded);
-      });
-
-      test('should handle null selectedMunro during pagination', () async {
-        // Arrange
-        reviewsState.setReviews = List.from(sampleReviews);
-        when(mockMunroState.selectedMunro).thenReturn(null);
-        when(mockReviewsRepository.readReviewsFromMunro(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-        )).thenAnswer((_) async => []);
-
-        // Act
-        await reviewsState.paginateMunroReviews();
-
-        // Assert
-        verify(mockReviewsRepository.readReviewsFromMunro(
-          munroId: 0,
-          excludedAuthorIds: [],
-          offset: 3,
-        )).called(1);
       });
     });
 
@@ -495,7 +455,7 @@ void main() {
         )).thenAnswer((_) async => sampleReviews);
 
         // Act
-        await reviewsState.paginateMunroReviews();
+        await reviewsState.paginateMunroReviews(sampleMunro.id);
 
         // Assert
         expect(reviewsState.reviews, sampleReviews);
@@ -535,7 +495,7 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await reviewsState.getMunroReviews();
+        await reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert
         expect(reviewsState.status, ReviewsStatus.loaded);
@@ -553,7 +513,7 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await reviewsState.getMunroReviews();
+        await reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert
         verify(mockReviewsRepository.readReviewsFromMunro(
@@ -599,7 +559,7 @@ void main() {
         reviewsState.addListener(() => notified = true);
 
         // Act
-        await reviewsState.getMunroReviews();
+        await reviewsState.getMunroReviews(sampleMunro.id);
 
         // Assert
         expect(notified, true);
@@ -618,7 +578,7 @@ void main() {
         reviewsState.addListener(() => notified = true);
 
         // Act
-        await reviewsState.paginateMunroReviews();
+        await reviewsState.paginateMunroReviews(sampleMunro.id);
 
         // Assert
         expect(notified, true);

@@ -4,35 +4,48 @@ import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/notifiers.dart";
 import "package:two_eight_two/widgets/widgets.dart";
 
+class PhotoGalleryRoutes {
+  static const String munroGallery = '/munro/photo_gallery';
+  static const String profileGallery = '/profile/photo_gallery';
+}
+
+class MunroPhotoGalleryArgs {
+  final int munroId;
+  final String munroName;
+  MunroPhotoGalleryArgs({required this.munroId, required this.munroName});
+}
+
 class ProfilePhotoGalleryArgs {
   final String userId;
   final String displayName;
   ProfilePhotoGalleryArgs({required this.userId, required this.displayName});
 }
 
-class ProfilePhotoGallery extends StatefulWidget {
-  final ProfilePhotoGalleryArgs args;
-  static const String route = '/profile/photo_gallery';
-  const ProfilePhotoGallery({super.key, required this.args});
+class PhotoGalleryScreen extends StatefulWidget {
+  final String title;
+
+  const PhotoGalleryScreen({super.key, required this.title});
 
   @override
-  State<ProfilePhotoGallery> createState() => _ProfilePhotoGalleryState();
+  State<PhotoGalleryScreen> createState() => _PhotoGalleryScreenState();
 }
 
-class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
+class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
   late ScrollController _scrollController;
   @override
   void initState() {
-    final profileGalleryState = context.read<ProfileGalleryState>();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-          !_scrollController.position.outOfRange &&
-          profileGalleryState.status != ProfileGalleryStatus.paginating) {
-        profileGalleryState.paginateMunroPictures(profileId: widget.args.userId);
-      }
-    });
     super.initState();
+
+    _scrollController = ScrollController()..addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final state = context.read<PhotoGalleryState<MunroPicture>>();
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (state.status != PhotoGalleryStatus.paginating) {
+        state.paginate();
+      }
+    }
   }
 
   @override
@@ -43,11 +56,11 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
 
   @override
   Widget build(BuildContext context) {
-    final profileGalleryState = context.watch<ProfileGalleryState>();
+    final state = context.watch<PhotoGalleryState<MunroPicture>>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Photos from ${widget.args.displayName}"),
+        title: Text(widget.title),
       ),
       body: Column(
         children: [
@@ -60,16 +73,15 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
               ),
-              itemCount: profileGalleryState.photos.length,
+              itemCount: state.photos.length,
               itemBuilder: (BuildContext context, int index) {
-                MunroPicture munroPicture = profileGalleryState.photos[index];
+                MunroPicture munroPicture = state.photos[index];
                 return ClickableImage(
                   image: munroPicture,
-                  munroPictures: profileGalleryState.photos,
+                  munroPictures: state.photos,
                   initialIndex: index,
                   fetchMorePhotos: () async {
-                    List<MunroPicture> newPhotos =
-                        await profileGalleryState.paginateMunroPictures(profileId: widget.args.userId);
+                    List<MunroPicture> newPhotos = await state.paginate();
                     return newPhotos;
                   },
                 );
@@ -77,9 +89,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
             ),
           ),
           SizedBox(
-            child: profileGalleryState.status == ProfileGalleryStatus.paginating
-                ? const CircularProgressIndicator()
-                : null,
+            child: state.status == PhotoGalleryStatus.paginating ? const CircularProgressIndicator() : null,
           ),
         ],
       ),

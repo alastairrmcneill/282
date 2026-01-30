@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/models/weather_model.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
 import 'package:two_eight_two/support/theme.dart';
+
+class WeatherScreenArgs {
+  final Munro munro;
+  WeatherScreenArgs({required this.munro});
+}
 
 class WeatherScreen extends StatefulWidget {
   static const String route = "/weather";
@@ -20,12 +25,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.watch<MunroState>();
+    final args = ModalRoute.of(context)?.settings.arguments as WeatherScreenArgs;
+
     final weatherState = context.watch<WeatherState>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${munroState.selectedMunro?.name ?? ""} weather'),
+        title: Text('${args.munro.name} weather'),
       ),
       body: SafeArea(
         child: Padding(

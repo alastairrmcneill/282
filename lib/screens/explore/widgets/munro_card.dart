@@ -11,19 +11,14 @@ class MunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.watch<MunroState>();
-    final munroDetailState = context.watch<MunroDetailState>();
-
     double width = MediaQuery.of(context).size.width - 60;
 
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15, top: 15),
       child: GestureDetector(
         onTap: () {
-          munroState.setSelectedMunro = munro;
-          munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
-          context.read<ReviewsState>().getMunroReviews();
-          Navigator.of(context).pushNamed(MunroScreen.route);
+          context.read<ReviewsState>().getMunroReviews(munro.id);
+          Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
         },
         child: Column(
           children: [

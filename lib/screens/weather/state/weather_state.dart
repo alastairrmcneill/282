@@ -8,13 +8,11 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class WeatherState extends ChangeNotifier {
   final WeartherRepository _weatherRepository;
   final SettingsState settingsState;
-  final MunroState munroState;
   final Logger _logger;
 
   WeatherState(
     this._weatherRepository,
     this.settingsState,
-    this.munroState,
     this._logger,
   );
 
@@ -26,14 +24,12 @@ class WeatherState extends ChangeNotifier {
   Error get error => _error;
   List<Weather> get forecast => _forecast;
 
-  Future getWeather() async {
+  Future getWeather(Munro munro) async {
     try {
-      if (munroState.selectedMunro == null) return;
-
       setStatus = WeatherStatus.loading;
 
-      double lat = munroState.selectedMunro!.lat;
-      double long = munroState.selectedMunro!.lng;
+      double lat = munro.lat;
+      double long = munro.lng;
       String metric = settingsState.metricTemperature ? 'metric' : 'imperial';
       String apiKey = AppConfig.fromEnvironment().weatherApiKey;
       var response = await _weatherRepository.fetchWeather(lat: lat, lon: long, metric: metric, apiKey: apiKey);

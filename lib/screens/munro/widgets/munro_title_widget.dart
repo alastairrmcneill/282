@@ -16,10 +16,10 @@ class MunroTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.read<AuthState>().currentUserId;
-    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
     final savedListState = context.watch<SavedListState>();
 
-    Munro munro = munroState.selectedMunro!;
+    Munro munro = munroDetailState.selectedMunro!;
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
 
     return Row(
@@ -31,12 +31,12 @@ class MunroTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(munro.name, style: Theme.of(context).textTheme.headlineMedium),
-              munroState.selectedMunro?.extra == null || munroState.selectedMunro?.extra == ""
+              munro.extra == null || munro.extra == ""
                   ? const SizedBox()
                   : SizedBox(
                       width: double.infinity,
                       child: Text(
-                        "(${munroState.selectedMunro?.extra})",
+                        "(${munro.extra})",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ),
@@ -70,8 +70,8 @@ class MunroTitle extends StatelessWidget {
           onTap: () async {
             context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
               AnalyticsProp.source: "Munro Tile",
-              AnalyticsProp.munroId: (munroState.selectedMunro?.id ?? 0).toString(),
-              AnalyticsProp.munroName: munroState.selectedMunro?.name ?? "",
+              AnalyticsProp.munroId: (munro.id).toString(),
+              AnalyticsProp.munroName: munro.name,
             });
 
             if (userId == null) {

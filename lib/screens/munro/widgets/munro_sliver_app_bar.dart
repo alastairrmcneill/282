@@ -28,7 +28,7 @@ class MunroSliverAppBar extends StatelessWidget {
   Widget _buildPopupMenu(
     BuildContext context,
     UserState userState,
-    MunroState munroState,
+    MunroDetailState munroState,
     MunroCompletionState munroCompletionState,
   ) {
     List<MenuItem> menuItems = [];
@@ -93,7 +93,7 @@ class MunroSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final munroCompletionState = context.watch<MunroCompletionState>();
-    final munroState = context.read<MunroState>();
+    final munroState = context.read<MunroDetailState>();
     final userState = context.watch<UserState>();
     Munro munro = munroState.selectedMunro!;
 
