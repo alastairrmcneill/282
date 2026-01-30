@@ -28,7 +28,7 @@ class ReviewsState extends ChangeNotifier {
   Error get error => _error;
   List<Review> get reviews => _reviews;
 
-  Future<void> getMunroReviews() async {
+  Future<void> getMunroReviews(int munroId) async {
     List<String> blockedUsers = _userState.blockedUsers;
 
     try {
@@ -36,7 +36,7 @@ class ReviewsState extends ChangeNotifier {
 
       // Get reviews
       final reviews = await _reviewsRepository.readReviewsFromMunro(
-        munroId: _munroState.selectedMunro?.id ?? 0,
+        munroId: munroId,
         excludedAuthorIds: blockedUsers,
         offset: 0,
       );
@@ -52,13 +52,13 @@ class ReviewsState extends ChangeNotifier {
     }
   }
 
-  Future<void> paginateMunroReviews() async {
+  Future<void> paginateMunroReviews(int munroId) async {
     try {
       setStatus = ReviewsStatus.paginating;
       List<String> blockedUsers = _userState.blockedUsers;
 
       final reviews = await _reviewsRepository.readReviewsFromMunro(
-        munroId: _munroState.selectedMunro?.id ?? 0,
+        munroId: munroId,
         excludedAuthorIds: blockedUsers,
         offset: _reviews.length,
       );

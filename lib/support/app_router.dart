@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
@@ -45,11 +46,7 @@ class AppRouter {
           builder: (_) => const AuthHomeScreen(),
           settings: settings,
         );
-      case MunroScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => MunroScreen(),
-          settings: settings,
-        );
+
       case AchievementDetailScreen.route:
         final args = settings.arguments as AchievementDetailsScreenArgs;
         return MaterialPageRoute(
@@ -71,7 +68,7 @@ class AppRouter {
         );
       case WeatherScreen.route:
         return MaterialPageRoute(
-          builder: (_) => const WeatherScreen(),
+          builder: (_) => WeatherScreen(),
           settings: settings,
         );
       case LoginScreen.route:
@@ -89,6 +86,63 @@ class AppRouter {
           builder: (_) => ReportScreen(),
           settings: settings,
         );
+      case MunroScreen.route:
+        final args = settings.arguments as MunroScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider<MunroDetailState>(
+            create: (ctx) => MunroDetailState(
+              ctx.read<MunroPicturesRepository>(),
+              ctx.read<UserState>(),
+              ctx.read<Logger>(),
+            )..init(args.munro),
+            child: MunroScreen(),
+          ),
+          settings: settings,
+        );
+
+      case PhotoGalleryRoutes.munroGallery:
+        final args = settings.arguments as MunroPhotoGalleryArgs;
+        return MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
+            create: (ctx) => PhotoGalleryState<MunroPicture>(
+              ctx.read<UserState>(),
+              ctx.read<Logger>(),
+              ({required offset, required count, required excludedAuthorIds}) {
+                return ctx.read<MunroPicturesRepository>().readMunroPictures(
+                      munroId: args.munroId,
+                      excludedAuthorIds: excludedAuthorIds,
+                      offset: offset,
+                      count: count,
+                    );
+              },
+            )..loadInitital(),
+            child: PhotoGalleryScreen(title: "Photos from ${args.munroName}"),
+          ),
+          settings: settings,
+        );
+
+      case PhotoGalleryRoutes.profileGallery:
+        final args = settings.arguments as ProfilePhotoGalleryArgs;
+        return MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
+            create: (ctx) => PhotoGalleryState<MunroPicture>(
+              ctx.read<UserState>(),
+              ctx.read<Logger>(),
+              ({required offset, required count, required excludedAuthorIds}) {
+                return ctx.read<MunroPicturesRepository>().readProfilePictures(
+                      profileId: args.userId,
+                      excludedAuthorIds: excludedAuthorIds,
+                      offset: offset,
+                      count: count,
+                    );
+              },
+            )..loadInitital(),
+            child: PhotoGalleryScreen(title: "Photos from ${args.displayName}"),
+          ),
+          settings: settings,
+        );
+
       case ProfileScreen.route:
         final args = settings.arguments as ProfileScreenArgs;
 
@@ -275,11 +329,6 @@ class AppRouter {
           builder: (_) => MunroAreaScreen(args: args),
           settings: settings,
         );
-      case MunroPhotoGallery.route:
-        return MaterialPageRoute(
-          builder: (_) => const MunroPhotoGallery(),
-          settings: settings,
-        );
       case MunroSummitsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const MunroSummitsScreen(),
@@ -310,21 +359,7 @@ class AppRouter {
           ),
           settings: settings,
         );
-      case ProfilePhotoGallery.route:
-        final args = settings.arguments as ProfilePhotoGalleryArgs;
-        return MaterialPageRoute(
-          builder: (context) {
-            return ChangeNotifierProvider(
-              create: (ctx) => ProfileGalleryState(
-                ctx.read<MunroPicturesRepository>(),
-                ctx.read<UserState>(),
-                ctx.read<Logger>(),
-              )..getMunroPictures(profileId: args.userId),
-              child: ProfilePhotoGallery(args: args),
-            );
-          },
-          settings: settings,
-        );
+
       case SettingsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const SettingsScreen(),

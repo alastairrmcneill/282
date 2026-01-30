@@ -15,7 +15,7 @@ class MunroSummitsScreen extends StatelessWidget {
     final munroCompletionState = context.watch<MunroCompletionState>();
 
     List<MunroCompletion> munroCompletions =
-        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).toList();
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunroId).toList();
 
     return Scaffold(
       appBar: AppBar(

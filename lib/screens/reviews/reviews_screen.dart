@@ -23,7 +23,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           reviewsState.status != ReviewsStatus.paginating) {
-        reviewsState.paginateMunroReviews();
+        reviewsState.paginateMunroReviews(1);
       }
     });
     super.initState();

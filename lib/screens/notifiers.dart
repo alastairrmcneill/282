@@ -26,7 +26,7 @@ export 'nav/state/remote_config_state.dart';
 export 'notifications/state/notifications_state.dart';
 export 'profile/state/profile_state.dart';
 export 'profile/state/followers_list_state.dart';
-export 'profile_photo_gallery/state/profile_gallery_state.dart';
+export 'photo_gallery/state/photo_gallery_state.dart';
 export 'report/state/report_state.dart';
 export 'reviews/state/reviews_state.dart';
 export 'saved/state/saved_list_state.dart';

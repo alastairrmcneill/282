@@ -660,15 +660,6 @@ class MockMunroState extends _i1.Mock implements _i9.MunroState {
       );
 
   @override
-  set setSelectedMunro(_i3.Munro? selectedMunro) => super.noSuchMethod(
-        Invocation.setter(
-          #setSelectedMunro,
-          selectedMunro,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   set setSelectedMunroId(int? selectedMunroId) => super.noSuchMethod(
         Invocation.setter(
           #setSelectedMunroId,

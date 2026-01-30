@@ -27,7 +27,6 @@ class PostWidget extends StatelessWidget {
 
   Widget _buildIncludedMunroText(BuildContext context) {
     final munroState = context.read<MunroState>();
-    final munroDetailState = context.read<MunroDetailState>();
     final reviewsState = context.read<ReviewsState>();
     if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
@@ -37,14 +36,12 @@ class PostWidget extends StatelessWidget {
             for (int i = 0; i < post.includedMunroIds.length; i++) ...[
               GestureDetector(
                 onTap: () {
-                  // Handle the click event for each munro.name here
-                  munroState.setSelectedMunro = munroState.munroList.firstWhere(
+                  var munro = munroState.munroList.firstWhere(
                     (m) => m.id == post.includedMunroIds[i],
                     orElse: () => Munro.empty,
                   );
-                  munroDetailState.loadMunroPictures(munroId: post.includedMunroIds[i], count: 4);
-                  reviewsState.getMunroReviews();
-                  Navigator.of(context).pushNamed(MunroScreen.route);
+                  reviewsState.getMunroReviews(post.includedMunroIds[i]);
+                  Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
                 },
                 child: Text.rich(
                   TextSpan(

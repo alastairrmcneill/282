@@ -129,7 +129,6 @@ class HomeScreenState extends State<HomeScreen> {
 
           if (value == 0) {
             final munroState = context.read<MunroState>();
-            munroState.setSelectedMunro = null;
             munroState.setSelectedMunroId = null;
           }
 

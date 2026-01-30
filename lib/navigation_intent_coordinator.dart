@@ -40,9 +40,9 @@ class NavigationIntentCoordinator extends StatelessWidget {
           (m) => m.id == munroId,
           orElse: () => Munro.empty,
         );
-        munroState.setSelectedMunro = munro;
+        munroState.setSelectedMunroId = munro.id;
 
-        navigatorKey.currentState!.pushNamed(MunroScreen.route);
+        navigatorKey.currentState!.pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
         return;
 
       case OpenNotificationsIntent():

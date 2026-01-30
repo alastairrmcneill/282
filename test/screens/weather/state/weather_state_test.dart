@@ -12,13 +12,11 @@ import 'weather_state_test.mocks.dart';
 @GenerateMocks([
   WeartherRepository,
   SettingsState,
-  MunroState,
   Logger,
 ])
 void main() {
   late MockWeartherRepository mockWeatherRepository;
   late MockSettingsState mockSettingsState;
-  late MockMunroState mockMunroState;
   late MockLogger mockLogger;
   late WeatherState weatherState;
 
@@ -88,22 +86,20 @@ void main() {
       description: 'The highest mountain in the British Isles',
       pictureURL: 'https://example.com/ben-nevis.jpg',
       startingPointURL: 'https://example.com/start.jpg',
+      commonlyClimbedWith: [],
     );
 
     mockWeatherRepository = MockWeartherRepository();
     mockSettingsState = MockSettingsState();
-    mockMunroState = MockMunroState();
     mockLogger = MockLogger();
     weatherState = WeatherState(
       mockWeatherRepository,
       mockSettingsState,
-      mockMunroState,
       mockLogger,
     );
 
     // Default mock behavior
     when(mockSettingsState.metricTemperature).thenReturn(true);
-    when(mockMunroState.selectedMunro).thenReturn(sampleMunro);
   });
 
   group('WeatherState', () {
@@ -127,7 +123,7 @@ void main() {
         )).thenAnswer((_) async => sampleForecast);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.loaded);
@@ -153,7 +149,7 @@ void main() {
         )).thenAnswer((_) async => sampleForecast);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.loaded);
@@ -167,24 +163,6 @@ void main() {
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
       });
 
-      test('should return early if no munro is selected', () async {
-        // Arrange
-        when(mockMunroState.selectedMunro).thenReturn(null);
-
-        // Act
-        await weatherState.getWeather();
-
-        // Assert
-        expect(weatherState.status, WeatherStatus.initial);
-        expect(weatherState.forecast, isEmpty);
-        verifyNever(mockWeatherRepository.fetchWeather(
-          lat: anyNamed('lat'),
-          lon: anyNamed('lon'),
-          metric: anyNamed('metric'),
-          apiKey: anyNamed('apiKey'),
-        ));
-      });
-
       test('should handle error during weather fetch', () async {
         // Arrange
         when(mockWeatherRepository.fetchWeather(
@@ -195,7 +173,7 @@ void main() {
         )).thenThrow(Exception('Network error'));
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.error);
@@ -216,7 +194,7 @@ void main() {
         });
 
         // Act
-        final future = weatherState.getWeather();
+        final future = weatherState.getWeather(sampleMunro);
 
         // Allow event loop to process
         await Future.delayed(Duration(milliseconds: 10));
@@ -246,8 +224,8 @@ void main() {
           description: 'A popular Munro near Glasgow',
           pictureURL: 'https://example.com/ben-lomond.jpg',
           startingPointURL: 'https://example.com/start.jpg',
+          commonlyClimbedWith: [],
         );
-        when(mockMunroState.selectedMunro).thenReturn(customMunro);
         when(mockWeatherRepository.fetchWeather(
           lat: anyNamed('lat'),
           lon: anyNamed('lon'),
@@ -256,7 +234,7 @@ void main() {
         )).thenAnswer((_) async => sampleForecast);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(customMunro);
 
         // Assert
         verify(mockWeatherRepository.fetchWeather(
@@ -276,7 +254,7 @@ void main() {
           apiKey: anyNamed('apiKey'),
         )).thenAnswer((_) async => sampleForecast);
 
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
         expect(weatherState.forecast.length, 3);
 
         // Arrange - New shorter forecast
@@ -289,7 +267,7 @@ void main() {
         )).thenAnswer((_) async => newForecast);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.forecast.length, 1);
@@ -323,7 +301,7 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.loaded);
@@ -341,7 +319,7 @@ void main() {
         )).thenAnswer((_) async => singleDayForecast);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.loaded);
@@ -359,50 +337,12 @@ void main() {
         )).thenThrow(Exception('Failed to load weather data'));
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.error);
         expect(weatherState.error.message, 'There was an error fetching the weather data.');
         expect(weatherState.error.code, contains('Failed to load weather data'));
-      });
-
-      test('should handle munro with extreme coordinates', () async {
-        // Arrange
-        final extremeMunro = Munro(
-          id: 3,
-          name: 'Test Munro',
-          extra: null,
-          area: 'Test Area',
-          meters: 1000,
-          section: 'Test Section',
-          region: 'Test Region',
-          feet: 3280,
-          lat: 90.0, // Extreme latitude
-          lng: 180.0, // Extreme longitude
-          link: 'https://example.com/test.shtml',
-          description: 'A test munro',
-          pictureURL: 'https://example.com/test.jpg',
-          startingPointURL: 'https://example.com/start.jpg',
-        );
-        when(mockMunroState.selectedMunro).thenReturn(extremeMunro);
-        when(mockWeatherRepository.fetchWeather(
-          lat: anyNamed('lat'),
-          lon: anyNamed('lon'),
-          metric: anyNamed('metric'),
-          apiKey: anyNamed('apiKey'),
-        )).thenAnswer((_) async => sampleForecast);
-
-        // Act
-        await weatherState.getWeather();
-
-        // Assert
-        verify(mockWeatherRepository.fetchWeather(
-          lat: 90.0,
-          lon: 180.0,
-          metric: anyNamed('metric'),
-          apiKey: anyNamed('apiKey'),
-        )).called(1);
       });
 
       test('should handle weather with zero values', () async {
@@ -431,7 +371,7 @@ void main() {
         )).thenAnswer((_) async => zeroValueWeather);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(weatherState.status, WeatherStatus.loaded);
@@ -455,7 +395,7 @@ void main() {
         weatherState.addListener(() => notified = true);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(notified, true);
@@ -495,7 +435,7 @@ void main() {
         weatherState.addListener(() => notificationCount++);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert - should be notified at least twice (loading and loaded)
         expect(notificationCount, greaterThanOrEqualTo(2));
@@ -514,7 +454,7 @@ void main() {
         weatherState.addListener(() => notified = true);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(notified, true);
@@ -544,7 +484,7 @@ void main() {
         expect(weatherState.status, WeatherStatus.initial);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(statusChanges, contains(WeatherStatus.loading));
@@ -570,7 +510,7 @@ void main() {
         expect(weatherState.status, WeatherStatus.initial);
 
         // Act
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(statusChanges, contains(WeatherStatus.loading));
@@ -587,7 +527,7 @@ void main() {
           apiKey: anyNamed('apiKey'),
         )).thenAnswer((_) async => sampleForecast);
 
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
         expect(weatherState.status, WeatherStatus.loaded);
 
         final List<WeatherStatus> statusChanges = [];
@@ -596,7 +536,7 @@ void main() {
         });
 
         // Act - Second fetch
-        await weatherState.getWeather();
+        await weatherState.getWeather(sampleMunro);
 
         // Assert
         expect(statusChanges.first, WeatherStatus.loading);

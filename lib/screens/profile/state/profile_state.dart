@@ -81,7 +81,7 @@ class ProfileState extends ChangeNotifier {
     }
   }
 
-  Future<void> getMunroPictures({required String profileId, int count = 18}) async {
+  Future<void> getMunroPictures({required String profileId}) async {
     try {
       _photoStatus = ProfilePhotoStatus.loading;
       notifyListeners();
@@ -90,7 +90,7 @@ class ProfileState extends ChangeNotifier {
         profileId: profileId,
         excludedAuthorIds: blockedUsers,
         offset: 0,
-        count: count,
+        count: 4,
       );
 
       _profilePhotos = pictures;
@@ -100,29 +100,6 @@ class ProfileState extends ChangeNotifier {
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
-    }
-  }
-
-  Future<List<MunroPicture>> paginateMunroPictures({required String profileId}) async {
-    try {
-      _photoStatus = ProfilePhotoStatus.paginating;
-      notifyListeners();
-      final blockedUsers = _userState.blockedUsers;
-      List<MunroPicture> pictures = await _munroPicturesRepository.readProfilePictures(
-        profileId: profileId,
-        excludedAuthorIds: blockedUsers,
-        offset: _profilePhotos.length,
-      );
-
-      _profilePhotos.addAll(pictures);
-
-      _photoStatus = ProfilePhotoStatus.loaded;
-      notifyListeners();
-      return pictures;
-    } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(message: "There was an issue loading pictures for this profile. Please try again.");
-      return [];
     }
   }
 

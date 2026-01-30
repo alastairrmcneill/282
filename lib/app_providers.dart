@@ -206,13 +206,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Logger>(),
         ),
       ),
-      ChangeNotifierProvider<MunroDetailState>(
-        create: (ctx) => MunroDetailState(
-          ctx.read<MunroPicturesRepository>(),
-          ctx.read<UserState>(),
-          ctx.read<Logger>(),
-        ),
-      ),
       ChangeNotifierProvider<ReviewsState>(
         create: (ctx) => ReviewsState(
           ctx.read<ReviewsRepository>(),
@@ -243,7 +236,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => WeatherState(
           ctx.read<WeartherRepository>(),
           ctx.read<SettingsState>(),
-          ctx.read<MunroState>(),
           ctx.read<Logger>(),
         ),
       ),

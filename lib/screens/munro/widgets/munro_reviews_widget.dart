@@ -13,12 +13,13 @@ class MunroReviewsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reviewsState = context.watch<ReviewsState>();
-    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
+
     return Column(
       children: [
         InkWell(
           onTap: () {
-            reviewsState.getMunroReviews();
+            reviewsState.getMunroReviews(munroDetailState.selectedMunro!.id);
             Navigator.of(context).pushNamed(ReviewsScreen.route);
           },
           child: Container(
@@ -57,7 +58,7 @@ class MunroReviewsWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       children: [
                         Text(
-                          munroState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
+                          munroDetailState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(width: 5),
@@ -68,7 +69,7 @@ class MunroReviewsWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          '/ ${munroState.selectedMunro?.reviewCount == 1 ? "1 rating" : "${munroState.selectedMunro?.reviewCount} ratings"}',
+                          '/ ${munroDetailState.selectedMunro?.reviewCount == 1 ? "1 rating" : "${munroDetailState.selectedMunro?.reviewCount} ratings"}',
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w300,

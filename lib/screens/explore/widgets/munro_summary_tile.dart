@@ -34,7 +34,6 @@ class MunroSummaryTile extends StatelessWidget {
     final settingsState = context.watch<SettingsState>();
     final savedListState = context.watch<SavedListState>();
     final munroCompletionState = context.watch<MunroCompletionState>();
-    final munroDetailState = context.watch<MunroDetailState>();
 
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
     bool munroSummited = munroCompletionState.munroCompletions.any((mc) => mc.munroId == munro.id);
@@ -46,10 +45,8 @@ class MunroSummaryTile extends StatelessWidget {
         height: 100,
         child: InkWell(
           onTap: () {
-            munroState.setSelectedMunro = munro;
-            munroDetailState.loadMunroPictures(munroId: munro.id, count: 4);
-            context.read<ReviewsState>().getMunroReviews();
-            Navigator.of(context).pushNamed(MunroScreen.route);
+            context.read<ReviewsState>().getMunroReviews(munro.id);
+            Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
           },
           child: Card(
             shape: RoundedRectangleBorder(
@@ -159,13 +156,12 @@ class MunroSummaryTile extends StatelessWidget {
                         onTap: () async {
                           context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
                             AnalyticsProp.source: "Munro Summary Tile",
-                            AnalyticsProp.munroId: (munroState.selectedMunro?.id ?? 0).toString(),
-                            AnalyticsProp.munroName: munroState.selectedMunro?.name ?? "",
+                            AnalyticsProp.munroId: (munro.id).toString(),
                           });
                           if (userId == null) {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
-                            munroState.setSelectedMunro = munro;
+                            munroState.setSelectedMunroId = munro.id;
                             showSaveMunroDialog(context);
                           }
                         },
@@ -180,7 +176,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             if (munroSummited) return;
-                            munroState.setSelectedMunro = munro;
+                            munroState.setSelectedMunroId = munro.id; // TODO is this needed
                             createPostState.reset();
                             createPostState.addMunro(munro.id);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;

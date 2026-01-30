@@ -24,9 +24,9 @@ class MunroCompletionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
+    final munroDetailState = context.read<MunroDetailState>();
     final munroCompletionState = context.read<MunroCompletionState>();
-    Munro munro = munroState.selectedMunro!;
+    Munro munro = munroDetailState.selectedMunro!;
     List<MenuItem> menuItems = [
       MenuItem(
         text: 'Remove',

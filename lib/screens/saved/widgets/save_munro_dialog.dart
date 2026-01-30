@@ -32,18 +32,18 @@ showSaveMunroDialog(BuildContext context) {
                           children: savedListState.savedLists
                               .map(
                                 (e) => CheckboxListTile(
-                                  value: e.munroIds.contains(munroState.selectedMunro?.id),
+                                  value: e.munroIds.contains(munroState.selectedMunroId),
                                   onChanged: (value) async {
                                     if (value == true) {
                                       await savedListState.addMunroToSavedList(
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? 0,
+                                        munroId: munroState.selectedMunroId ?? 0,
                                       );
                                       setState(() {});
                                     } else {
                                       await savedListState.removeMunroFromSavedList(
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? 0,
+                                        munroId: munroState.selectedMunroId ?? 0,
                                       );
                                       setState(() {});
                                     }
