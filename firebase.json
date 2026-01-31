@@ -9,5 +9,9 @@
   ],
   "storage": {
     "rules": "storage.rules"
+  },
+  "hosting": {
+    "public": "public",
+    "rewrites": [{ "source": "/images/**", "function": "imageProxy" }]
   }
 }
