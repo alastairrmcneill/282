@@ -29,6 +29,10 @@ class _AppBootstrapState extends State<AppBootstrap> {
       return const SplashScreen();
     }
 
+    if (!appBootstrapState.hasCompletedOnboarding) {
+      return OnboardingScreen();
+    }
+
     return widget.child;
   }
 }

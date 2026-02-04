@@ -24,6 +24,7 @@ export 'nav/state/navigation_intent_state.dart';
 export 'nav/state/overlay_intent_state.dart';
 export 'nav/state/remote_config_state.dart';
 export 'notifications/state/notifications_state.dart';
+export 'onboarding/state/onboarding_state.dart';
 export 'profile/state/profile_state.dart';
 export 'profile/state/followers_list_state.dart';
 export 'photo_gallery/state/photo_gallery_state.dart';

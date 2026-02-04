@@ -8,7 +8,7 @@ export 'munro/munro_screen.dart';
 export 'munro/screens/munro_summits_screen.dart';
 export 'munro/screens/munro_area_screen.dart';
 export 'nav/home_screen.dart';
-export 'onboarding/screen.dart';
+export 'onboarding/onboarding_screen.dart';
 export 'profile/profile_tab.dart';
 export 'saved/saved_tab.dart';
 export 'user_search/user_search_screen.dart';

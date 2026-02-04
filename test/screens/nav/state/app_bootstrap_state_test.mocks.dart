@@ -226,6 +226,182 @@ class MockRemoteConfigState extends _i1.Mock implements _i3.RemoteConfigState {
       );
 }
 
+/// A class which mocks [AppFlagsRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAppFlagsRepository extends _i1.Mock
+    implements _i4.AppFlagsRepository {
+  MockAppFlagsRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get onboardingCompleted => (super.noSuchMethod(
+        Invocation.getter(#onboardingCompleted),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  bool get mapTerrain => (super.noSuchMethod(
+        Invocation.getter(#mapTerrain),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  bool get showBulkMunroDialog => (super.noSuchMethod(
+        Invocation.getter(#showBulkMunroDialog),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  int get lastFeedbackSurveyNumber => (super.noSuchMethod(
+        Invocation.getter(#lastFeedbackSurveyNumber),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  String get lastAppUpdateDialogDate => (super.noSuchMethod(
+        Invocation.getter(#lastAppUpdateDialogDate),
+        returnValue: _i7.dummyValue<String>(
+          this,
+          Invocation.getter(#lastAppUpdateDialogDate),
+        ),
+      ) as String);
+
+  @override
+  int get openCount => (super.noSuchMethod(
+        Invocation.getter(#openCount),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  _i5.Future<void> setOnboardingCompleted(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setOnboardingCompleted,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setMapTerrain(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setMapTerrain,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setShowBulkMunroDialog(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setShowBulkMunroDialog,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setLastFeedbackSurveyNumber(int? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setLastFeedbackSurveyNumber,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setLastAppUpdateDialogDate(String? isoDate) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setLastAppUpdateDialogDate,
+          [isoDate],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  bool showWhatsNewDialog(String? version) => (super.noSuchMethod(
+        Invocation.method(
+          #showWhatsNewDialog,
+          [version],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Future<void> setShownWhatsNewDialog(String? version) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setShownWhatsNewDialog,
+          [version],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setFirstAppVersion(String? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setFirstAppVersion,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  bool showInAppOnboarding(String? userId) => (super.noSuchMethod(
+        Invocation.method(
+          #showInAppOnboarding,
+          [userId],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Future<void> setShowInAppOnboarding(
+    String? userId,
+    bool? v,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setShowInAppOnboarding,
+          [
+            userId,
+            v,
+          ],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setOpenCount(int? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setOpenCount,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> incrementOpenCount() => (super.noSuchMethod(
+        Invocation.method(
+          #incrementOpenCount,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+}
+
 /// A class which mocks [DeepLinkState].
 ///
 /// See the documentation for Mockito's code generation for more information.

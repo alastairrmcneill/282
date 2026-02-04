@@ -46,6 +46,11 @@ class AppRouter {
           builder: (_) => const AuthHomeScreen(),
           settings: settings,
         );
+      case OnboardingScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingScreen(),
+          settings: settings,
+        );
 
       case AchievementDetailScreen.route:
         final args = settings.arguments as AchievementDetailsScreenArgs;

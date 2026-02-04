@@ -1200,6 +1200,12 @@ class MockAppFlagsRepository extends _i1.Mock
   }
 
   @override
+  bool get onboardingCompleted => (super.noSuchMethod(
+        Invocation.getter(#onboardingCompleted),
+        returnValue: false,
+      ) as bool);
+
+  @override
   bool get mapTerrain => (super.noSuchMethod(
         Invocation.getter(#mapTerrain),
         returnValue: false,
@@ -1231,6 +1237,16 @@ class MockAppFlagsRepository extends _i1.Mock
         Invocation.getter(#openCount),
         returnValue: 0,
       ) as int);
+
+  @override
+  _i5.Future<void> setOnboardingCompleted(bool? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setOnboardingCompleted,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> setMapTerrain(bool? v) => (super.noSuchMethod(
