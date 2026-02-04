@@ -42,6 +42,7 @@ class AnalyticsEvent {
   static const paginateGlobalFeed = "paginate_global_feed";
   static const signOut = "sign_out";
   static const deleteAccount = "delete_account";
+  static const selectCommonlyClimbedMunros = "select_commonly_climbed_munros_screen";
 }
 
 class AnalyticsProp {
@@ -71,4 +72,6 @@ class AnalyticsProp {
   static var completionDate = "completion_date";
   static var completionStartTime = "completion_start_time";
   static var completionDuration = "completion_duration";
+  static const commonlyClimbedWithCount = "commonly_climbed_with_count";
+  static const selectedMunroCount = "selected_munro_count";
 }

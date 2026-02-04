@@ -406,6 +406,11 @@ class AppRouter {
           builder: (_) => FullScreenPhotoViewer(args: args),
           settings: settings,
         );
+      case SelectMunrosScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const SelectMunrosScreen(),
+          settings: settings,
+        );
 
       default:
         return MaterialPageRoute(

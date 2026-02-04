@@ -1,5 +1,6 @@
 export 'auth/auth_home_screen.dart';
 export 'create_post/create_post_screen.dart';
+export 'create_post/select_munros_screen.dart';
 export 'edit_profile/edit_profile_screen.dart';
 export 'explore/explore_tab.dart';
 export 'feed/feed_tab.dart';
