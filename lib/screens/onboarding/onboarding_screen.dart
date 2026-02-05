@@ -3,12 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/screens/nav/state/app_bootstrap_state.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
-import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 import 'package:two_eight_two/screens/onboarding/screens/welcome_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/progress_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/achievement_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/community_screen.dart';
-import 'package:two_eight_two/screens/onboarding/screens/final_screen.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -33,10 +31,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-
-  void _onPageChanged(int page) {
-    context.read<OnboardingState>().goToPage(page);
   }
 
   void _nextPage() {
@@ -71,6 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<OnboardingState>();
     return Scaffold(
       body: Stack(
         children: [
@@ -78,13 +73,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           RepaintBoundary(
             child: PageView(
               controller: _pageController,
-              onPageChanged: _onPageChanged,
+              onPageChanged: (value) => state.goToPage(value),
               children: [
-                WelcomeScreen(),
-                ProgressScreen(),
-                AchievementScreen(),
-                CommunityScreen(),
-                FinalScreen(onGetStarted: _onGetStarted),
+                WelcomeScreen(onNext: _nextPage),
+                ProgressScreen(onNext: _nextPage, onBack: _previousPage),
+                AchievementScreen(onNext: _nextPage, onBack: _previousPage),
+                CommunityScreen(onNext: _onGetStarted),
               ],
             ),
           ),
@@ -105,54 +99,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   spacing: 8,
                 ),
               ),
-            ),
-          ),
-          // Navigation buttons
-          Positioned(
-            bottom: 96,
-            left: 0,
-            right: 0,
-            child: Consumer<OnboardingState>(
-              builder: (context, state, child) {
-                if (state.isLastPage) {
-                  // Show special CTA button on last page
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: OnboardingPrimaryButton(
-                            onPressed: _onGetStarted,
-                            text: 'Start Bagging Munros',
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        TextButton.icon(
-                          onPressed: _previousPage,
-                          icon: const Icon(
-                            Icons.chevron_left,
-                            color: Color(0xFFe2e8f0),
-                          ),
-                          label: const Text(
-                            'Go Back',
-                            style: TextStyle(
-                              color: Color(0xFFe2e8f0),
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return OnboardingNavigationButtons(
-                    onNext: _nextPage,
-                    onBack: state.isFirstPage ? null : _previousPage,
-                    nextText: 'Continue',
-                  );
-                }
-              },
             ),
           ),
         ],

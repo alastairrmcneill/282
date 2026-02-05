@@ -48,6 +48,7 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => SavedListMunroRepository(client)),
       Provider(create: (_) => UserAchievementsRepository(client)),
       Provider(create: (_) => GlobalCompletionCountRepository(client)),
+      Provider(create: (_) => OnboardingRepository(client)),
       Provider(create: (_) => SettingsRepository(sharedPreferences)),
       Provider(create: (_) => AppFlagsRepository(sharedPreferences)),
       Provider(create: (_) => LocalStorageRepository(sharedPreferences)),
@@ -329,6 +330,8 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         ),
       ),
       ChangeNotifierProvider(
-        create: (ctx) => OnboardingState(),
+        create: (ctx) => OnboardingState(
+          ctx.read<OnboardingRepository>(),
+        ),
       ),
     ];

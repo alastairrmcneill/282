@@ -1,74 +1,51 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 
-class OnboardingPrimaryButton extends StatefulWidget {
+class OnboardingPrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  final double height;
 
   const OnboardingPrimaryButton({
     super.key,
     required this.onPressed,
     required this.text,
+    this.height = 50,
   });
-
-  @override
-  State<OnboardingPrimaryButton> createState() => _OnboardingPrimaryButtonState();
-}
-
-class _OnboardingPrimaryButtonState extends State<OnboardingPrimaryButton> {
-  bool _isPressed = false;
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        widget.onPressed();
-      },
-      onTapCancel: () => setState(() => _isPressed = false),
-      child: AnimatedScale(
-        scale: _isPressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF10b981), Color(0xFF14b8a6)],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
+    return SizedBox(
+      width: double.infinity,
+      height: height,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromRGBO(68, 186, 130, 1),
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(100),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF10b981).withOpacity(0.2),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  widget.text,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(
-                  LucideIcons.chevron_right,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
             ),
-          ),
+            const SizedBox(width: 8),
+            Icon(
+              LucideIcons.chevron_right,
+              color: Colors.white,
+              size: 20,
+            ),
+          ],
         ),
       ),
     );
@@ -77,31 +54,41 @@ class _OnboardingPrimaryButtonState extends State<OnboardingPrimaryButton> {
 
 class OnboardingBackButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final bool backButtonLight;
 
   const OnboardingBackButton({
     super.key,
     required this.onPressed,
+    this.backButtonLight = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: Colors.white.withOpacity(0.3),
-            width: 2,
-          ),
-        ),
-        child: Center(
-          child: Icon(
-            LucideIcons.chevron_left,
-            color: Colors.white,
-            size: 20,
+    return SizedBox(
+      width: 70,
+      height: 50,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: OutlinedButton(
+            onPressed: onPressed,
+            style: OutlinedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              side: BorderSide(
+                  color: backButtonLight ? Colors.white.withAlpha(100) : Colors.black.withAlpha(100),
+                  width: 0.5), // Border color and width
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+            ),
+            child: Center(
+              child: Icon(
+                LucideIcons.chevron_left,
+                color: backButtonLight ? Colors.white.withAlpha(200) : Colors.black.withAlpha(200),
+                size: 20,
+              ),
+            ),
           ),
         ),
       ),
@@ -114,6 +101,8 @@ class OnboardingNavigationButtons extends StatelessWidget {
   final VoidCallback? onBack;
   final String nextText;
   final bool isLastPage;
+  final double height;
+  final bool backButtonLight;
 
   const OnboardingNavigationButtons({
     super.key,
@@ -121,26 +110,26 @@ class OnboardingNavigationButtons extends StatelessWidget {
     this.onBack,
     this.nextText = 'Continue',
     this.isLastPage = false,
+    this.height = 50,
+    this.backButtonLight = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Row(
-        children: [
-          if (onBack != null) ...[
-            OnboardingBackButton(onPressed: onBack!),
-            const SizedBox(width: 12),
-          ],
-          Expanded(
-            child: OnboardingPrimaryButton(
-              onPressed: onNext,
-              text: nextText,
-            ),
-          ),
+    return Row(
+      children: [
+        if (onBack != null) ...[
+          OnboardingBackButton(onPressed: onBack!, backButtonLight: backButtonLight),
+          const SizedBox(width: 12),
         ],
-      ),
+        Expanded(
+          child: OnboardingPrimaryButton(
+            onPressed: onNext,
+            text: nextText,
+            height: height,
+          ),
+        ),
+      ],
     );
   }
 }

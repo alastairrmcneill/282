@@ -1,9 +1,14 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
 class AchievementScreen extends StatefulWidget {
-  const AchievementScreen({super.key});
+  final VoidCallback onNext;
+  final VoidCallback onBack;
+
+  const AchievementScreen({super.key, required this.onNext, required this.onBack});
 
   @override
   State<AchievementScreen> createState() => _AchievementScreenState();
@@ -107,9 +112,9 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.4),
                   Colors.black.withOpacity(0.3),
-                  Colors.black.withOpacity(0.9),
+                  Colors.black.withOpacity(0.2),
+                  Colors.black.withOpacity(0.8),
                 ],
                 stops: const [0.0, 0.5, 1.0],
               ),
@@ -120,11 +125,13 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
         Positioned(
           left: 0,
           right: 0,
-          bottom: 96,
+          top: 0,
+          bottom: 80,
           child: RepaintBoundary(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // Trophy icon
                   AnimatedBuilder(
@@ -138,23 +145,28 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                         ),
                       );
                     },
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFFf59e0b).withOpacity(0.2),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          LucideIcons.trophy,
-                          size: 40,
-                          color: Color(0xFFfbbf24),
+                    child: ClipOval(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(0xFFf59e0b).withOpacity(0.2),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              LucideIcons.trophy,
+                              size: 40,
+                              color: Color(0xFFfbbf24),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   // Title
                   AnimatedBuilder(
                     animation: _titleAnimation,
@@ -191,7 +203,7 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   // Achievement cards
                   _buildAchievementCard(
                     animation: _achievement1Animation,
@@ -200,7 +212,7 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                     description: 'Complete your first Munro',
                     locked: false,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildAchievementCard(
                     animation: _achievement2Animation,
                     icon: LucideIcons.star,
@@ -208,7 +220,7 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                     description: 'Bag 10 Munros',
                     locked: false,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildAchievementCard(
                     animation: _achievement3Animation,
                     icon: LucideIcons.trophy,
@@ -216,13 +228,21 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                     description: 'Conquer 100 peaks',
                     locked: true,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildAchievementCard(
                     animation: _achievement4Animation,
                     icon: LucideIcons.award,
                     title: 'Munroist',
                     description: 'Complete all 282!',
                     locked: true,
+                  ),
+                  const SizedBox(height: 32),
+                  // Navigation buttons
+                  OnboardingNavigationButtons(
+                    onNext: widget.onNext,
+                    onBack: widget.onBack,
+                    nextText: 'Continue',
+                    backButtonLight: true,
                   ),
                 ],
               ),
@@ -251,55 +271,57 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
           ),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                gradient: locked
-                    ? null
-                    : const LinearGradient(
-                        colors: [Color(0xFF6ee7b7), Color(0xFF14b8a6)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                color: locked ? Colors.grey[600] : null,
-                boxShadow: locked
-                    ? null
-                    : [
-                        BoxShadow(
-                          color: const Color(0xFF10b981).withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-              ),
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 24,
-                  color: Colors.white,
-                ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    gradient: locked
+                        ? null
+                        : const LinearGradient(
+                            colors: [Color(0xFF6ee7b7), Color(0xFF14b8a6)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                    color: locked ? Colors.grey[600] : null,
+                    boxShadow: locked
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: const Color(0xFF10b981).withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                  ),
+                  child: Center(
+                    child: Icon(
+                      icon,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
@@ -309,33 +331,30 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                           color: Colors.white,
                         ),
                       ),
-                      if (!locked) ...[
-                        const SizedBox(width: 8),
-                        const Icon(
-                          LucideIcons.star,
-                          size: 16,
-                          color: Color(0xFFfbbf24),
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFFcbd5e1),
                         ),
-                      ],
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFFcbd5e1),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                locked
+                    ? const Text(
+                        '🔒',
+                        style: TextStyle(fontSize: 20),
+                      )
+                    : const Icon(
+                        LucideIcons.star,
+                        size: 16,
+                        color: Color(0xFFfbbf24),
+                      ),
+              ],
             ),
-            if (locked)
-              const Text(
-                '🔒',
-                style: TextStyle(fontSize: 20),
-              ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,9 +1,13 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
 class ProgressScreen extends StatefulWidget {
-  const ProgressScreen({super.key});
+  final VoidCallback onNext;
+  final VoidCallback onBack;
+
+  const ProgressScreen({super.key, required this.onNext, required this.onBack});
 
   @override
   State<ProgressScreen> createState() => _ProgressScreenState();
@@ -94,130 +98,141 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         ),
       ),
       child: RepaintBoundary(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Progress circle
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _scaleAnimation.value,
-                    child: SizedBox(
-                      width: 256,
-                      height: 256,
-                      child: Stack(
-                        children: [
-                          // Background circle
-                          CustomPaint(
-                            size: const Size(256, 256),
-                            painter: _ProgressCirclePainter(
-                              progress: _progressAnimation.value * (completedCount / munroCount),
-                              backgroundColor: Colors.grey[300]!,
-                              progressColor: const Color(0xFF10b981),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 32, right: 32, bottom: 60),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Progress circle
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _scaleAnimation.value,
+                      child: SizedBox(
+                        width: 220,
+                        height: 220,
+                        child: Stack(
+                          children: [
+                            // Background circle
+                            CustomPaint(
+                              size: const Size(220, 220),
+                              painter: _ProgressCirclePainter(
+                                progress: _progressAnimation.value * (completedCount / munroCount),
+                                backgroundColor: Colors.grey[300]!,
+                                progressColor: const Color(0xFF10b981),
+                              ),
                             ),
-                          ),
-                          // Center content
-                          Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${(completedCount * _progressAnimation.value).toInt()}',
-                                  style: TextStyle(
-                                    fontSize: 60,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[800],
+                            // Center content
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${(completedCount * _progressAnimation.value).toInt()}',
+                                    style: TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey[800],
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'of $munroCount Munros',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[600],
+                                  Text(
+                                    'of $munroCount Munros',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  '${((completedCount / munroCount) * 100 * _progressAnimation.value).toInt()}% Complete',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF10b981),
-                                    fontWeight: FontWeight.w500,
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    '${((completedCount / munroCount) * 100 * _progressAnimation.value).toInt()}% Complete',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF10b981),
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 48),
-              // Title
-              AnimatedBuilder(
-                animation: _titleAnimation,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: Offset(0, 20 * (1 - _titleAnimation.value)),
-                    child: Opacity(
-                      opacity: _titleAnimation.value,
-                      child: child,
-                    ),
-                  );
-                },
-                child: Column(
+                    );
+                  },
+                ),
+                const SizedBox(height: 40),
+                // Title
+                AnimatedBuilder(
+                  animation: _titleAnimation,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: Offset(0, 20 * (1 - _titleAnimation.value)),
+                      child: Opacity(
+                        opacity: _titleAnimation.value,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        'Track Every Summit',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Watch your progress grow with every peak you conquer.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Features
+                Column(
                   children: [
-                    Text(
-                      'Track Every Summit',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
-                      ),
-                      textAlign: TextAlign.center,
+                    _buildFeature(
+                      animation: _feature1Animation,
+                      icon: LucideIcons.map,
+                      text: 'Interactive map of all 282 Munros',
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Watch your progress grow with every peak you conquer. See at a glance which mountains you\'ve climbed and which adventures await.',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                        height: 1.5,
-                      ),
-                      textAlign: TextAlign.center,
+                    const SizedBox(height: 10),
+                    _buildFeature(
+                      animation: _feature2Animation,
+                      icon: LucideIcons.check,
+                      text: 'Instantly see completed vs. remaining peaks',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildFeature(
+                      animation: _feature3Animation,
+                      icon: LucideIcons.map_pin,
+                      text: 'Find your next adventure nearby',
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 32),
-              // Features
-              Column(
-                children: [
-                  _buildFeature(
-                    animation: _feature1Animation,
-                    icon: LucideIcons.map_pin,
-                    text: 'Interactive map of all 282 Munros',
-                  ),
-                  const SizedBox(height: 12),
-                  _buildFeature(
-                    animation: _feature2Animation,
-                    icon: LucideIcons.check,
-                    text: 'Instantly see completed vs. remaining peaks',
-                  ),
-                  const SizedBox(height: 12),
-                  _buildFeature(
-                    animation: _feature3Animation,
-                    icon: LucideIcons.map_pin,
-                    text: 'Find your next adventure nearby',
-                  ),
-                ],
-              ),
-            ],
+                const SizedBox(height: 32),
+                // Navigation buttons
+                OnboardingNavigationButtons(
+                  onNext: widget.onNext,
+                  onBack: widget.onBack,
+                  backButtonLight: false,
+                  nextText: 'Continue',
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -262,9 +277,9 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
                 shape: BoxShape.circle,
                 color: const Color(0xFF10b981).withOpacity(0.1),
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
-                  LucideIcons.check,
+                  icon,
                   size: 16,
                   color: Color(0xFF10b981),
                 ),

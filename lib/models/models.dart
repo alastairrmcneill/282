@@ -24,3 +24,5 @@ export 'appsettings_model.dart';
 export 'remote_config_model.dart';
 export 'navigation_intent_model.dart';
 export 'overlay_intent_model.dart';
+export 'onboarding_totals_model.dart';
+export 'onboarding_feed_post_model.dart';

@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+  final VoidCallback onNext;
+
+  const WelcomeScreen({super.key, required this.onNext});
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
@@ -15,6 +18,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
   late Animation<double> _titleAnimation;
   late Animation<double> _subtitleAnimation;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _buttonAnimation;
 
   @override
   void initState() {
@@ -52,6 +56,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       ),
     );
 
+    _buttonAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
+      ),
+    );
+
     _controller.forward();
   }
 
@@ -85,9 +96,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.4),
                   Colors.black.withOpacity(0.3),
-                  Colors.black.withOpacity(0.9),
+                  Colors.black.withOpacity(0.2),
+                  Colors.black.withOpacity(0.8),
                 ],
                 stops: const [0.0, 0.5, 1.0],
               ),
@@ -98,11 +109,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
         Positioned(
           left: 0,
           right: 0,
-          bottom: 96,
+          top: 0,
+          bottom: 80,
           child: RepaintBoundary(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // Icon
                   AnimatedBuilder(
@@ -137,7 +150,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   // Title
                   AnimatedBuilder(
                     animation: _titleAnimation,
@@ -175,13 +188,32 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                       );
                     },
                     child: const Text(
-                      '282 peaks. Endless adventures. One incredible story—yours.',
+                      '282 peaks. Endless adventures. One incredible story - yours.',
                       style: TextStyle(
                         fontSize: 18,
                         color: Color(0xFFe2e8f0),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  // Button
+                  AnimatedBuilder(
+                    animation: _buttonAnimation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, 30 * (1 - _buttonAnimation.value)),
+                        child: Opacity(
+                          opacity: _buttonAnimation.value,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: OnboardingPrimaryButton(
+                      onPressed: widget.onNext,
+                      text: 'Continue',
+                      height: 64,
                     ),
                   ),
                   const SizedBox(height: 32),
