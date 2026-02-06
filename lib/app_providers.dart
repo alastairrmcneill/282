@@ -315,7 +315,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ChangeNotifierProvider(
         create: (ctx) => AppBootstrapState(
           ctx.read<RemoteConfigState>(),
-          ctx.read<AppFlagsRepository>(),
           ctx.read<DeepLinkState>(),
           ctx.read<SettingsState>(),
           ctx.read<AuthState>(),
@@ -332,6 +331,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ChangeNotifierProvider(
         create: (ctx) => OnboardingState(
           ctx.read<OnboardingRepository>(),
-        ),
+          ctx.read<AppFlagsRepository>(),
+        )..init(),
       ),
     ];

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/push/push.dart';
-import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class AppBootstrapState extends ChangeNotifier {
   final RemoteConfigState _remoteConfig;
-  final AppFlagsRepository _appFlagsRepository;
   final DeepLinkState _deepLinkState;
   final SettingsState _settingsState;
   final AuthState _authState;
@@ -23,7 +21,6 @@ class AppBootstrapState extends ChangeNotifier {
 
   AppBootstrapState(
     this._remoteConfig,
-    this._appFlagsRepository,
     this._deepLinkState,
     this._settingsState,
     this._authState,
@@ -44,12 +41,6 @@ class AppBootstrapState extends ChangeNotifier {
   Object? get error => _error;
 
   bool get isReady => _status == AppBootstrapStatus.ready;
-  bool get hasCompletedOnboarding => _appFlagsRepository.onboardingCompleted;
-
-  Future<void> markOnboardingCompleted() async {
-    await _appFlagsRepository.setOnboardingCompleted(true);
-    notifyListeners();
-  }
 
   bool _started = false;
 

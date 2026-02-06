@@ -1,14 +1,14 @@
-class OnboardingTotalsModel {
+class OnboardingTotals {
   final int totalUsers;
   final int totalMunroCompletions;
 
-  OnboardingTotalsModel({
+  OnboardingTotals({
     required this.totalUsers,
     required this.totalMunroCompletions,
   });
 
-  factory OnboardingTotalsModel.fromMap(Map<String, dynamic> map) {
-    return OnboardingTotalsModel(
+  factory OnboardingTotals.fromMap(Map<String, dynamic> map) {
+    return OnboardingTotals(
       totalUsers: map[OnboardingTotalsFields.totalUsers] ?? 0,
       totalMunroCompletions: map[OnboardingTotalsFields.totalMunroCompletions] ?? 0,
     );

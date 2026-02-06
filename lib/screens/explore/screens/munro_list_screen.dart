@@ -6,7 +6,6 @@ import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
-import '../../../models/models.dart';
 
 class MunroListScreen extends StatelessWidget {
   final ScrollController scrollController;
@@ -23,15 +22,13 @@ class MunroListScreen extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          child: SingleChildScrollView(
+          child: ListView.builder(
             controller: scrollController,
             padding: const EdgeInsets.only(top: 40, bottom: 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: munroState.filteredMunroList.map((Munro munro) {
-                return MunroCard(munro: munro);
-              }).toList(),
-            ),
+            itemCount: munroState.filteredMunroList.length,
+            itemBuilder: (context, index) {
+              return MunroCard(munro: munroState.filteredMunroList[index]);
+            },
           ),
         ),
         Align(

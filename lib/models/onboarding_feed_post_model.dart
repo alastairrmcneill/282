@@ -1,11 +1,11 @@
-class OnboardingFeedPostModel {
+class OnboardingFeedPost {
   final String id;
   final String displayName;
   final String munroName;
   final String profilePictureUrl;
   final DateTime dateTimeCreated;
 
-  OnboardingFeedPostModel({
+  OnboardingFeedPost({
     required this.id,
     required this.displayName,
     required this.munroName,
@@ -13,8 +13,8 @@ class OnboardingFeedPostModel {
     required this.dateTimeCreated,
   });
 
-  factory OnboardingFeedPostModel.fromMap(Map<String, dynamic> map) {
-    return OnboardingFeedPostModel(
+  factory OnboardingFeedPost.fromMap(Map<String, dynamic> map) {
+    return OnboardingFeedPost(
       id: map[OnboardingFeedPostFields.id] ?? '',
       displayName: map[OnboardingFeedPostFields.displayName] ?? '',
       munroName: map[OnboardingFeedPostFields.munroName] ?? '',

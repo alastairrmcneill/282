@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/datetime_extension.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
@@ -314,17 +315,17 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
                     _buildActivityCard(
                       animation: _activity1Animation,
                       avatar: '🧗',
-                      user: 'James K.',
-                      mountain: 'Ben Macdui',
-                      time: '5h ago',
+                      user: state.feedPosts[0].displayName,
+                      mountain: state.feedPosts[0].munroName,
+                      time: state.feedPosts[0].dateTimeCreated.timeAgoShort(),
                     ),
                     const SizedBox(height: 12),
                     _buildActivityCard(
                       animation: _activity2Animation,
                       avatar: '⛰️',
-                      user: 'Emma T.',
-                      mountain: 'Cairn Gorm',
-                      time: '1d ago',
+                      user: state.feedPosts[1].displayName,
+                      mountain: state.feedPosts[1].munroName,
+                      time: state.feedPosts[1].dateTimeCreated.timeAgoShort(),
                     ),
                     const SizedBox(height: 32),
                     // Navigation buttons
@@ -350,6 +351,8 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
     required String mountain,
     required String time,
   }) {
+    List<String> names = user.split(' ');
+    String displayName = names.length > 1 ? '${names[0]} ${names[1][0]}' : user;
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
@@ -401,7 +404,7 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$user summited $mountain',
+                        '$displayName summited $mountain',
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white,

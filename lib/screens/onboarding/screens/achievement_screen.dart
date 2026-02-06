@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
 class AchievementScreen extends StatefulWidget {
@@ -92,6 +94,7 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<OnboardingState>();
     return Stack(
       children: [
         // Background image
@@ -208,32 +211,32 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                   _buildAchievementCard(
                     animation: _achievement1Animation,
                     icon: LucideIcons.target,
-                    title: 'First Steps',
-                    description: 'Complete your first Munro',
+                    title: state.achievements[0].name,
+                    description: state.achievements[0].description,
                     locked: false,
                   ),
                   const SizedBox(height: 10),
                   _buildAchievementCard(
                     animation: _achievement2Animation,
                     icon: LucideIcons.star,
-                    title: 'Peak Collector',
-                    description: 'Bag 10 Munros',
+                    title: state.achievements[1].name,
+                    description: state.achievements[1].description,
                     locked: false,
                   ),
                   const SizedBox(height: 10),
                   _buildAchievementCard(
                     animation: _achievement3Animation,
                     icon: LucideIcons.trophy,
-                    title: 'Century Club',
-                    description: 'Conquer 100 peaks',
+                    title: state.achievements[2].name,
+                    description: state.achievements[2].description,
                     locked: true,
                   ),
                   const SizedBox(height: 10),
                   _buildAchievementCard(
                     animation: _achievement4Animation,
                     icon: LucideIcons.award,
-                    title: 'Munroist',
-                    description: 'Complete all 282!',
+                    title: state.achievements[3].name,
+                    description: state.achievements[3].description,
                     locked: true,
                   ),
                   const SizedBox(height: 32),

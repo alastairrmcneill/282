@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:two_eight_two/screens/nav/state/app_bootstrap_state.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
 import 'package:two_eight_two/screens/onboarding/screens/welcome_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/progress_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/achievement_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/community_screen.dart';
-import 'package:two_eight_two/screens/screens.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String route = '/onboarding';
@@ -51,16 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _onGetStarted() async {
-    // Mark onboarding as completed
-    await context.read<AppBootstrapState>().markOnboardingCompleted();
-
-    // Navigate to home screen
-    if (!mounted) return;
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      HomeScreen.route,
-      (route) => false,
-    );
+    context.read<OnboardingState>().markOnboardingCompleted();
   }
 
   @override
@@ -95,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   dotHeight: 8,
                   dotWidth: 8,
                   activeDotColor: const Color(0xFF10b981),
-                  dotColor: Colors.white.withOpacity(0.3),
+                  dotColor: state.currentPage == 1 ? Colors.black.withOpacity(0.3) : Colors.white.withOpacity(0.3),
                   spacing: 8,
                 ),
               ),

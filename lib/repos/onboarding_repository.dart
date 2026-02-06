@@ -8,16 +8,23 @@ class OnboardingRepository {
 
   SupabaseQueryBuilder get _posts => _db.from('vu_onboarding_feed');
   SupabaseQueryBuilder get _totals => _db.from('vu_onboarding_totals');
+  SupabaseQueryBuilder get _acheivements => _db.from('vu_onboarding_achievements');
 
-  Future<List<OnboardingFeedPostModel>> fetchFeedPosts() async {
+  Future<List<OnboardingFeedPost>> fetchFeedPosts() async {
     final response = await _posts.select();
 
-    return response.map((e) => OnboardingFeedPostModel.fromMap(e)).toList();
+    return response.map((e) => OnboardingFeedPost.fromMap(e)).toList();
   }
 
-  Future<OnboardingTotalsModel> fetchTotals() async {
+  Future<OnboardingTotals> fetchTotals() async {
     final response = await _totals.select().single();
 
-    return OnboardingTotalsModel.fromMap(response);
+    return OnboardingTotals.fromMap(response);
+  }
+
+  Future<List<OnboardingAchievements>> fetchAchievements() async {
+    final response = await _acheivements.select();
+
+    return response.map((e) => OnboardingAchievements.fromMap(e)).toList();
   }
 }

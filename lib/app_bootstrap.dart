@@ -28,11 +28,6 @@ class _AppBootstrapState extends State<AppBootstrap> {
         appBootstrapState.status == AppBootstrapStatus.loading) {
       return const SplashScreen();
     }
-    return OnboardingScreen();
-    if (!appBootstrapState.hasCompletedOnboarding) {
-      return OnboardingScreen();
-    }
-
     return widget.child;
   }
 }

@@ -43,5 +43,12 @@ SELECT
 
 SELECT * FROM vu_onboarding_totals;
 
-
 ALTER VIEW vu_onboarding_totals SET (security_invoker = true, security_barrier = true);
+
+
+CREATE OR REPLACE VIEW vu_onboarding_achievements AS
+SELECT * FROM achievements a
+WHERE a.id in ('munrosCompletedAllTime001', 'munrosCompletedAllTime010', 'nameMeall', 'munrosCompletedAllTime282')
+ORDER BY a.criteria_count;
+
+ALTER VIEW vu_onboarding_achievements SET (security_invoker = true, security_barrier = true);
