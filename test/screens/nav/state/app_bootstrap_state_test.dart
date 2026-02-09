@@ -28,7 +28,6 @@ import 'app_bootstrap_state_test.mocks.dart';
 ])
 void main() {
   late MockRemoteConfigState mockRemoteConfigState;
-  late MockAppFlagsRepository mockAppFlagsRepository;
   late MockDeepLinkState mockDeepLinkState;
   late MockSettingsState mockSettingsState;
   late MockAuthState mockAuthState;
@@ -44,7 +43,6 @@ void main() {
 
   setUp(() {
     mockRemoteConfigState = MockRemoteConfigState();
-    mockAppFlagsRepository = MockAppFlagsRepository();
     mockDeepLinkState = MockDeepLinkState();
     mockSettingsState = MockSettingsState();
     mockAuthState = MockAuthState();
@@ -59,7 +57,6 @@ void main() {
     mockLogger = MockLogger();
     appBootstrapState = AppBootstrapState(
       mockRemoteConfigState,
-      mockAppFlagsRepository,
       mockDeepLinkState,
       mockSettingsState,
       mockAuthState,

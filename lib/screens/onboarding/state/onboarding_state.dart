@@ -17,7 +17,7 @@ class OnboardingState extends ChangeNotifier {
     this._analytics,
     this._logger,
   ) {
-    _hascompletedOnboarding = false; // _appFlagsRepository.onboardingCompleted;
+    _hascompletedOnboarding = _appFlagsRepository.onboardingCompleted;
   }
 
   int _currentPage = 0;
