@@ -332,6 +332,8 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => OnboardingState(
           ctx.read<OnboardingRepository>(),
           ctx.read<AppFlagsRepository>(),
-        )..init(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
+        ), //..init(),
       ),
     ];

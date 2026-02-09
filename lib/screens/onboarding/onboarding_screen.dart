@@ -23,6 +23,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<OnboardingState>().init();
+    });
   }
 
   @override

@@ -8,8 +8,8 @@ class AnalyticsEvent {
   static const screenViewed = 'screen_viewed';
   static const createPost = 'create_post';
   static const signUp = 'sign_up';
-  static const onboardingScreenViewed = 'onboarding_screen_viewed';
-  static const onboardingProgress = 'onboarding_progress';
+  static const inAppOnboardingScreenViewed = 'in_app_onboarding_screen_viewed';
+  static const inAppOnboardingProgress = 'in_app_onboarding_progress';
   static const munroViewed = 'munro_viewed';
   static const surveyShown = 'survey_shown';
   static const surveyAnswers = 'survey_answers';
@@ -43,6 +43,9 @@ class AnalyticsEvent {
   static const signOut = "sign_out";
   static const deleteAccount = "delete_account";
   static const selectCommonlyClimbedMunros = "select_commonly_climbed_munros_screen";
+  static const onboardingCompleted = 'onboarding_completed';
+  static const onboardingStarted = 'onboarding_started';
+  static const onboardingScreenViewed = 'onboarding_screen_viewed';
 }
 
 class AnalyticsProp {

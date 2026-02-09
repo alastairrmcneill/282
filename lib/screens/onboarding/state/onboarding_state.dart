@@ -1,17 +1,23 @@
 import 'package:flutter/foundation.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 
 class OnboardingState extends ChangeNotifier {
   final OnboardingRepository _onboardingRepository;
   final AppFlagsRepository _appFlagsRepository;
+  final Analytics _analytics;
+  final Logger _logger;
   bool _hascompletedOnboarding = false;
 
   OnboardingState(
     this._onboardingRepository,
     this._appFlagsRepository,
+    this._analytics,
+    this._logger,
   ) {
-    _hascompletedOnboarding = _appFlagsRepository.onboardingCompleted;
+    _hascompletedOnboarding = false; // _appFlagsRepository.onboardingCompleted;
   }
 
   int _currentPage = 0;
@@ -43,9 +49,17 @@ class OnboardingState extends ChangeNotifier {
         _achievements = results[2] as List<OnboardingAchievements>;
         notifyListeners();
       });
-    } catch (e) {
-      // Handle errors as needed
-      debugPrint('Error loading onboarding data: $e');
+      _analytics.track(AnalyticsEvent.onboardingStarted);
+      _analytics.track(
+        AnalyticsEvent.onboardingScreenViewed,
+        props: {AnalyticsProp.screenIndex: 0},
+      );
+    } catch (error, stackTrace) {
+      _logger.error(
+        "Failed to load onboarding data",
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -53,12 +67,17 @@ class OnboardingState extends ChangeNotifier {
     _hascompletedOnboarding = true;
     await _appFlagsRepository.setOnboardingCompleted(true);
     notifyListeners();
+    _analytics.track(AnalyticsEvent.onboardingCompleted);
   }
 
   void nextPage() {
     if (_currentPage < totalPages - 1) {
       _currentPage++;
       notifyListeners();
+      _analytics.track(
+        AnalyticsEvent.onboardingScreenViewed,
+        props: {AnalyticsProp.screenIndex: _currentPage},
+      );
     }
   }
 
