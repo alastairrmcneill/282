@@ -27,7 +27,6 @@ class PostWidget extends StatelessWidget {
 
   Widget _buildIncludedMunroText(BuildContext context) {
     final munroState = context.read<MunroState>();
-    final reviewsState = context.read<ReviewsState>();
     if (post.includedMunroIds.isEmpty) return const SizedBox();
     return Align(
         alignment: Alignment.centerLeft,
@@ -40,7 +39,6 @@ class PostWidget extends StatelessWidget {
                     (m) => m.id == post.includedMunroIds[i],
                     orElse: () => Munro.empty,
                   );
-                  reviewsState.getMunroReviews(post.includedMunroIds[i]);
                   Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
                 },
                 child: Text.rich(

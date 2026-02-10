@@ -78,12 +78,13 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
                 TabBar(
                   controller: _tabController,
                   isScrollable: true,
+                  dividerColor: Colors.transparent,
+                  tabAlignment: TabAlignment.start,
                   indicator: const UnderlineTabIndicator(
                     borderSide: BorderSide(
                       color: MyColors.accentColor,
                       width: 2.0,
                     ),
-                    insets: EdgeInsets.symmetric(horizontal: 16.0),
                   ),
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.w500,

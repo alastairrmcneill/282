@@ -98,6 +98,7 @@ class AppRouter {
           builder: (context) => ChangeNotifierProvider<MunroDetailState>(
             create: (ctx) => MunroDetailState(
               ctx.read<MunroPicturesRepository>(),
+              ctx.read<ReviewsRepository>(),
               ctx.read<UserState>(),
               ctx.read<Logger>(),
             )..init(args.munro),

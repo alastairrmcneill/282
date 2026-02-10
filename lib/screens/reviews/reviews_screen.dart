@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewsScreen extends StatefulWidget {
@@ -63,16 +64,52 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, ReviewsState reviewsState) {
+    int? munroId = context.read<MunroState>().selectedMunroId;
+    String? munroName;
+    if (munroId != null) {
+      munroName = context.read<MunroState>().munroList.firstWhere((m) => m.id == munroId).name;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Munro Reviews'),
+        title: Column(
+          children: [
+            Text('Reviews'),
+            if (munroName != null)
+              Text(
+                munroName,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+              )
+          ],
+        ),
       ),
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: reviewsState.reviews.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ReviewListTile(review: reviewsState.reviews[index]);
-        },
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverToBoxAdapter(child: SizedBox(height: 20)),
+            SliverToBoxAdapter(
+              child: RatingsBreakdownWidget(ratingsBreakdown: reviewsState.ratingsBreakdown!),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 20)),
+            SliverToBoxAdapter(child: Divider()),
+            SliverToBoxAdapter(
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: reviewsState.reviews.length,
+                itemBuilder: (context, index) {
+                  return ReviewListTile(review: reviewsState.reviews[index]);
+                },
+                separatorBuilder: (context, index) {
+                  return Divider(height: 1, thickness: 1, color: Colors.grey[200]);
+                },
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 20)),
+          ],
+        ),
       ),
     );
   }

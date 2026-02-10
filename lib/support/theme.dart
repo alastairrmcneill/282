@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MyTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      useMaterial3: false,
+      useMaterial3: true,
       primaryColor: Colors.green,
       colorScheme: const ColorScheme.light().copyWith(
         primary: const Color.fromARGB(255, 43, 128, 46),
@@ -13,7 +13,10 @@ class MyTheme {
         centerTitle: false,
         foregroundColor: Colors.black,
         backgroundColor: MyColors.backgroundColor,
-        elevation: 1,
+        elevation: 0.5,
+        scrolledUnderElevation: 0.5,
+        shadowColor: Colors.black,
+        surfaceTintColor: Colors.transparent,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -28,6 +31,11 @@ class MyTheme {
           ),
           elevation: 1,
         ),
+      ),
+      dividerTheme: DividerThemeData(
+        color: MyColors.lightGrey,
+        thickness: 1,
+        space: 1,
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
@@ -127,16 +135,22 @@ class MyTheme {
         unselectedItemColor: Colors.black45,
         type: BottomNavigationBarType.fixed,
       ),
-      // fontFamily: "NotoSans",
-      // textTheme: const TextTheme(
-      //   headlineMedium: TextStyle(color: MyColors.textColor, fontSize: 24, fontWeight: FontWeight.w700),
-      //   headlineSmall: TextStyle(color: MyColors.textColor, fontSize: 13, fontWeight: FontWeight.w300),
-      //   titleLarge: TextStyle(color: MyColors.textColor, fontSize: 20, fontWeight: FontWeight.w500),
-      //   titleMedium: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w600, height: 1.5),
-      //   bodyLarge: TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w500, height: 1.8),
-      //   bodyMedium: TextStyle(color: MyColors.textColor, fontSize: 15, fontWeight: FontWeight.w300, height: 1.8),
-      //   bodySmall: TextStyle(color: MyColors.textColor, fontSize: 12, fontWeight: FontWeight.w300, height: 1.1),
-      // ),
+      fontFamily: 'Inter',
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, height: 1.15),
+        headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.20),
+        headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.20),
+        displaySmall: TextStyle(fontSize: 48, fontWeight: FontWeight.w600, height: 1.05),
+        titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.25),
+        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1.25),
+        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.25),
+        bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.45),
+        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.35),
+        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.30),
+        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.20),
+        labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.15),
+        labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, height: 1.10),
+      ),
       listTileTheme: const ListTileThemeData(
         titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
       ),
@@ -176,11 +190,15 @@ class MyColors {
   static const Color textColor = Color.fromRGBO(20, 35, 1, 1);
   static const Color accentColor = Color.fromRGBO(55, 84, 41, 1);
   // static const Color accentColor = Color.fromRGBO(94, 131, 75, 1);
-  static const Color backgroundColor = Color.fromARGB(255, 252, 255, 250); //Color.fromARGB(255, 245, 250, 242);
+  static const Color backgroundColor = Color.fromARGB(255, 250, 250, 250);
   static const LinearGradient linearGradient = LinearGradient(
     colors: [Color.fromRGBO(233, 233, 232, 1), Color.fromRGBO(250, 255, 249, 1)],
     begin: Alignment.bottomCenter,
     end: Alignment.topCenter,
   );
   static const contrastColor = Color.fromRGBO(231, 141, 8, 1);
+
+  static const Color lightGrey = Color.fromRGBO(232, 234, 230, 1);
+  static const Color mutedText = Color.fromRGBO(107, 113, 106, 1);
+  static const Color starColor = Color.fromRGBO(253, 199, 0, 1);
 }
