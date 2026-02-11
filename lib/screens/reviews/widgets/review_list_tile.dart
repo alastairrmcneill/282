@@ -146,7 +146,7 @@ class ReviewListTile extends StatelessWidget {
                       children: [
                         Text(
                           review.authorDisplayName,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
                           review.dateTime.timeAgoShort(),

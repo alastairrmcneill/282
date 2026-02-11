@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/feed/widgets/munro_image_overlay.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class PostImagesCarousel extends StatefulWidget {
@@ -19,18 +20,15 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
   @override
   Widget build(BuildContext context) {
     final munroState = context.read<MunroState>();
-    List<String> imageUrls = widget.post.imageUrlsMap.values.expand((element) => element).toList();
 
-    if (imageUrls.isEmpty) {
-      imageUrls = widget.post.includedMunroIds
-          .map((munroId) => munroState.munroList
-              .firstWhere(
-                (m) => m.id == munroId,
-                orElse: () => Munro.empty,
-              )
-              .pictureURL)
-          .toList();
-    }
+    Map<String, int> imageUrlToMunroId = {
+      for (var entry in widget.post.imageUrlsMap.entries)
+        for (var url in entry.value) url: entry.key
+    };
+    if (imageUrlToMunroId.isEmpty) return const SizedBox();
+
+    Munro shownMunro = munroState.munroList
+        .firstWhere((m) => m.id == imageUrlToMunroId[imageUrlToMunroId.keys.elementAt(_selectedIndex)]!);
 
     return Stack(
       children: [
@@ -45,7 +43,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
             height: 300,
             onPageChanged: (index, reason) => setState(() => _selectedIndex = index),
           ),
-          items: imageUrls
+          items: imageUrlToMunroId.keys
               .map(
                 (url) => Container(
                   margin: EdgeInsets.zero,
@@ -86,7 +84,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
               )
               .toList(),
         ),
-        imageUrls.length < 2
+        imageUrlToMunroId.length < 2
             ? const SizedBox()
             : SizedBox(
                 height: 300,
@@ -96,8 +94,8 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: AnimatedSmoothIndicator(
                       activeIndex: _selectedIndex,
-                      count: imageUrls.length,
-                      effect: const WormEffect(
+                      count: imageUrlToMunroId.length,
+                      effect: const ExpandingDotsEffect(
                         dotWidth: 8,
                         dotHeight: 8,
                         activeDotColor: Colors.white,
@@ -107,6 +105,11 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                   ),
                 ),
               ),
+        Positioned(
+          bottom: 10,
+          left: 10,
+          child: MunroImageOverlay(munro: shownMunro),
+        ),
       ],
     );
   }

@@ -122,11 +122,12 @@ class MyTheme {
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
       ),
-      cardColor: const Color.fromARGB(255, 250, 255, 248),
+      cardColor: const Color(0XFFFFFFFF),
       cardTheme: const CardThemeData(
-        elevation: 1.5,
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
+          side: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.15), width: 0.65),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -142,14 +143,14 @@ class MyTheme {
         headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.20),
         displaySmall: TextStyle(fontSize: 48, fontWeight: FontWeight.w600, height: 1.05),
         titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.25),
-        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1.25),
-        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.25),
+        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1.4), // Names in list tiles
+        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.25), // Subtitle
         bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.45),
-        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.35),
+        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.35), // Main paragraphs of text
         bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.30),
-        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.20),
+        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 1.20),
         labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.15),
-        labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, height: 1.10),
+        labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.3),
       ),
       listTileTheme: const ListTileThemeData(
         titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
@@ -190,7 +191,7 @@ class MyColors {
   static const Color textColor = Color.fromRGBO(20, 35, 1, 1);
   static const Color accentColor = Color.fromRGBO(55, 84, 41, 1);
   // static const Color accentColor = Color.fromRGBO(94, 131, 75, 1);
-  static const Color backgroundColor = Color.fromARGB(255, 250, 250, 250);
+  // static const Color backgroundColor = Color.fromARGB(255, 250, 250, 250);
   static const LinearGradient linearGradient = LinearGradient(
     colors: [Color.fromRGBO(233, 233, 232, 1), Color.fromRGBO(250, 255, 249, 1)],
     begin: Alignment.bottomCenter,
@@ -198,6 +199,7 @@ class MyColors {
   );
   static const contrastColor = Color.fromRGBO(231, 141, 8, 1);
 
+  static const Color backgroundColor = Color(0xFFFAFAFA); // or FFFFFFFF
   static const Color lightGrey = Color.fromRGBO(232, 234, 230, 1);
   static const Color mutedText = Color.fromRGBO(107, 113, 106, 1);
   static const Color starColor = Color.fromRGBO(253, 199, 0, 1);

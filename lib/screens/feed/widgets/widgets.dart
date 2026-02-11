@@ -5,3 +5,8 @@ export 'notification_icon_button.dart';
 export 'find_friends_icon_button.dart';
 export 'find_friends_header_widget.dart';
 export 'empty_friends_feed.dart';
+export 'munro_image_overlay.dart';
+export 'post_munro_list.dart';
+export 'post_timings.dart';
+export 'post_social_row.dart';
+export 'post_description.dart';
