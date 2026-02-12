@@ -46,6 +46,7 @@ class AnalyticsEvent {
   static const onboardingCompleted = 'onboarding_completed';
   static const onboardingStarted = 'onboarding_started';
   static const onboardingScreenViewed = 'onboarding_screen_viewed';
+  static const appShared = 'app_shared';
 }
 
 class AnalyticsProp {

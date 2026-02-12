@@ -32,25 +32,36 @@ class MyTheme {
           elevation: 1,
         ),
       ),
+      // Primary Button
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: textTheme.labelLarge,
+          elevation: 0,
+        ),
+      ),
+
+      // Secondary Button
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          side: const BorderSide(color: Color(0x33000000), width: 1),
+          textStyle: textTheme.labelLarge,
+          elevation: 0,
+        ),
+      ),
+
       dividerTheme: DividerThemeData(
         color: MyColors.lightGrey,
         thickness: 1,
         space: 1,
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: MyColors.accentColor,
-          backgroundColor: MyColors.backgroundColor,
-          side: const BorderSide(color: MyColors.accentColor, width: 2), // Border color and width
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-          padding: const EdgeInsets.all(0),
-        ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: MyColors.contrastColor,
@@ -60,8 +71,8 @@ class MyTheme {
         ),
       ),
       tabBarTheme: const TabBarThemeData(
-        labelColor: MyColors.accentColor,
-        indicatorColor: MyColors.accentColor,
+        labelColor: Colors.black,
+        indicatorColor: Colors.black,
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -137,21 +148,7 @@ class MyTheme {
         type: BottomNavigationBarType.fixed,
       ),
       fontFamily: 'Inter',
-      textTheme: const TextTheme(
-        headlineLarge: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, height: 1.15),
-        headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.20),
-        headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.20),
-        displaySmall: TextStyle(fontSize: 48, fontWeight: FontWeight.w600, height: 1.05),
-        titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.25),
-        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1.4), // Names in list tiles
-        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.25), // Subtitle
-        bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.45),
-        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.35), // Main paragraphs of text
-        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.30),
-        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 1.20),
-        labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.15),
-        labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.3),
-      ),
+      textTheme: textTheme,
       listTileTheme: const ListTileThemeData(
         titleTextStyle: TextStyle(color: MyColors.textColor, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
       ),
@@ -187,6 +184,22 @@ class MyTheme {
   }
 }
 
+final textTheme = TextTheme(
+  headlineLarge: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, height: 1.15),
+  headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.20),
+  headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.20),
+  displaySmall: TextStyle(fontSize: 48, fontWeight: FontWeight.w600, height: 1.05),
+  titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.25),
+  titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1.4), // Names in list tiles
+  titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.25), // Subtitle
+  bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.45),
+  bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.35), // Main paragraphs of text
+  bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.30),
+  labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 1.20),
+  labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.15),
+  labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.3),
+);
+
 class MyColors {
   static const Color textColor = Color.fromRGBO(20, 35, 1, 1);
   static const Color accentColor = Color.fromRGBO(55, 84, 41, 1);
@@ -199,8 +212,8 @@ class MyColors {
   );
   static const contrastColor = Color.fromRGBO(231, 141, 8, 1);
 
-  static const Color backgroundColor = Color(0xFFFAFAFA); // or FFFFFFFF
-  static const Color lightGrey = Color.fromRGBO(232, 234, 230, 1);
+  static const Color backgroundColor = Color(0xFFF9F9FB); //Color(0xFFFAFAFA); // or FFFFFFFF
+  static const Color lightGrey = Color.fromRGBO(230, 234, 233, 1);
   static const Color mutedText = Color.fromRGBO(107, 113, 106, 1);
   static const Color starColor = Color.fromRGBO(253, 199, 0, 1);
 }

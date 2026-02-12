@@ -24,7 +24,7 @@ class PostTimings extends StatelessWidget {
       return const SizedBox();
     }
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 5),
       child: Row(
         children: [
           if (post.completionDate != null)

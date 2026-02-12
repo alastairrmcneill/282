@@ -270,8 +270,8 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Logger>(),
         ),
       ),
-      ChangeNotifierProvider<ShareMunroState>(
-        create: (ctx) => ShareMunroState(
+      ChangeNotifierProvider<ShareState>(
+        create: (ctx) => ShareState(
           ctx.read<ShareLinkRepository>(),
           ctx.read<Analytics>(),
           ctx.read<Logger>(),

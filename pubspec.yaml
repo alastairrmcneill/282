@@ -55,6 +55,7 @@ dependencies:
   flutter_svg: ^2.2.3
   animated_flip_counter: ^0.3.4
   flutter_lucide: ^1.8.2
+  phosphor_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:

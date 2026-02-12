@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -30,8 +30,8 @@ class PostSocialRow extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: userLikeState.likedPosts.contains(post.uid)
-                  ? const Icon(Icons.favorite, color: Colors.red, size: 18)
-                  : const Icon(Icons.favorite_border, size: 18),
+                  ? const Icon(PhosphorIconsFill.heart, color: Colors.redAccent, size: 20)
+                  : const Icon(PhosphorIconsRegular.heart, size: 20),
             ),
           ),
         ),
@@ -57,7 +57,7 @@ class PostSocialRow extends StatelessWidget {
             height: 32,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Icon(FontAwesomeIcons.comment, size: 16),
+              child: Icon(PhosphorIconsRegular.chatCircle, size: 20),
             ),
           ),
         ),

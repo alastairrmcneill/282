@@ -135,6 +135,8 @@ class FeedState extends ChangeNotifier {
     try {
       setStatus = FeedStatus.paginating;
 
+      await Future.delayed(const Duration(seconds: 10)); // For testing loading indicator
+
       List<String> blockedUsers = _userState.blockedUsers;
 
       // Add posts from database

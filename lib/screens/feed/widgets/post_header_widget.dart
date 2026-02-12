@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -167,7 +168,10 @@ class PostHeader extends StatelessWidget {
           height: 32,
           child: IconButton(
             padding: EdgeInsets.all(0),
-            icon: Icon(Icons.more_vert, color: MyColors.mutedText),
+            icon: Icon(
+              PhosphorIconsBold.dotsThreeVertical,
+              color: MyColors.mutedText,
+            ),
             onPressed: () => _showActionsDialog(context),
           ),
         )
