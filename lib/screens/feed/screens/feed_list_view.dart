@@ -88,7 +88,7 @@ class _FeedListViewState extends State<FeedListView> {
           // Loading indicator at the bottom
           if (index == widget.posts.length + 1) {
             return SizedBox(
-              child: feedState.status == FeedStatus.paginating ? const CircularProgressIndicator() : null,
+              child: feedState.status == FeedStatus.paginating ? const LoadingWidget(text: "", size: 32) : null,
             );
           }
 

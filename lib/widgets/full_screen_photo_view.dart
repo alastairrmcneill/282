@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/widgets/loading_widget.dart';
 
 class FullScreenPhotoViewerArgs {
   final List<MunroPicture> initialPictures;
@@ -93,8 +94,9 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
             ),
           ),
           if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
+            LoadingWidget(
+              text: "Loading more photos...",
+              size: 32,
             ),
         ],
       ),

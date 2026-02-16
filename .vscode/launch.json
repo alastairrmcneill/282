@@ -30,13 +30,6 @@
       "flutterMode": "profile",
       "program": "lib/main.dart",
       "args": ["--flavor", "production", "--dart-define-from-file=config/prod.json"]
-    },
-    {
-      "name": "Launch Production - Simulator",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["--flavor", "production", "--dart-define-from-file=config/prod.json"]
     }
   ]
 }

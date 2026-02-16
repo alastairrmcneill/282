@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class AboutScreen extends StatelessWidget {
   static const String route = '${SettingsScreen.route}/about';
@@ -26,7 +27,7 @@ class AboutScreen extends StatelessWidget {
               ],
             );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingWidget(text: "Loading app information...");
           }
         },
       ),

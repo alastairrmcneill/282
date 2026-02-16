@@ -8,6 +8,7 @@ interface Notification {
   post_id: string | null;
   type: "like" | "comment" | "follow";
   read: boolean | null;
+  detail: string | null;
   date_time_created: string;
 }
 
@@ -99,8 +100,8 @@ Deno.serve(async (req) => {
     }
 
     const title = getNotificationTitle(
-      notification.type,
       sourceUser.display_name,
+      notification.detail,
     );
 
     const serviceAccount = JSON.parse(
@@ -212,6 +213,7 @@ async function sendFcmNotification(
             data: {
               type: notification.type,
               postId: notification.post_id ?? "",
+              detail: notification.detail ?? "",
             },
           },
         }),
@@ -265,17 +267,11 @@ async function sendFcmNotification(
   }
 }
 
-function getNotificationTitle(type: string, name: string): string {
-  switch (type) {
-    case "like":
-      return `${name} liked your post.`;
-    case "comment":
-      return `${name} commented on a post you follow.`;
-    case "follow":
-      return `${name} followed you.`;
-    default:
-      return `You have a new notification.`;
+function getNotificationTitle(name: string, detail: string | null): string {
+  if (detail) {
+    return `${name} ${detail}`;
   }
+  return `You have a new notification.`;
 }
 
 async function getAccessToken(serviceAccount: {

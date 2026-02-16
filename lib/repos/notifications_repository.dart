@@ -13,7 +13,7 @@ class NotificationsRepository {
     List<String>? excludedSourceIds,
     int offset = 0,
   }) async {
-    int pageSize = 20;
+    int pageSize = 100;
 
     final response = await _view
         .select()

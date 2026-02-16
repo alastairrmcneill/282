@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifications/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -81,18 +80,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             notificationsState.getUserNotifications();
           },
           child: notificationsState.notifications.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.all(15),
-                  child: CenterText(text: "You have no notifications at the moment"),
-                )
-              : ListView(
+              ? const EmptyNotificationsList()
+              : ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(height: 1),
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  children: notificationsState.notifications
-                      .map(
-                        (Notif notification) => NotificationTile(notification: notification),
-                      )
-                      .toList()),
+                  itemCount: notificationsState.notifications.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      int unreadCount = notificationsState.notifications.where((notif) => !notif.read).length;
+                      return UnreadNotificationTile(count: unreadCount);
+                    }
+                    final notification = notificationsState.notifications[index - 1];
+                    return NotificationTile(notification: notification);
+                  },
+                ),
         ),
       ),
     );

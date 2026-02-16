@@ -59,7 +59,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   Widget _buildLoadingScreen(BuildContext context, ReviewsState reviewsState) {
     return Scaffold(
       appBar: AppBar(),
-      body: const LoadingWidget(),
+      body: const LoadingWidget(text: "Loading reviews..."),
     );
   }
 

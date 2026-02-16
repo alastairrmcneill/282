@@ -40,7 +40,7 @@ class _SavedTabState extends State<SavedTab> {
           builder: (context, savedListState, child) {
             switch (savedListState.status) {
               case SavedListStatus.loading:
-                return const Center(child: CircularProgressIndicator());
+                return const LoadingWidget(text: "Loading saved lists...");
               case SavedListStatus.error:
                 return CenterText(text: savedListState.error.message);
               default:

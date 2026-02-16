@@ -216,4 +216,6 @@ class MyColors {
   static const Color lightGrey = Color.fromRGBO(230, 234, 233, 1);
   static const Color mutedText = Color.fromRGBO(107, 113, 106, 1);
   static const Color starColor = Color.fromRGBO(253, 199, 0, 1);
+  static const Color notificationDotColor = Color(0xFF030213);
+  static const Color subtitleColor = Color.fromARGB(255, 63, 63, 63);
 }

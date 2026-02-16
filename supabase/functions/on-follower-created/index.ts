@@ -11,6 +11,7 @@ interface Notification {
   source_id: string;
   post_id: string | null;
   type: string;
+  detail: string | null;
   read: boolean;
 }
 
@@ -46,6 +47,7 @@ Deno.serve(async (req: Request) => {
         source_id: sourceId,
         post_id: null,
         type: "follow",
+        detail: `${sourceId} followed you.`,
         read: false,
       })
       .select("id")
