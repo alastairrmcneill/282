@@ -99,10 +99,11 @@ Deno.serve(async (req) => {
       return new Response("Source user not found", { status: 404 });
     }
 
-    const title = getNotificationTitle(
+    const body = getNotificationBody(
       sourceUser.display_name,
       notification.detail,
     );
+    console.log("📱  ~ body:", body);
 
     const serviceAccount = JSON.parse(
       atob(Deno.env.get("FIREBASE_SERVICE_ACCOUNT_BASE64")!),
@@ -114,7 +115,7 @@ Deno.serve(async (req) => {
     const sendPromises = fcmTokens.map((tokenRecord: UserFcmToken) =>
       sendFcmNotification(
         tokenRecord,
-        title,
+        body,
         notification,
         serviceAccount.project_id,
         accessToken,
@@ -183,7 +184,7 @@ Deno.serve(async (req) => {
 
 async function sendFcmNotification(
   tokenRecord: UserFcmToken,
-  title: string,
+  body: string,
   notification: Notification,
   projectId: string,
   accessToken: string,
@@ -208,7 +209,8 @@ async function sendFcmNotification(
           message: {
             token: tokenRecord.token,
             notification: {
-              title,
+              title: "282",
+              body: body,
             },
             data: {
               type: notification.type,
@@ -267,7 +269,7 @@ async function sendFcmNotification(
   }
 }
 
-function getNotificationTitle(name: string, detail: string | null): string {
+function getNotificationBody(name: string, detail: string | null): string {
   if (detail) {
     return `${name} ${detail}`;
   }

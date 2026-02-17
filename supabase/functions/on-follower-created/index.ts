@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
         source_id: sourceId,
         post_id: null,
         type: "follow",
-        detail: `${sourceId} followed you.`,
+        detail: `followed you.`,
         read: false,
       })
       .select("id")

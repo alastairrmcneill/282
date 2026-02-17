@@ -89,7 +89,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       int unreadCount = notificationsState.notifications.where((notif) => !notif.read).length;
-                      return UnreadNotificationTile(count: unreadCount);
+                      return UnreadNotificatiosWidget(count: unreadCount);
                     }
                     final notification = notificationsState.notifications[index - 1];
                     return NotificationTile(notification: notification);

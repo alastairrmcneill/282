@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class UnreadNotificationTile extends StatelessWidget {
+class UnreadNotificatiosWidget extends StatelessWidget {
   final int count;
-  const UnreadNotificationTile({super.key, required this.count});
+  const UnreadNotificatiosWidget({super.key, required this.count});
 
   @override
   Widget build(BuildContext context) {
