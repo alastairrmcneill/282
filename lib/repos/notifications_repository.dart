@@ -19,6 +19,7 @@ class NotificationsRepository {
         .select()
         .not(NotifFields.sourceId, 'in', excludedSourceIds ?? [])
         .eq(NotifFields.targetId, userId)
+        .order(NotifFields.read, ascending: true)
         .order(NotifFields.dateTime, ascending: false)
         .range(offset, offset + pageSize - 1);
 

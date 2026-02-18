@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -11,7 +10,7 @@ class NotificationIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notificationsState = context.read<NotificationsState>();
+    final notificationsState = context.watch<NotificationsState>();
     return IconButton(
       onPressed: () {
         notificationsState.getUserNotifications();
