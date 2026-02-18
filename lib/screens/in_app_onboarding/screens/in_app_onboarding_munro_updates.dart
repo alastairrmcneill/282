@@ -9,12 +9,11 @@ import 'package:two_eight_two/support/theme.dart';
 
 class InAppOnboardingMunroUpdates extends StatelessWidget {
   final FocusNode searchFocusNode = FocusNode();
-  static const String route = '/in_app_onboarding/munro_updates';
   InAppOnboardingMunroUpdates({super.key});
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
 
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 30, top: 30),

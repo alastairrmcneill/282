@@ -10,7 +10,7 @@ class AchievementListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context, listen: false);
+    final achievementsState = context.read<AchievementsState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Achievements'),

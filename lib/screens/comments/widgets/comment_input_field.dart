@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/comments/services/comments_service.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -9,8 +8,8 @@ class CommentInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = Provider.of<UserState>(context);
-    CommentsState commentsState = Provider.of<CommentsState>(context);
+    final userState = context.watch<UserState>();
+    final commentsState = context.watch<CommentsState>();
     ScrollController _scrollController = ScrollController();
 
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -67,7 +66,7 @@ class CommentInputField extends StatelessWidget {
                     _formKey.currentState!.save();
                     if (commentsState.commentText?.isEmpty ?? true) return;
 
-                    CommentsService.createComment(context);
+                    commentsState.createComment();
                   },
                   icon: const Icon(Icons.send_rounded),
                 ),

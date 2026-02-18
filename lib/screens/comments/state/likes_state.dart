@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class LikesState extends ChangeNotifier {
+  final LikesRepository _repository;
+  final UserState _userState;
+  final Logger _logger;
+  LikesState(this._repository, this._userState, this._logger);
+
   LikesStatus _status = LikesStatus.initial;
   Error _error = Error();
   String? _postId;
@@ -12,9 +20,47 @@ class LikesState extends ChangeNotifier {
   String get postId => _postId!;
   List<Like> get likes => _likes;
 
-  set setStatus(LikesStatus searchStatus) {
-    _status = searchStatus;
-    notifyListeners();
+  Future<void> getPostLikes({required String postId}) async {
+    _postId = postId;
+    try {
+      _status = LikesStatus.loading;
+      notifyListeners();
+      List<String> excludedUserIds = _userState.blockedUsers;
+
+      _likes = await _repository.readPostLikes(
+        postId: _postId!,
+        excludedUserIds: excludedUserIds,
+      );
+
+      _status = LikesStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an error loading likes.");
+      notifyListeners();
+    }
+  }
+
+  Future<void> paginatePostLikes() async {
+    try {
+      _status = LikesStatus.paginating;
+      notifyListeners();
+      List<String> excludedUserIds = _userState.blockedUsers;
+
+      List<Like> newLikes = await _repository.readPostLikes(
+        postId: _postId!,
+        excludedUserIds: excludedUserIds,
+        offset: _likes.length,
+      );
+
+      _likes.addAll(newLikes);
+      _status = LikesStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an error loading more likes.");
+      notifyListeners();
+    }
   }
 
   set setError(Error error) {
@@ -28,17 +74,7 @@ class LikesState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setLikes(List<Like> likes) {
-    _likes = likes;
-    notifyListeners();
-  }
-
-  set addLikes(List<Like> likes) {
-    _likes.addAll(likes);
-    notifyListeners();
-  }
-
-  reset() {
+  void reset() {
     _status = LikesStatus.initial;
     _error = Error();
     _postId = null;

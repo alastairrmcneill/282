@@ -14,3 +14,4 @@ export 'explore_header_group_button.dart';
 export 'filter_screen_sort_options.dart';
 export 'filter_screen_completed_group.dart';
 export 'filter_screen_area_group.dart';
+export 'global_completion_count_widget.dart';

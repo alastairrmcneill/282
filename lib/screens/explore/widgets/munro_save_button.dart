@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class MunroSaveButton extends StatelessWidget {
@@ -13,11 +13,10 @@ class MunroSaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context);
-    NavigationState navigationState = Provider.of(context);
-    MunroState munroState = Provider.of<MunroState>(context);
+    final userId = context.read<AuthState>().currentUserId;
+    final munroState = context.watch<MunroState>();
 
-    SavedListState savedListState = Provider.of<SavedListState>(context);
+    final savedListState = context.watch<SavedListState>();
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
 
     return Padding(
@@ -30,20 +29,15 @@ class MunroSaveButton extends StatelessWidget {
           padding: const EdgeInsets.all(2), // Adjust padding to make it circular
         ),
         onPressed: () async {
-          AnalyticsService.logEvent(
-            name: "Save Munro Button Clicked",
-            parameters: {
-              "source": "Munro Page",
-              "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
-              "munro_name": munroState.selectedMunro?.name ?? "",
-              "user_id": user?.uid ?? "",
-            },
-          );
-          if (user == null) {
-            navigationState.setNavigateToRoute = HomeScreen.route;
+          context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
+            AnalyticsProp.source: "Munro Page",
+            AnalyticsProp.munroId: munro.id,
+            AnalyticsProp.munroName: munro.name,
+          });
+          if (userId == null) {
             Navigator.pushNamed(context, AuthHomeScreen.route);
           } else {
-            munroState.setSelectedMunro = munro;
+            munroState.setSelectedMunroId = munro.id;
             showSaveMunroDialog(context);
           }
         },

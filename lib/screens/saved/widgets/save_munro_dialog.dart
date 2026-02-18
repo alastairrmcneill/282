@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/saved_list_service.dart';
 
 // Show dialog to add historical entry to an account
 showSaveMunroDialog(BuildContext context) {
-  MunroState munroState = Provider.of<MunroState>(context, listen: false);
-  SavedListState savedListState = Provider.of<SavedListState>(context, listen: false);
+  final munroState = context.read<MunroState>();
+  final savedListState = context.read<SavedListState>();
 
   AlertDialog alert = AlertDialog(
     scrollable: true,
@@ -33,20 +32,18 @@ showSaveMunroDialog(BuildContext context) {
                           children: savedListState.savedLists
                               .map(
                                 (e) => CheckboxListTile(
-                                  value: e.munroIds.contains(munroState.selectedMunro?.id),
+                                  value: e.munroIds.contains(munroState.selectedMunroId),
                                   onChanged: (value) async {
                                     if (value == true) {
-                                      await SavedListService.addMunroToSavedList(
-                                        context,
+                                      await savedListState.addMunroToSavedList(
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? 0,
+                                        munroId: munroState.selectedMunroId ?? 0,
                                       );
                                       setState(() {});
                                     } else {
-                                      await SavedListService.removeMunroFromSavedList(
-                                        context,
+                                      await savedListState.removeMunroFromSavedList(
                                         savedList: e,
-                                        munroId: munroState.selectedMunro?.id ?? 0,
+                                        munroId: munroState.selectedMunroId ?? 0,
                                       );
                                       setState(() {});
                                     }

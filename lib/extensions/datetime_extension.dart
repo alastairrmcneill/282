@@ -17,9 +17,13 @@ extension DateTimeExtension on DateTime {
     if (current.difference(this).inDays <= 7) {
       // Less than 1 week ago
       return "${current.difference(this).inDays}d ago";
-    } else {
-      // Any time gets converted to weeks
+    }
+    if (current.difference(this).inDays < 365) {
+      // Less than 1 year ago
       return "${current.difference(this).inDays ~/ 7}w ago";
+    } else {
+      // More than 1 year ago
+      return "${current.difference(this).inDays ~/ 365}y ago";
     }
   }
 
@@ -50,12 +54,18 @@ extension DateTimeExtension on DateTime {
         return "${current.difference(this).inDays} day ago";
       }
       return "${current.difference(this).inDays} days ago";
-    } else {
+    }
+    if (current.difference(this).inDays < 365) {
       // Any time gets converted to weeks
       if (current.difference(this).inDays < 14) {
         return "1 week ago";
       }
       return "${current.difference(this).inDays ~/ 7} weeks ago";
+    } else {
+      if (current.difference(this).inDays < 730) {
+        return "1 year ago";
+      }
+      return "${current.difference(this).inDays ~/ 365} years ago";
     }
   }
 

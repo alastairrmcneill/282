@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class UserLikeState extends ChangeNotifier {
+  final LikesRepository _repository;
+  final UserState _userState;
+  final Analytics _analytics;
+  final Logger _logger;
+
+  UserLikeState(
+    this._repository,
+    this._userState,
+    this._analytics,
+    this._logger,
+  );
+
   UserLikeStatus _status = UserLikeStatus.initial;
   Error _error = Error();
   Set<String> _likedPosts = {};
@@ -14,38 +30,88 @@ class UserLikeState extends ChangeNotifier {
   Set<String> get recentlyLikedPosts => _recentlyLikedPosts;
   Set<String> get recentlyUnlikedPosts => _recentlyUnlikedPosts;
 
-  set setStatus(UserLikeStatus searchStatus) {
-    _status = searchStatus;
+  Future<void> likePost({
+    required Post post,
+    required void Function(Post newPost) onPostUpdated,
+  }) async {
+    Like like = Like(
+      postId: post.uid,
+      userId: _userState.currentUser?.uid ?? "",
+      userDisplayName: _userState.currentUser?.displayName ?? "User",
+      userProfilePictureURL: _userState.currentUser?.profilePictureURL,
+      dateTimeCreated: DateTime.now(),
+    );
+
+    await _repository.create(like: like);
+
+    if (_recentlyUnlikedPosts.contains(post.uid)) {
+      _recentlyUnlikedPosts.remove(post.uid);
+    } else {
+      _recentlyLikedPosts.add(post.uid);
+    }
+    _likedPosts.add(post.uid);
+
     notifyListeners();
+
+    Post newPost = post.copyWith(likes: post.likes + 1);
+    onPostUpdated(newPost);
+    _analytics.track(
+      AnalyticsEvent.likePost,
+      props: {
+        AnalyticsProp.postId: post.uid,
+      },
+    );
+  }
+
+  Future<void> unLikePost({
+    required Post post,
+    required void Function(Post newPost) onPostUpdated,
+  }) async {
+    await _repository.delete(
+      postId: post.uid,
+      userId: _userState.currentUser?.uid ?? "",
+    );
+
+    _likedPosts.remove(post.uid);
+    if (_recentlyLikedPosts.contains(post.uid)) {
+      _recentlyLikedPosts.remove(post.uid);
+    } else {
+      _recentlyUnlikedPosts.add(post.uid);
+    }
+    notifyListeners();
+
+    Post newPost = post.copyWith(likes: post.likes - 1);
+    onPostUpdated(newPost);
+
+    _analytics.track(
+      AnalyticsEvent.unlikePost,
+      props: {
+        AnalyticsProp.postId: post.uid,
+      },
+    );
+  }
+
+  Future<void> getLikedPostIds({required List<Post> posts}) async {
+    _status = UserLikeStatus.loading;
+    notifyListeners();
+    try {
+      final likedPosts = await _repository.getLikedPostIds(
+        userId: _userState.currentUser?.uid ?? "",
+        posts: posts,
+      );
+
+      _likedPosts.addAll(likedPosts);
+      _status = UserLikeStatus.loaded;
+      notifyListeners();
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an error loading liked posts.");
+    }
   }
 
   set setError(Error error) {
     _status = UserLikeStatus.error;
     _error = error;
-    notifyListeners();
-  }
-
-  set addLikedPosts(Set<String> likedPosts) {
-    _likedPosts.addAll(likedPosts);
-    notifyListeners();
-  }
-
-  set addRecentlyLikedPost(String recentlyLikedPost) {
-    if (_recentlyUnlikedPosts.contains(recentlyLikedPost)) {
-      _recentlyUnlikedPosts.remove(recentlyLikedPost);
-    } else {
-      _recentlyLikedPosts.add(recentlyLikedPost);
-    }
-    notifyListeners();
-  }
-
-  removePost(String postId) {
-    _likedPosts.remove(postId);
-    if (_recentlyLikedPosts.contains(postId)) {
-      _recentlyLikedPosts.remove(postId);
-    } else {
-      _recentlyUnlikedPosts.add(postId);
-    }
     notifyListeners();
   }
 
@@ -57,11 +123,6 @@ class UserLikeState extends ChangeNotifier {
     _error = Error();
     notifyListeners();
   }
-
-  // set removeRecentlyLikedPosts(Set<String> recentlyLikedPosts){
-  //   _recentlyLikedPosts.addAll(recentlyLikedPosts);
-  //   notifyListeners();
-  // }
 }
 
 enum UserLikeStatus { initial, loading, loaded, error }

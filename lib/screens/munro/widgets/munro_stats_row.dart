@@ -11,8 +11,8 @@ class MunroStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+    final munroDetailState = context.watch<MunroDetailState>();
+    final settingsState = context.read<SettingsState>();
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -22,8 +22,8 @@ class MunroStatsRow extends StatelessWidget {
           StatText(
             text: "Height",
             stat: settingsState.metricHeight
-                ? "${munroState.selectedMunro?.meters}"
-                : "${munroState.selectedMunro?.feet}",
+                ? "${munroDetailState.selectedMunro?.meters}"
+                : "${munroDetailState.selectedMunro?.feet}",
             subStat: settingsState.metricHeight ? "m" : "ft",
           ),
           StatText(
@@ -32,17 +32,17 @@ class MunroStatsRow extends StatelessWidget {
                   Navigator.of(context).pushNamed(
                     MunroAreaScreen.route,
                     arguments: MunroAreaScreenArgs(
-                      area: munroState.selectedMunro?.area ?? "",
+                      area: munroDetailState.selectedMunro?.area ?? "",
                     ),
                   );
                 },
             text: "Area",
-            stat: munroState.selectedMunro?.area ?? "",
+            stat: munroDetailState.selectedMunro?.area ?? "",
           ),
           StatText(
             onTap: onReviewsTap,
             text: "Rating",
-            stat: munroState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
+            stat: munroDetailState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
             subStat: "/5",
           ),
         ],

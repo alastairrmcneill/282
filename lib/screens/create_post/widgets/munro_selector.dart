@@ -64,8 +64,8 @@ class _MunroSelectorState extends State<MunroSelector> {
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
-    MunroState munroState = Provider.of<MunroState>(context);
+    final createPostState = context.watch<CreatePostState>();
+    final munroState = context.watch<MunroState>();
     return FormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       initialValue: createPostState.selectedMunroIds,

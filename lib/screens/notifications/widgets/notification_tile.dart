@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/comments/state/comments_state.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -50,7 +49,8 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CommentsState commentsState = Provider.of<CommentsState>(context);
+    final commentsState = context.watch<CommentsState>();
+    final notificationsState = context.read<NotificationsState>();
     return ListTile(
       tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
       leading: CircularProfilePicture(
@@ -61,18 +61,21 @@ class NotificationTile extends StatelessWidget {
       title: _buildText(notification),
       onTap: () {
         notification.read = true;
-        NotificationsService.markNotificationAsRead(context, notification: notification);
+        notificationsState.markNotificationAsRead(notification);
         if (notification.type == "like" || notification.type == "comment") {
           // Navigate to the comments page of the post
           // Load in post
           commentsState.reset();
+          // TODO: Get post here too and set it as selected post
           commentsState.setPostId = notification.postId!;
-          CommentsService.getPostComments(context);
+          commentsState.getPostComments();
           Navigator.of(context).pushNamed(CommentsScreen.route);
         } else if (notification.type == "follow") {
           // Navigate to the user post
-          ProfileService.loadUserFromUid(context, userId: notification.sourceId);
-          Navigator.of(context).pushNamed(ProfileScreen.route);
+          Navigator.of(context).pushNamed(
+            ProfileScreen.route,
+            arguments: ProfileScreenArgs(userId: notification.sourceId),
+          );
         }
       },
     );

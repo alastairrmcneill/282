@@ -1,24 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MunroTitle extends StatelessWidget {
   const MunroTitle({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser?>(context);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    NavigationState navigationState = Provider.of<NavigationState>(context, listen: false);
-    SavedListState savedListState = Provider.of<SavedListState>(context);
+    final userId = context.read<AuthState>().currentUserId;
+    final munroDetailState = context.read<MunroDetailState>();
+    final savedListState = context.watch<SavedListState>();
 
-    Munro munro = munroState.selectedMunro!;
+    Munro munro = munroDetailState.selectedMunro!;
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
 
     return Row(
@@ -30,12 +31,12 @@ class MunroTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(munro.name, style: Theme.of(context).textTheme.headlineMedium),
-              munroState.selectedMunro?.extra == null || munroState.selectedMunro?.extra == ""
+              munro.extra == null || munro.extra == ""
                   ? const SizedBox()
                   : SizedBox(
                       width: double.infinity,
                       child: Text(
-                        "(${munroState.selectedMunro?.extra})",
+                        "(${munro.extra})",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ),
@@ -44,7 +45,17 @@ class MunroTitle extends StatelessWidget {
         ),
         InkWell(
           onTap: () async {
-            await DeepLinkService.shareMunro(context, munro.name, munro.id);
+            final link = await context.read<ShareMunroState>().createShareLink(
+                  munroId: munro.id,
+                  munroName: munro.name,
+                );
+
+            if (link == null) {
+              showSnackBar(context, 'Failed to share link.');
+              return;
+            }
+
+            await SharePlus.instance.share(ShareParams(text: 'Check out ${munro.name} - $link'));
           },
           child: Padding(
             padding: const EdgeInsets.all(4),
@@ -57,17 +68,13 @@ class MunroTitle extends StatelessWidget {
         const SizedBox(width: 8),
         InkWell(
           onTap: () async {
-            AnalyticsService.logEvent(
-              name: "Save Munro Button Clicked",
-              parameters: {
-                "source": "Munro Tile",
-                "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
-                "munro_name": munroState.selectedMunro?.name ?? "",
-                "user_id": user?.uid ?? "",
-              },
-            );
-            if (user == null) {
-              navigationState.setNavigateToRoute = HomeScreen.route;
+            context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
+              AnalyticsProp.source: "Munro Tile",
+              AnalyticsProp.munroId: (munro.id).toString(),
+              AnalyticsProp.munroName: munro.name,
+            });
+
+            if (userId == null) {
               Navigator.pushNamed(context, AuthHomeScreen.route);
             } else {
               showSaveMunroDialog(context);

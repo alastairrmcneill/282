@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/log_service.dart';
-import 'package:two_eight_two/helpers/image_picker_helper.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
   final int munroId;
@@ -22,14 +22,14 @@ class CreatePostImagePicker extends StatelessWidget {
         }
       }
     } catch (error, stackTrace) {
-      Log.error(error.toString(), stackTrace: stackTrace);
+      context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
       createPostState.setError = Error(code: error.toString(), message: "There was an issue selecting your image.");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
+    final createPostState = context.watch<CreatePostState>();
     double height = 100;
 
     if ((createPostState.addedImages[munroId]?.isEmpty ?? true) &&

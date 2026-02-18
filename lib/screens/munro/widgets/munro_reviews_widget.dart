@@ -5,7 +5,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroReviewsWidget extends StatelessWidget {
@@ -13,13 +12,14 @@ class MunroReviewsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ReviewsState reviewsState = Provider.of<ReviewsState>(context);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final reviewsState = context.watch<ReviewsState>();
+    final munroDetailState = context.read<MunroDetailState>();
+
     return Column(
       children: [
         InkWell(
           onTap: () {
-            ReviewService.getMunroReviews(context);
+            reviewsState.getMunroReviews(munroDetailState.selectedMunro!.id);
             Navigator.of(context).pushNamed(ReviewsScreen.route);
           },
           child: Container(
@@ -58,7 +58,7 @@ class MunroReviewsWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       children: [
                         Text(
-                          munroState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
+                          munroDetailState.selectedMunro?.averageRating?.toStringAsFixed(1) ?? "0",
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(width: 5),
@@ -69,7 +69,7 @@ class MunroReviewsWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          '/ ${munroState.selectedMunro?.reviewCount == 1 ? "1 rating" : "${munroState.selectedMunro?.reviewCount} ratings"}',
+                          '/ ${munroDetailState.selectedMunro?.reviewCount == 1 ? "1 rating" : "${munroDetailState.selectedMunro?.reviewCount} ratings"}',
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w300,

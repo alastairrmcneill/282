@@ -2,11 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,7 +28,7 @@ class MunroSliverAppBar extends StatelessWidget {
   Widget _buildPopupMenu(
     BuildContext context,
     UserState userState,
-    MunroState munroState,
+    MunroDetailState munroState,
     MunroCompletionState munroCompletionState,
   ) {
     List<MenuItem> menuItems = [];
@@ -53,11 +54,18 @@ class MunroSliverAppBar extends StatelessWidget {
       MenuItem(
         text: "Share",
         onTap: () async {
-          await DeepLinkService.shareMunro(
-            context,
-            munroState.selectedMunro?.name ?? "",
-            munroState.selectedMunro?.id ?? 0,
-          );
+          final link = await context.read<ShareMunroState>().createShareLink(
+                munroId: munroState.selectedMunro?.id ?? 0,
+                munroName: munroState.selectedMunro?.name ?? "",
+              );
+
+          if (link == null) {
+            showSnackBar(context, 'Failed to share link.');
+            return;
+          }
+
+          await SharePlus.instance
+              .share(ShareParams(text: 'Check out ${munroState.selectedMunro?.name ?? "this munro"} - $link'));
         },
       ),
     );
@@ -71,7 +79,7 @@ class MunroSliverAppBar extends StatelessWidget {
               Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
             );
           } on Exception catch (error, stackTrace) {
-            Log.error(error.toString(), stackTrace: stackTrace);
+            context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
             Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
             showSnackBar(context, 'Copied email address. Go to email app to send.');
           }
@@ -84,9 +92,9 @@ class MunroSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroCompletionState munroCompletionState = Provider.of<MunroCompletionState>(context);
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    UserState userState = Provider.of<UserState>(context);
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final munroState = context.read<MunroDetailState>();
+    final userState = context.watch<UserState>();
     Munro munro = munroState.selectedMunro!;
 
     return SliverAppBar(

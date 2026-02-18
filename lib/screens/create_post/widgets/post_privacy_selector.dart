@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/remote_config_service.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostPrivacySelector extends StatelessWidget {
@@ -19,10 +18,10 @@ class PostPrivacySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context);
-    CreatePostState createPostState = Provider.of<CreatePostState>(context);
+    final settingsState = context.watch<SettingsState>();
+    final createPostState = context.watch<CreatePostState>();
 
-    bool showPrivacyOption = RemoteConfigService.getBool(RCFields.showPrivacyOption);
+    bool showPrivacyOption = context.read<RemoteConfigState>().config.showPrivacyOption;
 
     controller.text = createPostState.postPrivacy?.capitalize() ?? settingsState.defaultPostVisibility.capitalize();
 

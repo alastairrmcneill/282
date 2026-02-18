@@ -8,13 +8,13 @@ class AverageMunroRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroDetailState = context.watch<MunroDetailState>();
     return SizedBox(
       height: 70,
       width: double.infinity,
       child: Column(
         children: [
-          Text("${munroState.selectedMunro?.averageRating ?? 0}"),
+          Text("${munroDetailState.selectedMunro?.averageRating ?? 0}"),
           RatingBar(
             itemSize: 30,
             ratingWidget: RatingWidget(
@@ -23,11 +23,11 @@ class AverageMunroRating extends StatelessWidget {
               empty: const Icon(Icons.star_border, color: Colors.amber),
             ),
             onRatingUpdate: (rating) {},
-            initialRating: munroState.selectedMunro?.averageRating ?? 0.0,
+            initialRating: munroDetailState.selectedMunro?.averageRating ?? 0.0,
             allowHalfRating: true,
             ignoreGestures: true,
           ),
-          Text("(${munroState.selectedMunro?.reviewCount ?? 0})")
+          Text("(${munroDetailState.selectedMunro?.reviewCount ?? 0})")
         ],
       ),
     );

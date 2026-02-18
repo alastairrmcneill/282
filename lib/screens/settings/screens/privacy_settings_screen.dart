@@ -4,7 +4,6 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class PrivacySettingsScreen extends StatelessWidget {
   static const String route = '${SettingsScreen.route}/privacy';
@@ -23,8 +22,8 @@ class PrivacySettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context);
-    UserState userState = Provider.of<UserState>(context);
+    final settingsState = context.watch<SettingsState>();
+    final userState = context.watch<UserState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -39,11 +38,7 @@ class PrivacySettingsScreen extends StatelessWidget {
                 value: settingsState.defaultPostVisibility,
                 onChanged: (String? newValue) {
                   if (newValue != null) {
-                    settingsState.setDefaultPostVisibility = newValue;
-                    SettingsSerivce.setStringSetting(
-                      settingName: SettingsFields.defaultPostVisibility,
-                      value: newValue,
-                    );
+                    settingsState.setDefaultPostVisibility(newValue);
                   }
                 },
                 items: _postVisibilityOptions.map<DropdownMenuItem<String>>((String value) {
@@ -64,9 +59,8 @@ class PrivacySettingsScreen extends StatelessWidget {
               child: DropdownButton<String>(
                 value: userState.currentUser?.profileVisibility ?? Privacy.public,
                 onChanged: (String? newValue) {
-                  print(newValue);
                   if (newValue != null) {
-                    UserService.updateProfileVisibility(context, newValue);
+                    context.read<UserState>().updateProfileVisibility(newValue);
                   }
                 },
                 items: _profileVisibilityOptions.map<DropdownMenuItem<String>>((String value) {

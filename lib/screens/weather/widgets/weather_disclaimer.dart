@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:two_eight_two/services/services.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics_base.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,16 +26,13 @@ class WeatherDisclaimer extends StatelessWidget {
             style: const TextStyle(color: Colors.blue),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
-                AnalyticsService.logEvent(
-                  name: "Weather Met Office Link Clicked",
-                  parameters: {},
-                );
+                context.read<Analytics>().track(AnalyticsEvent.weatherMetOfficeLinkClicked);
                 try {
                   await launchUrl(
                     Uri.parse('https://www.metoffice.gov.uk/'),
                   );
                 } on Exception catch (error, stackTrace) {
-                  Log.error(error.toString(), stackTrace: stackTrace);
+                  context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                   Clipboard.setData(ClipboardData(text: 'https://www.metoffice.gov.uk/'));
                   showSnackBar(context, 'Copied link. Go to browser to open.');
                 }

@@ -23,6 +23,12 @@ CREATE INDEX CONCURRENTLY idx_posts_author_id ON posts (author_id);
 CREATE INDEX CONCURRENTLY idx_mc_user_munro ON munro_completions (user_id, munro_id);
 CREATE INDEX CONCURRENTLY idx_mc_user_date ON munro_completions (user_id, date_time_completed);
 CREATE INDEX CONCURRENTLY idx_mc_post ON munro_completions (post_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS mc_post_id_notnull_idx
+  ON munro_completions (post_id)
+  WHERE post_id IS NOT NULL;
+CREATE INDEX CONCURRENTLY IF NOT EXISTS mc_post_user_munro_idx
+  ON munro_completions (post_id, user_id, munro_id)
+  WHERE post_id IS NOT NULL;
 
 -- common: count likes per post, does user X like post Y? (and prevent double-like)
 CREATE UNIQUE INDEX CONCURRENTLY idx_likes_unique_post_user ON likes (post_id, user_id);
@@ -55,6 +61,8 @@ CREATE INDEX CONCURRENTLY idx_slm_munro ON saved_list_munros (munro_id);
 
 -- required for concurrent refresh
 CREATE UNIQUE INDEX CONCURRENTLY mv_post_card_pkey ON mv_post_card (id);
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS mv_munros_commonly_climbed_with_pkey 
+  ON mv_munros_commonly_climbed_with (munro_id, climbed_with_id);
 
 -- feed patterns
 CREATE INDEX CONCURRENTLY mv_post_card_created_desc
@@ -66,10 +74,11 @@ CREATE INDEX CONCURRENTLY mv_post_card_privacy_created
 CREATE INDEX CONCURRENTLY mv_post_card_author_created
   ON mv_post_card (author_id, date_time_created DESC);
 
-REFRESH MATERIALIZED VIEW CONCURRENTLY mv_post_card;
-
 -- run every minute
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 SELECT cron.schedule('refresh_mv_post_card_every_min',
                      '*/1 * * * *',
                      $$ REFRESH MATERIALIZED VIEW CONCURRENTLY mv_post_card; $$);
+SELECT cron.schedule('refresh_mv_munros_commonly_climbed_with_every_min',
+                     '*/1 * * * *',
+                     $$ REFRESH MATERIALIZED VIEW CONCURRENTLY mv_munros_commonly_climbed_with; $$);

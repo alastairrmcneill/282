@@ -2,8 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,7 +13,7 @@ class MunroDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroDetailState = context.watch<MunroDetailState>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -23,7 +24,7 @@ class MunroDescription extends StatelessWidget {
         const SizedBox(height: 8),
         RichText(
           text: TextSpan(
-            text: "${munroState.selectedMunro?.description ?? ""} ",
+            text: "${munroDetailState.selectedMunro?.description ?? ""} ",
             style: Theme.of(context).textTheme.bodyMedium,
             children: <TextSpan>[
               TextSpan(
@@ -35,20 +36,17 @@ class MunroDescription extends StatelessWidget {
                     ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
-                    AnalyticsService.logEvent(
-                      name: "Walk Highlands Munro Link Clicked",
-                      parameters: {
-                        "munro_id": (munroState.selectedMunro?.id ?? 0).toString(),
-                        "munro_name": munroState.selectedMunro?.name ?? "",
-                      },
-                    );
+                    context.read<Analytics>().track(AnalyticsEvent.walkHighlandsMunroLinkClicked, props: {
+                      AnalyticsProp.munroId: munroDetailState.selectedMunro?.id ?? 0,
+                      AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
+                    });
                     try {
                       await launchUrl(
-                        Uri.parse(munroState.selectedMunro?.link ?? ""),
+                        Uri.parse(munroDetailState.selectedMunro?.link ?? ""),
                       );
                     } on Exception catch (error, stackTrace) {
-                      Log.error(error.toString(), stackTrace: stackTrace);
-                      Clipboard.setData(ClipboardData(text: munroState.selectedMunro?.link ?? ""));
+                      context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
+                      Clipboard.setData(ClipboardData(text: munroDetailState.selectedMunro?.link ?? ""));
                       showSnackBar(context, 'Copied link. Go to browser to open.');
                     }
                   },

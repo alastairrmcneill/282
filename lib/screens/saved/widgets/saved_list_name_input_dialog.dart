@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/services/saved_list_service.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 // Show dialog to add historical entry to an account
@@ -15,14 +16,16 @@ showCreateSavedListDialog(BuildContext context, {SavedList? savedList}) {
     formKey.currentState!.save();
 
     if (savedList == null) {
-      await SavedListService.createSavedList(
-        context,
-        name: nameController.text,
-      ).whenComplete(() => Navigator.pop(context));
+      await context
+          .read<SavedListState>()
+          .createSavedList(name: nameController.text)
+          .whenComplete(() => Navigator.pop(context));
       return;
     } else {
       SavedList newSavedList = savedList.copy(name: nameController.text);
-      await SavedListService.updateSavedListName(context, savedList: newSavedList)
+      await context
+          .read<SavedListState>()
+          .updateSavedListName(savedList: newSavedList)
           .whenComplete(() => Navigator.pop(context));
     }
   }

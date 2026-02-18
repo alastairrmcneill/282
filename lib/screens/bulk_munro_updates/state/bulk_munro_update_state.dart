@@ -5,12 +5,13 @@ class BulkMunroUpdateState extends ChangeNotifier {
   BulkMunroUpdateStatus _status = BulkMunroUpdateStatus.initial;
   Error _error = Error();
   List<MunroCompletion> _startingBulkMunroUpdateList = [];
-  List<MunroCompletion> _bulkMunroUpdateList = [];
+  List<MunroCompletion> _addedMunroCompletions = [];
 
   BulkMunroUpdateStatus get status => _status;
   Error get error => _error;
   List<MunroCompletion> get startingBulkMunroUpdateList => _startingBulkMunroUpdateList;
-  List<MunroCompletion> get bulkMunroUpdateList => _bulkMunroUpdateList;
+  List<MunroCompletion> get bulkMunroUpdateList => [..._startingBulkMunroUpdateList, ..._addedMunroCompletions];
+  List<MunroCompletion> get addedMunroCompletions => _addedMunroCompletions;
 
   set setStatus(BulkMunroUpdateStatus searchStatus) {
     _status = searchStatus;
@@ -25,24 +26,24 @@ class BulkMunroUpdateState extends ChangeNotifier {
 
   set setStartingBulkMunroUpdateList(List<MunroCompletion> bulkMunroUpdateList) {
     _startingBulkMunroUpdateList = bulkMunroUpdateList;
+    _addedMunroCompletions = [];
     notifyListeners();
   }
 
   void addMunroCompleted(MunroCompletion munroCompletion) {
-    print("Adding munro completion for munro ID: ${munroCompletion.munroId}");
-    _bulkMunroUpdateList.add(munroCompletion);
+    _addedMunroCompletions.add(munroCompletion);
     notifyListeners();
   }
 
   void updateMunroCompleted(MunroCompletion munroCompletion) {
-    _bulkMunroUpdateList.removeWhere((element) => element.munroId == munroCompletion.munroId);
-    _bulkMunroUpdateList.add(munroCompletion);
+    _addedMunroCompletions.removeWhere((element) => element.munroId == munroCompletion.munroId);
+    _addedMunroCompletions.add(munroCompletion);
 
     notifyListeners();
   }
 
   void removeMunroCompletion(int id) {
-    _bulkMunroUpdateList.removeWhere((element) => element.munroId == id);
+    _addedMunroCompletions.removeWhere((element) => element.munroId == id);
     notifyListeners();
   }
 }

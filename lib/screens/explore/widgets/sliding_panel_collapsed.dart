@@ -9,7 +9,7 @@ class SlidingPanelCollapsed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
 
     int count = munroState.filteredMunroList.length;
     return GestureDetector(

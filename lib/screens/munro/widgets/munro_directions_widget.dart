@@ -10,12 +10,12 @@ class MunroDirectionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
+    final munroDetailState = context.read<MunroDetailState>();
     return ListTile(
       visualDensity: VisualDensity.compact,
       onTap: () async {
         await launchUrl(
-          Uri.parse(munroState.selectedMunro?.startingPointURL ?? ""),
+          Uri.parse(munroDetailState.selectedMunro?.startingPointURL ?? ""),
         );
       },
       leading: const Icon(

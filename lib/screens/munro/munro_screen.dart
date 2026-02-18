@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
+
+class MunroScreenArgs {
+  final Munro munro;
+  MunroScreenArgs({required this.munro});
+}
 
 class MunroScreen extends StatefulWidget {
   static const String route = "/munro";
@@ -19,60 +25,63 @@ class _MunroScreenState extends State<MunroScreen> {
 
   @override
   void initState() {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    AnalyticsService.logMunroViewed(
-      munroId: (munroState.selectedMunro?.id ?? 0).toString(),
-      munroName: munroState.selectedMunro?.name ?? "",
+    final munroDetailState = context.read<MunroDetailState>();
+    context.read<Analytics>().track(
+      AnalyticsEvent.munroViewed,
+      props: {
+        AnalyticsProp.munroId: (munroDetailState.selectedMunro?.id ?? 0).toString(),
+        AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
+      },
     );
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final munroDetailState = context.watch<MunroDetailState>();
+    final Munro munro = munroDetailState.selectedMunro!;
     return Scaffold(
       floatingActionButton: const MunroSummitedButton(),
-      body: RefreshIndicator(
-        onRefresh: () => MunroService.loadMunroData(context),
-        child: CustomScrollView(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            const MunroSliverAppBar(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 15),
-                    const MunroTitle(),
-                    const SizedBox(height: 25),
-                    MunroStatsRow(
-                      onReviewsTap: () {
-                        final context = _reviewsKey.currentContext;
-                        if (context != null) {
-                          Scrollable.ensureVisible(context, duration: const Duration(seconds: 1));
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    const MunroSummitedWidget(),
-                    const PaddedDivider(),
-                    const MunroDescription(),
-                    const PaddedDivider(top: 15, bottom: 5),
-                    const MunroDirectionsWidget(),
-                    const PaddedDivider(top: 5, bottom: 20),
-                    const MunroPictureGallery(),
-                    const PaddedDivider(),
-                    const MunroWeatherWidget(),
-                    const PaddedDivider(),
-                    MunroReviewsWidget(key: _reviewsKey),
-                    const SizedBox(height: 80),
-                  ],
-                ),
+      body: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          const MunroSliverAppBar(),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                children: [
+                  const SizedBox(height: 15),
+                  const MunroTitle(),
+                  const SizedBox(height: 25),
+                  MunroStatsRow(
+                    onReviewsTap: () {
+                      final context = _reviewsKey.currentContext;
+                      if (context != null) {
+                        Scrollable.ensureVisible(context, duration: const Duration(seconds: 1));
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  const MunroSummitedWidget(),
+                  const PaddedDivider(),
+                  const MunroDescription(),
+                  const PaddedDivider(top: 15, bottom: 5),
+                  const MunroDirectionsWidget(),
+                  const PaddedDivider(top: 5, bottom: 20),
+                  const MunroPictureGallery(),
+                  const PaddedDivider(),
+                  MunroWeatherWidget(munro: munro),
+                  const PaddedDivider(),
+                  MunroReviewsWidget(key: _reviewsKey),
+                  const SizedBox(height: 80),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

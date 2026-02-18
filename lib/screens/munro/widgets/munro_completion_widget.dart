@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroCompletionWidget extends StatelessWidget {
@@ -25,14 +24,14 @@ class MunroCompletionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context, listen: false);
-    Munro munro = munroState.selectedMunro!;
+    final munroDetailState = context.read<MunroDetailState>();
+    final munroCompletionState = context.read<MunroCompletionState>();
+    Munro munro = munroDetailState.selectedMunro!;
     List<MenuItem> menuItems = [
       MenuItem(
         text: 'Remove',
         onTap: () {
-          MunroCompletionService.removeMunroCompletion(
-            context,
+          munroCompletionState.removeMunroCompletion(
             munroCompletion: munroCompletion,
           );
         },

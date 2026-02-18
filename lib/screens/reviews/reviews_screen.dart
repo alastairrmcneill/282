@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
-import 'package:two_eight_two/services/services.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewsScreen extends StatefulWidget {
@@ -18,13 +17,13 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
 
   @override
   void initState() {
-    ReviewsState reviewsState = Provider.of<ReviewsState>(context, listen: false);
+    final reviewsState = context.read<ReviewsState>();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           reviewsState.status != ReviewsStatus.paginating) {
-        ReviewService.paginateMunroReviews(context);
+        reviewsState.paginateMunroReviews(1);
       }
     });
     super.initState();

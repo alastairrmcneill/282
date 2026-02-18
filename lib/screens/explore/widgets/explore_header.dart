@@ -25,7 +25,7 @@ class ExploreTabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
+    final munroState = context.watch<MunroState>();
     return Positioned(
       top: 0,
       left: 0,
@@ -41,33 +41,39 @@ class ExploreTabHeader extends StatelessWidget {
               left: isSearchVisible ? 0 : 15,
               right: 15,
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                isSearchVisible
-                    ? IconButton(
-                        icon: const Icon(
-                          CupertinoIcons.arrow_left,
-                          color: MyColors.accentColor,
-                        ),
-                        onPressed: onBackTap,
-                      )
-                    : const SizedBox(),
-                Expanded(
-                  flex: 1,
-                  child: AppSearchBar(
-                    focusNode: searchFocusNode,
-                    hintText: "Search Munros",
-                    onSearchTap: onSearchTap,
-                    onChanged: (value) {
-                      munroState.setFilterString = value;
-                    },
-                    onClear: () {
-                      munroState.setFilterString = '';
-                    },
-                  ),
+                Row(
+                  children: [
+                    isSearchVisible
+                        ? IconButton(
+                            icon: const Icon(
+                              CupertinoIcons.arrow_left,
+                              color: MyColors.accentColor,
+                            ),
+                            onPressed: onBackTap,
+                          )
+                        : const SizedBox(),
+                    Expanded(
+                      flex: 1,
+                      child: AppSearchBar(
+                        focusNode: searchFocusNode,
+                        hintText: "Search Munros",
+                        onSearchTap: onSearchTap,
+                        onChanged: (value) {
+                          munroState.setFilterString = value;
+                        },
+                        onClear: () {
+                          munroState.setFilterString = '';
+                        },
+                      ),
+                    ),
+                    const ExploreHeaderGroupButton(),
+                    const ExploreHeaderFilterButton(),
+                  ],
                 ),
-                const ExploreHeaderGroupButton(),
-                const ExploreHeaderFilterButton(),
+                const GlobalCompletionCountWidget(),
               ],
             ),
           ),

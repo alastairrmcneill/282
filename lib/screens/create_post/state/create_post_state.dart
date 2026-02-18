@@ -1,16 +1,40 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics_base.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class CreatePostState extends ChangeNotifier {
+  final PostsRepository _postsRepository;
+  final MunroPicturesRepository _munroPicturesRepository;
+  final StorageRepository _storageRepository;
+  final UserState _userState;
+  final MunroCompletionState _munroCompletionState;
+  final RemoteConfigState _remoteConfigState;
+  final Analytics _analytics;
+  final Logger _logger;
+
+  CreatePostState(
+    this._postsRepository,
+    this._munroPicturesRepository,
+    this._storageRepository,
+    this._userState,
+    this._munroCompletionState,
+    this._remoteConfigState,
+    this._analytics,
+    this._logger,
+  );
+
   CreatePostStatus _status = CreatePostStatus.initial;
   Error _error = Error();
   String? _title;
   String? _description;
-  DateTime? _summitedDate;
-  TimeOfDay? _startTime;
-  Duration? _duration;
+  DateTime? _completionDate;
+  TimeOfDay? _completionStartTime;
+  Duration? _completionDuration;
   Map<int, List<String>> _existingImages = {};
   Map<int, List<File>> _addedImages = {};
   Set<String> _deletedImages = {};
@@ -24,9 +48,9 @@ class CreatePostState extends ChangeNotifier {
   Error get error => _error;
   String? get title => _title;
   String? get description => _description;
-  DateTime? get summitedDate => _summitedDate;
-  TimeOfDay? get startTime => _startTime;
-  Duration? get duration => _duration;
+  DateTime? get completionDate => _completionDate;
+  TimeOfDay? get completionStartTime => _completionStartTime;
+  Duration? get completionDuration => _completionDuration;
   Map<int, List<String>> get existingImages => _existingImages;
   Map<int, List<File>> get addedImages => _addedImages;
   Set<String> get deletedImages => _deletedImages;
@@ -39,6 +63,272 @@ class CreatePostState extends ChangeNotifier {
       _addedImages.values.any((element) => element.isNotEmpty) ||
       _existingImages.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
+
+  Future<Post?> createPost() async {
+    try {
+      setStatus = CreatePostStatus.loading;
+
+      // Upload picture and get url
+      Map<int, List<String>> addedImageUrlsMap = {};
+
+      for (int munroId in _addedImages.keys) {
+        for (File image in _addedImages[munroId]!) {
+          String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
+          if (addedImageUrlsMap[munroId] == null) {
+            addedImageUrlsMap[munroId] = [];
+          }
+          addedImageUrlsMap[munroId]!.add(imageURL);
+        }
+      }
+
+      // Get title
+      String title = "";
+      if (_title == null) {
+        DateTime now = DateTime.now();
+        if (now.month == 1 || now.month == 2 || now.month == 12) {
+          title = "Winter Hike";
+        } else if (now.month >= 3 && now.month <= 5) {
+          title = "Spring Hike";
+        } else if (now.month >= 6 && now.month <= 8) {
+          title = "Summer Hike";
+        } else if (now.month >= 9 && now.month <= 11) {
+          title = "Autumn Hike";
+        }
+      } else {
+        title = _title!;
+      }
+
+      // Get munro completion date and time
+      var now = DateTime.now();
+
+      // Get summitDateTime by combining date and time
+      DateTime dateTimeCompleted = DateTime(
+        _completionDate?.year ?? now.year,
+        _completionDate?.month ?? now.month,
+        _completionDate?.day ?? now.day,
+        _completionStartTime?.hour ?? now.hour,
+        _completionStartTime?.minute ?? now.minute,
+      );
+
+      // Create post object
+      Post post = Post(
+        authorId: _userState.currentUser?.uid ?? "",
+        title: title,
+        description: _description,
+        dateTimeCreated: now,
+        privacy: _postPrivacy ?? Privacy.public,
+      );
+
+      // Send to database
+      String postId = await _postsRepository.create(post: post);
+
+      // Log event
+      bool showPrivacyOption = _remoteConfigState.config.showPrivacyOption;
+
+      _analytics.track(
+        AnalyticsEvent.createPost,
+        props: {
+          AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
+          AnalyticsProp.completionStartTime:
+              _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
+          AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
+          AnalyticsProp.privacy: post.privacy,
+          AnalyticsProp.showPrivacyOption: showPrivacyOption,
+          AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
+          AnalyticsProp.imagesAdded:
+              addedImageUrlsMap.values.fold<int>(0, (previousValue, element) => previousValue + element.length),
+        },
+      );
+
+      // Complete munros
+      await _munroCompletionState.markMunrosAsCompleted(
+        munroIds: selectedMunroIds.toList(),
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
+        postId: postId,
+      );
+
+      // Upload munro pictures
+      await uploadMunroPictures(
+        postId: postId,
+        imageURLsMap: addedImageUrlsMap,
+        privacy: post.privacy,
+      );
+
+      // Update state
+      setStatus = CreatePostStatus.loaded;
+      return post.copyWith(
+        uid: postId,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
+        imageUrlsMap: addedImageUrlsMap,
+      );
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue uploading your post. Please try again");
+      return null;
+    }
+  }
+
+  Future<Post?> editPost() async {
+    try {
+      setStatus = CreatePostStatus.loading;
+
+      // Get the original post
+      Map<int, List<String>> addedImageUrlsMap = {};
+
+      for (int munroId in _addedImages.keys) {
+        for (File image in _addedImages[munroId]!) {
+          String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
+          if (addedImageUrlsMap[munroId] == null) {
+            addedImageUrlsMap[munroId] = [];
+          }
+          addedImageUrlsMap[munroId]!.add(imageURL);
+        }
+      }
+
+      // Create post object
+      Post post = _editingPost!;
+
+      // Get summitDateTime by combining date and time
+      DateTime dateTimeCompleted = DateTime(
+        _completionDate?.year ?? post.dateTimeCompleted!.year,
+        _completionDate?.month ?? post.dateTimeCompleted!.month,
+        _completionDate?.day ?? post.dateTimeCompleted!.day,
+        _completionStartTime?.hour ?? post.dateTimeCompleted!.hour,
+        _completionStartTime?.minute ?? post.dateTimeCompleted!.minute,
+      );
+
+      Post newPost = post.copyWith(
+        title: _title,
+        description: _description,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
+        privacy: _postPrivacy ?? Privacy.public,
+      );
+
+      // Send to database
+      await _postsRepository.update(post: newPost);
+
+      _munroCompletionState.markMunrosAsCompleted(
+        munroIds: _addedMunroIds.toList(),
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
+        postId: post.uid,
+      );
+
+      _munroCompletionState.removeCompletionsByMunroIdsAndPost(
+        munroIds: _deletedMunroIds.toList(),
+        postId: post.uid,
+      );
+
+      _munroCompletionState.updateMunroCompletionsByMunroIdsAndPost(
+        munroIds: _existingMunroIds.toList(),
+        dateTimeCompleted: dateTimeCompleted,
+        completionDate: _completionDate,
+        completionStartTime: _completionStartTime,
+        completionDuration: _completionDuration,
+        postId: post.uid,
+      );
+
+      await uploadMunroPictures(
+        postId: post.uid,
+        imageURLsMap: addedImageUrlsMap,
+        privacy: newPost.privacy,
+      );
+
+      // Delete images that aren't needed anymore
+      await deleteMunroPictures(
+        postId: post.uid,
+        imageURLs: deletedImages.toList(),
+      );
+
+      // Update post in state
+      Map<int, List<String>> updatedImageURLsMap = {...existingImages, ...addedImageUrlsMap};
+
+      Post newPostState = newPost.copyWith(imageUrlsMap: updatedImageURLsMap);
+
+      setStatus = CreatePostStatus.loaded;
+
+      _analytics.track(
+        AnalyticsEvent.editPost,
+        props: {
+          AnalyticsProp.postId: post.uid,
+          AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
+          AnalyticsProp.completionStartTime:
+              _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
+          AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
+          AnalyticsProp.privacy: post.privacy,
+          AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
+          AnalyticsProp.imagesAdded:
+              addedImageUrlsMap.values.fold<int>(0, (previousValue, element) => previousValue + element.length),
+        },
+      );
+      return newPostState;
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      setError = Error(message: "There was an issue uploading your post. Please try again");
+      return null;
+    }
+  }
+
+  Future<void> uploadMunroPictures({
+    required String postId,
+    required Map<int, List<String>> imageURLsMap,
+    required String privacy,
+  }) async {
+    if (_userState.currentUser == null) return;
+
+    List<MunroPicture> munroPictures = [];
+
+    imageURLsMap.forEach((munroId, imageURLs) async {
+      for (String imageURL in imageURLs) {
+        munroPictures.add(MunroPicture(
+          uid: "",
+          munroId: munroId,
+          authorId: _userState.currentUser!.uid!,
+          imageUrl: imageURL,
+          postId: postId,
+          privacy: privacy,
+        ));
+      }
+    });
+
+    await _munroPicturesRepository.createMunroPictures(munroPictures: munroPictures);
+  }
+
+  Future deleteMunroPictures({
+    required String postId,
+    required List<String> imageURLs,
+  }) async {
+    await _munroPicturesRepository.deleteMunroPicturesByUrls(imageURLs: imageURLs);
+
+    for (String imageURL in imageURLs) {
+      await _storageRepository.deleteByUrl(imageURL);
+    }
+  }
+
+  Future deletePost({required Post post}) async {
+    try {
+      _postsRepository.deletePostWithUID(uid: post.uid);
+      _analytics.track(
+        AnalyticsEvent.deletePost,
+        props: {
+          AnalyticsProp.postId: post.uid,
+        },
+      );
+    } catch (error, stackTrace) {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+      _status = CreatePostStatus.error;
+      notifyListeners();
+    }
+  }
 
   set setStatus(CreatePostStatus searchStatus) {
     _status = searchStatus;
@@ -61,18 +351,18 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setSummitedDate(DateTime? summitedDate) {
-    _summitedDate = summitedDate;
+  set setCompletionDate(DateTime? completionDate) {
+    _completionDate = completionDate;
     notifyListeners();
   }
 
-  set setStartTime(TimeOfDay? startTime) {
-    _startTime = startTime;
+  set setCompletionStartTime(TimeOfDay? completionStartTime) {
+    _completionStartTime = completionStartTime;
     notifyListeners();
   }
 
-  set setDuration(Duration? duration) {
-    _duration = duration;
+  set setCompletionDuration(Duration? completionDuration) {
+    _completionDuration = completionDuration;
     notifyListeners();
   }
 
@@ -84,9 +374,9 @@ class CreatePostState extends ChangeNotifier {
   set loadPost(Post post) {
     _editingPost = post;
     _title = post.title;
-    _summitedDate = post.summitedDateTime;
-    _startTime = TimeOfDay.fromDateTime(post.summitedDateTime ?? DateTime(0, 0, 0, 12, 0));
-    _duration = post.duration;
+    _completionDate = post.completionDate;
+    _completionStartTime = post.completionStartTime;
+    _completionDuration = post.completionDuration;
     _description = post.description;
     _existingImages = post.imageUrlsMap;
     _addedImages = {};
@@ -98,12 +388,12 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  addMunro(int munroId) {
+  void addMunro(int munroId) {
     _addedMunroIds.add(munroId);
     notifyListeners();
   }
 
-  removeMunro(int munroId) {
+  void removeMunro(int munroId) {
     if (_existingMunroIds.contains(munroId)) {
       _existingMunroIds.remove(munroId);
       _deletedMunroIds.add(munroId);
@@ -125,7 +415,7 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  addImage({required int munroId, required File image}) {
+  void addImage({required int munroId, required File image}) {
     if (_addedImages[munroId] == null) _addedImages[munroId] = [];
 
     _addedImages[munroId]!.add(image);
@@ -133,14 +423,14 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeImage({required int munroId, required int index}) {
+  void removeImage({required int munroId, required int index}) {
     if (_addedImages[munroId] == null) return;
 
     _addedImages[munroId]!.removeAt(index);
     notifyListeners();
   }
 
-  removeExistingImage({required int munroId, required String url}) {
+  void removeExistingImage({required int munroId, required String url}) {
     if (_existingImages[munroId] == null) return;
     if (_existingImages[munroId]!.contains(url)) {
       _existingImages[munroId]!.remove(url);
@@ -149,12 +439,12 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
-  reset() {
+  void reset() {
     _title = null;
     _description = null;
-    _summitedDate = null;
-    _startTime = null;
-    _duration = null;
+    _completionDate = null;
+    _completionStartTime = null;
+    _completionDuration = null;
     _editingPost = null;
     _existingImages = {};
     _addedImages = {};

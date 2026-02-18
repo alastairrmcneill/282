@@ -1,27 +1,28 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
-import 'package:two_eight_two/widgets/clickable_image.dart';
-import 'package:two_eight_two/widgets/widgets.dart';
 
 class ProfilePhotosWidget extends StatelessWidget {
   const ProfilePhotosWidget({super.key});
   @override
   Widget build(BuildContext context) {
-    ProfileState profileState = Provider.of<ProfileState>(context);
-
+    final profileState = context.watch<ProfileState>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         children: [
           InkWell(
             onTap: () {
-              MunroPictureService.getProfilePictures(context, profileId: profileState.profile?.id ?? '');
-              Navigator.of(context).pushNamed(ProfilePhotoGallery.route);
+              Navigator.of(context).pushNamed(
+                PhotoGalleryRoutes.profileGallery,
+                arguments: ProfilePhotoGalleryArgs(
+                  userId: profileState.profile?.id ?? '',
+                  displayName: profileState.profile?.displayName ?? 'User',
+                ),
+              );
             },
             child: Container(
               color: Colors.transparent,
@@ -56,25 +57,50 @@ class ProfilePhotosWidget extends StatelessWidget {
                     child: Wrap(
                       runAlignment: WrapAlignment.start,
                       spacing: 5,
-                      children: profileState.profilePhotos.take(4).toList().asMap().entries.map((entry) {
-                        int index = entry.key;
-                        MunroPicture munroPicture = entry.value;
+                      children: profileState.profilePhotos.map((profilePhoto) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: SizedBox(
                             width: (MediaQuery.of(context).size.width - 60) / 4,
                             height: (MediaQuery.of(context).size.width - 60) / 4,
-                            child: ClickableImage(
-                                image: munroPicture,
-                                munroPictures: profileState.profilePhotos,
-                                initialIndex: index,
-                                fetchMorePhotos: () async {
-                                  List<MunroPicture> newPhotos = await MunroPictureService.paginateProfilePictures(
-                                    context,
-                                    profileId: profileState.profile?.id ?? '',
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  PhotoGalleryRoutes.profileGallery,
+                                  arguments: ProfilePhotoGalleryArgs(
+                                    userId: profileState.profile?.id ?? '',
+                                    displayName: profileState.profile?.displayName ?? 'User',
+                                  ),
+                                );
+                              },
+                              child: CachedNetworkImage(
+                                progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 45),
+                                  child: LinearProgressIndicator(
+                                    value: downloadProgress.progress,
+                                  ),
+                                ),
+                                imageUrl: profilePhoto.imageUrl,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.error),
+                                        Text(
+                                          error.toString().contains(
+                                                  'ClientException with SocketException: Connection reset by peer')
+                                              ? "Error loading image. Please check your internet connection and try again."
+                                              : error.toString(),
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
                                   );
-                                  return newPhotos;
-                                }),
+                                },
+                              ),
+                            ),
                           ),
                         );
                       }).toList(),

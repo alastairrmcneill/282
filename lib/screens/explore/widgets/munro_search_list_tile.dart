@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/services/services.dart';
 
 class MunroSearchListTile extends StatelessWidget {
   final Munro munro;
@@ -13,8 +11,7 @@ class MunroSearchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MunroState munroState = Provider.of<MunroState>(context);
-    SettingsState settingsState = Provider.of<SettingsState>(context);
+    final settingsState = context.read<SettingsState>();
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -29,10 +26,8 @@ class MunroSearchListTile extends StatelessWidget {
       ),
       visualDensity: VisualDensity.comfortable,
       onTap: () {
-        munroState.setSelectedMunro = munro;
-        MunroPictureService.getMunroPictures(context, munroId: munro.id, count: 4);
-        ReviewService.getMunroReviews(context);
-        Navigator.of(context).pushNamed(MunroScreen.route);
+        context.read<ReviewsState>().getMunroReviews(munro.id);
+        Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
       },
     );
   }

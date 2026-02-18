@@ -37,7 +37,7 @@ class WeatherForecastPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsState settingsState = Provider.of<SettingsState>(context, listen: false);
+    final settingsState = context.read<SettingsState>();
     return SizedBox(
       width: double.infinity,
       child: Column(

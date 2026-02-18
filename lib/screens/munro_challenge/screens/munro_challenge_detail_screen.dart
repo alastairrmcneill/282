@@ -64,7 +64,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AchievementsState achievementsState = Provider.of<AchievementsState>(context);
+    final achievementsState = context.watch<AchievementsState>();
 
     Achievement achievement = achievementsState.currentAchievement!;
     return Scaffold(
@@ -85,7 +85,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
             ),
             achievement.type == AchievementTypes.multiMunroDay
                 ? const SizedBox()
-                : Text("Progress: ${achievement.progress}/${achievement.annualTarget}"),
+                : Text("Progress: ${achievement.progress}/${achievement.annualTarget ?? 0}"),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
