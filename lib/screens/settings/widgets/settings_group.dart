@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class SettingsGroup extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<Widget> children;
   const SettingsGroup({
     super.key,
-    required this.title,
+    this.title,
     required this.children,
   });
 
@@ -18,14 +18,15 @@ class SettingsGroup extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: MyColors.mutedText, fontWeight: FontWeight.w400),
-          ),
-          const SizedBox(height: 2),
+          if (title != null)
+            Text(
+              title!,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: MyColors.mutedText, fontWeight: FontWeight.w400),
+            ),
+          if (title != null) const SizedBox(height: 2),
           Card(
             margin: const EdgeInsets.all(0),
             child: ListView.separated(

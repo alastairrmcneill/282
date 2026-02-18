@@ -371,16 +371,7 @@ class AppRouter {
           builder: (_) => const SettingsScreen(),
           settings: settings,
         );
-      case AboutScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const AboutScreen(),
-          settings: settings,
-        );
-      case LegalScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const LegalScreen(),
-          settings: settings,
-        );
+
       case NotificationSettingsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const NotificationSettingsScreen(),
