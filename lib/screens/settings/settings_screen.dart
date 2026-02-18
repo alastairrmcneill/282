@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
 
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -24,7 +22,6 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<UserState>().currentUser;
-    FlavorState flavorState = context.read<FlavorState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
