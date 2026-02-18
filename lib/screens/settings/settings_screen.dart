@@ -10,6 +10,7 @@ import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,11 +29,22 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(EditProfileScreen.route);
-            },
-            title: const Text("Edit Profile"),
+          SettingsGroup(
+            title: 'Account',
+            children: [
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(EditProfileScreen.route);
+                },
+                title: const Text("Edit Profile"),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(PrivacySettingsScreen.route);
+                },
+                title: const Text("Privacy"),
+              ),
+            ],
           ),
           ListTile(
             onTap: () {
@@ -57,12 +69,6 @@ class SettingsScreen extends StatelessWidget {
               Navigator.of(context).pushNamed(UnitsSettingsScreen.route);
             },
             title: const Text("Units"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(PrivacySettingsScreen.route);
-            },
-            title: const Text("Privacy"),
           ),
           ListTile(
             onTap: () async {

@@ -30,33 +30,8 @@ class ProfileTab extends StatelessWidget {
         ctx.read<MunroCompletionsRepository>(),
         ctx.read<Logger>(),
       )..loadProfileFromUserId(userId: userId),
-      child: Scaffold(
-        body: Column(
-          children: [
-            Column(
-              children: [
-                Text('Body Large', style: Theme.of(context).textTheme.bodyLarge),
-                Text('Body Medium', style: Theme.of(context).textTheme.bodyMedium),
-                Text('Body Small', style: Theme.of(context).textTheme.bodySmall),
-                Text('Display Large', style: Theme.of(context).textTheme.displayLarge),
-                Text('Display Medium', style: Theme.of(context).textTheme.displayMedium),
-                Text('Display Small', style: Theme.of(context).textTheme.displaySmall),
-                Text('Headline Large', style: Theme.of(context).textTheme.headlineLarge),
-                Text('Headline Medium', style: Theme.of(context).textTheme.headlineMedium),
-                Text('Headline Small', style: Theme.of(context).textTheme.headlineSmall),
-                Text('Label Large', style: Theme.of(context).textTheme.labelLarge),
-                Text('Label Medium', style: Theme.of(context).textTheme.labelMedium),
-                Text('Label Small', style: Theme.of(context).textTheme.labelSmall),
-                Text('Title Large', style: Theme.of(context).textTheme.titleLarge),
-                Text('Title Medium', style: Theme.of(context).textTheme.titleMedium),
-                Text('Title Small', style: Theme.of(context).textTheme.titleSmall),
-              ],
-            ),
-          ],
-        ),
-        // ProfileScreen(
-        //   userId: userId,
-        // ),
+      child: ProfileScreen(
+        userId: userId,
       ),
     );
   }
