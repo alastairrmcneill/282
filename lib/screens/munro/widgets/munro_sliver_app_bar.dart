@@ -54,7 +54,7 @@ class MunroSliverAppBar extends StatelessWidget {
       MenuItem(
         text: "Share",
         onTap: () async {
-          final link = await context.read<ShareMunroState>().createShareLink(
+          final link = await context.read<ShareState>().createMunroLink(
                 munroId: munroState.selectedMunro?.id ?? 0,
                 munroName: munroState.selectedMunro?.name ?? "",
               );

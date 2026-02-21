@@ -4,6 +4,7 @@ import 'package:two_eight_two/app_bootstrap.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/navigation_intent_coordinator.dart';
 import 'package:two_eight_two/overlay_intent_coordinator.dart';
+import 'package:two_eight_two/root_gate.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/support/app_router.dart';
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
       navigatorKey: navigatorKey,
       navigatorObservers: [context.read<AppRouteObserver>()],
       onGenerateRoute: AppRouter.generateRoute,
+      home: const RootGate(),
       builder: (context, child) {
         return AppBootstrap(
           child: NavigationIntentCoordinator(

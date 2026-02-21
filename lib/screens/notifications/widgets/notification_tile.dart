@@ -4,61 +4,20 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationTile extends StatelessWidget {
   final Notif notification;
   const NotificationTile({super.key, required this.notification});
 
-  Widget _buildText(Notif notification) {
-    String notificationText = '';
-    if (notification.type == "like") {
-      notificationText = " liked your post.  ";
-    } else if (notification.type == "comment") {
-      notificationText = " commented on your post.  ";
-    } else if (notification.type == "follow") {
-      notificationText = " followed you.  ";
-    }
-    return RichText(
-      text: TextSpan(
-        text: notification.sourceDisplayName,
-        style: const TextStyle(
-          fontFamily: "NotoSans",
-          color: Colors.black,
-          fontWeight: FontWeight.w600,
-        ),
-        children: [
-          TextSpan(
-            text: notificationText,
-            style: const TextStyle(
-              fontFamily: "NotoSans",
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-          TextSpan(
-            text: notification.dateTime.timeAgoShort(),
-            style: const TextStyle(
-              fontFamily: "NotoSans",
-              fontWeight: FontWeight.w200,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final commentsState = context.watch<CommentsState>();
     final notificationsState = context.read<NotificationsState>();
-    return ListTile(
-      tileColor: notification.read ? Colors.transparent : Colors.green.withOpacity(0.05),
-      leading: CircularProfilePicture(
-        radius: 15,
-        profilePictureURL: notification.sourceProfilePictureURL,
-        profileUid: notification.sourceId,
-      ),
-      title: _buildText(notification),
+    final textTheme = Theme.of(context).textTheme;
+
+    return InkWell(
       onTap: () {
         notification.read = true;
         notificationsState.markNotificationAsRead(notification);
@@ -78,6 +37,61 @@ class NotificationTile extends StatelessWidget {
           );
         }
       },
+      child: Container(
+        color: notification.read ? Colors.transparent : Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10, top: 10, bottom: 10),
+          child: Row(
+            children: [
+              const SizedBox(width: 10),
+              Container(
+                height: 6,
+                width: 6,
+                decoration: BoxDecoration(
+                  color: notification.read ? Colors.transparent : MyColors.notificationDotColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 10),
+              CircularProfilePicture(
+                radius: 18,
+                profilePictureURL: notification.sourceProfilePictureURL,
+                profileUid: notification.sourceId,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Opacity(
+                  opacity: notification.read ? 0.6 : 1.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RichText(
+                        softWrap: true,
+                        text: TextSpan(
+                          text: notification.sourceDisplayName,
+                          style: textTheme.titleMedium,
+                          children: [
+                            TextSpan(
+                              text: " ${notification.detail}",
+                              style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: MyColors.subtitleColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        notification.dateTime.timeAgoShort(),
+                        style: textTheme.bodySmall?.copyWith(color: MyColors.subtitleColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

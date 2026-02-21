@@ -45,7 +45,7 @@ class MunroTitle extends StatelessWidget {
         ),
         InkWell(
           onTap: () async {
-            final link = await context.read<ShareMunroState>().createShareLink(
+            final link = await context.read<ShareState>().createMunroLink(
                   munroId: munro.id,
                   munroName: munro.name,
                 );

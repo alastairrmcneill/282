@@ -12,14 +12,13 @@ class MunroReviewsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reviewsState = context.watch<ReviewsState>();
-    final munroDetailState = context.read<MunroDetailState>();
+    final munroDetailState = context.watch<MunroDetailState>();
 
     return Column(
       children: [
         InkWell(
           onTap: () {
-            reviewsState.getMunroReviews(munroDetailState.selectedMunro!.id);
+            context.read<ReviewsState>().getMunroReviewsAndRatings(munroDetailState.selectedMunro!.id);
             Navigator.of(context).pushNamed(ReviewsScreen.route);
           },
           child: Container(
@@ -44,7 +43,7 @@ class MunroReviewsWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        reviewsState.reviews.isEmpty
+        munroDetailState.reviews.isEmpty
             ? const Padding(
                 padding: EdgeInsets.all(15),
                 child: CenterText(text: "No reviews yet."),
@@ -77,7 +76,7 @@ class MunroReviewsWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    ...reviewsState.reviews.take(4).map(
+                    ...munroDetailState.reviews.take(4).map(
                       (Review review) {
                         return ReviewListTile(review: review);
                       },

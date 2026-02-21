@@ -6,6 +6,7 @@ class ReviewsRepository {
   ReviewsRepository(this._db);
   SupabaseQueryBuilder get _table => _db.from('reviews');
   SupabaseQueryBuilder get _view => _db.from('vu_munro_reviews');
+  SupabaseQueryBuilder get _ratingsBreakdownView => _db.from('vu_munro_ratings_breakdown');
 
   Future<void> create({required Review review}) async {
     await _table.insert(review.toJSON());
@@ -30,6 +31,12 @@ class ReviewsRepository {
         .range(offset, offset + pageSize - 1);
 
     return response.map((doc) => Review.fromJSON(doc)).toList();
+  }
+
+  Future<MunroRatingsBreakdown> readRatingsBreakdownFromMunro({required int munroId}) async {
+    final response = await _ratingsBreakdownView.select().eq(MunroRatingsBreakdownFields.munroId, munroId).single();
+
+    return MunroRatingsBreakdown.fromJSON(response);
   }
 
   Future<void> delete({required String uid}) async {

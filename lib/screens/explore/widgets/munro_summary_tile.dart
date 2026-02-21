@@ -45,7 +45,6 @@ class MunroSummaryTile extends StatelessWidget {
         height: 100,
         child: InkWell(
           onTap: () {
-            context.read<ReviewsState>().getMunroReviews(munro.id);
             Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
           },
           child: Card(

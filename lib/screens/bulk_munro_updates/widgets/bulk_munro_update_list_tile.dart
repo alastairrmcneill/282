@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class BulkMunroUpdateListTile extends StatelessWidget {
@@ -14,6 +17,7 @@ class BulkMunroUpdateListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final munroCompletionState = context.watch<MunroCompletionState>();
     final bulkMunroUpdateState = context.watch<BulkMunroUpdateState>();
+    final settingsState = context.read<SettingsState>();
     final userState = context.read<UserState>();
 
     List<DateTime> alreadySummitedDates = munroCompletionState.munroCompletions
@@ -33,72 +37,148 @@ class BulkMunroUpdateListTile extends StatelessWidget {
         .toList();
 
     var summited = summitedDates.isNotEmpty;
-
     var firstSummitedDate = summitedDates.isNotEmpty ? summitedDates[0] : DateTime.now();
 
-    TextEditingController dateController =
-        TextEditingController(text: DateFormat('dd/MM/yy').format(firstSummitedDate));
+    // Check if the date is still the default (time is 00:00:01 means user hasn't explicitly selected a date yet)
+    bool isDefaultDate =
+        summited && firstSummitedDate.hour == 0 && firstSummitedDate.minute == 0 && firstSummitedDate.second == 0;
 
-    DateTime? pickedStartDate;
-
-    return ListTile(
-      title: Text(munro.name),
-      subtitle: Text("${munro.extra == null || munro.extra!.isEmpty ? "" : "${munro.extra} · "}${munro.area}"),
-      leading: summited ? const Icon(Icons.check) : const SizedBox(),
-      trailing: summited
-          ? SizedBox(
-              width: 100,
-              child: TextFormFieldBase(
-                controller: dateController,
-                readOnly: true,
-                onTap: () async {
-                  pickedStartDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-
-                  if (pickedStartDate != null) {
-                    DateTime date = pickedStartDate!.add(const Duration(hours: 12));
-                    if (summitedDates.isEmpty) {
-                      summitedDates.add(date);
-                    } else {
-                      summitedDates[0] = date;
-                    }
-                    MunroCompletion mc = MunroCompletion(
-                      userId: userState.currentUser?.uid ?? "",
-                      munroId: munro.id,
-                      dateTimeCompleted: date,
-                    );
-
-                    bulkMunroUpdateState.updateMunroCompleted(mc);
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Required';
-                  }
-                  return null;
-                },
-              ),
-            )
-          : null,
+    return InkWell(
       onTap: () {
         if (summited) {
           bulkMunroUpdateState.removeMunroCompletion(munro.id);
         } else {
           DateTime now = DateTime.now();
-          DateTime today = DateTime(now.year, now.month, now.day, 12, 0, 0, 0, 0);
+          DateTime defaultDate = DateTime(now.year, now.month, now.day, 0, 0, 0); // 00:00:01 marks as default
           MunroCompletion mc = MunroCompletion(
             userId: userState.currentUser?.uid ?? "",
             munroId: munro.id,
-            dateTimeCompleted: today,
+            dateTimeCompleted: defaultDate,
           );
 
           bulkMunroUpdateState.addMunroCompleted(mc);
         }
       },
+      child: Card(
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: summited ? MyColors.accentColor : Colors.grey[300]!,
+            width: 0.5,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        color: summited ? MyColors.accentColor.withValues(alpha: 0.05) : Theme.of(context).cardColor,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      munro.name,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Text(
+                          settingsState.metricHeight
+                              ? "${munro.meters.thousandsSeparator()}m"
+                              : "${munro.feet.thousandsSeparator()}ft",
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.mutedText),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text('•',
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.mutedText)),
+                        ),
+                        Text(
+                          munro.area,
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.mutedText),
+                        ),
+                      ],
+                    ),
+                    if (summited)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Divider(
+                            height: 20,
+                            thickness: 0.5,
+                            color: Colors.grey[300],
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              DateTime? pickedStartDate = await showDatePicker(
+                                context: context,
+                                initialDate: isDefaultDate ? DateTime.now() : firstSummitedDate,
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime.now(),
+                              );
+
+                              if (pickedStartDate != null) {
+                                DateTime date = pickedStartDate.add(const Duration(hours: 12, seconds: 1));
+                                MunroCompletion mc = MunroCompletion(
+                                  userId: userState.currentUser?.uid ?? "",
+                                  munroId: munro.id,
+                                  dateTimeCompleted: date,
+                                );
+
+                                bulkMunroUpdateState.updateMunroCompleted(mc);
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  isDefaultDate ? PhosphorIconsRegular.plus : PhosphorIconsRegular.calendarBlank,
+                                  size: 16,
+                                  color: MyColors.mutedText,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  isDefaultDate
+                                      ? 'Add date (optional)'
+                                      : DateFormat('dd/MM/yyyy').format(firstSummitedDate),
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                        color: MyColors.mutedText,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            // ...existing code...
+            CustomCheckbox(
+              value: summited,
+              onChanged: (value) {
+                if (summited) {
+                  bulkMunroUpdateState.removeMunroCompletion(munro.id);
+                } else {
+                  DateTime now = DateTime.now();
+                  DateTime defaultDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+                  MunroCompletion mc = MunroCompletion(
+                    userId: userState.currentUser?.uid ?? "",
+                    munroId: munro.id,
+                    dateTimeCompleted: defaultDate,
+                  );
+
+                  bulkMunroUpdateState.addMunroCompleted(mc);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

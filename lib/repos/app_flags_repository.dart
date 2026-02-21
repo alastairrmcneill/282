@@ -11,6 +11,13 @@ class AppFlagsRepository {
   static const _kFirstAppVersion = 'firstAppVersion';
   static const _kShowInAppOnboarding = 'showInAppOnboarding';
   static const _kOpenCount = 'open_count';
+  static const _kOnboardingCompletedKey = 'onboarding_completed';
+
+  bool get onboardingCompleted => _prefs.getBool(_kOnboardingCompletedKey) ?? false;
+  Future<void> setOnboardingCompleted(bool v) async {
+    final ok = await _prefs.setBool(_kOnboardingCompletedKey, v);
+    if (!ok) throw Exception('Failed to persist $_kOnboardingCompletedKey');
+  }
 
   bool get mapTerrain => _prefs.getBool(_kMapTerrain) ?? true;
   Future<void> setMapTerrain(bool v) async {
