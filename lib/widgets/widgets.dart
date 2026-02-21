@@ -24,3 +24,4 @@ export 'padded_divider.dart';
 export 'text_form_field_base.dart';
 export 'full_screen_photo_view.dart';
 export 'custom_app_bar_back_arrow.dart';
+export 'custom_check_box.dart';

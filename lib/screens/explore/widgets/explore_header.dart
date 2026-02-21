@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -58,6 +59,7 @@ class ExploreTabHeader extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: AppSearchBar(
+                        variant: SearchBarVariant.hero,
                         focusNode: searchFocusNode,
                         hintText: "Search Munros",
                         onSearchTap: onSearchTap,
