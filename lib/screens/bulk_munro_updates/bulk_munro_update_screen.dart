@@ -8,6 +8,8 @@ import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
+enum MunroListViewMode { list, map }
+
 class BulkMunroUpdateScreen extends StatefulWidget {
   static const String route = '/bulk_munro_update';
   const BulkMunroUpdateScreen({super.key});
@@ -18,6 +20,8 @@ class BulkMunroUpdateScreen extends StatefulWidget {
 
 class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
   final FocusNode searchFocusNode = FocusNode();
+  MunroListViewMode _viewMode = MunroListViewMode.list;
+
   @override
   void initState() {
     super.initState();
@@ -45,17 +49,56 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           ),
         ),
       ),
-      AppSearchBar(
-        focusNode: searchFocusNode,
-        icon: PhosphorIconsRegular.magnifyingGlass,
-        hintText: "Search munros...",
-        onSearchTap: () {},
-        onChanged: (value) {
-          munroState.setBulkMunroUpdateFilterString = value;
-        },
-        onClear: () {
-          munroState.setBulkMunroUpdateFilterString = '';
-        },
+      Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: AppSearchBar(
+              focusNode: searchFocusNode,
+              icon: PhosphorIconsRegular.magnifyingGlass,
+              hintText: "Search munros...",
+              onSearchTap: () {},
+              onChanged: (value) {
+                munroState.setBulkMunroUpdateFilterString = value;
+              },
+              onClear: () {
+                munroState.setBulkMunroUpdateFilterString = '';
+              },
+            ),
+          ),
+          const SizedBox(width: 10),
+          UnconstrainedBox(
+            child: SizedBox(
+              width: 88,
+              height: 44,
+              child: SegmentedButton<MunroListViewMode>(
+                showSelectedIcon: false,
+                style: ButtonStyle(
+                  padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                segments: const [
+                  ButtonSegment(
+                    value: MunroListViewMode.list,
+                    label: SizedBox.square(
+                      dimension: 44,
+                      child: Center(child: Icon(PhosphorIconsRegular.listBullets, size: 20)),
+                    ),
+                  ),
+                  ButtonSegment(
+                    value: MunroListViewMode.map,
+                    label: SizedBox.square(
+                      dimension: 44,
+                      child: Center(child: Icon(PhosphorIconsRegular.mapTrifold, size: 20)),
+                    ),
+                  ),
+                ],
+                selected: {_viewMode},
+                onSelectionChanged: (newValue) => setState(() => _viewMode = newValue.first),
+              ),
+            ),
+          ),
+        ],
       ),
       const SizedBox(height: 5),
       ...munroState.bulkMunroUpdateList.map((Munro munro) => BulkMunroUpdateListTile(munro: munro)),

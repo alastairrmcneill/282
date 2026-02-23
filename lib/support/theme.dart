@@ -56,6 +56,45 @@ class MyTheme {
         ),
       ),
 
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return MyColors.accentColor; // Selected color
+            }
+            return Colors.transparent; // Unselected color
+          }),
+          foregroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return Colors.white; // Selected text color
+            }
+            return Colors.black; // Unselected text color
+          }),
+          side: WidgetStateProperty.resolveWith<BorderSide>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return BorderSide(
+                color: Colors.grey[300]!,
+                width: 0.5,
+              ); // Selected border
+            }
+            return BorderSide(
+              color: Colors.grey[300]!,
+              width: 0.5,
+            ); // Unselected border
+          }),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(
+                color: Colors.grey[300]!,
+                width: 0.5,
+              ),
+            ),
+          ),
+          textStyle: MaterialStateProperty.all<TextStyle>(textTheme.labelLarge!),
+        ),
+      ),
+
       dividerTheme: DividerThemeData(
         color: MyColors.lightGrey,
         thickness: 1,
