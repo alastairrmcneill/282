@@ -24,11 +24,9 @@ class MyTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          textStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle: textTheme.labelLarge,
+          iconColor: Colors.white,
+          foregroundColor: Colors.white,
           elevation: 1,
         ),
       ),

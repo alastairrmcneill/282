@@ -39,7 +39,7 @@ class BulkMunroUpdateListTile extends StatelessWidget {
     var summited = summitedDates.isNotEmpty;
     var firstSummitedDate = summitedDates.isNotEmpty ? summitedDates[0] : DateTime.now();
 
-    // Check if the date is still the default (time is 00:00:01 means user hasn't explicitly selected a date yet)
+    // Check if the date is still the default (time is 00:00:00 means user hasn't explicitly selected a date yet)
     bool isDefaultDate =
         summited && firstSummitedDate.hour == 0 && firstSummitedDate.minute == 0 && firstSummitedDate.second == 0;
 
@@ -49,7 +49,7 @@ class BulkMunroUpdateListTile extends StatelessWidget {
           bulkMunroUpdateState.removeMunroCompletion(munro.id);
         } else {
           DateTime now = DateTime.now();
-          DateTime defaultDate = DateTime(now.year, now.month, now.day, 0, 0, 0); // 00:00:01 marks as default
+          DateTime defaultDate = DateTime(now.year, now.month, now.day, 0, 0, 0); // 00:00:00 marks as default
           MunroCompletion mc = MunroCompletion(
             userId: userState.currentUser?.uid ?? "",
             munroId: munro.id,

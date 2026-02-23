@@ -66,15 +66,27 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
       appBar: AppBar(
         title: const Text('Bulk Munro Update'),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: SizedBox(
+              height: 36,
+              child: FilledButton(
+                style: ButtonStyle(
+                  minimumSize: WidgetStateProperty.all(const Size(80, 40)),
+                  padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
+                  backgroundColor: WidgetStateProperty.all(MyColors.accentColor),
+                  foregroundColor: WidgetStateProperty.all(Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
 
-              munroCompletionState.addBulkCompletions(
-                munroCompletions: bulkMunroUpdateState.addedMunroCompletions,
-              );
-            },
-            child: const Text("Save"),
+                  munroCompletionState.addBulkCompletions(
+                    munroCompletions: bulkMunroUpdateState.addedMunroCompletions,
+                  );
+                },
+                child: Text("Add (${bulkMunroUpdateState.addedMunroCompletions.length})"),
+              ),
+            ),
           ),
         ],
       ),
