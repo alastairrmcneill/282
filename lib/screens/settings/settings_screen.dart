@@ -207,7 +207,7 @@ class SettingsScreen extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(
-                      "282 v${snapshot.data!.version} (${snapshot.data!.buildNumber})",
+                      "v${snapshot.data!.version} (${snapshot.data!.buildNumber})",
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(color: MyColors.mutedText),
                     );
                   } else {
