@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
@@ -24,15 +25,7 @@ class _SavedTabState extends State<SavedTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Saved Lists'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              showCreateSavedListDialog(context);
-            },
-          ),
-        ],
+        title: const Text('My Munros'),
       ),
       body: RefreshIndicator(
         onRefresh: () => context.read<SavedListState>().readUserSavedLists(),
@@ -53,12 +46,37 @@ class _SavedTabState extends State<SavedTab> {
   }
 
   Widget _buildScreen(BuildContext context, {required SavedListState savedListState}) {
-    if (savedListState.savedLists.isEmpty) return const CenterText(text: "You don't have any saved lists yet");
+    if (savedListState.savedLists.isEmpty) return const EmptySavedListScreen();
 
-    return ListView(
-      children: savedListState.savedLists.map((savedList) {
-        return SavedListTile(savedList: savedList);
-      }).toList(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: ListView.separated(
+        itemCount: savedListState.savedLists.length + 1,
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 16, bottom: 8),
+              child: OutlinedButton(
+                onPressed: () {
+                  showCreateSavedListDialog(context);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(PhosphorIconsBold.plus),
+                    const SizedBox(width: 8),
+                    Text('Create new list'),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final savedList = savedListState.savedLists[index - 1];
+          return SavedListTile(savedList: savedList);
+        },
+      ),
     );
   }
 }
