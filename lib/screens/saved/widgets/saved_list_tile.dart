@@ -212,24 +212,26 @@ class _SavedListTileState extends State<SavedListTile> {
               ],
             ),
             const SizedBox(height: 10),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: widget.savedList.munroIds.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final munroId = widget.savedList.munroIds[index];
-                final Munro munro = munroState.munroList.where((m) => m.id == munroId).first;
-                return SavedListMunroTile(
-                  munro: munro,
-                  onDelete: () async {
-                    await context
-                        .read<SavedListState>()
-                        .removeMunroFromSavedList(savedList: widget.savedList, munroId: munroId);
-                  },
-                );
-              },
-            )
+            widget.savedList.munroIds.isEmpty
+                ? SavedListEmptyMunroList()
+                : ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: widget.savedList.munroIds.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final munroId = widget.savedList.munroIds[index];
+                      final Munro munro = munroState.munroList.where((m) => m.id == munroId).first;
+                      return SavedListMunroTile(
+                        munro: munro,
+                        onDelete: () async {
+                          await context
+                              .read<SavedListState>()
+                              .removeMunroFromSavedList(savedList: widget.savedList, munroId: munroId);
+                        },
+                      );
+                    },
+                  )
           ],
         ),
       ),
