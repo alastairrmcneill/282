@@ -48,9 +48,9 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     zoom: 6.15,
   );
 
-  late Uint8List incompleteIcon;
-  late Uint8List completeIcon;
-  late Uint8List selectedIcon;
+  Uint8List? incompleteIcon;
+  Uint8List? completeIcon;
+  Uint8List? selectedIcon;
   String mapAreaId = "full_map_area";
 
   @override
@@ -61,16 +61,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   void loadData() async {
-    MunroState munroState = context.read<MunroState>();
     incompleteIcon = await _loadMarker('assets/munro_incomplete.png');
     completeIcon = await _loadMarker('assets/munro_complete.png');
     selectedIcon = await _loadMarker('assets/munro_selected.png');
-
-    if (mounted) {
-      await munroState.loadMunros().then(
-            (value) => setState(() => loading = false),
-          );
-    }
+    setState(() => loading = false);
   }
 
   Future<void> checkAndDownloadMap() async {
@@ -168,6 +162,12 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       {required MunroState munroState, required List<MunroCompletion> completedMunros}) async {
     final List<Munro> munros = munroState.filteredMunroList;
 
+    // Safety check: ensure icons are loaded before creating markers
+    if (incompleteIcon == null || completeIcon == null || selectedIcon == null) {
+      print('⚠️ Icons not loaded yet, skipping marker creation');
+      return;
+    }
+
     _annotationManager = await _mapboxMap.annotations.createPointAnnotationManager();
 
     List<PointAnnotationOptions> pointAnnotationOptions = [];
@@ -175,10 +175,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     for (var munro in munros) {
       final summited = completedMunros.any((element) => element.munroId == munro.id);
       final icon = selectedMunroId == munro.id
-          ? selectedIcon
+          ? selectedIcon!
           : summited
-              ? completeIcon
-              : incompleteIcon;
+              ? completeIcon!
+              : incompleteIcon!;
 
       pointAnnotationOptions.add(
         PointAnnotationOptions(
@@ -240,6 +240,9 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
     if (selectedAnnotation != null && selectedMunroId != null) {
+      // Safety check: ensure icons are loaded
+      if (completeIcon == null || incompleteIcon == null) return;
+
       final Munro munro = munroState.munroList.firstWhere(
         (munro) => munro.id == selectedMunroId,
         orElse: () => Munro.empty,
@@ -247,7 +250,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
       final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
         geometry: selectedAnnotation!.geometry,
-        image: summited ? completeIcon : incompleteIcon,
+        image: summited ? completeIcon! : incompleteIcon!,
         iconSize: 0.6,
       );
       await _annotationManager.delete(selectedAnnotation!);
@@ -263,10 +266,13 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
+    // Safety check: ensure icons are loaded
+    if (selectedIcon == null) return;
+
     final munroState = context.read<MunroState>();
     final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
-      image: selectedIcon,
+      image: selectedIcon!,
       iconSize: 0.7,
     );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class TextFormFieldBase extends StatelessWidget {
   final TextEditingController? controller;
@@ -76,6 +77,8 @@ class TextFormFieldBase extends StatelessWidget {
         border: border,
         filled: fillColor != null,
         fillColor: fillColor,
+        hintStyle:
+            Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400, color: MyColors.mutedText),
       ),
       textCapitalization: textCapitalization,
       keyboardType: keyboardType,

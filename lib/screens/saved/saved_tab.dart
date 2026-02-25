@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
@@ -55,22 +54,7 @@ class _SavedTabState extends State<SavedTab> {
         separatorBuilder: (context, index) => const SizedBox(height: 8),
         itemBuilder: (context, index) {
           if (index == 0) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 8),
-              child: OutlinedButton(
-                onPressed: () {
-                  showCreateSavedListDialog(context);
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(PhosphorIconsBold.plus),
-                    const SizedBox(width: 8),
-                    Text('Create new list'),
-                  ],
-                ),
-              ),
-            );
+            return CreateNewSavedListWidget();
           }
 
           final savedList = savedListState.savedLists[index - 1];
