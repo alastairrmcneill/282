@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
+import 'package:two_eight_two/screens/saved/widgets/saved_list_name_input.dart';
 import 'package:two_eight_two/support/theme.dart';
 
-class EmptySavedListScreen extends StatelessWidget {
+class EmptySavedListScreen extends StatefulWidget {
   const EmptySavedListScreen({super.key});
+
+  @override
+  State<EmptySavedListScreen> createState() => _EmptySavedListScreenState();
+}
+
+class _EmptySavedListScreenState extends State<EmptySavedListScreen> {
+  bool _isCreating = false;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
+    if (_isCreating) {
+      return SavedListNameInput(onCancel: () => setState(() => _isCreating = false));
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -37,9 +49,7 @@ class EmptySavedListScreen extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           FilledButton(
-            onPressed: () {
-              showCreateSavedListDialog(context);
-            },
+            onPressed: () => setState(() => _isCreating = true),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
