@@ -23,7 +23,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   late MapboxMap _mapboxMap;
   Map<int, PointAnnotation?> allAnnotations = {};
   String scotlandRegionId = "scotland-tile-region";
-  String styleUri = "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v";
+  String styleUri = "mapbox://styles/alastairm94/cmm377uhm006i01qwayyyfxpe";
 
   PointAnnotation? selectedAnnotation;
   int? selectedMunroId;

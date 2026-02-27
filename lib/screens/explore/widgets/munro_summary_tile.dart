@@ -161,7 +161,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             munroState.setSelectedMunroId = munro.id;
-                            showSaveMunroDialog(context);
+                            await SaveMunroBottomSheet.show(context);
                           }
                         },
                         child: Icon(munroSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),

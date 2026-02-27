@@ -77,7 +77,7 @@ class MunroTitle extends StatelessWidget {
             if (userId == null) {
               Navigator.pushNamed(context, AuthHomeScreen.route);
             } else {
-              showSaveMunroDialog(context);
+              await SaveMunroBottomSheet.show(context);
             }
           },
           child: Padding(

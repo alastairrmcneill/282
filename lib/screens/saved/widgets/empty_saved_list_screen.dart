@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/screens/saved/widgets/saved_list_name_input.dart';
+import 'package:two_eight_two/screens/saved/widgets/card_saved_list_name_input.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class EmptySavedListScreen extends StatefulWidget {
@@ -18,7 +18,13 @@ class _EmptySavedListScreenState extends State<EmptySavedListScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     if (_isCreating) {
-      return SavedListNameInput(onCancel: () => setState(() => _isCreating = false));
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        child: SavedListNameInput(
+          onCreate: () => setState(() => _isCreating = false),
+          onCancel: () => setState(() => _isCreating = false),
+        ),
+      );
     }
 
     return Padding(
