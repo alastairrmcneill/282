@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/datetime_extension.dart';
@@ -20,102 +17,36 @@ class ReviewListTile extends StatelessWidget {
     final createReviewState = context.read<CreateReviewState>();
     final isOwner = review.authorId == userState.currentUser?.uid;
 
-    if (Platform.isIOS) {
-      _showIOSActionSheet(context, isOwner, createReviewState);
-    } else {
-      _showAndroidBottomSheet(context, isOwner, createReviewState);
-    }
-  }
-
-  void _showIOSActionSheet(BuildContext context, bool isOwner, CreateReviewState createReviewState) {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: isOwner
-            ? [
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    createReviewState.reset();
-                    createReviewState.loadReview = review;
-                    Navigator.of(context).pushNamed(EditReviewScreen.route);
-                  },
-                  child: const Text('Edit'),
-                ),
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    context.read<ReviewsState>().deleteReview(review: review);
-                  },
-                  isDestructiveAction: true,
-                  child: const Text('Delete'),
-                ),
-              ]
-            : [
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    final reportState = context.read<ReportState>();
-                    reportState.setContentId = review.uid ?? "";
-                    reportState.setType = "review";
-                    Navigator.of(context).pushNamed(ReportScreen.route);
-                  },
-                  child: const Text('Report'),
-                ),
-              ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-      ),
-    );
-  }
-
-  void _showAndroidBottomSheet(BuildContext context, bool isOwner, CreateReviewState createReviewState) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: isOwner
-              ? [
-                  ListTile(
-                    leading: const Icon(Icons.edit),
-                    title: const Text('Edit'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      createReviewState.reset();
-                      createReviewState.loadReview = review;
-                      Navigator.of(context).pushNamed(EditReviewScreen.route);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.delete, color: Colors.red),
-                    title: const Text('Delete', style: TextStyle(color: Colors.red)),
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.read<ReviewsState>().deleteReview(review: review);
-                    },
-                  ),
-                ]
-              : [
-                  ListTile(
-                    leading: const Icon(Icons.flag),
-                    title: const Text('Report'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      final reportState = context.read<ReportState>();
-                      reportState.setContentId = review.uid ?? "";
-                      reportState.setType = "review";
-                      Navigator.of(context).pushNamed(ReportScreen.route);
-                    },
-                  ),
-                ],
-        ),
-      ),
-    );
+    final items = isOwner
+        ? [
+            ActionMenuItems(
+              title: 'Edit',
+              onPressed: () {
+                createReviewState.reset();
+                createReviewState.loadReview = review;
+                Navigator.of(context).pushNamed(EditReviewScreen.route);
+              },
+            ),
+            ActionMenuItems(
+              title: 'Delete',
+              isDestructive: true,
+              onPressed: () {
+                context.read<ReviewsState>().deleteReview(review: review);
+              },
+            ),
+          ]
+        : [
+            ActionMenuItems(
+              title: 'Report',
+              onPressed: () {
+                final reportState = context.read<ReportState>();
+                reportState.setContentId = review.uid ?? "";
+                reportState.setType = "review";
+                Navigator.of(context).pushNamed(ReportScreen.route);
+              },
+            ),
+          ];
+    showActionSheet(context, items);
   }
 
   @override

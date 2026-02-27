@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -27,93 +24,34 @@ class PostHeader extends StatelessWidget {
     final userState = context.read<UserState>();
     final isOwner = post.authorId == userState.currentUser?.uid;
 
-    if (Platform.isIOS) {
-      _showIOSActionSheet(context, isOwner);
-    } else {
-      _showAndroidBottomSheet(context, isOwner);
-    }
-  }
-
-  void _showIOSActionSheet(BuildContext context, bool isOwner) {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: isOwner
-            ? [
-                CupertinoActionSheetAction(
-                  onPressed: () async {
-                    await onEdit.call();
-                  },
-                  child: const Text('Edit'),
-                ),
-                CupertinoActionSheetAction(
-                  onPressed: () async {
-                    await onDelete.call();
-                  },
-                  isDestructiveAction: true,
-                  child: const Text('Delete'),
-                ),
-              ]
-            : [
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    final reportState = context.read<ReportState>();
-                    reportState.setContentId = post.uid;
-                    reportState.setType = "post";
-                    Navigator.of(context).pushNamed(ReportScreen.route);
-                  },
-                  child: const Text('Report'),
-                ),
-              ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-      ),
-    );
-  }
-
-  void _showAndroidBottomSheet(BuildContext context, bool isOwner) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: isOwner
-              ? [
-                  ListTile(
-                    leading: const Icon(Icons.edit),
-                    title: const Text('Edit'),
-                    onTap: () async {
-                      await onEdit.call();
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.delete, color: Colors.red),
-                    title: const Text('Delete', style: TextStyle(color: Colors.red)),
-                    onTap: () async {
-                      await onDelete.call();
-                    },
-                  ),
-                ]
-              : [
-                  ListTile(
-                    leading: const Icon(Icons.flag),
-                    title: const Text('Report'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      final reportState = context.read<ReportState>();
-                      reportState.setContentId = post.uid;
-                      reportState.setType = "post";
-                      Navigator.of(context).pushNamed(ReportScreen.route);
-                    },
-                  ),
-                ],
-        ),
-      ),
-    );
+    final items = isOwner
+        ? [
+            ActionMenuItems(
+              title: 'Edit',
+              onPressed: () async {
+                await onEdit.call();
+              },
+            ),
+            ActionMenuItems(
+              title: 'Delete',
+              isDestructive: true,
+              onPressed: () async {
+                await onDelete.call();
+              },
+            ),
+          ]
+        : [
+            ActionMenuItems(
+              title: 'Report',
+              onPressed: () {
+                final reportState = context.read<ReportState>();
+                reportState.setContentId = post.uid;
+                reportState.setType = "post";
+                Navigator.of(context).pushNamed(ReportScreen.route);
+              },
+            ),
+          ];
+    showActionSheet(context, items);
   }
 
   @override
