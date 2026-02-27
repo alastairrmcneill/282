@@ -18,6 +18,7 @@ interface Notification {
   post_id: string;
   type: string;
   read: boolean;
+  detail: string;
 }
 
 interface WebhookPayload {
@@ -59,6 +60,40 @@ Deno.serve(async (req: Request) => {
     }
     console.log("📱 ~ Associated Post:", post);
 
+    // Get munro_completions from the post_id
+    const { data: munroCompletions, error: munroCompletionsError } =
+      await supabase
+        .from("munro_completions")
+        .select("munro_id, munros(name)")
+        .eq("post_id", like.post_id);
+
+    let detail: string;
+
+    if (
+      !munroCompletionsError &&
+      munroCompletions &&
+      munroCompletions.length > 0
+    ) {
+      console.log(
+        "📱 ~ Found munro completions for post_id:",
+        like.post_id,
+        "Munro Completions:",
+        munroCompletions,
+      );
+      const munro = munroCompletions[0].munros as unknown as
+        | { name: string }
+        | null;
+      detail = munro ? `liked your ${munro.name} post.` : "liked your post.";
+    } else {
+      console.log(
+        "📱 ~ No munro completions found for post_id:",
+        like.post_id,
+        "Error:",
+        munroCompletionsError,
+      );
+      detail = "liked your post.";
+    }
+
     const { data: notification, error: notificationError } = await supabase
       .from("notifications")
       .insert({
@@ -67,8 +102,9 @@ Deno.serve(async (req: Request) => {
         post_id: like.post_id,
         type: "like",
         read: false,
+        detail: detail,
       })
-      .select("id, target_id, source_id, post_id, type, read")
+      .select("id, target_id, source_id, post_id, type, read, detail")
       .single<Notification>();
 
     if (notificationError) {

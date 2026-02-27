@@ -13,12 +13,13 @@ class NotificationsRepository {
     List<String>? excludedSourceIds,
     int offset = 0,
   }) async {
-    int pageSize = 20;
+    int pageSize = 100;
 
     final response = await _view
         .select()
         .not(NotifFields.sourceId, 'in', excludedSourceIds ?? [])
         .eq(NotifFields.targetId, userId)
+        .order(NotifFields.read, ascending: true)
         .order(NotifFields.dateTime, ascending: false)
         .range(offset, offset + pageSize - 1);
 

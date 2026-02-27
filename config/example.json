@@ -6,5 +6,6 @@
   "MAPBOX_TOKEN": "your_mapbox_token",
   "SUPABASE_URL": "your_supabase_url",
   "SUPABASE_ANON": "your_supabase_anon_key",
-  "SENTRY_DSN": "your_sentry_dsn"
+  "SENTRY_DSN": "your_sentry_dsn",
+  "IMAGE_PROXY_BASE_URL": "https://your-image-proxy-url.com"
 }

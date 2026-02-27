@@ -30,10 +30,8 @@ class ProfileTab extends StatelessWidget {
         ctx.read<MunroCompletionsRepository>(),
         ctx.read<Logger>(),
       )..loadProfileFromUserId(userId: userId),
-      child: Scaffold(
-        body: ProfileScreen(
-          userId: userId,
-        ),
+      child: ProfileScreen(
+        userId: userId,
       ),
     );
   }

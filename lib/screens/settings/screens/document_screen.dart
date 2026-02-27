@@ -58,9 +58,7 @@ class DocumentScreen extends StatelessWidget {
                         },
                       );
                     }
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const LoadingWidget(text: "Loading document...");
                   },
                 ),
               ),

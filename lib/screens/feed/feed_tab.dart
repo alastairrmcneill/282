@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:two_eight_two/screens/feed/screens/feed_list_view.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 
 class FeedTab extends StatefulWidget {
@@ -78,12 +78,13 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
                 TabBar(
                   controller: _tabController,
                   isScrollable: true,
+                  dividerColor: Colors.transparent,
+                  tabAlignment: TabAlignment.start,
                   indicator: const UnderlineTabIndicator(
                     borderSide: BorderSide(
-                      color: MyColors.accentColor,
+                      color: Colors.black,
                       width: 2.0,
                     ),
-                    insets: EdgeInsets.symmetric(horizontal: 16.0),
                   ),
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.w500,
@@ -93,8 +94,24 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
                   ),
                   unselectedLabelColor: Colors.grey,
                   tabs: const [
-                    Tab(text: 'All Munro Baggers'),
-                    Tab(text: 'Friends'),
+                    Tab(
+                      child: Row(
+                        children: [
+                          Icon(PhosphorIconsRegular.globe, size: 18),
+                          SizedBox(width: 6),
+                          Text('All Munro Baggers'),
+                        ],
+                      ),
+                    ),
+                    Tab(
+                      child: Row(
+                        children: [
+                          Icon(PhosphorIconsRegular.users, size: 18),
+                          SizedBox(width: 8),
+                          Text('Friends'),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 const Spacer(),
@@ -110,12 +127,12 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
               posts: feedState.globalPosts,
               paginate: () => feedState.paginateGlobalFeed(),
               refreshPosts: () => feedState.getGlobalFeed(),
+              headerWidget: const SizedBox(height: 10),
             ),
             FeedListView(
               posts: feedState.friendsPosts,
               paginate: () => feedState.paginateFriendsFeed(),
               refreshPosts: () => feedState.getFriendsFeed(),
-              headerWidget: const FindFriendsHeaderWiget(),
               emptyList: const EmptyFriendsFeed(),
             ),
           ],

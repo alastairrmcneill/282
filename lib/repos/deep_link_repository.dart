@@ -18,13 +18,21 @@ class DeepLinkRepository {
       final clicked = data['+clicked_branch_link'] == true;
       if (!clicked) return;
 
-      final munroIdRaw = data['munroId'];
-      final munroId = munroIdRaw is int ? munroIdRaw : int.tryParse('$munroIdRaw');
+      final canonicalIdentifier = data['~canonical_identifier'] as String?;
 
-      if (munroId == null || munroId <= 0) return;
-      _controller.add(OpenMunroIntent(munroId: munroId));
-    }, onError: (e) {
-      // Handle errors if necessary
+      if (canonicalIdentifier != null && canonicalIdentifier.startsWith('munro/')) {
+        final munroIdRaw = data['munroId'];
+        final munroId = munroIdRaw is int ? munroIdRaw : int.tryParse('$munroIdRaw');
+
+        if (munroId != null && munroId > 0) {
+          _controller.add(OpenMunroIntent(munroId: munroId));
+        }
+        return;
+      }
+
+      if (canonicalIdentifier == 'app') {
+        return;
+      }
     });
   }
 

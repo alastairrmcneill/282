@@ -58,6 +58,7 @@ class ExploreTabHeader extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: AppSearchBar(
+                        variant: SearchBarVariant.hero,
                         focusNode: searchFocusNode,
                         hintText: "Search Munros",
                         onSearchTap: onSearchTap,

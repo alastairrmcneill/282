@@ -171,7 +171,7 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
     // Gate UI while loading
     if (inAppOnboardingState.status == InAppOnboardingStatus.loading ||
         inAppOnboardingState.status == InAppOnboardingStatus.initial) {
-      return const PopScope(canPop: false, child: Scaffold(body: Center(child: CircularProgressIndicator())));
+      return const LoadingWidget();
     }
 
     return PopScope(

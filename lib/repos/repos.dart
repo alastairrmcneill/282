@@ -28,3 +28,4 @@ export 'push_notifications_repository.dart';
 export 'app_info_repository.dart';
 export 'global_completion_count_repository.dart';
 export 'local_storage_repository.dart';
+export 'onboarding_repository.dart';

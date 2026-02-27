@@ -133,7 +133,7 @@ class MunroPictureGallery extends StatelessWidget {
           height: (MediaQuery.of(context).size.width - 60) / 4,
           child: Consumer<MunroDetailState>(
             builder: (context, munroDetailState, child) {
-              switch (munroDetailState.galleryStatus) {
+              switch (munroDetailState.status) {
                 case MunroDetailStatus.loading:
                   return _buildLoadingScreen(context);
                 case MunroDetailStatus.error:

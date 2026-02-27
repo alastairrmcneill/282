@@ -16,6 +16,7 @@ interface Notification {
   source_id: string;
   post_id: string;
   type: string;
+  detail: string | null;
   read: boolean;
 }
 
@@ -75,17 +76,56 @@ Deno.serve(async (req: Request) => {
       ),
     );
 
-    // Add the post author to the target IDs if they are not already included
-    if (post.author_id !== sourceId && !targetIds.includes(post.author_id)) {
+    // Remove comment author if is in the list
+    if (targetIds.includes(sourceId)) {
+      const index = targetIds.indexOf(sourceId);
+      if (index > -1) {
+        targetIds.splice(index, 1);
+      }
+    }
+
+    // Add the post author if not already included
+    if (!targetIds.includes(post.author_id)) {
       targetIds.push(post.author_id);
     }
 
-    if (targetIds.length === 0) {
-      console.log("📱 ~ No notifications to send for comment:", comment.id);
-      return new Response("No notifications to send", { status: 200 });
+    // Get munro_completions from the post_id
+    const { data: munroCompletions, error: munroCompletionsError } =
+      await supabase
+        .from("munro_completions")
+        .select("munro_id, munros(name)")
+        .eq("post_id", postId);
+
+    let detail: string;
+
+    if (
+      !munroCompletionsError &&
+      munroCompletions &&
+      munroCompletions.length > 0
+    ) {
+      console.log(
+        "📱 ~ Found munro completions for post_id:",
+        postId,
+        "Munro Completions:",
+        munroCompletions,
+      );
+      const munro = munroCompletions[0].munros as unknown as
+        | { name: string }
+        | null;
+      detail = munro
+        ? `commented on your ${munro.name} post.`
+        : "commented on your post.";
+    } else {
+      console.log(
+        "📱 ~ No munro completions found for post_id:",
+        postId,
+        "Error:",
+        munroCompletionsError,
+      );
+      detail = "commented on your post.";
     }
 
-    // Step 3: Insert notifications
+    // Step 3: Insert standard notifications
     const notifications: Notification[] = targetIds.map((targetId) => {
       console.log("📱 ~ Creating notification for targetId:", targetId);
       return {
@@ -93,6 +133,9 @@ Deno.serve(async (req: Request) => {
         source_id: sourceId,
         post_id: postId,
         type: "comment",
+        detail: targetId === post.author_id
+          ? detail
+          : "commented on a post you follow.",
         read: false,
       };
     });

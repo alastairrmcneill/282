@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class MunroCard extends StatelessWidget {
@@ -17,7 +15,6 @@ class MunroCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15, top: 15),
       child: GestureDetector(
         onTap: () {
-          context.read<ReviewsState>().getMunroReviews(munro.id);
           Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
         },
         child: Column(

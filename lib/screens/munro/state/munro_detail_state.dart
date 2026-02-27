@@ -6,99 +6,66 @@ import 'package:two_eight_two/screens/notifiers.dart';
 
 class MunroDetailState extends ChangeNotifier {
   final MunroPicturesRepository _munroPicturesRepository;
+  final ReviewsRepository _reviewsRepository;
   final UserState _userState;
   final Logger _logger;
 
   MunroDetailState(
     this._munroPicturesRepository,
+    this._reviewsRepository,
     this._userState,
     this._logger,
   );
 
-  MunroDetailStatus _galleryStatus = MunroDetailStatus.initial;
+  MunroDetailStatus _status = MunroDetailStatus.initial;
   Munro? _selectedMunro;
   List<MunroPicture> _munroPictures = [];
+  List<Review> _reviews = [];
   Error _error = Error();
 
-  MunroDetailStatus get galleryStatus => _galleryStatus;
+  MunroDetailStatus get status => _status;
   Munro? get selectedMunro => _selectedMunro;
   List<MunroPicture> get munroPictures => _munroPictures;
+  List<Review> get reviews => _reviews;
   Error get error => _error;
 
   Future<void> init(Munro munro) async {
     _selectedMunro = munro;
 
-    for (var commonlyClimbed in munro.commonlyClimbedWith) {
-      print(commonlyClimbed);
-    }
-
-    loadMunroPictures(munroId: munro.id, count: 4);
-
-    notifyListeners();
-  }
-
-  Future<void> loadMunroPictures({required int munroId, int count = 18}) async {
     try {
-      setGalleryStatus = MunroDetailStatus.loading;
+      _status = MunroDetailStatus.loading;
+      notifyListeners();
+
       final blockedUsers = _userState.blockedUsers;
 
-      List<MunroPicture> munroPictures = await _munroPicturesRepository.readMunroPictures(
-        munroId: munroId,
-        excludedAuthorIds: blockedUsers,
-        offset: 0,
-        count: count,
-      );
-      _munroPictures = munroPictures;
-      _galleryStatus = MunroDetailStatus.loaded;
-      notifyListeners();
+      Future.wait([
+        _munroPicturesRepository.readMunroPictures(
+          munroId: munro.id,
+          excludedAuthorIds: blockedUsers,
+          offset: 0,
+          count: 4,
+        ),
+        _reviewsRepository.readReviewsFromMunro(
+          munroId: munro.id,
+          excludedAuthorIds: blockedUsers,
+          offset: 0,
+        ),
+      ]).then((results) {
+        _munroPictures = results[0] as List<MunroPicture>;
+        _reviews = results[1] as List<Review>;
+        _status = MunroDetailStatus.loaded;
+        notifyListeners();
+      }).catchError((error, stackTrace) {
+        _logger.error(error.toString(), stackTrace: stackTrace);
+        _error = Error(message: "There was an issue loading data for this munro. Please try again.");
+        _status = MunroDetailStatus.error;
+        notifyListeners();
+      });
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(message: "There was an issue loading pictures for this munro. Please try again.");
-    }
-  }
-
-  Future<List<MunroPicture>> paginateMunroPictures({required int munroId, int count = 18}) async {
-    try {
-      setGalleryStatus = MunroDetailStatus.paginating;
-      final blockedUsers = _userState.blockedUsers;
-
-      List<MunroPicture> newMunroPictures = await _munroPicturesRepository.readMunroPictures(
-        munroId: munroId,
-        excludedAuthorIds: blockedUsers,
-        offset: _munroPictures.length,
-        count: count,
-      );
-
-      _munroPictures.addAll(newMunroPictures);
-      _galleryStatus = MunroDetailStatus.loaded;
+      _error = Error(message: "There was an issue loading data for this munro. Please try again.");
       notifyListeners();
-      return _munroPictures;
-    } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(message: "There was an issue loading pictures for this munro. Please try again.");
-      return [];
     }
-  }
-
-  set setGalleryStatus(MunroDetailStatus galleryStatus) {
-    _galleryStatus = galleryStatus;
-    notifyListeners();
-  }
-
-  set setMunroPictures(List<MunroPicture> munroPictures) {
-    _munroPictures = munroPictures;
-    notifyListeners();
-  }
-
-  set addMunroPictures(List<MunroPicture> munroPictures) {
-    _munroPictures.addAll(munroPictures);
-    notifyListeners();
-  }
-
-  set setError(Error error) {
-    _galleryStatus = MunroDetailStatus.error;
-    _error = error;
-    notifyListeners();
   }
 }
 

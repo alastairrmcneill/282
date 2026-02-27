@@ -30,7 +30,7 @@ class NotificationsState extends ChangeNotifier {
       List<String> blockedUsers = _userState.blockedUsers;
 
       // Read comments for post
-      setNotifications = await _repository.readUserNotifs(
+      _notifications = await _repository.readUserNotifs(
         userId: _userState.currentUser?.uid ?? "",
         excludedSourceIds: blockedUsers,
       );

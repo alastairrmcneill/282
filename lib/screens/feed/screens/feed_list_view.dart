@@ -27,19 +27,8 @@ class FeedListView extends StatefulWidget {
 }
 
 class _FeedListViewState extends State<FeedListView> {
-  late ScrollController _scrollController;
   @override
   void initState() {
-    final feedState = context.read<FeedState>();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-          !_scrollController.position.outOfRange &&
-          feedState.status != FeedStatus.paginating) {
-        widget.paginate();
-      }
-    });
-
     super.initState();
   }
 
@@ -70,81 +59,90 @@ class _FeedListViewState extends State<FeedListView> {
 
   Widget _buildScreen(BuildContext context, FeedState feedState) {
     UserLikeState userLikeState = context.read<UserLikeState>();
+    const postsFromEndToPaginate = 2;
+
+    if (widget.posts.isEmpty) {
+      return widget.emptyList ??
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: CenterText(
+              text:
+                  "There are no posts to show. Get out into the hills with your friends and start making some memories!",
+            ),
+          );
+    }
+
     return RefreshIndicator(
       onRefresh: () async {
         widget.refreshPosts();
       },
-      child: widget.posts.isEmpty
-          ? widget.emptyList ??
-              const SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: CenterText(
-                    text:
-                        "There are no posts to show. Get out into the hills with your friends and start making some memories!",
-                  ),
-                ),
-              )
-          : ListView(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    widget.headerWidget ?? const SizedBox(),
-                    Column(
-                      children: widget.posts
-                          .map(
-                            (Post post) => PostWidget(
-                              post: post,
-                              inFeed: true,
-                              onEdit: () async {
-                                final createPostState = context.read<CreatePostState>();
-                                final settingsState = context.read<SettingsState>();
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: widget.posts.length + 2, // +1 for header, +1 for loading indicator
+        itemBuilder: (context, index) {
+          // Header widget
+          if (index == 0) {
+            return widget.headerWidget ?? const SizedBox.shrink();
+          }
 
-                                createPostState.reset();
-                                createPostState.loadPost = post;
-                                createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+          // Loading indicator at the bottom
+          if (index == widget.posts.length + 1) {
+            return SizedBox(
+              child: feedState.status == FeedStatus.paginating ? const LoadingWidget(text: "", size: 32) : null,
+            );
+          }
 
-                                final result = await Navigator.of(context).pushNamed(
-                                  CreatePostScreen.route,
-                                );
+          // Post items
+          final postIndex = index - 1;
+          final post = widget.posts[postIndex];
 
-                                if (result is Post) {
-                                  context.read<FeedState>().updatePost(result);
-                                }
-                              },
-                              onDelete: () async {
-                                final createPostState = context.read<CreatePostState>();
-                                await createPostState.deletePost(post: post);
+          // Trigger pagination when reaching 2 posts from the end
+          if (postIndex >= widget.posts.length - postsFromEndToPaginate && feedState.status != FeedStatus.paginating) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.paginate();
+            });
+          }
+          return PostWidget(
+            post: post,
+            inFeed: true,
+            onEdit: () async {
+              final createPostState = context.read<CreatePostState>();
+              final settingsState = context.read<SettingsState>();
 
-                                context.read<FeedState>().removePost(post);
-                              },
-                              onLikeTap: () async {
-                                if (userLikeState.likedPosts.contains(post.uid)) {
-                                  userLikeState.unLikePost(
-                                    post: post,
-                                    onPostUpdated: feedState.updatePost,
-                                  );
-                                } else {
-                                  userLikeState.likePost(
-                                    post: post,
-                                    onPostUpdated: feedState.updatePost,
-                                  );
-                                }
-                              },
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    SizedBox(
-                      child: feedState.status == FeedStatus.paginating ? const CircularProgressIndicator() : null,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              createPostState.reset();
+              createPostState.loadPost = post;
+              createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+
+              final result = await Navigator.of(context).pushNamed(
+                CreatePostScreen.route,
+              );
+
+              if (result is Post) {
+                context.read<FeedState>().updatePost(result);
+              }
+            },
+            onDelete: () async {
+              final createPostState = context.read<CreatePostState>();
+              await createPostState.deletePost(post: post);
+
+              context.read<FeedState>().removePost(post);
+            },
+            onLikeTap: () async {
+              if (userLikeState.likedPosts.contains(post.uid)) {
+                userLikeState.unLikePost(
+                  post: post,
+                  onPostUpdated: feedState.updatePost,
+                );
+              } else {
+                userLikeState.likePost(
+                  post: post,
+                  onPostUpdated: feedState.updatePost,
+                );
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
