@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/option_list_tile.dart';
 
 class UnitsSettingsScreen extends StatelessWidget {
   static const String route = '${SettingsScreen.route}/units';
@@ -28,25 +29,35 @@ class UnitsSettingsScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Card(
               margin: EdgeInsets.zero,
-              child: RadioGroup<bool>(
-                  groupValue: settingsState.metricTemperature,
-                  onChanged: (value) {
-                    settingsState.setMetricTemperature(value!);
-                  },
-                  child: Column(
-                    children: [
-                      RadioListTile<bool>(
-                        title: Text('Celsius (°C)'),
-                        value: true,
-                        secondary: Text('15°C'),
-                      ),
-                      RadioListTile<bool>(
-                        title: Text('Fahrenheit (°F)'),
-                        value: false,
-                        secondary: Text('59°F'),
-                      ),
-                    ],
-                  )),
+              child: Column(
+                children: [
+                  OptionListTile(
+                    title: 'Celsius (°C)',
+                    trailing: Text(
+                      '15°C',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                    ),
+                    value: true,
+                    groupValue: settingsState.metricTemperature,
+                    onChanged: (value) {
+                      settingsState.setMetricTemperature(value);
+                    },
+                  ),
+                  Divider(indent: 15, endIndent: 15),
+                  OptionListTile(
+                    title: 'Fahrenheit (°F)',
+                    trailing: Text(
+                      '59°F',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                    ),
+                    value: false,
+                    groupValue: settingsState.metricTemperature,
+                    onChanged: (value) {
+                      settingsState.setMetricTemperature(value);
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
             Text('Height', style: textTheme.titleLarge),
@@ -63,16 +74,29 @@ class UnitsSettingsScreen extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      RadioListTile<bool>(
-                        title: Text('Meters (m)'),
-                        value: true,
-                        secondary: Text('1,345m'),
-                      ),
-                      RadioListTile<bool>(
-                        title: Text('Feet (ft)'),
-                        value: false,
-                        secondary: Text('4,413ft'),
-                      ),
+                      OptionListTile(
+                          title: 'Meters (m)',
+                          trailing: Text(
+                            '1,218 m',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                          ),
+                          value: true,
+                          groupValue: settingsState.metricHeight,
+                          onChanged: (value) {
+                            settingsState.setMetricHeight(value);
+                          }),
+                      Divider(indent: 15, endIndent: 15),
+                      OptionListTile(
+                          title: 'Feet (ft)',
+                          trailing: Text(
+                            '3,996 ft',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                          ),
+                          value: false,
+                          groupValue: settingsState.metricHeight,
+                          onChanged: (value) {
+                            settingsState.setMetricHeight(value);
+                          }),
                     ],
                   )),
             ),
