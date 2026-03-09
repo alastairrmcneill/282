@@ -67,7 +67,10 @@ class MunroSummitedWidget extends StatelessWidget {
           Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
           if (munroDetailState.selectedMunro != null) {
-            Navigator.of(context).pushNamed(MunroSummitsScreen.route);
+            Navigator.of(context).pushNamed(
+              MunroSummitsScreen.route,
+              arguments: MunroSummitsScreenArgs(munro: munroDetailState.selectedMunro!),
+            );
           }
         }
       },
