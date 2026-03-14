@@ -161,7 +161,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<StorageRepository>(),
           ctx.read<UserState>(),
           ctx.read<MunroCompletionState>(),
-          ctx.read<RemoteConfigState>(),
           ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),

@@ -54,7 +54,6 @@ class AnalyticsProp {
   static const previousScreen = 'previous_screen';
   static const durationSeconds = 'duration_seconds';
   static const privacy = 'privacy';
-  static const showPrivacyOption = 'show_privacy_option';
   static const method = 'method';
   static const platform = 'platform';
   static const screenIndex = 'screen_index';
@@ -73,9 +72,10 @@ class AnalyticsProp {
   static const rating = "rating";
   static const text = "text";
   static const postCount = "post_count";
-  static var completionDate = "completion_date";
-  static var completionStartTime = "completion_start_time";
-  static var completionDuration = "completion_duration";
+  static const completionDate = "completion_date";
+  static const completionStartTime = "completion_start_time";
+  static const completionDuration = "completion_duration";
   static const commonlyClimbedWithCount = "commonly_climbed_with_count";
   static const selectedMunroCount = "selected_munro_count";
+  static const description = "description";
 }

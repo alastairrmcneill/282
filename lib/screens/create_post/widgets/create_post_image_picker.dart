@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
   final int munroId;
@@ -45,21 +47,24 @@ class CreatePostImagePicker extends StatelessWidget {
             options: RoundedRectDottedBorderOptions(
               radius: const Radius.circular(10),
               dashPattern: const [5, 5],
-              color: Colors.green,
+              color: MyColors.middleGrey,
               strokeWidth: 1,
             ),
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    CupertinoIcons.camera_viewfinder,
-                    color: Colors.green,
+                    PhosphorIconsRegular.camera,
+                    color: MyColors.middleGrey,
                   ),
+                  const SizedBox(height: 4),
                   Text(
-                    'Add photos',
-                    style: TextStyle(color: Colors.green, fontSize: 12),
-                  )
+                    'Add photo',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: MyColors.middleGrey,
+                        ),
+                  ),
                 ],
               ),
             ),
@@ -162,23 +167,26 @@ class CreatePostImagePicker extends StatelessWidget {
                         options: RoundedRectDottedBorderOptions(
                           radius: const Radius.circular(10),
                           dashPattern: const [5, 5],
-                          color: Colors.green,
+                          color: MyColors.middleGrey,
                           strokeWidth: 1,
                         ),
                         child: SizedBox(
                           width: height,
                           height: height,
-                          child: const Center(
+                          child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  CupertinoIcons.camera_viewfinder,
-                                  color: Colors.green,
+                                  PhosphorIconsLight.camera,
+                                  color: MyColors.middleGrey,
                                 ),
                                 Text(
                                   'Add a photo',
-                                  style: TextStyle(color: Colors.green, fontSize: 12),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: MyColors.middleGrey, fontSize: 11),
                                 )
                               ],
                             ),

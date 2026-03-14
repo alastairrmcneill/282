@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreatePostSummitDatePicker extends StatelessWidget {
@@ -11,38 +13,50 @@ class CreatePostSummitDatePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final createPostState = context.watch<CreatePostState>();
     TextEditingController dateController = TextEditingController(
-      text: DateFormat('dd/MM/yy').format(
-        createPostState.completionDate ?? DateTime.now(),
-      ),
+      text: createPostState.completionDate != null
+          ? DateFormat('dd/MM/yyyy').format(
+              createPostState.completionDate!,
+            )
+          : null,
     );
 
     DateTime? pickedStartDate;
 
-    return TextFormFieldBase(
-      controller: dateController,
-      prefixIcon: const Icon(Icons.calendar_today),
-      readOnly: true,
-      onTap: () async {
-        pickedStartDate = await showDatePicker(
-          context: context,
-          helpText: "Summit Date",
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime.now(),
-        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('Summit Date', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: MyColors.mutedText)),
+        const SizedBox(height: 2),
+        TextFormFieldBase(
+          controller: dateController,
+          prefixIcon: const Icon(
+            PhosphorIconsRegular.calendarBlank,
+            size: 22,
+            color: MyColors.mutedText,
+          ),
+          readOnly: true,
+          onTap: () async {
+            pickedStartDate = await showDatePicker(
+              context: context,
+              helpText: "Summit Date",
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
 
-        if (pickedStartDate != null) {
-          DateTime date = pickedStartDate!.add(const Duration(hours: 12));
+            if (pickedStartDate != null) {
+              DateTime date = pickedStartDate!.add(const Duration(hours: 12));
 
-          createPostState.setCompletionDate = date;
-        }
-      },
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return 'Required';
-        }
-        return null;
-      },
+              createPostState.setCompletionDate = date;
+            }
+          },
+          hintText: DateFormat('dd/MM/yyyy').format(DateTime.now()),
+          validator: (value) {
+            return null;
+          },
+        ),
+      ],
     );
   }
 }

@@ -179,7 +179,7 @@ class MunroSummaryTile extends StatelessWidget {
                             createPostState.reset();
                             createPostState.addMunro(munro.id);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-                            Navigator.of(context).pushNamed(CreatePostScreen.route);
+                            Navigator.of(context).pushNamed(SelectMunrosScreen.route);
                           }
                         },
                         child: Icon(munroSummited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),

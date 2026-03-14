@@ -251,6 +251,7 @@ class MyColors {
 
   static const Color backgroundColor = Color(0xFFF9F9FB); //Color(0xFFFAFAFA); // or FFFFFFFF
   static const Color lightGrey = Color.fromRGBO(230, 234, 233, 1);
+  static const Color middleGrey = Color.fromRGBO(159, 163, 158, 1);
   static const Color mutedText = Color.fromRGBO(107, 113, 106, 1);
   static const Color starColor = Color.fromRGBO(253, 199, 0, 1);
   static const Color notificationDotColor = Color(0xFF030213);

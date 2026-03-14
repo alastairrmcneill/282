@@ -64,7 +64,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     incompleteIcon = await _loadMarker('assets/munro_incomplete.png');
     completeIcon = await _loadMarker('assets/munro_complete.png');
     selectedIcon = await _loadMarker('assets/munro_selected.png');
-    setState(() => loading = false);
+    if (mounted) setState(() => loading = false);
   }
 
   Future<void> checkAndDownloadMap() async {
@@ -259,9 +259,11 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
       selectedAnnotation = null;
       munroState.setSelectedMunroId = null;
-      setState(() {
-        selectedMunroId = null;
-      });
+      if (mounted) {
+        setState(() {
+          selectedMunroId = null;
+        });
+      }
     }
   }
 
@@ -282,9 +284,11 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     allAnnotations[munroId] = newAnnotation;
     selectedAnnotation = newAnnotation;
     munroState.setSelectedMunroId = munroId;
-    setState(() {
-      selectedMunroId = munroId;
-    });
+    if (mounted) {
+      setState(() {
+        selectedMunroId = munroId;
+      });
+    }
 
     await _mapboxMap.flyTo(
       CameraOptions(center: tappedAnnotation.geometry),
