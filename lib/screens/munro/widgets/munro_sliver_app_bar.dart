@@ -42,7 +42,10 @@ class MunroSliverAppBar extends StatelessWidget {
             text: 'Unbag Munro',
             onTap: () {
               if (munroState.selectedMunro != null) {
-                Navigator.of(context).pushNamed(MunroSummitsScreen.route);
+                Navigator.of(context).pushNamed(
+                  MunroSummitsScreen.route,
+                  arguments: MunroSummitsScreenArgs(munro: munroState.selectedMunro!),
+                );
               }
             },
           ),

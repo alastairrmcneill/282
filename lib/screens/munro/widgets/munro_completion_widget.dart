@@ -10,23 +10,12 @@ import 'package:two_eight_two/widgets/widgets.dart';
 class MunroCompletionWidget extends StatelessWidget {
   final int index;
   final MunroCompletion munroCompletion;
-  const MunroCompletionWidget({super.key, required this.index, required this.munroCompletion});
-
-  bool _isValidUrl(String url) {
-    if (url.isEmpty) return false;
-    try {
-      final uri = Uri.parse(url);
-      return uri.hasScheme && uri.host.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
-  }
+  final Munro munro;
+  const MunroCompletionWidget({super.key, required this.index, required this.munroCompletion, required this.munro});
 
   @override
   Widget build(BuildContext context) {
-    final munroDetailState = context.read<MunroDetailState>();
     final munroCompletionState = context.read<MunroCompletionState>();
-    Munro munro = munroDetailState.selectedMunro!;
     List<MenuItem> menuItems = [
       MenuItem(
         text: 'Remove',
@@ -56,34 +45,27 @@ class MunroCompletionWidget extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   bottomLeft: Radius.circular(12),
                 ),
-                child: _isValidUrl(munro.pictureURL)
-                    ? CachedNetworkImage(
-                        imageUrl: munro.pictureURL,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Image.asset(
-                          'assets/images/post_image_placeholder.png',
-                          fit: BoxFit.cover,
-                          width: 100,
-                          height: 100,
-                        ),
-                        fadeInDuration: Duration.zero,
-                        errorWidget: (context, url, error) {
-                          return Image.asset(
-                            'assets/images/post_image_placeholder.png',
-                            fit: BoxFit.cover,
-                            width: 100,
-                            height: 100,
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        'assets/images/post_image_placeholder.png',
-                        fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
-                      ),
+                child: CachedNetworkImage(
+                  imageUrl: munro.pictureURL,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Image.asset(
+                    'assets/images/post_image_placeholder.png',
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: 100,
+                  ),
+                  fadeInDuration: Duration.zero,
+                  errorWidget: (context, url, error) {
+                    return Image.asset(
+                      'assets/images/post_image_placeholder.png',
+                      fit: BoxFit.cover,
+                      width: 100,
+                      height: 100,
+                    );
+                  },
+                ),
               ),
               Expanded(
                 flex: 1,

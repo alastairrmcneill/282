@@ -5,17 +5,22 @@ import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class MunroSummitsScreenArgs {
+  final Munro munro;
+  MunroSummitsScreenArgs({required this.munro});
+}
+
 class MunroSummitsScreen extends StatelessWidget {
   static const String route = '/munro/summits';
-  const MunroSummitsScreen({super.key});
+  final Munro munro;
+  const MunroSummitsScreen({super.key, required this.munro});
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.watch<MunroState>();
     final munroCompletionState = context.watch<MunroCompletionState>();
 
     List<MunroCompletion> munroCompletions =
-        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunroId).toList();
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munro.id).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +32,8 @@ class MunroSummitsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   ...munroCompletions.map(
-                    (mc) => MunroCompletionWidget(index: munroCompletions.indexOf(mc), munroCompletion: mc),
+                    (mc) =>
+                        MunroCompletionWidget(index: munroCompletions.indexOf(mc), munroCompletion: mc, munro: munro),
                   ),
                 ],
               ),

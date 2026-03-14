@@ -336,8 +336,9 @@ class AppRouter {
           settings: settings,
         );
       case MunroSummitsScreen.route:
+        final args = settings.arguments as MunroSummitsScreenArgs;
         return MaterialPageRoute(
-          builder: (_) => const MunroSummitsScreen(),
+          builder: (_) => MunroSummitsScreen(munro: args.munro),
           settings: settings,
         );
       case MunroChallengeListScreen.route:
