@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/create_post/widgets/create_post_munro_tile.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -265,50 +265,12 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                             );
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.grey.shade200),
-                                ),
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: CachedNetworkImage(
-                                      imageUrl: munro.pictureURL,
-                                      width: 48,
-                                      height: 48,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => Container(
-                                        width: 48,
-                                        height: 48,
-                                        color: Colors.grey.shade200,
-                                      ),
-                                      errorWidget: (context, url, error) => Container(
-                                        width: 48,
-                                        height: 48,
-                                        color: Colors.grey.shade200,
-                                        child: const Icon(Icons.terrain, color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                                  title: Text(
-                                    munro.name,
-                                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                  ),
-                                  subtitle: Text(
-                                    '${munro.meters}m • ${munro.area}',
-                                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                                  ),
-                                  trailing: GestureDetector(
-                                    onTap: () {
-                                      createPostState.removeMunro(munro.id);
-                                      setState(() {});
-                                    },
-                                    child: Icon(Icons.close, color: Colors.grey.shade400, size: 20),
-                                  ),
-                                ),
+                              child: CreatePostMunroTile(
+                                munro: munro,
+                                onRemove: () {
+                                  createPostState.removeMunro(munro.id);
+                                  setState(() {});
+                                },
                               ),
                             );
                           }),
