@@ -26,7 +26,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   String styleUri = "mapbox://styles/alastairm94/cmm377uhm006i01qwayyyfxpe";
 
   PointAnnotation? selectedAnnotation;
-  int? selectedMunroId;
   late PointAnnotationManager _annotationManager;
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
     bounds: CoordinateBounds(
@@ -174,7 +173,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
     for (var munro in munros) {
       final summited = completedMunros.any((element) => element.munroId == munro.id);
-      final icon = selectedMunroId == munro.id
+      final icon = munroState.selectedMunroId == munro.id
           ? selectedIcon!
           : summited
               ? completeIcon!
@@ -239,12 +238,12 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
-    if (selectedAnnotation != null && selectedMunroId != null) {
+    if (selectedAnnotation != null && munroState.selectedMunroId != null) {
       // Safety check: ensure icons are loaded
       if (completeIcon == null || incompleteIcon == null) return;
 
       final Munro munro = munroState.munroList.firstWhere(
-        (munro) => munro.id == selectedMunroId,
+        (munro) => munro.id == munroState.selectedMunroId,
         orElse: () => Munro.empty,
       );
       final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
@@ -255,15 +254,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       );
       await _annotationManager.delete(selectedAnnotation!);
       var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
-      allAnnotations[selectedMunroId!] = oldAnnotation;
+      allAnnotations[munroState.selectedMunroId!] = oldAnnotation;
 
       selectedAnnotation = null;
       munroState.setSelectedMunroId = null;
-      if (mounted) {
-        setState(() {
-          selectedMunroId = null;
-        });
-      }
     }
   }
 
@@ -284,11 +278,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     allAnnotations[munroId] = newAnnotation;
     selectedAnnotation = newAnnotation;
     munroState.setSelectedMunroId = munroId;
-    if (mounted) {
-      setState(() {
-        selectedMunroId = munroId;
-      });
-    }
 
     await _mapboxMap.flyTo(
       CameraOptions(center: tappedAnnotation.geometry),
@@ -298,7 +287,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
+    final munroState = context.watch<MunroState>();
     final munroCompletionState = context.read<MunroCompletionState>();
     return Scaffold(
       body: loading
@@ -331,7 +320,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: MunroSummaryTile(munroId: selectedMunroId),
+                      child: MunroSummaryTile(munroId: munroState.selectedMunroId),
                     ),
                   ],
                 );

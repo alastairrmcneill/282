@@ -1,12 +1,20 @@
 export 'munro_sliver_app_bar.dart';
-export 'munro_description.dart';
 export 'munro_summited_button.dart';
-export 'munro_picture_gallery.dart';
-export 'average_munro_rating.dart';
+export 'tabs/munro_picture_gallery_tabs.dart';
 export 'munro_completion_widget.dart';
-export 'munro_stats_row.dart';
 export 'munro_directions_widget.dart';
 export 'munro_weather_widget.dart';
-export 'munro_reviews_widget.dart';
+export 'scroll/munro_reviews_widget_scroll.dart';
 export 'munro_title_widget.dart';
 export 'munro_summited_widget.dart';
+export 'munro_hero_image.dart';
+export 'tabs/munro_description_tabs.dart';
+export 'tabs/munro_details_tabs.dart';
+export 'tabs/overview_tab.dart';
+export 'tabs/photos_tab.dart';
+export 'tabs/reviews_tab.dart';
+export 'tabs/outline_link_button.dart';
+export 'tabs/munro_commonly_climbed_with_tabs.dart';
+
+export 'scroll/munro_details_scroll.dart';
+export 'scroll/munro_description_scroll.dart';

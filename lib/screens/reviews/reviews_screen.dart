@@ -5,8 +5,14 @@ import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class ReviewsScreenArgs {
+  final int munroId;
+  ReviewsScreenArgs({required this.munroId});
+}
+
 class ReviewsScreen extends StatefulWidget {
-  const ReviewsScreen({super.key});
+  final ReviewsScreenArgs? args;
+  const ReviewsScreen({super.key, this.args});
   static const String route = '/reviews';
 
   @override
@@ -64,7 +70,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   }
 
   Widget _buildScreen(BuildContext context, ReviewsState reviewsState) {
-    int? munroId = context.read<MunroState>().selectedMunroId;
+    int? munroId = widget.args?.munroId;
     String? munroName;
     if (munroId != null) {
       munroName = context.read<MunroState>().munroList.firstWhere((m) => m.id == munroId).name;

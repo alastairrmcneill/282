@@ -7,8 +7,8 @@ import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class MunroReviewsWidget extends StatelessWidget {
-  const MunroReviewsWidget({super.key});
+class MunroReviewsWidgetScroll extends StatelessWidget {
+  const MunroReviewsWidgetScroll({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,10 @@ class MunroReviewsWidget extends StatelessWidget {
         InkWell(
           onTap: () {
             context.read<ReviewsState>().getMunroReviewsAndRatings(munroDetailState.selectedMunro!.id);
-            Navigator.of(context).pushNamed(ReviewsScreen.route);
+            Navigator.of(context).pushNamed(
+              ReviewsScreen.route,
+              arguments: ReviewsScreenArgs(munroId: munroDetailState.selectedMunro!.id),
+            );
           },
           child: Container(
             color: Colors.transparent,

@@ -14,7 +14,6 @@ class MunroSaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.read<AuthState>().currentUserId;
-    final munroState = context.watch<MunroState>();
 
     final savedListState = context.watch<SavedListState>();
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
@@ -37,8 +36,7 @@ class MunroSaveButton extends StatelessWidget {
           if (userId == null) {
             Navigator.pushNamed(context, AuthHomeScreen.route);
           } else {
-            munroState.setSelectedMunroId = munro.id;
-            await SaveMunroBottomSheet.show(context);
+            await SaveMunroBottomSheet.show(context, munroId: munro.id);
           }
         },
         child: Icon(

@@ -8,12 +8,12 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MunroDescription extends StatelessWidget {
-  const MunroDescription({super.key});
+class MunroDescriptionScroll extends StatelessWidget {
+  const MunroDescriptionScroll({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final munroDetailState = context.watch<MunroDetailState>();
+    final munroDetailState = context.read<MunroDetailState>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

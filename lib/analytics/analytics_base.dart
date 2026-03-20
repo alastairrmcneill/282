@@ -47,6 +47,7 @@ class AnalyticsEvent {
   static const onboardingStarted = 'onboarding_started';
   static const onboardingScreenViewed = 'onboarding_screen_viewed';
   static const appShared = 'app_shared';
+  static const munroStartingPointClicked = 'munro_starting_point_clicked';
 }
 
 class AnalyticsProp {

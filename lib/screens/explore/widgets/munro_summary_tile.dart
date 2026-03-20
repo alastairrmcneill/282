@@ -161,7 +161,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             munroState.setSelectedMunroId = munro.id;
-                            await SaveMunroBottomSheet.show(context);
+                            await SaveMunroBottomSheet.show(context, munroId: munro.id);
                           }
                         },
                         child: Icon(munroSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
@@ -179,7 +179,10 @@ class MunroSummaryTile extends StatelessWidget {
                             createPostState.reset();
                             createPostState.addMunro(munro.id);
                             createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-                            Navigator.of(context).pushNamed(SelectMunrosScreen.route);
+                            Navigator.of(context).pushNamed(
+                              SelectMunrosScreen.route,
+                              arguments: SelectMunrosScreenArgs(mainMunro: munro),
+                            );
                           }
                         },
                         child: Icon(munroSummited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),

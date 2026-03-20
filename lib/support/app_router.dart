@@ -254,8 +254,10 @@ class AppRouter {
           settings: settings,
         );
       case ReviewsScreen.route:
+        final args = settings.arguments as ReviewsScreenArgs;
+
         return MaterialPageRoute(
-          builder: (_) => const ReviewsScreen(),
+          builder: (_) => ReviewsScreen(args: args),
           settings: settings,
         );
       case NotificationsScreen.route:
@@ -405,8 +407,9 @@ class AppRouter {
           settings: settings,
         );
       case SelectMunrosScreen.route:
+        final args = settings.arguments as SelectMunrosScreenArgs;
         return MaterialPageRoute(
-          builder: (_) => const SelectMunrosScreen(),
+          builder: (_) => SelectMunrosScreen(mainMunro: args.mainMunro),
           settings: settings,
         );
 

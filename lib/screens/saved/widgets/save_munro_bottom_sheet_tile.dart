@@ -6,18 +6,18 @@ import 'package:two_eight_two/support/theme.dart';
 
 class SaveMunroBottomSheetTile extends StatelessWidget {
   final SavedListState savedListState;
-  final MunroState munroState;
+  final int munroId;
   final SavedList savedList;
   const SaveMunroBottomSheetTile({
     super.key,
     required this.savedListState,
-    required this.munroState,
+    required this.munroId,
     required this.savedList,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isSaved = savedList.munroIds.contains(munroState.selectedMunroId);
+    final isSaved = savedList.munroIds.contains(munroId);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
@@ -37,12 +37,12 @@ class SaveMunroBottomSheetTile extends StatelessWidget {
             if (isSaved) {
               await savedListState.removeMunroFromSavedList(
                 savedList: savedList,
-                munroId: munroState.selectedMunroId ?? 0,
+                munroId: munroId,
               );
             } else {
               await savedListState.addMunroToSavedList(
                 savedList: savedList,
-                munroId: munroState.selectedMunroId ?? 0,
+                munroId: munroId,
               );
             }
           },

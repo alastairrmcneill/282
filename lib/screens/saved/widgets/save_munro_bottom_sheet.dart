@@ -4,22 +4,22 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 
 class SaveMunroBottomSheet extends StatelessWidget {
-  const SaveMunroBottomSheet({super.key});
+  final int munroId;
+  const SaveMunroBottomSheet({super.key, required this.munroId});
 
-  static Future<void> show(BuildContext context) async {
+  static Future<void> show(BuildContext context, {required int munroId}) async {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => const SaveMunroBottomSheet(),
+      builder: (context) => SaveMunroBottomSheet(munroId: munroId),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
     final savedListState = context.watch<SavedListState>();
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -43,7 +43,7 @@ class SaveMunroBottomSheet extends StatelessWidget {
               ...savedListState.savedLists.map(
                 (e) => SaveMunroBottomSheetTile(
                   savedListState: savedListState,
-                  munroState: munroState,
+                  munroId: munroId,
                   savedList: e,
                 ),
               ),

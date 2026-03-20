@@ -123,8 +123,15 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
+class SelectMunrosScreenArgs {
+  final Munro mainMunro;
+
+  SelectMunrosScreenArgs({required this.mainMunro});
+}
+
 class SelectMunrosScreen extends StatefulWidget {
-  const SelectMunrosScreen({super.key});
+  const SelectMunrosScreen({super.key, required this.mainMunro});
+  final Munro mainMunro;
   static const String route = '/posts/select-munros';
 
   @override
@@ -139,14 +146,12 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
     final munroState = context.read<MunroState>();
     final createPostState = context.watch<CreatePostState>();
 
-    Munro mainMunro = munroState.munroList.where((munro) => munro.id == munroState.selectedMunroId).first;
-
     List<Munro> commonlyClimbedWith = munroState.munroList
-        .where((munro) => mainMunro.commonlyClimbedWith.map((e) => e.climbedWithId).contains(munro.id))
+        .where((munro) => widget.mainMunro.commonlyClimbedWith.map((e) => e.climbedWithId).contains(munro.id))
         .toList();
 
     List<Munro> otherMunros = munroState.munroList
-        .where((munro) => munro.id != mainMunro.id && !commonlyClimbedWith.map((e) => e.id).contains(munro.id))
+        .where((munro) => munro.id != widget.mainMunro.id && !commonlyClimbedWith.map((e) => e.id).contains(munro.id))
         .toList();
 
     var selectedMunroIds = createPostState.selectedMunroIds;
@@ -175,7 +180,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Select any munros you climbed with ${mainMunro.name}',
+                    'Select any munros you climbed with ${widget.mainMunro.name}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -186,7 +191,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
 
                   // Main Munro Card
                   TestMunroCard(
-                    munro: mainMunro,
+                    munro: widget.mainMunro,
                     isMain: true,
                   ),
                   const SizedBox(height: 24),
@@ -309,7 +314,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   context.read<Analytics>().track(AnalyticsEvent.selectCommonlyClimbedMunros, props: {
-                    AnalyticsProp.munroId: mainMunro.id,
+                    AnalyticsProp.munroId: widget.mainMunro.id,
                     AnalyticsProp.commonlyClimbedWithCount: commonlyClimbedWith.length,
                     AnalyticsProp.selectedMunroCount: createPostState.selectedMunroIds.length,
                   });

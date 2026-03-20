@@ -7,7 +7,8 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroPictureGallery extends StatelessWidget {
-  const MunroPictureGallery({super.key});
+  final VoidCallback? onTap;
+  const MunroPictureGallery({super.key, this.onTap});
 
   Widget _buildLoadingScreen(BuildContext context) {
     final boxSize = (MediaQuery.of(context).size.width - 60) / 4;
@@ -93,20 +94,10 @@ class MunroPictureGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroDetailState = context.watch<MunroDetailState>();
-
     return Column(
       children: [
         InkWell(
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              PhotoGalleryRoutes.munroGallery,
-              arguments: MunroPhotoGalleryArgs(
-                munroId: munroDetailState.selectedMunro!.id,
-                munroName: munroDetailState.selectedMunro!.name,
-              ),
-            );
-          },
+          onTap: onTap,
           child: Container(
             color: Colors.transparent,
             child: Row(
