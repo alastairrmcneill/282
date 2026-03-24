@@ -15,6 +15,10 @@ class OverviewTab extends StatelessWidget {
         const SizedBox(height: 15),
         MunroDescriptionTabs(munro: munro),
         const SizedBox(height: 20),
+        MunroMapTabs(munro: munro, showExpandButton: true),
+        const SizedBox(height: 20),
+        MunroCommonlyClimbedWithTabs(munro: munro),
+        const SizedBox(height: 10),
         OutlineLinkButton(
           icon: PhosphorIconsRegular.mapPin,
           text: 'View starting point',
@@ -36,8 +40,6 @@ class OverviewTab extends StatelessWidget {
             AnalyticsProp.munroName: munro.name,
           },
         ),
-        const SizedBox(height: 20),
-        MunroCommonlyClimbedWithTabs(munro: munro),
         const SizedBox(height: 90),
       ],
     );

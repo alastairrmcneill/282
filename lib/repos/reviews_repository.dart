@@ -39,6 +39,16 @@ class ReviewsRepository {
     return MunroRatingsBreakdown.fromJSON(response);
   }
 
+  Future<int> readTextReviewCountFromMunro({required int munroId}) async {
+    final response = await _view
+        .select('count')
+        .eq(ReviewFields.munroId, munroId)
+        .not(ReviewFields.text, 'is', null)
+        .neq(ReviewFields.text, '')
+        .single();
+    return response['count'] as int;
+  }
+
   Future<void> delete({required String uid}) async {
     await _table.delete().eq(ReviewFields.uid, uid);
   }

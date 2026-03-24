@@ -48,6 +48,7 @@ class AnalyticsEvent {
   static const onboardingScreenViewed = 'onboarding_screen_viewed';
   static const appShared = 'app_shared';
   static const munroStartingPointClicked = 'munro_starting_point_clicked';
+  static const munroDetailsTabViewed = 'munro_details_tab_viewed';
 }
 
 class AnalyticsProp {
@@ -79,4 +80,5 @@ class AnalyticsProp {
   static const commonlyClimbedWithCount = "commonly_climbed_with_count";
   static const selectedMunroCount = "selected_munro_count";
   static const description = "description";
+  static const tabName = "tab_name";
 }

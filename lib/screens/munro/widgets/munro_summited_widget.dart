@@ -72,28 +72,31 @@ class MunroSummitedWidget extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(45, 106, 79, 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Color.fromRGBO(45, 106, 79, 0.2),
-          width: 0.7,
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            PhosphorIconsFill.checkCircle,
-            color: Color.fromRGBO(45, 106, 79, 1),
-            size: 40,
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(45, 106, 79, 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Color.fromRGBO(45, 106, 79, 0.2),
+            width: 0.7,
           ),
-          const SizedBox(width: 12),
-          Expanded(child: _buildBody(context, completions)),
-        ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              PhosphorIconsFill.checkCircle,
+              color: Color.fromRGBO(45, 106, 79, 1),
+              size: 40,
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: _buildBody(context, completions)),
+          ],
+        ),
       ),
     );
   }

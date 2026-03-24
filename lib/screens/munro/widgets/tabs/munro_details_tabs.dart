@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class MunroDetailsTabs extends StatefulWidget {
   final Munro munro;
-  const MunroDetailsTabs({super.key, required this.munro});
+  final ScrollController scrollController;
+  const MunroDetailsTabs({super.key, required this.munro, required this.scrollController});
 
   @override
   State<MunroDetailsTabs> createState() => _MunroDetailsTabsState();
@@ -19,6 +23,7 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
 
@@ -27,8 +32,11 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
           _currentIndex = _tabController.index;
         });
 
-        // _trackTabViewed(_currentIndex);
+        _trackTabViewed(_currentIndex);
       }
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _trackTabViewed(_currentIndex);
     });
   }
 
@@ -38,14 +46,39 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
     super.dispose();
   }
 
+  void _trackTabViewed(int index) {
+    String tabName;
+    switch (index) {
+      case 0:
+        tabName = 'Overview';
+        break;
+      case 1:
+        tabName = 'Photos';
+        break;
+      case 2:
+        tabName = 'Reviews';
+        break;
+      default:
+        tabName = 'Unknown';
+    }
+    context.read<Analytics>().track(
+      AnalyticsEvent.munroDetailsTabViewed,
+      props: {
+        AnalyticsProp.munroId: widget.munro.id.toString(),
+        AnalyticsProp.munroName: widget.munro.name,
+        AnalyticsProp.tabName: tabName,
+      },
+    );
+  }
+
   Widget _buildTabContent(Munro munro) {
     switch (_currentIndex) {
       case 0:
         return OverviewTab(munro: munro);
       case 1:
-        return PhotosTab();
+        return PhotosTab(scrollController: widget.scrollController);
       case 2:
-        return ReviewsTab();
+        return ReviewsTab(munroId: widget.munro.id, scrollController: widget.scrollController);
       default:
         return OverviewTab(munro: munro);
     }
@@ -53,6 +86,8 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    int reviewCount = context.watch<ReviewsState>().textReviewCount;
+    String reviewsTabText = reviewCount > 0 ? 'Reviews ($reviewCount)' : 'Reviews';
     return Column(
       children: [
         TabBar(
@@ -78,7 +113,7 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
           tabs: [
             Tab(text: 'Overview'),
             Tab(text: 'Photos'),
-            Tab(text: 'Reviews'),
+            Tab(text: reviewsTabText),
           ],
         ),
         _buildTabContent(widget.munro),

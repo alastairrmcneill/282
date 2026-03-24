@@ -1,5 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -19,12 +19,17 @@ class MunroTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          munro.name,
-          style: textTheme.headlineLarge?.copyWith(
-            color: Colors.white,
-            letterSpacing: -0.5,
-            fontWeight: FontWeight.w400,
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width - 100,
+          child: AutoSizeText(
+            munro.name,
+            style: textTheme.headlineLarge?.copyWith(
+              color: Colors.white,
+              letterSpacing: -0.5,
+              fontWeight: FontWeight.w400,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         const SizedBox(height: 2),

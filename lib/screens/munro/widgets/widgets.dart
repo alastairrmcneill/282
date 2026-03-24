@@ -1,6 +1,6 @@
 export 'munro_sliver_app_bar.dart';
 export 'munro_summited_button.dart';
-export 'tabs/munro_picture_gallery_tabs.dart';
+export 'tabs/munro_map_tabs.dart';
 export 'munro_completion_widget.dart';
 export 'munro_directions_widget.dart';
 export 'munro_weather_widget.dart';
@@ -18,3 +18,4 @@ export 'tabs/munro_commonly_climbed_with_tabs.dart';
 
 export 'scroll/munro_details_scroll.dart';
 export 'scroll/munro_description_scroll.dart';
+export 'scroll/munro_picture_gallery_scroll.dart';

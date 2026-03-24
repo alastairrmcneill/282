@@ -25,16 +25,19 @@ class _MunroScreenState extends State<MunroScreen> {
 
   @override
   void initState() {
-    final munroDetailState = context.read<MunroDetailState>();
-    context.read<Analytics>().track(
-      AnalyticsEvent.munroViewed,
-      props: {
-        AnalyticsProp.munroId: (munroDetailState.selectedMunro?.id ?? 0).toString(),
-        AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
-      },
-    );
-
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final munroDetailState = context.read<MunroDetailState>();
+      context.read<ReviewsState>().getMunroReviewsAndRatings(munroDetailState.selectedMunro!.id);
+
+      context.read<Analytics>().track(
+        AnalyticsEvent.munroViewed,
+        props: {
+          AnalyticsProp.munroId: (munroDetailState.selectedMunro?.id ?? 0).toString(),
+          AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
+        },
+      );
+    });
   }
 
   @override
@@ -44,12 +47,11 @@ class _MunroScreenState extends State<MunroScreen> {
     final Munro munro = munroDetailState.selectedMunro!;
 
     return Scaffold(
-      // floatingActionButton: MunroSummitedButton(munro: munro),
       body: Stack(
         children: [
           CustomScrollView(
             controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             slivers: [
               MunroSliverAppBar(munro: munro),
               SliverToBoxAdapter(
@@ -57,10 +59,9 @@ class _MunroScreenState extends State<MunroScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Column(
                     children: [
-                      const SizedBox(height: 15),
                       MunroSummitedWidget(munro: munro),
                       munro.id % 2 == 0
-                          ? MunroDetailsTabs(munro: munro)
+                          ? MunroDetailsTabs(munro: munro, scrollController: _scrollController)
                           : MunroDetailsScroll(munro: munro), // TODO - remove
                     ],
                   ),

@@ -7,19 +7,9 @@ class MunroDescriptionTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "About",
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          munro.description,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300, height: 1.6),
-        ),
-      ],
+    return Text(
+      munro.description,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300, height: 1.6),
     );
   }
 }

@@ -31,6 +31,7 @@ class OutlineLinkButton extends StatelessWidget {
               padding: WidgetStateProperty.all(
                 const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               ),
+              backgroundColor: WidgetStateProperty.all(Colors.white),
             ),
         onPressed: () async {
           if (analyticsEvent != null) {
