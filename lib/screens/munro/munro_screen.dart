@@ -55,16 +55,14 @@ class _MunroScreenState extends State<MunroScreen> {
             slivers: [
               MunroSliverAppBar(munro: munro),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Column(
-                    children: [
-                      MunroSummitedWidget(munro: munro),
-                      munro.id % 2 == 0
-                          ? MunroDetailsTabs(munro: munro, scrollController: _scrollController)
-                          : MunroDetailsScroll(munro: munro), // TODO - remove
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: MunroSummitedWidget(munro: munro),
+                    ),
+                    MunroDetailsTabs(munro: munro, scrollController: _scrollController)
+                  ],
                 ),
               ),
             ],

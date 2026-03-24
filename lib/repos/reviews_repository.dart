@@ -34,19 +34,20 @@ class ReviewsRepository {
   }
 
   Future<MunroRatingsBreakdown> readRatingsBreakdownFromMunro({required int munroId}) async {
-    final response = await _ratingsBreakdownView.select().eq(MunroRatingsBreakdownFields.munroId, munroId).single();
-
-    return MunroRatingsBreakdown.fromJSON(response);
-  }
-
-  Future<int> readTextReviewCountFromMunro({required int munroId}) async {
-    final response = await _view
-        .select('count')
-        .eq(ReviewFields.munroId, munroId)
-        .not(ReviewFields.text, 'is', null)
-        .neq(ReviewFields.text, '')
-        .single();
-    return response['count'] as int;
+    final response = await _ratingsBreakdownView.select().eq(MunroRatingsBreakdownFields.munroId, munroId);
+    if (response.isEmpty) {
+      return MunroRatingsBreakdown(
+        munroId: munroId,
+        averageRating: 0,
+        totalRatings: 0,
+        rating1Count: 0,
+        rating2Count: 0,
+        rating3Count: 0,
+        rating4Count: 0,
+        rating5Count: 0,
+      );
+    }
+    return MunroRatingsBreakdown.fromJSON(response[0]);
   }
 
   Future<void> delete({required String uid}) async {

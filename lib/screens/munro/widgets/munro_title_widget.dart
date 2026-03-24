@@ -20,7 +20,7 @@ class MunroTitle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: MediaQuery.sizeOf(context).width - 100,
+          width: MediaQuery.sizeOf(context).width - 115,
           child: AutoSizeText(
             munro.name,
             style: textTheme.headlineLarge?.copyWith(
@@ -29,7 +29,16 @@ class MunroTitle extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
             maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            minFontSize: 22,
+            overflowReplacement: AutoSizeText(
+              munro.name,
+              style: textTheme.headlineLarge?.copyWith(
+                color: Colors.white,
+                letterSpacing: -0.5,
+                fontWeight: FontWeight.w400,
+              ),
+              maxLines: 2,
+            ),
           ),
         ),
         const SizedBox(height: 2),

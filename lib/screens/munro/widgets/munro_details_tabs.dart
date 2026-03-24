@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
 class MunroDetailsTabs extends StatefulWidget {
@@ -86,8 +85,6 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    int reviewCount = context.watch<ReviewsState>().textReviewCount;
-    String reviewsTabText = reviewCount > 0 ? 'Reviews ($reviewCount)' : 'Reviews';
     return Column(
       children: [
         TabBar(
@@ -113,7 +110,7 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
           tabs: [
             Tab(text: 'Overview'),
             Tab(text: 'Photos'),
-            Tab(text: reviewsTabText),
+            Tab(text: 'Reviews'),
           ],
         ),
         _buildTabContent(widget.munro),

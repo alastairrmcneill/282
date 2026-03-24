@@ -23,13 +23,11 @@ class ReviewsState extends ChangeNotifier {
   ReviewsStatus _status = ReviewsStatus.initial;
   Error _error = Error();
   List<Review> _reviews = [];
-  int _textReviewCount = 0;
   MunroRatingsBreakdown? _ratingsBreakdown;
 
   ReviewsStatus get status => _status;
   Error get error => _error;
   List<Review> get reviews => _reviews;
-  int get textReviewCount => _textReviewCount;
   MunroRatingsBreakdown? get ratingsBreakdown => _ratingsBreakdown;
 
   Future<void> getMunroReviewsAndRatings(int munroId) async {
@@ -44,11 +42,9 @@ class ReviewsState extends ChangeNotifier {
         offset: 0,
       ),
       _reviewsRepository.readRatingsBreakdownFromMunro(munroId: munroId),
-      _reviewsRepository.readTextReviewCountFromMunro(munroId: munroId),
     ]).then((results) {
       _reviews = results[0] as List<Review>;
       _ratingsBreakdown = results[1] as MunroRatingsBreakdown;
-      _textReviewCount = results[2] as int;
 
       setStatus = ReviewsStatus.loaded;
     }).catchError((error, stackTrace) {

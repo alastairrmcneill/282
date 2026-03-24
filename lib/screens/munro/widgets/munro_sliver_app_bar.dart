@@ -194,10 +194,17 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
                 Positioned(
                   right: 16,
                   bottom: 16,
-                  child: SizedBox(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      border: BoxBorder.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
                     height: 70,
                     width: 70,
-                    child: MunroMapTabs(munro: widget.munro),
+                    child: MunroMapWidget(munro: widget.munro),
                   ),
                 ),
               ],

@@ -8,9 +8,9 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/theme.dart';
 
-class MunroCommonlyClimbedWithTabs extends StatelessWidget {
+class MunroCommonlyClimbedWithVertical extends StatelessWidget {
   final Munro munro;
-  const MunroCommonlyClimbedWithTabs({super.key, required this.munro});
+  const MunroCommonlyClimbedWithVertical({super.key, required this.munro});
 
   @override
   Widget build(BuildContext context) {

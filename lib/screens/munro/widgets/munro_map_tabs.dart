@@ -5,10 +5,10 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/theme.dart';
 
-class MunroMapTabs extends StatelessWidget {
+class MunroMapWidget extends StatelessWidget {
   final Munro munro;
   final bool showExpandButton;
-  const MunroMapTabs({super.key, required this.munro, this.showExpandButton = false});
+  const MunroMapWidget({super.key, required this.munro, this.showExpandButton = false});
 
   @override
   Widget build(BuildContext context) {
