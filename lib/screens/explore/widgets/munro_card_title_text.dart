@@ -47,14 +47,14 @@ class MunroCardTitleText extends StatelessWidget {
             Icon(Icons.star_rounded, size: 16, color: MyColors.starColor),
             Text(
               (munro.averageRating ?? 0).toStringAsFixed(1),
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
             const SizedBox(width: 12),
             Text(
               '•',
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -63,21 +63,21 @@ class MunroCardTitleText extends StatelessWidget {
               settingsState.metricHeight
                   ? '${munro.meters.thousandsSeparator()} m'
                   : '${munro.feet.thousandsSeparator()} ft',
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
             const SizedBox(width: 12),
             Text(
               '•',
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
             const SizedBox(width: 12),
             Text(
               munro.area,
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
             ),
