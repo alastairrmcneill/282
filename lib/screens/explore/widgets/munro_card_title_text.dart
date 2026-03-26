@@ -1,7 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart' show IntExtension;
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MunroCardTitleText extends StatelessWidget {
   final Munro munro;
@@ -10,32 +13,77 @@ class MunroCardTitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settingsState = context.watch<SettingsState>();
-    return Expanded(
-      flex: 1,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width - 30,
+          child: AutoSizeText(
             munro.name,
-            maxLines: 2,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontWeight: FontWeight.w800, height: 1.1, fontSize: 16),
+            style: textTheme.headlineLarge?.copyWith(
+              color: Colors.white,
+              letterSpacing: -0.5,
+              fontWeight: FontWeight.w500,
+              fontSize: 22,
+            ),
+            maxLines: 1,
+            minFontSize: 20,
+            overflowReplacement: AutoSizeText(
+              munro.name,
+              style: textTheme.headlineLarge?.copyWith(
+                color: Colors.white,
+                letterSpacing: -0.5,
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 2,
+            ),
           ),
-          munro.extra == null || munro.extra == ""
-              ? const SizedBox()
-              : Text(
-                  "(${munro.extra})",
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
-                ),
-          const SizedBox(height: 4),
-          Text(
-            "${munro.area} · ${settingsState.metricHeight ? "${munro.meters}m" : "${munro.feet}ft"}",
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 12),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 2),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.star_rounded, size: 16, color: MyColors.starColor),
+            Text(
+              (munro.averageRating ?? 0).toStringAsFixed(1),
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '•',
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              settingsState.metricHeight
+                  ? '${munro.meters.thousandsSeparator()} m'
+                  : '${munro.feet.thousandsSeparator()} ft',
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '•',
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              munro.area,
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }

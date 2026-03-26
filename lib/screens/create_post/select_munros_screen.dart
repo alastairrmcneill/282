@@ -4,6 +4,7 @@ import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 // Design System Colors
 class AppColors {
@@ -156,20 +157,15 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
 
     var selectedMunroIds = createPostState.selectedMunroIds;
 
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      backgroundColor: AppColors.slate50,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.1,
-        centerTitle: true,
-        title: const Text(
+        title: Text(
           'Climbed Together?',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppColors.slate900,
-          ),
+          style: textTheme.headlineMedium,
         ),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -181,11 +177,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                 children: [
                   Text(
                     'Select any munros you climbed with ${widget.mainMunro.name}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.slate600,
-                    ),
+                    style: textTheme.titleSmall?.copyWith(color: MyColors.subtitleColor),
                   ),
                   const SizedBox(height: 16),
 
@@ -233,7 +225,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                           const SectionHeader(text: 'Other Munros'),
                           GestureDetector(
                             onTap: () => setState(() => _expanded = false),
-                            child: const Text(
+                            child: Text(
                               'Hide',
                               style: TextStyle(
                                 fontSize: 14,
@@ -311,7 +303,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
             ),
             child: SizedBox(
               height: 48,
-              child: ElevatedButton(
+              child: FilledButton(
                 onPressed: () {
                   context.read<Analytics>().track(AnalyticsEvent.selectCommonlyClimbedMunros, props: {
                     AnalyticsProp.munroId: widget.mainMunro.id,
@@ -320,14 +312,6 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                   });
                   Navigator.of(context).pushNamed(CreatePostScreen.route);
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.emerald600,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
                 child: const Text(
                   'Continue',
                   style: TextStyle(

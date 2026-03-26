@@ -18,10 +18,12 @@ class OverviewTab extends StatelessWidget {
             children: [
               const SizedBox(height: 15),
               MunroDescription(munro: munro),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               MunroMapWidget(munro: munro, showExpandButton: true),
-              const SizedBox(height: 20),
-              MunroCommonlyClimbedWithVertical(munro: munro),
+
+              const SizedBox(height: 30),
+              MunroWeatherWidget(munro: munro),
+              // MunroCommonlyClimbedWithVertical(munro: munro),
             ],
           ),
         ),

@@ -223,8 +223,8 @@ class MyTheme {
 
 final textTheme = TextTheme(
   headlineLarge: TextStyle(fontSize: 30, fontWeight: FontWeight.w600, height: 1.15),
-  headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.20),
-  headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.20),
+  headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.20),
+  headlineSmall: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.20),
   displaySmall: TextStyle(fontSize: 48, fontWeight: FontWeight.w600, height: 1.05),
   titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.25),
   titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1.4), // Names in list tiles
