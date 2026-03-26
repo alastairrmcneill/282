@@ -239,6 +239,10 @@ class MunroCompletionState extends ChangeNotifier {
     _munroCompletions = [];
     notifyListeners();
   }
+
+  bool isBagged(Munro munro) {
+    return completedMunroIds.contains(munro.id);
+  }
 }
 
 enum MunroCompletionsStatus { initial, loading, loaded, error }

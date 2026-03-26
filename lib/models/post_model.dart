@@ -12,6 +12,7 @@ class Post {
   final Map<int, List<String>> imageUrlsMap;
   final List<int> includedMunroIds;
   final int likes;
+  final int comments;
   final String privacy;
   final String? authorProfilePictureURL;
   final DateTime? completionDate;
@@ -35,6 +36,7 @@ class Post {
     Map<int, List<String>>? imageUrlsMap,
     List<int>? includedMunroIds,
     int? likes,
+    int? comments,
     String? privacy,
     this.munroCountAtPostDateTime,
   })  : uid = uid ?? '',
@@ -44,6 +46,7 @@ class Post {
         imageUrlsMap = imageUrlsMap ?? {},
         includedMunroIds = includedMunroIds ?? [],
         likes = likes ?? 0,
+        comments = comments ?? 0,
         privacy = privacy ?? Privacy.public;
 
   // To JSON
@@ -105,6 +108,7 @@ class Post {
       description: json[PostFields.description] as String? ?? "",
       includedMunroIds: newIncludedMunroIds,
       likes: json[PostFields.likes] as int? ?? 0,
+      comments: json[PostFields.comments] as int? ?? 0,
       privacy: json[PostFields.privacy] as String? ?? Privacy.public,
       munroCountAtPostDateTime: json[PostFields.munroCountAtPostDateTime] as int?,
     );
@@ -127,6 +131,7 @@ class Post {
     List<Munro>? includedMunros,
     List<int>? includedMunroIds,
     int? likes,
+    int? comments,
     String? privacy,
     int? munroCountAtPostDateTime,
   }) {
@@ -145,6 +150,7 @@ class Post {
       description: description ?? this.description,
       includedMunroIds: includedMunroIds ?? this.includedMunroIds,
       likes: likes ?? this.likes,
+      comments: comments ?? this.comments,
       privacy: privacy ?? this.privacy,
       munroCountAtPostDateTime: munroCountAtPostDateTime ?? this.munroCountAtPostDateTime,
     );
@@ -166,6 +172,7 @@ class PostFields {
   static String description = "description";
   static String includedMunroIds = "included_munro_ids";
   static String likes = "likes";
+  static String comments = "comments";
   static String privacy = "privacy";
   static String userId = "user_id";
   static String munroCountAtPostDateTime = "munro_count_at_post_date_time";

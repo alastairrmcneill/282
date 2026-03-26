@@ -79,12 +79,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 lastName: _lastNameController.text.trim(),
                 bio: _bioController.text.trim(),
               );
-              startCircularProgressOverlay(context);
               await userState.updateProfile(
                 appUser: newAppUser,
                 profilePicture: _image,
               );
-              stopCircularProgressOverlay(context);
               if (userState.status == UserStatus.loaded) {
                 Navigator.of(context).pop(true);
               } else if (userState.status == UserStatus.error) {

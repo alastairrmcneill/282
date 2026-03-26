@@ -8,8 +8,8 @@ class AnalyticsEvent {
   static const screenViewed = 'screen_viewed';
   static const createPost = 'create_post';
   static const signUp = 'sign_up';
-  static const onboardingScreenViewed = 'onboarding_screen_viewed';
-  static const onboardingProgress = 'onboarding_progress';
+  static const inAppOnboardingScreenViewed = 'in_app_onboarding_screen_viewed';
+  static const inAppOnboardingProgress = 'in_app_onboarding_progress';
   static const munroViewed = 'munro_viewed';
   static const surveyShown = 'survey_shown';
   static const surveyAnswers = 'survey_answers';
@@ -42,6 +42,13 @@ class AnalyticsEvent {
   static const paginateGlobalFeed = "paginate_global_feed";
   static const signOut = "sign_out";
   static const deleteAccount = "delete_account";
+  static const selectCommonlyClimbedMunros = "select_commonly_climbed_munros_screen";
+  static const onboardingCompleted = 'onboarding_completed';
+  static const onboardingStarted = 'onboarding_started';
+  static const onboardingScreenViewed = 'onboarding_screen_viewed';
+  static const appShared = 'app_shared';
+  static const munroStartingPointClicked = 'munro_starting_point_clicked';
+  static const munroDetailsTabViewed = 'munro_details_tab_viewed';
 }
 
 class AnalyticsProp {
@@ -49,7 +56,6 @@ class AnalyticsProp {
   static const previousScreen = 'previous_screen';
   static const durationSeconds = 'duration_seconds';
   static const privacy = 'privacy';
-  static const showPrivacyOption = 'show_privacy_option';
   static const method = 'method';
   static const platform = 'platform';
   static const screenIndex = 'screen_index';
@@ -68,7 +74,11 @@ class AnalyticsProp {
   static const rating = "rating";
   static const text = "text";
   static const postCount = "post_count";
-  static var completionDate = "completion_date";
-  static var completionStartTime = "completion_start_time";
-  static var completionDuration = "completion_duration";
+  static const completionDate = "completion_date";
+  static const completionStartTime = "completion_start_time";
+  static const completionDuration = "completion_duration";
+  static const commonlyClimbedWithCount = "commonly_climbed_with_count";
+  static const selectedMunroCount = "selected_munro_count";
+  static const description = "description";
+  static const tabName = "tab_name";
 }

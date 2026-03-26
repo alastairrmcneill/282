@@ -1,82 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class MunroSummitedWidget extends StatelessWidget {
-  const MunroSummitedWidget({super.key});
+  final Munro munro;
+  const MunroSummitedWidget({super.key, required this.munro});
 
   Widget _buildBody(
     BuildContext context,
     List<MunroCompletion> completions,
   ) {
-    if (completions.isEmpty) {
-      return RichText(
-        text: TextSpan(
-          text: "You have not bagged this Munro yet.",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18, height: 1.45),
-        ),
-      );
-    }
+    final textTheme = Theme.of(context).textTheme;
     if (completions.length == 1) {
       DateTime date = completions.first.dateTimeCompleted;
 
-      return RichText(
-        text: TextSpan(
-          text: "You climbed this Munro on ${DateFormat('dd/MM/yyyy').format(date)}!",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18, height: 1.45),
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Completed',
+            style: textTheme.titleMedium!.copyWith(
+              color: MyColors.accentColor,
+            ),
+          ),
+          Text(
+            'You climbed this on ${DateFormat('dd/MM/yyyy').format(date)}',
+            style: textTheme.bodyMedium!.copyWith(
+              color: MyColors.subtitleColor.withAlpha(170),
+            ),
+          ),
+        ],
       );
     } else {
-      return RichText(
-        text: TextSpan(
-          text: "You've climbed this Munro",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18, height: 1.45),
-          children: <TextSpan>[
-            TextSpan(
-              text: " ${completions.length}",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(fontWeight: FontWeight.w700, fontSize: 24, height: 1.45),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Completed ${completions.length} times',
+            style: textTheme.titleMedium!.copyWith(
+              color: MyColors.accentColor,
             ),
-            TextSpan(
-              text: " times!",
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18, height: 1.45),
-            ),
-          ],
-        ),
+          ),
+          ...completions.map((date) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                '• ${DateFormat('dd/MM/yyyy').format(date.dateTimeCompleted)}',
+                style: textTheme.bodyMedium!.copyWith(
+                  color: MyColors.subtitleColor.withAlpha(170),
+                ),
+              ),
+            );
+          }),
+        ],
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<UserState>();
-    final munroDetailState = context.watch<MunroDetailState>();
     final munroCompletionState = context.watch<MunroCompletionState>();
 
     List<MunroCompletion> completions =
-        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroDetailState.selectedMunro!.id).toList();
+        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munro.id).toList();
 
-    return InkWell(
-      onTap: () {
-        if (userState.currentUser == null) {
-          Navigator.of(context).pushNamed(AuthHomeScreen.route);
-        } else {
-          if (munroDetailState.selectedMunro != null) {
-            Navigator.of(context).pushNamed(
-              MunroSummitsScreen.route,
-              arguments: MunroSummitsScreenArgs(munro: munroDetailState.selectedMunro!),
-            );
-          }
-        }
-      },
+    if (completions.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
       child: Container(
-        color: Colors.transparent,
-        child: _buildBody(context, completions),
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(45, 106, 79, 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Color.fromRGBO(45, 106, 79, 0.2),
+            width: 0.7,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              PhosphorIconsFill.checkCircle,
+              color: Color.fromRGBO(45, 106, 79, 1),
+              size: 40,
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: _buildBody(context, completions)),
+          ],
+        ),
       ),
     );
   }

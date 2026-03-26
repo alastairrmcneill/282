@@ -4,24 +4,34 @@ import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 
-class ShareMunroState extends ChangeNotifier {
+class ShareState extends ChangeNotifier {
   final ShareLinkRepository _shareLinkRepository;
   final Analytics _analytics;
   final Logger _logger;
 
-  ShareMunroState(
+  ShareState(
     this._shareLinkRepository,
     this._analytics,
     this._logger,
   );
 
-  ShareMunroStatus _status = ShareMunroStatus.initial;
+  ShareStatus _status = ShareStatus.initial;
   Error _error = Error();
 
-  ShareMunroStatus get status => _status;
+  ShareStatus get status => _status;
   Error get error => _error;
 
-  Future<String?> createShareLink({required int munroId, required String munroName}) async {
+  Future<String?> createAppLink() async {
+    try {
+      _analytics.track(AnalyticsEvent.appShared);
+      return await _shareLinkRepository.createAppLink();
+    } catch (error, stackTrace) {
+      _logger.error('Failed to create share link', error: error, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
+  Future<String?> createMunroLink({required int munroId, required String munroName}) async {
     try {
       _analytics.track(AnalyticsEvent.munroShared, props: {
         AnalyticsProp.munroId: munroId,
@@ -34,7 +44,7 @@ class ShareMunroState extends ChangeNotifier {
     }
   }
 
-  set setStatus(ShareMunroStatus searchStatus) {
+  set setStatus(ShareStatus searchStatus) {
     _status = searchStatus;
     notifyListeners();
   }
@@ -42,7 +52,7 @@ class ShareMunroState extends ChangeNotifier {
   set setError(
     Error error,
   ) {
-    _status = ShareMunroStatus.error;
+    _status = ShareStatus.error;
     _error = error;
     _logger.error(error.message);
     notifyListeners();
@@ -53,10 +63,10 @@ class ShareMunroState extends ChangeNotifier {
   }
 
   void reset() {
-    _status = ShareMunroStatus.initial;
+    _status = ShareStatus.initial;
     _error = Error();
     notifyListeners();
   }
 }
 
-enum ShareMunroStatus { initial, loading, loaded, error }
+enum ShareStatus { initial, loading, loaded, error }

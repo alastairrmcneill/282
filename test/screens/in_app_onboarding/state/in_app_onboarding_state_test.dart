@@ -209,7 +209,7 @@ void main() {
           },
         )).called(1);
         verify(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: {
             AnalyticsProp.status: 'started',
           },
@@ -346,7 +346,7 @@ void main() {
         verify(mockSettingsState.setEnablePushNotifications(true)).called(1);
         verify(mockPushNotificationState.enablePush()).called(1);
         verify(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: {
             AnalyticsProp.status: 'notifications_enabled',
           },
@@ -371,7 +371,7 @@ void main() {
         verify(mockPushNotificationState.enablePush()).called(1);
         verify(mockSettingsState.setEnablePushNotifications(false)).called(1);
         verifyNever(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: anyNamed('props'),
         ));
       });
@@ -435,7 +435,7 @@ void main() {
         verify(mockSettingsState.setEnablePushNotifications(false)).called(1);
         verify(mockPushNotificationState.disablePush()).called(1);
         verify(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: {
             AnalyticsProp.status: 'notifications_denied',
           },
@@ -456,7 +456,7 @@ void main() {
         verify(mockSettingsState.setEnablePushNotifications(false)).called(1);
         verify(mockPushNotificationState.disablePush()).called(1);
         verify(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: {
             AnalyticsProp.status: 'notifications_denied',
           },
@@ -516,7 +516,7 @@ void main() {
         verify(mockAppFlagsRepository.setShowBulkMunroDialog(false)).called(1);
         verify(mockAppFlagsRepository.setShowInAppOnboarding('user123', false)).called(1);
         verify(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: {
             AnalyticsProp.status: 'completed',
             AnalyticsProp.munroCompletionsAdded: 1,
@@ -611,7 +611,7 @@ void main() {
 
         // Assert
         verify(mockAnalytics.track(
-          AnalyticsEvent.onboardingProgress,
+          AnalyticsEvent.inAppOnboardingProgress,
           props: {
             AnalyticsProp.status: 'completed',
             AnalyticsProp.munroCompletionsAdded: 0,

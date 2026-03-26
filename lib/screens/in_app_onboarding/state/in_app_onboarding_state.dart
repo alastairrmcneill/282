@@ -52,7 +52,7 @@ class InAppOnboardingState extends ChangeNotifier {
         },
       );
       analytics.track(
-        AnalyticsEvent.onboardingProgress,
+        AnalyticsEvent.inAppOnboardingProgress,
         props: {
           AnalyticsProp.status: 'started',
         },
@@ -107,7 +107,7 @@ class InAppOnboardingState extends ChangeNotifier {
       }
 
       await analytics.track(
-        AnalyticsEvent.onboardingProgress,
+        AnalyticsEvent.inAppOnboardingProgress,
         props: {
           AnalyticsProp.status: 'notifications_enabled',
         },
@@ -132,7 +132,7 @@ class InAppOnboardingState extends ChangeNotifier {
       await pushNotificationState.disablePush();
 
       await analytics.track(
-        AnalyticsEvent.onboardingProgress,
+        AnalyticsEvent.inAppOnboardingProgress,
         props: {
           AnalyticsProp.status: 'notifications_denied',
         },
@@ -156,7 +156,7 @@ class InAppOnboardingState extends ChangeNotifier {
       );
       await appFlagsRepository.setShowBulkMunroDialog(false);
       await appFlagsRepository.setShowInAppOnboarding(userState.currentUser?.uid ?? "", false);
-      await analytics.track(AnalyticsEvent.onboardingProgress, props: {
+      await analytics.track(AnalyticsEvent.inAppOnboardingProgress, props: {
         AnalyticsProp.status: "completed",
         AnalyticsProp.munroCompletionsAdded: bulkMunroUpdateState.addedMunroCompletions.length,
         AnalyticsProp.munroChallengeCount: achievementsState.achievementFormCount,

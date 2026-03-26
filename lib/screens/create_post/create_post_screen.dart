@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/create_post/widgets/create_post_munro_tile.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-import '../screens.dart';
+class CreatePostScreen extends StatefulWidget {
+  const CreatePostScreen({super.key});
+  static const String route = '/posts/create1';
 
-class CreatePostScreen extends StatelessWidget {
-  CreatePostScreen({super.key});
-  static const String route = '/posts/create';
+  @override
+  State<CreatePostScreen> createState() => _CreatePostScreen1State();
+}
 
+class _CreatePostScreen1State extends State<CreatePostScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _munroError;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +40,6 @@ class CreatePostScreen extends StatelessWidget {
             case CreatePostStatus.loaded:
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (createPostState.editingPost == null) {
-                  // Send to review
                   final createReviewState = context.read<CreateReviewState>();
                   final munroState = context.read<MunroState>();
                   createReviewState.reset();
@@ -41,11 +47,6 @@ class CreatePostScreen extends StatelessWidget {
                       .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
                       .toList();
                   createReviewState.setMunrosToReview = selectedMunros;
-                  // Navigator.pushNamedAndRemoveUntil(
-                  //   context,
-                  //   HomeScreen.route,
-                  //   (Route<dynamic> route) => false,
-                  // );
                   Navigator.of(context).pushNamed(CreateReviewsScreen.route);
                 } else {
                   if (Navigator.of(context).canPop()) {
@@ -62,214 +63,357 @@ class CreatePostScreen extends StatelessWidget {
     );
   }
 
+  void _showMunroModalSheet() {
+    final munroState = context.read<MunroState>();
+    final createPostState = context.read<CreatePostState>();
+    munroState.setCreatePostFilterString = "";
+
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext ctx) {
+        return StatefulBuilder(
+          builder: (BuildContext ctx, StateSetter setModalState) {
+            return Consumer<MunroState>(
+              builder: (ctx, munroState, child) {
+                return ListView(
+                  children: [
+                    const CreatePostMunroSearchbar(),
+                    ...munroState.createPostFilteredMunroList.map((Munro munro) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            title: Text(munro.name, style: const TextStyle(fontSize: 14)),
+                            subtitle: munro.extra == "" ? Text(munro.area) : Text("${munro.extra} - ${munro.area}"),
+                            trailing: createPostState.selectedMunroIds.contains(munro.id)
+                                ? const Icon(Icons.check_rounded)
+                                : null,
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            onTap: () {
+                              if (createPostState.selectedMunroIds.contains(munro.id)) {
+                                createPostState.removeMunro(munro.id);
+                              } else {
+                                createPostState.addMunro(munro.id);
+                              }
+                              setModalState(() {});
+                              setState(() => _munroError = null);
+                            },
+                          ),
+                          const Divider(),
+                        ],
+                      );
+                    }),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _submitPost(BuildContext context, CreatePostState createPostState) async {
+    // Validate munro selection
+    if (createPostState.selectedMunroIds.isEmpty) {
+      setState(() => _munroError = "Select at least one munro.");
+      return;
+    }
+    setState(() => _munroError = null);
+
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+
+    if (!createPostState.hasImage) {
+      context.read<Analytics>().track(AnalyticsEvent.createPostNoPhotosDialogShown);
+      bool? carryOn = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            elevation: 5,
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(color: Colors.blue.shade100, shape: BoxShape.circle),
+                    padding: const EdgeInsets.all(16),
+                    child: const Icon(Icons.camera_alt_rounded, size: 50, color: Colors.blue),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Oops, No Photos!',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(color: Colors.blue, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Would you like to add some awesome photos to your post before sharing your adventure?',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton.icon(
+                        style: TextButton.styleFrom(foregroundColor: Colors.red.shade400),
+                        icon: const Icon(Icons.cancel_rounded),
+                        label: const Text('No, Skip'),
+                        onPressed: () {
+                          context.read<Analytics>().track(
+                            AnalyticsEvent.createPostNoPhotosDialogResponse,
+                            props: {AnalyticsProp.response: "skip"},
+                          );
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade400,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        icon: const Icon(Icons.check_circle_rounded),
+                        label: const Text('Yes, Add!'),
+                        onPressed: () {
+                          context.read<Analytics>().track(
+                            AnalyticsEvent.createPostNoPhotosDialogResponse,
+                            props: {AnalyticsProp.response: "add"},
+                          );
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+      if (carryOn == null || carryOn == false) return;
+    }
+
+    if (createPostState.status == CreatePostStatus.initial) {
+      if (createPostState.editingPost == null) {
+        createPostState.createPost();
+      } else {
+        final updated = await createPostState.editPost();
+        if (updated != null) {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop<Post>(updated);
+          }
+        }
+      }
+    }
+  }
+
   Widget _buildScreen(BuildContext context, CreatePostState createPostState) {
+    final munroState = context.watch<MunroState>();
+
     return Stack(
       children: [
         Scaffold(
           appBar: AppBar(
             title: const Text('Create Post'),
-            centerTitle: false,
           ),
           body: Form(
             key: _formKey,
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    // TextFormFieldBase(
-                    //   initialValue: createPostState.title,
-                    //   onSaved: (newValue) {
-                    //     if ((newValue == null || newValue.trim() == "")) {
-                    //       createPostState.setTitle = null;
-                    //     } else {
-                    //       createPostState.setTitle = newValue.trim();
-                    //     }
-                    //   },
-                    //   hintText: "Title your hike",
-                    // ),
-                    // const SizedBox(height: 15),
-                    TextFormFieldBase(
-                      initialValue: createPostState.description,
-                      hintText: "How was it? Tell us about your hike.",
-                      maxLines: 3,
-                      textCapitalization: TextCapitalization.sentences,
-                      keyboardType: TextInputType.text,
-                      onSaved: (newValue) {
-                        createPostState.setDescription = newValue?.trim();
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Hike Stats',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const CreatePostSummitDatePicker(),
-                    const SizedBox(height: 10),
-                    const CreatePostSummitTimePicker(),
-                    const SizedBox(height: 10),
-                    const CreatePostDurationPicker(),
-                    const SizedBox(height: 20),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Munros summited',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const MunroSelector(),
-                    const SizedBox(height: 20),
-                    PostPrivacySelector(),
-                    const SizedBox(height: 100),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        createPostState.status == CreatePostStatus.loading
-            ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.8,
-                color: Colors.transparent,
-                child: const LoadingWidget(),
-              )
-            : const SizedBox(),
-        Positioned(
-          bottom: 40,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: FloatingActionButton.extended(
-              onPressed: () async {
-                if (!_formKey.currentState!.validate()) {
-                  return;
-                }
-                _formKey.currentState!.save();
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
 
-                if (!createPostState.hasImage) {
-                  context.read<Analytics>().track(AnalyticsEvent.createPostNoPhotosDialogShown);
-                  bool? carryOn = await showDialog<bool>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 5,
-                        backgroundColor: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                          // --- Munros Section Header ---
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Top icon with animation
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade100,
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(16),
-                                child: const Icon(
-                                  Icons.camera_alt_rounded,
-                                  size: 50,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              // Fun title
                               Text(
-                                'Oops, No Photos!',
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                textAlign: TextAlign.center,
+                                'Munros',
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(height: 10),
-                              // Informative text with a playful tone
-                              Text(
-                                'Would you like to add some awesome photos to your post before sharing your adventure?',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Colors.grey.shade700,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 20),
-                              // Fun buttons with color and icons
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  TextButton.icon(
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Colors.red.shade400,
-                                    ),
-                                    icon: const Icon(Icons.cancel_rounded),
-                                    label: const Text('No, Skip'),
-                                    onPressed: () {
-                                      context
-                                          .read<Analytics>()
-                                          .track(AnalyticsEvent.createPostNoPhotosDialogResponse, props: {
-                                        AnalyticsProp.response: "skip",
-                                      });
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                  ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green.shade400,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                    icon: const Icon(Icons.check_circle_rounded),
-                                    label: const Text('Yes, Add!'),
-                                    onPressed: () {
-                                      context
-                                          .read<Analytics>()
-                                          .track(AnalyticsEvent.createPostNoPhotosDialogResponse, props: {
-                                        AnalyticsProp.response: "add",
-                                      });
-                                      Navigator.of(context).pop(false);
-                                    },
-                                  ),
-                                ],
+                              GestureDetector(
+                                onTap: _showMunroModalSheet,
+                                child: const Text(
+                                  '+ Add Munro',
+                                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    },
-                  );
-                  if (carryOn == null || carryOn == false) return;
-                }
+                          const SizedBox(height: 12),
 
-                if (createPostState.status == CreatePostStatus.initial) {
-                  if (createPostState.editingPost == null) {
-                    createPostState.createPost();
-                  } else {
-                    final updated = await createPostState.editPost();
-                    if (updated != null) {
-                      if (Navigator.of(context).canPop()) {
-                        Navigator.of(context).pop<Post>(updated);
-                      }
-                    }
-                  }
-                }
-              },
-              label: Text(
-                'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
-              ),
-              icon: const Icon(Icons.hiking_rounded),
+                          // --- Selected Munros List ---
+                          ...createPostState.selectedMunroIds.map((int munroId) {
+                            final munro = munroState.munroList.firstWhere(
+                              (m) => m.id == munroId,
+                              orElse: () => Munro.empty,
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: CreatePostMunroTile(
+                                munro: munro,
+                                onRemove: () {
+                                  createPostState.removeMunro(munro.id);
+                                  setState(() {});
+                                },
+                              ),
+                            );
+                          }),
+                          if (_munroError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                _munroError!,
+                                style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12),
+                              ),
+                            ),
+
+                          // --- Description Field ---
+                          const Divider(height: 32),
+
+                          const SizedBox(height: 12),
+                          TextFormFieldBase(
+                            initialValue: createPostState.description,
+                            hintText: "Share your experience...",
+                            maxLines: 4,
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.text,
+                            onSaved: (newValue) {
+                              createPostState.setDescription = newValue?.trim();
+                            },
+                            fillColor: Colors.white,
+                          ),
+
+                          const SizedBox(height: 12),
+                          const CreatePostSummitDatePicker(),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Expanded(flex: 1, child: CreatePostSummitTimePicker()),
+                              const SizedBox(width: 10),
+                              const Expanded(flex: 1, child: CreatePostDurationPicker()),
+                            ],
+                          ),
+
+                          // const Divider(height: 32),
+
+                          // // --- Munros Summited Section ---
+                          // Text(
+                          //   'Photos',
+                          //   style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                          // ),
+                          const SizedBox(height: 12),
+                          ...createPostState.selectedMunroIds.map((int munroId) {
+                            final munro = munroState.munroList.firstWhere(
+                              (m) => m.id == munroId,
+                              orElse: () => Munro.empty,
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey.shade200),
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.location_on_outlined, color: Colors.grey.shade600, size: 24),
+                                        const SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(munro.name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(fontWeight: FontWeight.w500)),
+                                            Text(
+                                              '${munro.meters}m • ${munro.area}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(color: MyColors.mutedText),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    CreatePostImagePicker(munroId: munro.id),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+
+                          const SizedBox(height: 20),
+                          PostPrivacySelector(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // --- Bottom Bag Munro Button ---
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(top: BorderSide(color: Colors.grey.shade200)),
+                  ),
+                  child: SizedBox(
+                    height: 52,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _submitPost(context, createPostState),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E293B),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 0,
+                      ),
+                      icon: const Icon(Icons.check, size: 20),
+                      label: Text(
+                        'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+
+        // Loading overlay
+        if (createPostState.status == CreatePostStatus.loading)
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.8,
+            color: Colors.transparent,
+            child: const LoadingWidget(),
+          ),
       ],
     );
   }

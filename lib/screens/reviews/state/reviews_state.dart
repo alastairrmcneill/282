@@ -23,33 +23,37 @@ class ReviewsState extends ChangeNotifier {
   ReviewsStatus _status = ReviewsStatus.initial;
   Error _error = Error();
   List<Review> _reviews = [];
+  MunroRatingsBreakdown? _ratingsBreakdown;
 
   ReviewsStatus get status => _status;
   Error get error => _error;
   List<Review> get reviews => _reviews;
+  MunroRatingsBreakdown? get ratingsBreakdown => _ratingsBreakdown;
 
-  Future<void> getMunroReviews(int munroId) async {
+  Future<void> getMunroReviewsAndRatings(int munroId) async {
     List<String> blockedUsers = _userState.blockedUsers;
 
-    try {
-      setStatus = ReviewsStatus.loading;
+    setStatus = ReviewsStatus.loading;
 
-      // Get reviews
-      final reviews = await _reviewsRepository.readReviewsFromMunro(
+    Future.wait([
+      _reviewsRepository.readReviewsFromMunro(
         munroId: munroId,
         excludedAuthorIds: blockedUsers,
         offset: 0,
-      );
+      ),
+      _reviewsRepository.readRatingsBreakdownFromMunro(munroId: munroId),
+    ]).then((results) {
+      _reviews = results[0] as List<Review>;
+      _ratingsBreakdown = results[1] as MunroRatingsBreakdown;
 
-      setReviews = reviews;
       setStatus = ReviewsStatus.loaded;
-    } catch (error, stackTrace) {
+    }).catchError((error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue getting reviews for this munro. Please try again",
         code: error.toString(),
       );
-    }
+    });
   }
 
   Future<void> paginateMunroReviews(int munroId) async {
@@ -126,7 +130,7 @@ class ReviewsState extends ChangeNotifier {
     }
   }
 
-  removeReview(Review review) {
+  void removeReview(Review review) {
     _reviews = _reviews.where((element) => element.uid != review.uid).toList();
     notifyListeners();
   }

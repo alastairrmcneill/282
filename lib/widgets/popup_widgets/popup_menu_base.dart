@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class PopupMenuBase extends StatelessWidget {
   final List<MenuItem> items;
@@ -10,7 +10,11 @@ class PopupMenuBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
-      icon: const Icon(CupertinoIcons.ellipsis_vertical),
+      icon: Icon(
+        Icons.more_vert_rounded,
+        color: MyColors.mutedText,
+        size: 22,
+      ),
       onSelected: (value) => items[value].onTap(),
       itemBuilder: (context) => items.map((item) {
         return PopupMenuItem<int>(
