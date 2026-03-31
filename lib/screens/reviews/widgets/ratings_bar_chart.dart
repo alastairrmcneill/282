@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class RatingsBarChart extends StatelessWidget {
   final MunroRatingsBreakdown ratingsBreakdown;
@@ -11,16 +11,16 @@ class RatingsBarChart extends StatelessWidget {
       children: [
         Text(
           rating.toString(),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
         ),
         const SizedBox(width: 2),
-        Icon(Icons.star_rounded, color: MyColors.starColor, size: 16),
+        Icon(Icons.star_rounded, color: context.colors.starColor, size: 16),
         const SizedBox(width: 8),
         Expanded(
           child: LinearProgressIndicator(
             value: ratingsBreakdown.totalRatings > 0 ? count / ratingsBreakdown.totalRatings : 0,
-            backgroundColor: MyColors.lightGrey,
-            color: MyColors.starColor,
+            backgroundColor: context.colors.border,
+            color: context.colors.starColor,
             minHeight: 3,
             borderRadius: BorderRadius.circular(100),
           ),

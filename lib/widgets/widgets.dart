@@ -2,7 +2,6 @@ export 'popup_widgets/error_dialog.dart';
 export 'popup_widgets/custom_snack_bar.dart';
 export 'popup_widgets/confirmation_dialog.dart';
 export 'popup_widgets/bulk_munro_update_dialog.dart';
-export 'popup_widgets/popup_menu_base.dart';
 export 'popup_widgets/app_survey_dialog.dart';
 export 'popup_widgets/app_update_dialog.dart';
 export 'popup_widgets/app_whats_new_dialog.dart';

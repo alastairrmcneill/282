@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class AverageRatingWidget extends StatelessWidget {
   final MunroRatingsBreakdown ratingsBreakdown;
@@ -20,15 +20,15 @@ class AverageRatingWidget extends StatelessWidget {
         RatingBarIndicator(
           rating: ratingsBreakdown.averageRating,
           itemSize: 20,
-          unratedColor: MyColors.lightGrey,
+          unratedColor: context.colors.border,
           itemBuilder: (context, index) {
-            return Icon(Icons.star_rounded, color: MyColors.starColor);
+            return Icon(Icons.star_rounded, color: context.colors.starColor);
           },
         ),
         const SizedBox(height: 4),
         Text(
           "${ratingsBreakdown.totalRatings} rating${ratingsBreakdown.totalRatings != 1 ? 's' : ''}",
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
         ),
       ],
     );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/extensions/int_extension.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class PostMunroList extends StatelessWidget {
   final Post post;
@@ -37,7 +37,7 @@ class PostMunroList extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      color: MyColors.lightGrey,
+                      color: context.colors.border,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -60,7 +60,7 @@ class PostMunroList extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium
-                                ?.copyWith(fontWeight: FontWeight.w400, color: MyColors.mutedText),
+                                ?.copyWith(fontWeight: FontWeight.w400, color: context.colors.textMuted),
                           ),
                         ],
                       ),

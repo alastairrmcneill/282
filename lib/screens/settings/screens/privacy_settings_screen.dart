@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PrivacySettingsScreen extends StatelessWidget {
@@ -29,7 +29,7 @@ class PrivacySettingsScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Control who can view your posts.',
-              style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+              style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             ),
             const SizedBox(height: 12),
             Card(
@@ -76,7 +76,7 @@ class PrivacySettingsScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Control who can view your profile.',
-              style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+              style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             ),
             const SizedBox(height: 12),
             Card(

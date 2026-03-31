@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreatePostSummitTimePicker extends StatelessWidget {
@@ -21,15 +21,15 @@ class CreatePostSummitTimePicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Start Time', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: MyColors.mutedText)),
+        Text('Start Time', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted)),
         const SizedBox(height: 2),
         TextFormFieldBase(
           controller: timeController,
           hintText: '--.--',
-          prefixIcon: const Icon(
+          prefixIcon: Icon(
             PhosphorIconsRegular.clock,
             size: 22,
-            color: MyColors.mutedText,
+            color: context.colors.textMuted,
           ),
           readOnly: true,
           onTap: () async {

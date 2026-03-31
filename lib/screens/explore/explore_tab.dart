@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 import 'screens/munro_search_screen.dart';
@@ -71,7 +71,7 @@ class _ExploreTabState extends State<ExploreTab> {
         children: [
           SlidingUpPanel(
             controller: panelController,
-            color: MyColors.backgroundColor,
+            color: context.colors.background,
             minHeight: munroState.selectedMunroId == null ? 60 : 0,
             maxHeight: screenHeight - bottomNavBarHeight - headerHeight - topPadding + 20,
             header: const SlidingPanelHeader(),

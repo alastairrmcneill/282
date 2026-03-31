@@ -5,7 +5,6 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PostHeader extends StatelessWidget {
@@ -90,12 +89,12 @@ class PostHeader extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   'Completed ${post.includedMunroIds.length == 1 ? "a munro" : "${post.includedMunroIds.length} munros"} • ${post.dateTimeCreated.timeAgoShort()}',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(color: MyColors.mutedText),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(color: context.colors.textMuted),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '${post.munroCountAtPostDateTime}/282 munros',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(color: MyColors.mutedText),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(color: context.colors.textMuted),
                 ),
               ],
             ),
@@ -108,7 +107,7 @@ class PostHeader extends StatelessWidget {
             padding: EdgeInsets.all(0),
             icon: Icon(
               PhosphorIconsBold.dotsThreeVertical,
-              color: MyColors.mutedText,
+              color: context.colors.textMuted,
             ),
             onPressed: () => _showActionsDialog(context),
           ),

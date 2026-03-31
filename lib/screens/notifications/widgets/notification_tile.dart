@@ -4,7 +4,6 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -48,7 +47,7 @@ class NotificationTile extends StatelessWidget {
                 height: 6,
                 width: 6,
                 decoration: BoxDecoration(
-                  color: notification.read ? Colors.transparent : MyColors.notificationDotColor,
+                  color: notification.read ? Colors.transparent : context.colors.accent,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -74,7 +73,7 @@ class NotificationTile extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: " ${notification.detail}",
-                              style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: MyColors.subtitleColor),
+                              style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: context.colors.textSubtitle),
                             ),
                           ],
                         ),
@@ -82,7 +81,7 @@ class NotificationTile extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         notification.dateTime.timeAgoShort(),
-                        style: textTheme.bodySmall?.copyWith(color: MyColors.subtitleColor),
+                        style: textTheme.bodySmall?.copyWith(color: context.colors.textSubtitle),
                       ),
                     ],
                   ),

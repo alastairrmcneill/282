@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/app_bootstrap.dart';
 import 'package:two_eight_two/config/app_config.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/navigation_intent_coordinator.dart';
 import 'package:two_eight_two/overlay_intent_coordinator.dart';
 import 'package:two_eight_two/root_gate.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/state/settings_state.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/support/app_router.dart';
 import 'package:two_eight_two/support/theme.dart';
@@ -23,20 +25,31 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: environment != AppEnvironment.prod,
-      theme: MyTheme.lightTheme,
-      navigatorKey: navigatorKey,
-      navigatorObservers: [context.read<AppRouteObserver>()],
-      onGenerateRoute: AppRouter.generateRoute,
-      home: const RootGate(),
-      builder: (context, child) {
-        return AppBootstrap(
-          child: NavigationIntentCoordinator(
-            child: OverlayIntentCoordinator(
-              child: child ?? const SizedBox.shrink(),
-            ),
-          ),
+    return Consumer<SettingsState>(
+      builder: (context, settings, _) {
+        final themeMode = switch (settings.themeModeSetting) {
+          ThemeModeOption.light => ThemeMode.light,
+          ThemeModeOption.dark => ThemeMode.dark,
+          _ => ThemeMode.system,
+        };
+        return MaterialApp(
+          debugShowCheckedModeBanner: environment != AppEnvironment.prod,
+          theme: MyTheme.lightTheme,
+          darkTheme: MyTheme.darkTheme,
+          themeMode: themeMode,
+          navigatorKey: navigatorKey,
+          navigatorObservers: [context.read<AppRouteObserver>()],
+          onGenerateRoute: AppRouter.generateRoute,
+          home: const RootGate(),
+          builder: (context, child) {
+            return AppBootstrap(
+              child: NavigationIntentCoordinator(
+                child: OverlayIntentCoordinator(
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              ),
+            );
+          },
         );
       },
     );

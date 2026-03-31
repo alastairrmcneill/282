@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class PostTimings extends StatelessWidget {
   final Post post;
@@ -11,9 +10,9 @@ class PostTimings extends StatelessWidget {
   Widget _buildItem(BuildContext context, IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: MyColors.mutedText),
+        Icon(icon, size: 14, color: context.colors.textMuted),
         const SizedBox(width: 4),
-        Text(text, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: MyColors.mutedText)),
+        Text(text, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: context.colors.textMuted)),
       ],
     );
   }

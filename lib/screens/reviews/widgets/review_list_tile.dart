@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/extensions/datetime_extension.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/star_rating_row.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewListTile extends StatelessWidget {
@@ -81,7 +80,7 @@ class ReviewListTile extends StatelessWidget {
                         ),
                         Text(
                           review.dateTime.timeAgoShort(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
                         )
                       ],
                     ),
@@ -90,7 +89,10 @@ class ReviewListTile extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       review.text,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText, height: 1.6),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: context.colors.textMuted, height: 1.6),
                     ),
                   ],
                 ),

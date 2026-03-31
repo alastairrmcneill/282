@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class SavedListTile extends StatefulWidget {
   final SavedList savedList;
@@ -145,12 +145,12 @@ class _SavedListTileState extends State<SavedListTile> {
             Row(
               children: [
                 Container(
-                    decoration: BoxDecoration(color: MyColors.lightGrey, borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: context.colors.border, borderRadius: BorderRadius.circular(8)),
                     width: 30,
                     height: 30,
                     child: Icon(
                       PhosphorIconsRegular.listDashes,
-                      color: MyColors.mutedText,
+                      color: context.colors.textMuted,
                     )),
                 const SizedBox(width: 8),
                 Expanded(
@@ -190,7 +190,7 @@ class _SavedListTileState extends State<SavedListTile> {
                             Text(widget.savedList.name, style: textTheme.titleMedium),
                             Text(
                               '${widget.savedList.munroIds.length} munro${widget.savedList.munroIds.length == 1 ? '' : 's'}',
-                              style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+                              style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
                             ),
                           ],
                         ),
@@ -203,7 +203,7 @@ class _SavedListTileState extends State<SavedListTile> {
                       padding: EdgeInsets.all(0),
                       icon: Icon(
                         PhosphorIconsBold.dotsThreeVertical,
-                        color: MyColors.mutedText,
+                        color: context.colors.textMuted,
                       ),
                       onPressed: () => _showActionsDialog(context),
                     ),

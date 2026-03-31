@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class EmptyFriendsFeed extends StatelessWidget {
@@ -60,7 +60,7 @@ class EmptyFriendsFeed extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: MyColors.lightGrey,
+                    color: context.colors.border,
                     shape: BoxShape.circle,
                   ),
                   width: 90,
@@ -68,14 +68,14 @@ class EmptyFriendsFeed extends StatelessWidget {
                   child: Icon(
                     PhosphorIconsRegular.users,
                     size: 40,
-                    color: MyColors.mutedText,
+                    color: context.colors.textMuted,
                   ),
                 ),
                 Align(
                   alignment: Alignment.topRight,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: MyColors.lightGrey,
+                      color: context.colors.border,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
@@ -84,7 +84,7 @@ class EmptyFriendsFeed extends StatelessWidget {
                     child: Icon(
                       PhosphorIconsRegular.mountains,
                       size: 18,
-                      color: MyColors.mutedText,
+                      color: context.colors.textMuted,
                     ),
                   ),
                 ),
@@ -92,7 +92,7 @@ class EmptyFriendsFeed extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: MyColors.lightGrey,
+                      color: context.colors.border,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
@@ -101,7 +101,7 @@ class EmptyFriendsFeed extends StatelessWidget {
                     child: Icon(
                       PhosphorIconsRegular.sparkle,
                       size: 18,
-                      color: MyColors.mutedText,
+                      color: context.colors.textMuted,
                     ),
                   ),
                 ),
@@ -113,7 +113,7 @@ class EmptyFriendsFeed extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'When your pals start bagging munros, their adventures will show up here. Time to inspire them to get outside and make some memories!',
-            style: theme.textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+            style: theme.textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),

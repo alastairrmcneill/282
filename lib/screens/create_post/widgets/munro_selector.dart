@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroSelector extends StatefulWidget {
   const MunroSelector({super.key});
@@ -97,7 +97,7 @@ class _MunroSelectorState extends State<MunroSelector> {
                             Icon(
                               Icons.location_on_outlined,
                               size: 22,
-                              color: MyColors.mutedText,
+                              color: context.colors.textMuted,
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -115,7 +115,7 @@ class _MunroSelectorState extends State<MunroSelector> {
                               child: Icon(
                                 Icons.close,
                                 size: 20,
-                                color: MyColors.mutedText,
+                                color: context.colors.textMuted,
                               ),
                             ),
                           ],
@@ -124,13 +124,13 @@ class _MunroSelectorState extends State<MunroSelector> {
                           padding: const EdgeInsets.only(left: 30),
                           child: Text(
                             '${munro.meters}m • ${munro.area}',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(color: MyColors.mutedText),
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted),
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'Photos (optional)',
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: MyColors.mutedText),
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted),
                         ),
                         const SizedBox(height: 8),
                         CreatePostImagePicker(munroId: munro.id),

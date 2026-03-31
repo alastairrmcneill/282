@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroDetailsTabs extends StatefulWidget {
   final Munro munro;
@@ -90,11 +90,11 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
         TabBar(
           controller: _tabController,
           dividerHeight: 0.7,
-          dividerColor: Colors.grey[300],
+          dividerColor: context.colors.divider,
           labelStyle: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500, height: 1),
-          labelColor: MyColors.accentColor,
-          unselectedLabelColor: MyColors.mutedText,
-          indicatorColor: MyColors.accentColor,
+          labelColor: context.colors.accent,
+          unselectedLabelColor: context.colors.textMuted,
+          indicatorColor: context.colors.accent,
           indicatorSize: TabBarIndicatorSize.tab,
           indicator: UnderlineTabIndicator(
             insets: const EdgeInsets.symmetric(horizontal: 8),
@@ -103,7 +103,7 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
               topRight: Radius.circular(3),
             ),
             borderSide: BorderSide(
-              color: MyColors.accentColor,
+              color: context.colors.accent,
               width: 3,
             ),
           ),

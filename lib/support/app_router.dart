@@ -11,6 +11,7 @@ import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
+import '../screens/design_system/design_system_tab.dart';
 import '../screens/screens.dart';
 
 class AppRouter {
@@ -34,6 +35,11 @@ class AppRouter {
       case SavedTab.route:
         return MaterialPageRoute(
           builder: (_) => const HomeScreen(startingIndex: 2),
+          settings: settings,
+        );
+      case DesignSystemTab.route:
+        return MaterialPageRoute(
+          builder: (_) => const HomeScreen(startingIndex: 4),
           settings: settings,
         );
       case ProfileTab.route:

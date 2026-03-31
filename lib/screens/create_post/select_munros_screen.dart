@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 // Design System Colors
 class AppColors {
@@ -177,7 +177,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                 children: [
                   Text(
                     'Select any munros you climbed with ${widget.mainMunro.name}',
-                    style: textTheme.titleSmall?.copyWith(color: MyColors.subtitleColor),
+                    style: textTheme.titleSmall?.copyWith(color: context.colors.textSubtitle),
                   ),
                   const SizedBox(height: 16),
 

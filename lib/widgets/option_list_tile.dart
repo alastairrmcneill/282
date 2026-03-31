@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class OptionListTile<T> extends StatelessWidget {
   final String title;
@@ -27,13 +27,13 @@ class OptionListTile<T> extends StatelessWidget {
       subtitle: subtitle != null
           ? Text(
               subtitle!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             )
           : null,
       leading: Icon(
         Icons.circle,
         size: 12,
-        color: isSelected ? MyColors.accentColor : Colors.transparent,
+        color: isSelected ? context.colors.accent : Colors.transparent,
       ),
       trailing: trailing,
       onTap: () => onChanged(value),

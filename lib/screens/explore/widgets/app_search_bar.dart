@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 enum SearchBarVariant { hero, standard, compact }
 
@@ -34,7 +34,7 @@ class AppSearchBarSpecs {
             color: Colors.white,
             borderRadius: BorderRadius.circular(50),
             border: Border.all(
-              color: MyColors.accentColor,
+              color: context.colors.accent,
               width: 0.5,
             ),
           ),
@@ -126,7 +126,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
                 padding: const EdgeInsets.only(left: 12),
                 child: Icon(
                   widget.icon,
-                  color: textEditingController.text.isNotEmpty ? MyColors.accentColor : spec.hintStyle.color,
+                  color: textEditingController.text.isNotEmpty ? context.colors.accent : spec.hintStyle.color,
                   size: spec.iconSize,
                 ),
               ),
@@ -167,7 +167,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
                 child: IconButton(
                   icon: Icon(
                     CupertinoIcons.xmark,
-                    color: MyColors.accentColor,
+                    color: context.colors.accent,
                     size: spec.iconSize,
                   ),
                   onPressed: () {

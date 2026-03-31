@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PhotosTab extends StatefulWidget {
@@ -69,7 +69,7 @@ class _PhotosTabState extends State<PhotosTab> {
           const SizedBox(height: 40),
           Container(
             decoration: BoxDecoration(
-              color: MyColors.lightGrey,
+              color: context.colors.border,
               shape: BoxShape.circle,
             ),
             width: 80,
@@ -77,7 +77,7 @@ class _PhotosTabState extends State<PhotosTab> {
             child: Icon(
               PhosphorIconsRegular.camera,
               size: 35,
-              color: MyColors.mutedText,
+              color: context.colors.textMuted,
             ),
           ),
           const SizedBox(height: 10),
@@ -85,7 +85,7 @@ class _PhotosTabState extends State<PhotosTab> {
           const SizedBox(height: 20),
           Text(
             'Photos from your adventures and the community will appear here. Be the first to share a snap!',
-            style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+            style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,
           ),
         ],

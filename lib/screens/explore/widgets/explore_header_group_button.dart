@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class ExploreHeaderGroupButton extends StatelessWidget {
   const ExploreHeaderGroupButton({super.key});
@@ -28,8 +28,8 @@ class ExploreHeaderGroupButton extends StatelessWidget {
                   shape: const CircleBorder(),
                   elevation: 0,
                   padding: const EdgeInsets.all(13),
-                  side: const BorderSide(
-                    color: MyColors.accentColor,
+                  side: BorderSide(
+                    color: context.colors.accent,
                     width: 0.5,
                   ),
                 ),
@@ -40,9 +40,9 @@ class ExploreHeaderGroupButton extends StatelessWidget {
                     Navigator.of(context).pushNamed(GroupFilterScreen.route);
                   }
                 },
-                child: const Icon(
+                child: Icon(
                   CupertinoIcons.person_2,
-                  color: MyColors.accentColor,
+                  color: context.colors.accent,
                   size: 20,
                 ),
               ),

@@ -4,7 +4,6 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/weather/widgets/widgets.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class WeatherScreenArgs {
   final Munro munro;
@@ -62,7 +61,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           duration: const Duration(milliseconds: 300),
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: selectedIndex == index ? MyColors.accentColor : Colors.transparent,
+                            color: selectedIndex == index ? context.colors.accent : Colors.transparent,
                             shape: BoxShape.circle,
                           ),
                           child: Text(

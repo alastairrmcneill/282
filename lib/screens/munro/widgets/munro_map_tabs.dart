@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroMapWidget extends StatelessWidget {
   final Munro munro;
@@ -99,7 +99,7 @@ class MunroMapWidget extends StatelessWidget {
                 child: Icon(
                   PhosphorIconsRegular.arrowsOutSimple,
                   size: 20,
-                  color: MyColors.subtitleColor,
+                  color: context.colors.textSubtitle,
                 ),
               ),
             ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class NotificationSettingsScreen extends StatelessWidget {
   const NotificationSettingsScreen({super.key});
@@ -27,7 +27,7 @@ class NotificationSettingsScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Notifications will be sent for new followers, comments, and likes on posts.',
-              style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+              style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             ),
             const SizedBox(height: 12),
             SwitchListTile(

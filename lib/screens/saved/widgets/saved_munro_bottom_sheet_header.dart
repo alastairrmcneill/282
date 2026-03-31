@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class SavedMunroBottomSheetHeader extends StatelessWidget {
   const SavedMunroBottomSheetHeader({super.key});
@@ -20,7 +20,7 @@ class SavedMunroBottomSheetHeader extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: Icon(
               PhosphorIconsRegular.x,
-              color: MyColors.mutedText,
+              color: context.colors.textMuted,
             ),
           ),
         ],

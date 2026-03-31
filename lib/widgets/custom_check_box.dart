@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class CustomCheckbox extends StatelessWidget {
   const CustomCheckbox({
@@ -9,9 +9,9 @@ class CustomCheckbox extends StatelessWidget {
     required this.onChanged,
     this.size = 18,
     this.targetSize = 48,
-    this.activeFillColor = MyColors.accentColor,
+    this.activeFillColor,
     this.inactiveFillColor = const Color.fromRGBO(245, 245, 245, 1.0),
-    this.activeBorderColor = MyColors.accentColor,
+    this.activeBorderColor,
     this.inactiveBorderColor = const Color.fromRGBO(224, 224, 224, 1.0),
     this.checkColor = Colors.white,
     this.borderRadius = 4,
@@ -22,9 +22,9 @@ class CustomCheckbox extends StatelessWidget {
   final ValueChanged<bool> onChanged;
   final double size;
   final double targetSize;
-  final Color activeFillColor;
+  final Color? activeFillColor;
   final Color inactiveFillColor;
-  final Color activeBorderColor;
+  final Color? activeBorderColor;
   final Color inactiveBorderColor;
   final Color checkColor;
   final double borderRadius;
@@ -32,6 +32,8 @@ class CustomCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final activeColor = activeFillColor ?? context.colors.accent;
+    final activeBorder = activeBorderColor ?? context.colors.accent;
     return InkResponse(
       onTap: () => onChanged(!value),
       highlightShape: BoxShape.circle,
@@ -49,10 +51,10 @@ class CustomCheckbox extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(
-                color: value ? activeBorderColor : inactiveBorderColor,
+                color: value ? activeBorder : inactiveBorderColor,
                 width: borderWidth,
               ),
-              color: value ? activeFillColor : inactiveFillColor,
+              color: value ? activeColor : inactiveFillColor,
             ),
             child: value
                 ? Icon(

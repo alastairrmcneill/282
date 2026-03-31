@@ -4,13 +4,13 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -93,7 +93,7 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
     final userId = context.read<AuthState>().currentUserId;
 
     return SliverAppBar(
-      backgroundColor: MyColors.backgroundColor,
+      backgroundColor: context.colors.background,
       expandedHeight: 300.0,
       floating: false,
       pinned: true,

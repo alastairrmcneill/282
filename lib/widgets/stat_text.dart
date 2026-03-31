@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class StatText extends StatelessWidget {
   final String text;
@@ -45,10 +45,10 @@ class StatText extends StatelessWidget {
             ),
             Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: MyColors.accentColor,
+                color: context.colors.accent,
               ),
             ),
           ],

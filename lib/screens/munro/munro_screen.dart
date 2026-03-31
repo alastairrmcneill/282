@@ -21,7 +21,6 @@ class MunroScreen extends StatefulWidget {
 
 class _MunroScreenState extends State<MunroScreen> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _reviewsKey = GlobalKey();
 
   @override
   void initState() {

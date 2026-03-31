@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroSummitedWidget extends StatelessWidget {
   final Munro munro;
@@ -24,13 +24,13 @@ class MunroSummitedWidget extends StatelessWidget {
           Text(
             'Completed',
             style: textTheme.titleMedium!.copyWith(
-              color: MyColors.accentColor,
+              color: context.colors.accent,
             ),
           ),
           Text(
             'You climbed this on ${DateFormat('dd/MM/yyyy').format(date)}',
             style: textTheme.bodyMedium!.copyWith(
-              color: MyColors.subtitleColor.withAlpha(170),
+              color: context.colors.textSubtitle.withAlpha(170),
             ),
           ),
         ],
@@ -42,7 +42,7 @@ class MunroSummitedWidget extends StatelessWidget {
           Text(
             'Completed ${completions.length} times',
             style: textTheme.titleMedium!.copyWith(
-              color: MyColors.accentColor,
+              color: context.colors.accent,
             ),
           ),
           ...completions.map((date) {
@@ -51,7 +51,7 @@ class MunroSummitedWidget extends StatelessWidget {
               child: Text(
                 '• ${DateFormat('dd/MM/yyyy').format(date.dateTimeCompleted)}',
                 style: textTheme.bodyMedium!.copyWith(
-                  color: MyColors.subtitleColor.withAlpha(170),
+                  color: context.colors.textSubtitle.withAlpha(170),
                 ),
               ),
             );

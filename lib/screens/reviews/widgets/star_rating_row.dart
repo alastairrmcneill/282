@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class StarRatingRow extends StatelessWidget {
   final int rating;
@@ -16,7 +16,7 @@ class StarRatingRow extends StatelessWidget {
           height: 20,
           child: Icon(
             Icons.star_rounded,
-            color: index < rating ? MyColors.starColor : MyColors.lightGrey,
+            color: index < rating ? context.colors.starColor : context.colors.border,
             size: 20,
           ),
         ),

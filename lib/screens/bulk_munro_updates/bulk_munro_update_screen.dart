@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 enum MunroListViewMode { list, map }
 
@@ -45,7 +45,7 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           padding: const EdgeInsets.all(12),
           child: Text(
             "Select munros you've already completed. Dates will default to today unless you specify otherwise.",
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
           ),
         ),
       ),
@@ -117,7 +117,7 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
                 style: ButtonStyle(
                   minimumSize: WidgetStateProperty.all(const Size(80, 40)),
                   padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
-                  backgroundColor: WidgetStateProperty.all(MyColors.accentColor),
+                  backgroundColor: WidgetStateProperty.all(context.colors.accent),
                   foregroundColor: WidgetStateProperty.all(Colors.white),
                 ),
                 onPressed: () {

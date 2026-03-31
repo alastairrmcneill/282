@@ -1,10 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/extensions/extensions.dart' show IntExtension;
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroCardTitleText extends StatelessWidget {
   final Munro munro;
@@ -44,7 +43,7 @@ class MunroCardTitleText extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.star_rounded, size: 16, color: MyColors.starColor),
+            Icon(Icons.star_rounded, size: 16, color: context.colors.starColor),
             Text(
               (munro.averageRating ?? 0).toStringAsFixed(1),
               style: textTheme.bodyMedium?.copyWith(

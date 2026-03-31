@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class CreatePostImagePicker extends StatelessWidget {
   final int munroId;
@@ -47,7 +47,7 @@ class CreatePostImagePicker extends StatelessWidget {
             options: RoundedRectDottedBorderOptions(
               radius: const Radius.circular(10),
               dashPattern: const [5, 5],
-              color: MyColors.middleGrey,
+              color: context.colors.middleGrey,
               strokeWidth: 1,
             ),
             child: Center(
@@ -56,13 +56,13 @@ class CreatePostImagePicker extends StatelessWidget {
                 children: [
                   Icon(
                     PhosphorIconsRegular.camera,
-                    color: MyColors.middleGrey,
+                    color: context.colors.middleGrey,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Add photo',
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: MyColors.middleGrey,
+                          color: context.colors.middleGrey,
                         ),
                   ),
                 ],
@@ -167,7 +167,7 @@ class CreatePostImagePicker extends StatelessWidget {
                         options: RoundedRectDottedBorderOptions(
                           radius: const Radius.circular(10),
                           dashPattern: const [5, 5],
-                          color: MyColors.middleGrey,
+                          color: context.colors.middleGrey,
                           strokeWidth: 1,
                         ),
                         child: SizedBox(
@@ -179,14 +179,14 @@ class CreatePostImagePicker extends StatelessWidget {
                               children: [
                                 Icon(
                                   PhosphorIconsLight.camera,
-                                  color: MyColors.middleGrey,
+                                  color: context.colors.middleGrey,
                                 ),
                                 Text(
                                   'Add a photo',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
-                                      .copyWith(color: MyColors.middleGrey, fontSize: 11),
+                                      .copyWith(color: context.colors.middleGrey, fontSize: 11),
                                 )
                               ],
                             ),

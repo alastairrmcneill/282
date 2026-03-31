@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class AlreadySummitedMunroListTile extends StatelessWidget {
@@ -21,12 +20,12 @@ class AlreadySummitedMunroListTile extends StatelessWidget {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         side: BorderSide(
-          color: MyColors.accentColor,
+          color: context.colors.accent,
           width: 0.2,
         ),
         borderRadius: BorderRadius.circular(12),
       ),
-      color: MyColors.accentColor.withValues(alpha: 0.05),
+      color: context.colors.accent.withValues(alpha: 0.05),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -64,16 +63,16 @@ class AlreadySummitedMunroListTile extends StatelessWidget {
                         settingsState.metricHeight
                             ? "${munro.meters.thousandsSeparator()}m"
                             : "${munro.feet.thousandsSeparator()}ft",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.mutedText),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: context.colors.textMuted),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text('•',
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.mutedText)),
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: context.colors.textMuted)),
                       ),
                       Text(
                         munro.area,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.mutedText),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: context.colors.textMuted),
                       ),
                     ],
                   ),
@@ -87,13 +86,13 @@ class AlreadySummitedMunroListTile extends StatelessWidget {
                       Icon(
                         PhosphorIconsRegular.calendarBlank,
                         size: 16,
-                        color: MyColors.mutedText,
+                        color: context.colors.textMuted,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         DateFormat('dd/MM/yyyy').format(summitedDate),
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: MyColors.mutedText,
+                              color: context.colors.textMuted,
                             ),
                       ),
                     ],
@@ -108,7 +107,7 @@ class AlreadySummitedMunroListTile extends StatelessWidget {
               value: true,
               onChanged: (value) {},
               targetSize: 18,
-              activeFillColor: MyColors.accentColor.withAlpha(150),
+              activeFillColor: context.colors.accent.withAlpha(150),
             ),
           ),
         ],

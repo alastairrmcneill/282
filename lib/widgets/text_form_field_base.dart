@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class TextFormFieldBase extends StatelessWidget {
   final TextEditingController? controller;
@@ -77,7 +77,7 @@ class TextFormFieldBase extends StatelessWidget {
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: MyColors.mutedText,
+                  color: context.colors.textMuted,
                   width: 0.7,
                 ),
               ),
@@ -85,7 +85,7 @@ class TextFormFieldBase extends StatelessWidget {
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: MyColors.mutedText,
+                  color: context.colors.textMuted,
                   width: 0.7,
                 ),
               ),
@@ -93,14 +93,14 @@ class TextFormFieldBase extends StatelessWidget {
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: MyColors.accentColor,
+                  color: context.colors.accent,
                   width: 1.2,
                 ),
               ),
           filled: true,
           fillColor: fillColor,
           hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: MyColors.mutedText,
+                color: context.colors.textMuted,
               ),
         ),
         textCapitalization: textCapitalization,

@@ -6,7 +6,6 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroCommonlyClimbedWithVertical extends StatelessWidget {
   final Munro munro;
@@ -77,21 +76,21 @@ class MunroCommonlyClimbedWithVertical extends StatelessWidget {
                                       ? '${m.meters.thousandsSeparator()} m'
                                       : '${m.feet.thousandsSeparator()} ft',
                                   style: textTheme.bodySmall?.copyWith(
-                                    color: MyColors.mutedText,
+                                    color: context.colors.textMuted,
                                   ),
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '•',
                                   style: textTheme.bodySmall?.copyWith(
-                                    color: MyColors.mutedText,
+                                    color: context.colors.textMuted,
                                   ),
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   m.area,
                                   style: textTheme.bodySmall?.copyWith(
-                                    color: MyColors.mutedText,
+                                    color: context.colors.textMuted,
                                   ),
                                 ),
                               ],
@@ -101,7 +100,7 @@ class MunroCommonlyClimbedWithVertical extends StatelessWidget {
                       ),
                       Icon(
                         PhosphorIconsRegular.caretRight,
-                        color: MyColors.mutedText,
+                        color: context.colors.textMuted,
                       ),
                       const SizedBox(width: 15),
                     ],

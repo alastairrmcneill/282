@@ -5,13 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/models/models.dart';
 
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/settings/widgets/widgets.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -37,16 +38,16 @@ class SettingsScreen extends StatelessWidget {
                   Navigator.of(context).pushNamed(EditProfileScreen.route);
                 },
                 title: const Text("Edit Profile"),
-                leading: const Icon(PhosphorIconsRegular.user, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.user, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
               ListTile(
                 onTap: () {
                   Navigator.of(context).pushNamed(PrivacySettingsScreen.route);
                 },
                 title: const Text("Privacy"),
-                leading: const Icon(PhosphorIconsRegular.shield, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
             ],
           ),
@@ -58,16 +59,37 @@ class SettingsScreen extends StatelessWidget {
                   Navigator.of(context).pushNamed(NotificationSettingsScreen.route);
                 },
                 title: const Text("Push Notifications"),
-                leading: const Icon(PhosphorIconsRegular.bell, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.bell, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
               ListTile(
                 onTap: () {
                   Navigator.of(context).pushNamed(UnitsSettingsScreen.route);
                 },
                 title: const Text("Units"),
-                leading: const Icon(PhosphorIconsRegular.ruler, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.ruler, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+              Consumer<SettingsState>(
+                builder: (context, settings, _) {
+                  return ListTile(
+                    title: const Text("Appearance"),
+                    leading: Icon(PhosphorIconsRegular.moon, color: context.colors.accent),
+                    trailing: SegmentedButton<String>(
+                      segments: const [
+                        ButtonSegment(value: ThemeModeOption.light, label: Text("Light")),
+                        ButtonSegment(value: ThemeModeOption.system, label: Text("Auto")),
+                        ButtonSegment(value: ThemeModeOption.dark, label: Text("Dark")),
+                      ],
+                      selected: {settings.themeModeSetting},
+                      onSelectionChanged: (selection) => settings.setThemeMode(selection.first),
+                      style: ButtonStyle(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -86,8 +108,8 @@ class SettingsScreen extends StatelessWidget {
                   Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
                 },
                 title: Text('Log Past Munros'),
-                leading: const Icon(PhosphorIconsRegular.listChecks, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.listChecks, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
             ],
           ),
@@ -107,8 +129,8 @@ class SettingsScreen extends StatelessWidget {
                   }
                 },
                 title: const Text("Email us"),
-                leading: const Icon(PhosphorIconsRegular.envelopeSimple, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.envelopeSimple, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
               ListTile(
                 onTap: () async {
@@ -126,8 +148,8 @@ class SettingsScreen extends StatelessWidget {
                   }
                 },
                 title: const Text("Rate 282"),
-                leading: const Icon(PhosphorIconsRegular.star, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.star, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
             ],
           ),
@@ -136,8 +158,8 @@ class SettingsScreen extends StatelessWidget {
             children: [
               ListTile(
                 title: const Text("Terms of Service"),
-                leading: const Icon(PhosphorIconsRegular.fileText, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.fileText, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     DocumentScreen.route,
@@ -150,8 +172,8 @@ class SettingsScreen extends StatelessWidget {
               ),
               ListTile(
                 title: const Text("Privacy Policy"),
-                leading: const Icon(PhosphorIconsRegular.shield, color: MyColors.accentColor),
-                trailing: const Icon(Icons.chevron_right, color: MyColors.mutedText),
+                leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     DocumentScreen.route,
@@ -175,7 +197,7 @@ class SettingsScreen extends StatelessWidget {
                   });
                 },
                 title: const Text("Sign out"),
-                leading: const Icon(PhosphorIconsRegular.signOut, color: MyColors.accentColor),
+                leading: Icon(PhosphorIconsRegular.signOut, color: context.colors.accent),
               ),
               ListTile(
                 onTap: () async {
@@ -195,7 +217,7 @@ class SettingsScreen extends StatelessWidget {
                   'Delete account',
                   style: TextStyle(color: Colors.red),
                 ),
-                leading: const Icon(PhosphorIconsRegular.trash, color: Colors.red),
+                leading: Icon(PhosphorIconsRegular.trash, color: Colors.red),
               ),
             ],
           ),
@@ -208,7 +230,7 @@ class SettingsScreen extends StatelessWidget {
                   if (snapshot.hasData) {
                     return Text(
                       "v${snapshot.data!.version} (${snapshot.data!.buildNumber})",
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: MyColors.mutedText),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.colors.textMuted),
                     );
                   } else {
                     return LoadingWidget(text: "Loading app information...");

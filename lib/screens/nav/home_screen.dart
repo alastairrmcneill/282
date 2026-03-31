@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/design_system/design_system_tab.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -26,6 +27,7 @@ class HomeScreenState extends State<HomeScreen> {
     const FeedTab(),
     const SavedTab(),
     const ProfileTab(),
+    const DesignSystemTab(),
   ];
 
   @override
@@ -91,6 +93,8 @@ class HomeScreenState extends State<HomeScreen> {
         return SavedTab.route;
       case 3:
         return ProfileTab.route;
+      case 4:
+        return DesignSystemTab.route;
       default:
         return HomeScreen.route;
     }
@@ -177,6 +181,11 @@ class HomeScreenState extends State<HomeScreen> {
             icon: Icon(CupertinoIcons.person),
             activeIcon: Icon(CupertinoIcons.person_fill),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.square_grid_2x2),
+            activeIcon: Icon(CupertinoIcons.square_grid_2x2_fill),
+            label: 'Components',
           ),
         ],
       ),

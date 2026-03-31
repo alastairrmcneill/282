@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/option_list_tile.dart';
 
 class UnitsSettingsScreen extends StatelessWidget {
@@ -25,7 +25,7 @@ class UnitsSettingsScreen extends StatelessWidget {
             Text('Temperature', style: textTheme.titleLarge),
             const SizedBox(height: 6),
             Text('Choose your preferred temperature unit for weather information.',
-                style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText)),
+                style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted)),
             const SizedBox(height: 12),
             Card(
               margin: EdgeInsets.zero,
@@ -35,7 +35,7 @@ class UnitsSettingsScreen extends StatelessWidget {
                     title: 'Celsius (°C)',
                     trailing: Text(
                       '15°C',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                     ),
                     value: true,
                     groupValue: settingsState.metricTemperature,
@@ -48,7 +48,7 @@ class UnitsSettingsScreen extends StatelessWidget {
                     title: 'Fahrenheit (°F)',
                     trailing: Text(
                       '59°F',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                     ),
                     value: false,
                     groupValue: settingsState.metricTemperature,
@@ -63,7 +63,7 @@ class UnitsSettingsScreen extends StatelessWidget {
             Text('Height', style: textTheme.titleLarge),
             const SizedBox(height: 6),
             Text('Choose your preferred height unit for munro elevations.',
-                style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText)),
+                style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted)),
             const SizedBox(height: 12),
             Card(
               margin: EdgeInsets.zero,
@@ -78,7 +78,7 @@ class UnitsSettingsScreen extends StatelessWidget {
                           title: 'Meters (m)',
                           trailing: Text(
                             '1,218 m',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                           ),
                           value: true,
                           groupValue: settingsState.metricHeight,
@@ -90,7 +90,7 @@ class UnitsSettingsScreen extends StatelessWidget {
                           title: 'Feet (ft)',
                           trailing: Text(
                             '3,996 ft',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: MyColors.mutedText),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                           ),
                           value: false,
                           groupValue: settingsState.metricHeight,

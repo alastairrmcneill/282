@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_post/widgets/create_post_munro_tile.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CreatePostScreen extends StatefulWidget {
@@ -352,7 +352,7 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!
-                                                  .copyWith(color: MyColors.mutedText),
+                                                  .copyWith(color: context.colors.textMuted),
                                             ),
                                           ],
                                         ),

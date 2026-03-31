@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class SettingsGroup extends StatelessWidget {
   final String? title;
@@ -24,7 +24,7 @@ class SettingsGroup extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
-                  ?.copyWith(color: MyColors.mutedText, fontWeight: FontWeight.w400),
+                  ?.copyWith(color: context.colors.textMuted, fontWeight: FontWeight.w400),
             ),
           if (title != null) const SizedBox(height: 2),
           Card(

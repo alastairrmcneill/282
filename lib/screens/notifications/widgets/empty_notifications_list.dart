@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class EmptyNotificationsList extends StatelessWidget {
   const EmptyNotificationsList({super.key});
@@ -17,7 +17,7 @@ class EmptyNotificationsList extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: MyColors.lightGrey,
+                color: context.colors.border,
                 shape: BoxShape.circle,
               ),
               width: 60,
@@ -25,7 +25,7 @@ class EmptyNotificationsList extends StatelessWidget {
               child: Icon(
                 PhosphorIconsRegular.checks,
                 size: 30,
-                color: MyColors.mutedText,
+                color: context.colors.textMuted,
               ),
             ),
             const SizedBox(height: 20),
@@ -33,7 +33,7 @@ class EmptyNotificationsList extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               'No new notifications right now. Keep bagging those munros and check back soon!',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
               textAlign: TextAlign.center,
             ),
           ],

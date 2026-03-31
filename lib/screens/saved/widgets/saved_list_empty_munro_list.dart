@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class SavedListEmptyMunroList extends StatelessWidget {
   const SavedListEmptyMunroList({super.key});
@@ -13,11 +13,11 @@ class SavedListEmptyMunroList extends StatelessWidget {
         children: [
           Icon(
             PhosphorIconsRegular.mountains,
-            color: MyColors.mutedText,
+            color: context.colors.textMuted,
           ),
           Text(
             'No munros added yet',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
           )
         ],
       ),

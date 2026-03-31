@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewsScreenArgs {
@@ -84,7 +84,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             if (munroName != null)
               Text(
                 munroName,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
               )
           ],
         ),

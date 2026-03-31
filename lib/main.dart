@@ -78,7 +78,7 @@ main() async {
     )),
   );
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: MyColors.backgroundColor,
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: MyLightColors().background,
   ));
 }

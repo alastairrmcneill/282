@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/munro_model.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class SavedListMunroTile extends StatelessWidget {
   final Munro munro;
@@ -37,10 +36,10 @@ class SavedListMunroTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(munro.name, style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500)),
-                Text(munro.area, style: textTheme.bodySmall?.copyWith(color: MyColors.mutedText)),
+                Text(munro.area, style: textTheme.bodySmall?.copyWith(color: context.colors.textMuted)),
                 Text(
                     "${settingState.metricHeight ? munro.meters.thousandsSeparator() : munro.feet.thousandsSeparator()}${settingState.metricHeight ? 'm' : 'ft'}",
-                    style: textTheme.bodySmall?.copyWith(color: MyColors.mutedText)),
+                    style: textTheme.bodySmall?.copyWith(color: context.colors.textMuted)),
               ],
             ),
           ),
@@ -48,7 +47,7 @@ class SavedListMunroTile extends StatelessWidget {
             iconSize: 16,
             icon: Icon(
               PhosphorIconsRegular.x,
-              color: MyColors.mutedText,
+              color: context.colors.textMuted,
             ),
             onPressed: () => onDelete?.call(),
           )

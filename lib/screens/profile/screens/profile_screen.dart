@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
@@ -47,17 +48,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  Widget _buildPopUpMenu(
-    BuildContext context, {
-    required ProfileState profileState,
-  }) {
+  void _showActionsDialog(BuildContext context) {
+    final profileState = context.read<ProfileState>();
     final reportState = context.read<ReportState>();
-    List<MenuItem> menuItems = [];
 
-    menuItems = [
-      MenuItem(
-        text: 'Block',
-        onTap: () {
+    final items = [
+      ActionMenuItems(
+        title: 'Block',
+        isDestructive: true,
+        onPressed: () async {
           showConfirmationDialog(
             context,
             message: "Are you sure you want to block this user?",
@@ -68,17 +67,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         },
       ),
-      MenuItem(
-        text: 'Report',
-        onTap: () {
+      ActionMenuItems(
+        title: 'Report',
+        isDestructive: true,
+        onPressed: () async {
           reportState.setContentId = profileState.profile?.id ?? "";
           reportState.setType = "user";
           Navigator.of(context).pushNamed(ReportScreen.route);
         },
       ),
     ];
-
-    return PopupMenuBase(items: menuItems);
+    showActionSheet(context, items);
   }
 
   @override
@@ -150,7 +149,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   icon: const Icon(Icons.settings_rounded),
                 )
-              : _buildPopUpMenu(context, profileState: profileState)
+              : SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: IconButton(
+                    padding: EdgeInsets.all(0),
+                    icon: Icon(
+                      PhosphorIconsBold.dotsThreeVertical,
+                      color: context.colors.textMuted,
+                    ),
+                    onPressed: () => _showActionsDialog(context),
+                  ),
+                )
         ],
       ),
       body: RefreshIndicator(

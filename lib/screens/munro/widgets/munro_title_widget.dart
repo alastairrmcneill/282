@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroTitle extends StatelessWidget {
   final Munro munro;
@@ -45,7 +44,7 @@ class MunroTitle extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.star_rounded, size: 16, color: MyColors.starColor),
+            Icon(Icons.star_rounded, size: 16, color: context.colors.starColor),
             Text(
               (munro.averageRating ?? 0).toStringAsFixed(1),
               style: textTheme.bodySmall?.copyWith(

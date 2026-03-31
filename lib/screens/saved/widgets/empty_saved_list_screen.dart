@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/saved/widgets/card_saved_list_name_input.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class EmptySavedListScreen extends StatefulWidget {
   const EmptySavedListScreen({super.key});
@@ -34,7 +34,7 @@ class _EmptySavedListScreenState extends State<EmptySavedListScreen> {
           const SizedBox(height: 120),
           Container(
             decoration: BoxDecoration(
-              color: MyColors.lightGrey,
+              color: context.colors.border,
               shape: BoxShape.circle,
             ),
             width: 90,
@@ -42,7 +42,7 @@ class _EmptySavedListScreenState extends State<EmptySavedListScreen> {
             child: Icon(
               PhosphorIconsRegular.listDashes,
               size: 40,
-              color: MyColors.mutedText,
+              color: context.colors.textMuted,
             ),
           ),
           const SizedBox(height: 40),
@@ -50,7 +50,7 @@ class _EmptySavedListScreenState extends State<EmptySavedListScreen> {
           const SizedBox(height: 20),
           Text(
             'Create custom lists to organize munros by region, difficulty, or your personal goals. Track your progress and plan your next adventure.',
-            style: textTheme.bodyMedium?.copyWith(color: MyColors.mutedText),
+            style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),

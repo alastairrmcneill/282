@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class DurationPickerDialog extends StatefulWidget {
   final Duration initialDuration;
@@ -39,11 +39,11 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
           height: 300,
           child: Column(
             children: <Widget>[
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Select Duration',
-                  style: TextStyle(fontSize: 14, color: MyColors.textColor),
+                  style: TextStyle(fontSize: 14, color: context.colors.textPrimary),
                 ),
               ),
               Expanded(
@@ -110,7 +110,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                   index.toString().padLeft(2, '0'),
                   style: TextStyle(
                     fontSize: 24,
-                    color: isSelected ? MyColors.textColor : Colors.grey,
+                    color: isSelected ? context.colors.textPrimary : Colors.grey,
                     fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
                   ),
                 ),
@@ -127,7 +127,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
           child: Center(
             child: Text(
               unit,
-              style: const TextStyle(fontSize: 24, color: MyColors.textColor),
+              style: TextStyle(fontSize: 24, color: context.colors.textPrimary),
             ),
           ),
         ),

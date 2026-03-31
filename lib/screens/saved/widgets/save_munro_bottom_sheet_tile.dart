@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class SaveMunroBottomSheetTile extends StatelessWidget {
   final SavedListState savedListState;
@@ -25,7 +25,7 @@ class SaveMunroBottomSheetTile extends StatelessWidget {
         color: isSaved ? Colors.green.withOpacity(0.1) : null,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: isSaved ? Colors.green : MyColors.mutedText.withOpacity(0.5),
+            color: isSaved ? Colors.green : context.colors.textMuted.withOpacity(0.5),
             width: isSaved ? 1 : 0.5,
             style: BorderStyle.solid,
           ),
@@ -52,7 +52,7 @@ class SaveMunroBottomSheetTile extends StatelessWidget {
               children: [
                 Icon(
                   PhosphorIconsRegular.listDashes,
-                  color: MyColors.mutedText,
+                  color: context.colors.textMuted,
                 ),
                 const SizedBox(width: 15),
                 Expanded(
