@@ -30,32 +30,29 @@ class MyTheme {
           elevation: 1,
         ),
       ),
-      // Primary Button
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.light.accent,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: textTheme.labelLarge,
           elevation: 0,
         ),
       ),
-
-      // Secondary Button
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.black,
+          foregroundColor: AppColors.light.textPrimary,
+          backgroundColor: AppColors.light.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
           ),
-          side: const BorderSide(color: Color(0x33000000), width: 1),
-          textStyle: textTheme.labelLarge,
+          side: BorderSide(color: AppColors.light.border, width: 1),
+          textStyle: textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w500),
           elevation: 0,
         ),
       ),
-
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
@@ -94,7 +91,6 @@ class MyTheme {
           textStyle: MaterialStateProperty.all<TextStyle>(textTheme.labelLarge!),
         ),
       ),
-
       dividerTheme: DividerThemeData(
         color: AppColors.light.divider,
         thickness: 1,
@@ -165,12 +161,25 @@ class MyTheme {
       iconTheme: IconThemeData(color: AppColors.light.accent),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.light.border, width: 0.65),
         ),
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.light.border, width: 0.65),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.light.accent, width: 0.65),
+        ),
+        filled: true,
+        fillColor: AppColors.light.surface,
+        contentPadding: const EdgeInsets.all(10),
+        hintStyle: textTheme.bodyLarge!.copyWith(color: AppColors.light.textMuted),
+        suffixIconColor: AppColors.light.textMuted,
+        prefixIconColor: AppColors.light.textMuted,
       ),
-      cardColor: const Color(0XFFFFFFFF),
+      cardColor: AppColors.light.surface,
       cardTheme: const CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -185,7 +194,10 @@ class MyTheme {
         type: BottomNavigationBarType.fixed,
       ),
       fontFamily: 'Inter',
-      textTheme: textTheme,
+      textTheme: textTheme.apply(
+        bodyColor: AppColors.light.textPrimary,
+        displayColor: AppColors.light.textPrimary,
+      ),
       listTileTheme: ListTileThemeData(
         titleTextStyle:
             TextStyle(color: AppColors.light.textPrimary, fontSize: 16, fontWeight: FontWeight.w400, height: 1.2),
@@ -250,32 +262,29 @@ class MyTheme {
           elevation: 1,
         ),
       ),
-      // Primary Button
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          textStyle: textTheme.labelLarge,
-          elevation: 0,
-        ),
-      ),
-
-      // Secondary Button
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
+          backgroundColor: AppColors.dark.accent,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
           ),
-          side: const BorderSide(color: Color(0x33FFFFFF), width: 1),
           textStyle: textTheme.labelLarge,
           elevation: 0,
         ),
       ),
-
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.dark.textPrimary,
+          backgroundColor: AppColors.dark.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          side: BorderSide(color: AppColors.dark.border, width: 1),
+          textStyle: textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w500),
+          elevation: 0,
+        ),
+      ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
@@ -302,7 +311,6 @@ class MyTheme {
           textStyle: MaterialStateProperty.all<TextStyle>(textTheme.labelLarge!),
         ),
       ),
-
       dividerTheme: DividerThemeData(
         color: AppColors.dark.divider,
         thickness: 1,
@@ -365,10 +373,23 @@ class MyTheme {
       iconTheme: IconThemeData(color: AppColors.dark.accent),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.dark.border, width: 0.65),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.dark.border, width: 0.65),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppColors.dark.accent, width: 0.65),
+        ),
+        filled: true,
         fillColor: AppColors.dark.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+        contentPadding: const EdgeInsets.all(10),
+        hintStyle: textTheme.bodyLarge!.copyWith(color: AppColors.dark.textMuted),
+        suffixIconColor: AppColors.dark.textMuted,
+        prefixIconColor: AppColors.dark.textMuted,
       ),
       cardColor: AppColors.dark.surface,
       cardTheme: CardThemeData(
@@ -437,7 +458,7 @@ final textTheme = TextTheme(
   bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.50), // Body text default (Base)
   bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 1.43), // Body text / secondary (SM)
   bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.33), // Timestamps / small labels (XS)
-  labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.20), // Buttons / interactive
+  labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1), // Buttons / interactive
   labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.15),
   labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, height: 1.33),
 );
@@ -479,7 +500,7 @@ class MyLightColors implements AppColors {
   @override
   Color get middleGrey => const Color(0xFF9CA3AF); // gray-400
   @override
-  Color get border => const Color(0xFFE5E7EB); // gray-200
+  Color get border => const Color(0xFFD1D5DC);
   @override
   Color get divider => const Color(0xFFE5E7EB); // gray-200
   @override
@@ -500,7 +521,7 @@ class MyDarkColors implements AppColors {
   @override
   Color get surface => const Color(0xFF1F2937); // gray-800
   @override
-  Color get accent => const Color(0xFF11A071); // emerald-500
+  Color get accent => const Color(0xFF11A071);
   @override
   Color get textPrimary => const Color(0xFFFFFFFF); // white
   @override
@@ -510,7 +531,7 @@ class MyDarkColors implements AppColors {
   @override
   Color get middleGrey => const Color(0xFF9CA3AF); // gray-400
   @override
-  Color get border => const Color(0x1AFFFFFF); // white at 10% opacity
+  Color get border => const Color(0x33FFFFFF); // white at 20% opacity
   @override
   Color get divider => const Color(0xFF1F2937); // gray-800
   @override

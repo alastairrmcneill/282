@@ -7,7 +7,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 // Design System Colors
-class AppColors {
+class SelectMunroColors {
   // Emerald (Primary)
   static const emerald50 = Color(0xFFF0FDF4);
   static const emerald200 = Color(0xFFA7F3D0);
@@ -41,12 +41,12 @@ class TestMunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = isSelected || isMain ? AppColors.emerald50 : Colors.white;
+    Color backgroundColor = isSelected || isMain ? SelectMunroColors.emerald50 : Colors.white;
     Color borderColor = isMain
-        ? AppColors.emerald200
+        ? SelectMunroColors.emerald200
         : isSelected
-            ? AppColors.emerald300
-            : AppColors.slate200;
+            ? SelectMunroColors.emerald300
+            : SelectMunroColors.slate200;
 
     return InkWell(
       onTap: onTap,
@@ -65,13 +65,13 @@ class TestMunroCard extends StatelessWidget {
               Icon(
                 Icons.check_circle,
                 size: 20,
-                color: AppColors.emerald600,
+                color: SelectMunroColors.emerald600,
               )
             else
               Icon(
                 isSelected ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
                 size: 20,
-                color: isSelected ? AppColors.emerald600 : AppColors.slate400,
+                color: isSelected ? SelectMunroColors.emerald600 : SelectMunroColors.slate400,
               ),
             const SizedBox(width: 12),
             Expanded(
@@ -84,7 +84,7 @@ class TestMunroCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.slate900,
+                      color: SelectMunroColors.slate900,
                     ),
                   ),
                   Text(
@@ -92,7 +92,7 @@ class TestMunroCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.slate400,
+                      color: SelectMunroColors.slate400,
                     ),
                   ),
                 ],
@@ -118,7 +118,7 @@ class SectionHeader extends StatelessWidget {
       style: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: AppColors.slate900,
+        color: SelectMunroColors.slate900,
       ),
     );
   }
@@ -229,7 +229,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                               'Hide',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppColors.emerald600,
+                                color: SelectMunroColors.emerald600,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -262,7 +262,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                         height: 48,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: AppColors.slate200, width: 1),
+                          border: Border.all(color: SelectMunroColors.slate200, width: 1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -274,13 +274,13 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
-                                color: AppColors.slate900,
+                                color: SelectMunroColors.slate900,
                               ),
                             ),
                             Icon(
                               Icons.chevron_right,
                               size: 20,
-                              color: AppColors.slate400,
+                              color: SelectMunroColors.slate400,
                             ),
                           ],
                         ),
@@ -298,7 +298,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
-                top: BorderSide(color: AppColors.slate200, width: 1),
+                top: BorderSide(color: SelectMunroColors.slate200, width: 1),
               ),
             ),
             child: SizedBox(

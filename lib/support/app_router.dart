@@ -11,7 +11,7 @@ import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-import '../screens/design_system/design_system_tab.dart';
+import '../screens/component_library/design_system_tab.dart';
 import '../screens/screens.dart';
 
 class AppRouter {
