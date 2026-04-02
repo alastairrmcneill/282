@@ -3,10 +3,13 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/component_library/components/app_text_form_field.dart';
 import 'package:two_eight_two/screens/component_library/components/cta_button.dart';
+import 'package:two_eight_two/screens/component_library/components/glass_card.dart';
 import 'package:two_eight_two/screens/component_library/components/pill_button.dart';
 import 'package:two_eight_two/screens/component_library/components/primary_button.dart';
 import 'package:two_eight_two/screens/component_library/components/primary_icon_button.dart';
 import 'package:two_eight_two/screens/component_library/components/secondary_button.dart';
+import 'package:two_eight_two/screens/component_library/components/sliver_app_bar_button.dart';
+import 'package:two_eight_two/screens/component_library/components/sliver_app_bar_multi_button.dart';
 
 class DesignSystemTab extends StatelessWidget {
   static const String route = '/design-system';
@@ -127,6 +130,99 @@ class DesignSystemTab extends StatelessWidget {
             Tab(text: 'Tab 3'),
           ],
         ),
+      ),
+      Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGF0dGVybmVkJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GlassCard(
+              child: Text(
+                'This is a glass card. It has a frosted glass effect on dark mode and a solid white background on light mode.',
+              ),
+            ),
+          ),
+        ],
+      ),
+      Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGF0dGVybmVkJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                spacing: 8,
+                children: [
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.caretLeft),
+                  ),
+                  Expanded(child: Container()),
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+                  ),
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.share),
+                  ),
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.dotsThreeVertical),
+                  ),
+                ],
+              )),
+        ],
+      ),
+      Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGF0dGVybmVkJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                spacing: 8,
+                children: [
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.caretLeft),
+                  ),
+                  Expanded(child: Container()),
+                  SliverAppBarMultiButton(
+                    buttons: [
+                      SliverAppBarButtonItem(
+                        analyticsEvent: 'save_munro_pressed',
+                        onPressed: () {},
+                        icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+                      ),
+                      SliverAppBarButtonItem(
+                        analyticsEvent: 'share_munro_pressed',
+                        onPressed: () {},
+                        icon: Icon(PhosphorIconsRegular.share),
+                      ),
+                      SliverAppBarButtonItem(
+                        analyticsEvent: 'more_options_munro_pressed',
+                        onPressed: () {},
+                        icon: Icon(PhosphorIconsRegular.dotsThreeVertical),
+                      ),
+                    ],
+                  ),
+                ],
+              )),
+        ],
       ),
     ];
     return Scaffold(

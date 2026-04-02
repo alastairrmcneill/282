@@ -145,9 +145,12 @@ class _SavedListTileState extends State<SavedListTile> {
             Row(
               children: [
                 Container(
-                    decoration: BoxDecoration(color: context.colors.border, borderRadius: BorderRadius.circular(8)),
-                    width: 30,
-                    height: 30,
+                    decoration: BoxDecoration(
+                      color: context.colors.divider,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    width: 44,
+                    height: 44,
                     child: Icon(
                       PhosphorIconsRegular.listDashes,
                       color: context.colors.textMuted,

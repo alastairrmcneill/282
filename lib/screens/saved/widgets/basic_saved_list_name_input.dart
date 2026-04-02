@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -16,6 +17,12 @@ class BasicSavedListNameInput extends StatefulWidget {
 class _BasicSavedListNameInputState extends State<BasicSavedListNameInput> {
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  initState() {
+    super.initState();
+    _nameController.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
@@ -53,14 +60,9 @@ class _BasicSavedListNameInputState extends State<BasicSavedListNameInput> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextFormFieldBase(
+          AppTextFormField(
             controller: _nameController,
             hintText: 'List name...',
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-              borderSide: BorderSide.none,
-            ),
-            fillColor: const Color.fromARGB(255, 237, 237, 237),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Required';
@@ -75,15 +77,18 @@ class _BasicSavedListNameInputState extends State<BasicSavedListNameInput> {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
+                child: SecondaryButton(
+                  analyticsEvent: AnalyticsEvent.createSavedListCancel,
                   onPressed: _cancel,
                   child: const Text('Cancel'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: FilledButton(
+                child: PrimaryButton(
+                  analyticsEvent: AnalyticsEvent.createSavedListCreate,
                   onPressed: _createList,
+                  disabled: _nameController.text.trim().isEmpty,
                   child: const Text('Create'),
                 ),
               ),

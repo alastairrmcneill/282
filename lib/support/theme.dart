@@ -103,9 +103,28 @@ class MyTheme {
           borderRadius: BorderRadius.circular(15),
         ),
       ),
-      tabBarTheme: const TabBarThemeData(
-        labelColor: Colors.black,
-        indicatorColor: Colors.black,
+      tabBarTheme: TabBarThemeData(
+        labelColor: AppColors.light.accent,
+        indicatorColor: AppColors.light.accent,
+        unselectedLabelColor: AppColors.light.textSubtitle,
+        labelStyle: textTheme.labelLarge,
+        unselectedLabelStyle: textTheme.labelLarge?.copyWith(
+          color: AppColors.light.textSubtitle,
+          fontWeight: FontWeight.w400,
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: UnderlineTabIndicator(
+          insets: const EdgeInsets.symmetric(horizontal: 8),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(3),
+            topRight: Radius.circular(3),
+          ),
+          borderSide: BorderSide(
+            color: AppColors.light.accent,
+            width: 3,
+          ),
+        ),
+        dividerColor: AppColors.light.border,
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -324,8 +343,27 @@ class MyTheme {
         ),
       ),
       tabBarTheme: TabBarThemeData(
-        labelColor: Colors.white,
-        indicatorColor: Colors.white,
+        labelColor: AppColors.dark.accent,
+        indicatorColor: AppColors.dark.accent,
+        unselectedLabelColor: AppColors.dark.textSubtitle,
+        labelStyle: textTheme.labelLarge,
+        unselectedLabelStyle: textTheme.labelLarge?.copyWith(
+          color: AppColors.dark.textSubtitle,
+          fontWeight: FontWeight.w400,
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: UnderlineTabIndicator(
+          insets: const EdgeInsets.symmetric(horizontal: 8),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(3),
+            topRight: Radius.circular(3),
+          ),
+          borderSide: BorderSide(
+            color: AppColors.dark.accent,
+            width: 3,
+          ),
+        ),
+        dividerColor: AppColors.dark.border,
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -533,7 +571,8 @@ class MyDarkColors implements AppColors {
   @override
   Color get border => const Color(0x33FFFFFF); // white at 20% opacity
   @override
-  Color get divider => const Color(0xFF1F2937); // gray-800
+  Color get divider =>
+      const Color(0xFF1F2937); // gray-800 //TODO: find a better divider color for dark mode that isn't surface color
   @override
   Color get starColor => const Color(0xFFF59E0B); // amber-400
   // @override

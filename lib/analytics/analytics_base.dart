@@ -49,6 +49,9 @@ class AnalyticsEvent {
   static const appShared = 'app_shared';
   static const munroStartingPointClicked = 'munro_starting_point_clicked';
   static const munroDetailsTabViewed = 'munro_details_tab_viewed';
+
+  static const createSavedListCancel = 'create_saved_list_cancel';
+  static const createSavedListCreate = 'create_saved_list_create';
 }
 
 class AnalyticsProp {

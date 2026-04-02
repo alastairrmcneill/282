@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:two_eight_two/screens/component_library/components/secondary_button.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 
 class CreateNewSavedListWidget extends StatefulWidget {
@@ -18,12 +19,15 @@ class _CreateNewSavedListWidgetState extends State<CreateNewSavedListWidget> {
     if (!_isCreating) {
       return Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 8),
-        child: OutlinedButton(
+        child: SecondaryButton(
           onPressed: () => setState(() => _isCreating = true),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(PhosphorIconsBold.plus),
+              Icon(
+                PhosphorIconsBold.plus,
+                size: 16,
+              ),
               const SizedBox(width: 8),
               Text('Create new list'),
             ],
