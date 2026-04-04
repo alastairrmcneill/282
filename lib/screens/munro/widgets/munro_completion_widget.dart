@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -16,10 +17,10 @@ class MunroCompletionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final munroCompletionState = context.read<MunroCompletionState>();
-    List<MenuItem> menuItems = [
-      MenuItem(
-        text: 'Remove',
-        onTap: () {
+    List<ActionMenuItems> items = [
+      ActionMenuItems(
+        title: 'Remove',
+        onPressed: () {
           munroCompletionState.removeMunroCompletion(
             munroCompletion: munroCompletion,
           );
@@ -97,7 +98,18 @@ class MunroCompletionWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              PopupMenuBase(items: menuItems),
+              SizedBox(
+                width: 32,
+                height: 32,
+                child: IconButton(
+                  padding: EdgeInsets.all(0),
+                  icon: Icon(
+                    PhosphorIconsBold.dotsThreeVertical,
+                    color: context.colors.textMuted,
+                  ),
+                  onPressed: () => showActionSheet(context, items),
+                ),
+              )
             ],
           ),
         ),

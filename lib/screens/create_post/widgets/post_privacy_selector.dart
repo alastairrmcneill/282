@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -21,26 +21,20 @@ class PostPrivacySelector extends StatelessWidget {
     final settingsState = context.watch<SettingsState>();
     final createPostState = context.watch<CreatePostState>();
 
-    bool showPrivacyOption = context.read<RemoteConfigState>().config.showPrivacyOption;
-
     controller.text = createPostState.postPrivacy?.capitalize() ?? settingsState.defaultPostVisibility.capitalize();
 
-    IconData icon = CupertinoIcons.globe;
+    IconData icon = PhosphorIconsRegular.globe;
 
     switch (createPostState.postPrivacy) {
       case "public":
-        icon = CupertinoIcons.globe;
+        icon = PhosphorIconsRegular.globe;
         break;
       case "friends":
-        icon = CupertinoIcons.person_2;
+        icon = PhosphorIconsRegular.users;
         break;
       case "private":
-        icon = CupertinoIcons.lock;
+        icon = PhosphorIconsRegular.lock;
         break;
-    }
-
-    if (!showPrivacyOption) {
-      return const SizedBox.shrink();
     }
 
     return Column(

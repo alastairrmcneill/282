@@ -1,15 +1,18 @@
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/config/app_config.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
+import 'package:two_eight_two/models/models.dart';
 
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,7 +23,6 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<UserState>().currentUser;
-    FlavorState flavorState = context.read<FlavorState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -28,139 +30,213 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(EditProfileScreen.route);
-            },
-            title: const Text("Edit Profile"),
+          SettingsGroup(
+            title: 'Account',
+            children: [
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(EditProfileScreen.route);
+                },
+                title: const Text("Edit Profile"),
+                leading: Icon(PhosphorIconsRegular.user, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(PrivacySettingsScreen.route);
+                },
+                title: const Text("Privacy"),
+                leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+            ],
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(MunroChallengeListScreen.route);
-            },
-            title: const Text("Munro Challenges"),
+          SettingsGroup(
+            title: 'Preferences',
+            children: [
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(NotificationSettingsScreen.route);
+                },
+                title: const Text("Push Notifications"),
+                leading: Icon(PhosphorIconsRegular.bell, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(UnitsSettingsScreen.route);
+                },
+                title: const Text("Units"),
+                leading: Icon(PhosphorIconsRegular.ruler, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+              Consumer<SettingsState>(
+                builder: (context, settings, _) {
+                  return ListTile(
+                    title: const Text("Appearance"),
+                    leading: Icon(PhosphorIconsRegular.moon, color: context.colors.accent),
+                    trailing: SegmentedButton<String>(
+                      segments: const [
+                        ButtonSegment(value: ThemeModeOption.light, label: Text("Light")),
+                        ButtonSegment(value: ThemeModeOption.system, label: Text("Auto")),
+                        ButtonSegment(value: ThemeModeOption.dark, label: Text("Dark")),
+                      ],
+                      selected: {settings.themeModeSetting},
+                      onSelectionChanged: (selection) => settings.setThemeMode(selection.first),
+                      style: ButtonStyle(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(AchievementListScreen.route);
-            },
-            title: const Text("Achievements"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(NotificationSettingsScreen.route);
-            },
-            title: const Text("Push Notifications"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(UnitsSettingsScreen.route);
-            },
-            title: const Text("Units"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(PrivacySettingsScreen.route);
-            },
-            title: const Text("Privacy"),
-          ),
-          ListTile(
-            onTap: () async {
-              try {
-                await launchUrl(
-                  Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
-                );
-              } on Exception catch (error, stackTrace) {
-                context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
-                Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
-                showSnackBar(context, 'Copied email address. Go to email app to send.');
-              }
-            },
-            title: const Text("Email us"),
-          ),
-          ListTile(
-            onTap: () {
-              BulkMunroUpdateState bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
-              MunroCompletionState munroCompletionState = context.read<MunroCompletionState>();
-              MunroState munroState = context.read<MunroState>();
+          SettingsGroup(
+            title: 'Munro Management',
+            children: [
+              ListTile(
+                onTap: () {
+                  BulkMunroUpdateState bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
+                  MunroCompletionState munroCompletionState = context.read<MunroCompletionState>();
+                  MunroState munroState = context.read<MunroState>();
 
-              bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
-              munroState.clearFilterAndSorting();
+                  bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
+                  munroState.clearFilterAndSorting();
 
-              Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
-            },
-            title: Text('Bulk Munro Update'),
+                  Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
+                },
+                title: Text('Log Past Munros'),
+                leading: Icon(PhosphorIconsRegular.listChecks, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+            ],
           ),
-          flavorState.environment == AppEnvironment.dev
-              ? ListTile(
-                  onTap: () async {
-                    FirebaseMessaging _messaging = FirebaseMessaging.instance;
-                    try {
-                      String? token = await _messaging.getToken();
-                      print(token);
-                    } catch (e) {
-                      print("Error fetching FCM token: $e");
-                    }
-                  },
-                  title: const Text("FCM"),
-                )
-              : const SizedBox(),
-          ListTile(
-            onTap: () async {
-              String url = Platform.isIOS
-                  ? "https://apps.apple.com/us/app/282/id6474512889"
-                  : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
-              try {
-                await launchUrl(
-                  Uri.parse(url),
-                );
-              } on Exception catch (error, stackTrace) {
-                context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
-                Clipboard.setData(ClipboardData(text: url));
-                showSnackBar(context, 'Copied link. Go to browser to open.');
-              }
-            },
-            title: const Text("Rate 282"),
+          SettingsGroup(
+            title: 'Support',
+            children: [
+              ListTile(
+                onTap: () async {
+                  try {
+                    await launchUrl(
+                      Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
+                    );
+                  } on Exception catch (error, stackTrace) {
+                    context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
+                    Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
+                    showSnackBar(context, 'Copied email address. Go to email app to send.');
+                  }
+                },
+                title: const Text("Email us"),
+                leading: Icon(PhosphorIconsRegular.envelopeSimple, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+              ListTile(
+                onTap: () async {
+                  String url = Platform.isIOS
+                      ? "https://apps.apple.com/us/app/282/id6474512889"
+                      : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
+                  try {
+                    await launchUrl(
+                      Uri.parse(url),
+                    );
+                  } on Exception catch (error, stackTrace) {
+                    context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
+                    Clipboard.setData(ClipboardData(text: url));
+                    showSnackBar(context, 'Copied link. Go to browser to open.');
+                  }
+                },
+                title: const Text("Rate 282"),
+                leading: Icon(PhosphorIconsRegular.star, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
+            ],
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(LegalScreen.route);
-            },
-            title: const Text("Legal"),
+          SettingsGroup(
+            title: 'Legal',
+            children: [
+              ListTile(
+                title: const Text("Terms of Service"),
+                leading: Icon(PhosphorIconsRegular.fileText, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    DocumentScreen.route,
+                    arguments: DocumentScreenArgs(
+                      title: 'Terms of Service',
+                      mdFileName: 'assets/documents/terms_and_conditions.md',
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text("Privacy Policy"),
+                leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    DocumentScreen.route,
+                    arguments: DocumentScreenArgs(
+                      title: 'Privacy Policy',
+                      mdFileName: 'assets/documents/privacy_policy.md',
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed(AboutScreen.route);
-            },
-            title: const Text("About"),
-          ),
-          ListTile(
-            onTap: () async {
-              await context.read<AuthState>().signOut().then((_) {
-                context.read<MunroCompletionState>().reset();
-                context.read<SavedListState>().reset();
-                Navigator.of(context).pushReplacementNamed(HomeScreen.route);
-              });
-            },
-            title: const Text("Sign out"),
-          ),
-          ListTile(
-            onTap: () async {
-              showConfirmationDialog(
-                context,
-                message: "Are you sure you want to delete account and all associated data?",
-                onConfirm: () async {
-                  await context.read<AuthState>().deleteUser(user!).then((_) {
+          SettingsGroup(
+            children: [
+              ListTile(
+                onTap: () async {
+                  await context.read<AuthState>().signOut().then((_) {
                     context.read<MunroCompletionState>().reset();
                     context.read<SavedListState>().reset();
                     Navigator.of(context).pushReplacementNamed(HomeScreen.route);
                   });
                 },
-              );
-            },
-            title: const Text(
-              'Delete account',
-              style: TextStyle(color: Colors.red),
+                title: const Text("Sign out"),
+                leading: Icon(PhosphorIconsRegular.signOut, color: context.colors.accent),
+              ),
+              ListTile(
+                onTap: () async {
+                  showConfirmationDialog(
+                    context,
+                    message: "Are you sure you want to delete account and all associated data?",
+                    onConfirm: () async {
+                      await context.read<AuthState>().deleteUser(user!).then((_) {
+                        context.read<MunroCompletionState>().reset();
+                        context.read<SavedListState>().reset();
+                        Navigator.of(context).pushReplacementNamed(HomeScreen.route);
+                      });
+                    },
+                  );
+                },
+                title: const Text(
+                  'Delete account',
+                  style: TextStyle(color: Colors.red),
+                ),
+                leading: Icon(PhosphorIconsRegular.trash, color: Colors.red),
+              ),
+            ],
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Center(
+              child: FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      "v${snapshot.data!.version} (${snapshot.data!.buildNumber})",
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.colors.textMuted),
+                    );
+                  } else {
+                    return LoadingWidget(text: "Loading app information...");
+                  }
+                },
+              ),
             ),
           ),
         ],

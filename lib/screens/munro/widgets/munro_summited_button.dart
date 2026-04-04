@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class MunroSummitedButton extends StatelessWidget {
-  const MunroSummitedButton({super.key});
+  final Munro munro;
+  const MunroSummitedButton({super.key, required this.munro});
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
     final userState = context.read<UserState>();
     final createPostState = context.read<CreatePostState>();
     final settingsState = context.read<SettingsState>();
@@ -21,11 +22,12 @@ class MunroSummitedButton extends StatelessWidget {
             Navigator.of(context).pushNamed(AuthHomeScreen.route);
           } else {
             createPostState.reset();
-            if (munroState.selectedMunroId != null) {
-              createPostState.addMunro(munroState.selectedMunroId!);
-              createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-              Navigator.of(context).pushNamed(CreatePostScreen.route);
-            }
+            createPostState.addMunro(munro.id);
+            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+            Navigator.of(context).pushNamed(
+              SelectMunrosScreen.route,
+              arguments: SelectMunrosScreenArgs(mainMunro: munro),
+            );
           }
         },
         child: Padding(

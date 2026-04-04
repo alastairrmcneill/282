@@ -1,93 +1,88 @@
-import 'package:flutter/cupertino.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
-import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
-import 'package:two_eight_two/widgets/widgets.dart';
-import 'package:share_plus/share_plus.dart';
 
 class MunroTitle extends StatelessWidget {
-  const MunroTitle({super.key});
+  final Munro munro;
+  const MunroTitle({super.key, required this.munro});
 
   @override
   Widget build(BuildContext context) {
-    final userId = context.read<AuthState>().currentUserId;
-    final munroDetailState = context.read<MunroDetailState>();
-    final savedListState = context.watch<SavedListState>();
+    final settingsState = context.read<SettingsState>();
 
-    Munro munro = munroDetailState.selectedMunro!;
-    bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
+    final textTheme = Theme.of(context).textTheme;
 
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(munro.name, style: Theme.of(context).textTheme.headlineMedium),
-              munro.extra == null || munro.extra == ""
-                  ? const SizedBox()
-                  : SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "(${munro.extra})",
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ),
-            ],
-          ),
-        ),
-        InkWell(
-          onTap: () async {
-            final link = await context.read<ShareMunroState>().createShareLink(
-                  munroId: munro.id,
-                  munroName: munro.name,
-                );
-
-            if (link == null) {
-              showSnackBar(context, 'Failed to share link.');
-              return;
-            }
-
-            await SharePlus.instance.share(ShareParams(text: 'Check out ${munro.name} - $link'));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Icon(
-              CupertinoIcons.share,
-              color: MyColors.accentColor,
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width - 115,
+          child: AutoSizeText(
+            munro.name,
+            style: textTheme.headlineLarge?.copyWith(
+              color: Colors.white,
+              letterSpacing: -0.5,
+              fontWeight: FontWeight.w400,
+            ),
+            maxLines: 1,
+            minFontSize: 22,
+            overflowReplacement: AutoSizeText(
+              munro.name,
+              style: textTheme.headlineLarge?.copyWith(
+                color: Colors.white,
+                letterSpacing: -0.5,
+                fontWeight: FontWeight.w400,
+              ),
+              maxLines: 2,
             ),
           ),
         ),
-        const SizedBox(width: 8),
-        InkWell(
-          onTap: () async {
-            context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
-              AnalyticsProp.source: "Munro Tile",
-              AnalyticsProp.munroId: (munro.id).toString(),
-              AnalyticsProp.munroName: munro.name,
-            });
-
-            if (userId == null) {
-              Navigator.pushNamed(context, AuthHomeScreen.route);
-            } else {
-              showSaveMunroDialog(context);
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Icon(
-              munroSaved ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
-              color: MyColors.accentColor,
+        const SizedBox(height: 2),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.star_rounded, size: 16, color: context.colors.starColor),
+            Text(
+              (munro.averageRating ?? 0).toStringAsFixed(1),
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
             ),
-          ),
-        ),
+            const SizedBox(width: 12),
+            Text(
+              '•',
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              settingsState.metricHeight
+                  ? '${munro.meters.thousandsSeparator()} m'
+                  : '${munro.feet.thousandsSeparator()} ft',
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '•',
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              munro.area,
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ],
+        )
       ],
     );
   }

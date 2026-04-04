@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class ExploreTabHeader extends StatelessWidget {
   final double headerHeight;
@@ -31,10 +31,10 @@ class ExploreTabHeader extends StatelessWidget {
       left: 0,
       right: 0,
       child: Container(
-        color: isMunroListViewVisible || isSearchVisible ? MyColors.backgroundColor : Colors.transparent,
+        color: isMunroListViewVisible || isSearchVisible ? context.colors.background : Colors.transparent,
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Container(
-          color: isMunroListViewVisible || isSearchVisible ? MyColors.backgroundColor : Colors.transparent,
+          color: isMunroListViewVisible || isSearchVisible ? context.colors.background : Colors.transparent,
           height: headerHeight,
           child: Padding(
             padding: EdgeInsets.only(
@@ -48,9 +48,9 @@ class ExploreTabHeader extends StatelessWidget {
                   children: [
                     isSearchVisible
                         ? IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               CupertinoIcons.arrow_left,
-                              color: MyColors.accentColor,
+                              color: context.colors.accent,
                             ),
                             onPressed: onBackTap,
                           )
@@ -58,6 +58,7 @@ class ExploreTabHeader extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: AppSearchBar(
+                        variant: SearchBarVariant.hero,
                         focusNode: searchFocusNode,
                         hintText: "Search Munros",
                         onSearchTap: onSearchTap,

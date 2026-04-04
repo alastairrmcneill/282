@@ -63,9 +63,12 @@ Update `config/dev.json` with your required credentials:
   "SUPABASE_ANON": "your_supabase_anon_key",
   "MIXPANEL_TOKEN": "your_mixpanel_token",
   "MAPBOX_TOKEN": "your_mapbox_token",
-  "SENTRY_DSN": "your_sentry_dsn"
+  "SENTRY_DSN": "your_sentry_dsn",
+  "IMAGE_PROXY_BASE_URL": ""
 }
 ```
+
+Leave the image_proxy_base_url as blank so that you can load images from firebase. So leave it as `"IMAGE_PROXY_BASE_URL": ""` in the `config/dev.json` file.
 
 ### 2. Copy Branch.io Config
 

@@ -24,15 +24,7 @@ class _SavedTabState extends State<SavedTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Saved Lists'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              showCreateSavedListDialog(context);
-            },
-          ),
-        ],
+        title: const Text('My Munros'),
       ),
       body: RefreshIndicator(
         onRefresh: () => context.read<SavedListState>().readUserSavedLists(),
@@ -40,7 +32,7 @@ class _SavedTabState extends State<SavedTab> {
           builder: (context, savedListState, child) {
             switch (savedListState.status) {
               case SavedListStatus.loading:
-                return const Center(child: CircularProgressIndicator());
+                return const LoadingWidget(text: "Loading saved lists...");
               case SavedListStatus.error:
                 return CenterText(text: savedListState.error.message);
               default:
@@ -53,12 +45,22 @@ class _SavedTabState extends State<SavedTab> {
   }
 
   Widget _buildScreen(BuildContext context, {required SavedListState savedListState}) {
-    if (savedListState.savedLists.isEmpty) return const CenterText(text: "You don't have any saved lists yet");
+    if (savedListState.savedLists.isEmpty) return const EmptySavedListScreen();
 
-    return ListView(
-      children: savedListState.savedLists.map((savedList) {
-        return SavedListTile(savedList: savedList);
-      }).toList(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: ListView.separated(
+        itemCount: savedListState.savedLists.length + 1,
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return CreateNewSavedListWidget();
+          }
+
+          final savedList = savedListState.savedLists[index - 1];
+          return SavedListTile(savedList: savedList);
+        },
+      ),
     );
   }
 }

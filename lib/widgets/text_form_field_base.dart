@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class TextFormFieldBase extends StatelessWidget {
   final TextEditingController? controller;
@@ -22,7 +23,7 @@ class TextFormFieldBase extends StatelessWidget {
   final bool obscureText;
   final bool autocorrect;
   final InputBorder? border;
-  final Color? fillColor;
+  final Color fillColor;
 
   const TextFormFieldBase({
     super.key,
@@ -47,41 +48,65 @@ class TextFormFieldBase extends StatelessWidget {
     this.textInputAction,
     this.autocorrect = true,
     this.border,
-    this.fillColor,
+    this.fillColor = Colors.white,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      scrollController: scrollController,
-      initialValue: initialValue,
-      onSaved: onSaved,
-      validator: validator,
-      onChanged: onChanged,
-      minLines: minLines,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      obscureText: obscureText,
-      readOnly: readOnly,
-      onTap: onTap,
-      textAlignVertical: TextAlignVertical.top, // Add this line
-      decoration: InputDecoration(
-        hintText: hintText,
-        labelText: labelText,
-        alignLabelWithHint: true,
-        contentPadding: const EdgeInsets.all(10),
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        border: border,
-        filled: fillColor != null,
-        fillColor: fillColor,
-      ),
-      textCapitalization: textCapitalization,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      autocorrect: autocorrect,
-      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),
-    );
+        controller: controller,
+        scrollController: scrollController,
+        initialValue: initialValue,
+        onSaved: onSaved,
+        validator: validator,
+        onChanged: onChanged,
+        minLines: minLines,
+        maxLines: maxLines,
+        maxLength: maxLength,
+        obscureText: obscureText,
+        readOnly: readOnly,
+        onTap: onTap,
+        decoration: InputDecoration(
+          hintText: hintText,
+          labelText: labelText,
+          alignLabelWithHint: true,
+          contentPadding: const EdgeInsets.all(10),
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          border: border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: context.colors.textMuted,
+                  width: 0.7,
+                ),
+              ),
+          enabledBorder: border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: context.colors.textMuted,
+                  width: 0.7,
+                ),
+              ),
+          focusedBorder: border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: context.colors.accent,
+                  width: 1.2,
+                ),
+              ),
+          filled: true,
+          fillColor: fillColor,
+          hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: context.colors.textMuted,
+              ),
+        ),
+        textCapitalization: textCapitalization,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        autocorrect: autocorrect,
+        style: Theme.of(context).textTheme.bodyLarge);
   }
 }

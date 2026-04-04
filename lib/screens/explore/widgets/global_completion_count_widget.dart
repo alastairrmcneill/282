@@ -2,8 +2,8 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class GlobalCompletionCountWidget extends StatelessWidget {
   const GlobalCompletionCountWidget({super.key});
@@ -21,7 +21,7 @@ class GlobalCompletionCountWidget extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(50),
           border: Border.all(
-            color: MyColors.accentColor,
+            color: context.colors.accent,
             width: 0.5,
           ),
         ),
@@ -32,7 +32,7 @@ class GlobalCompletionCountWidget extends StatelessWidget {
           children: [
             SvgPicture.asset(
               'assets/icons/mountain.svg',
-              colorFilter: ColorFilter.mode(MyColors.accentColor, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(context.colors.accent, BlendMode.srcIn),
               width: 20,
               height: 20,
             ),
@@ -40,7 +40,7 @@ class GlobalCompletionCountWidget extends StatelessWidget {
               width: 0.5,
               height: 20,
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              color: Colors.black,
+              color: context.colors.accent,
             ),
             AnimatedFlipCounter(
               value: state.globalCompletionCount,

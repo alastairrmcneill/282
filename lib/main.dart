@@ -24,7 +24,6 @@ main() async {
   SentryWidgetsFlutterBinding.ensureInitialized();
 
   final config = AppConfig.fromEnvironment();
-  print("🚀 ~ main ~ config: ${config.toString()}");
   await Firebase.initializeApp();
   final prefs = await SharedPreferences.getInstance();
   final mixpanel = await Mixpanel.init(config.mixpanelToken, trackAutomaticEvents: true);
@@ -79,7 +78,7 @@ main() async {
     )),
   );
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: MyColors.backgroundColor,
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: MyLightColors().background,
   ));
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MunroDirectionsWidget extends StatelessWidget {
@@ -18,17 +18,17 @@ class MunroDirectionsWidget extends StatelessWidget {
           Uri.parse(munroDetailState.selectedMunro?.startingPointURL ?? ""),
         );
       },
-      leading: const Icon(
+      leading: Icon(
         CupertinoIcons.map,
-        color: MyColors.accentColor,
+        color: context.colors.accent,
       ),
       title: Text(
         "Get Directions",
         style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400, fontSize: 18),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         CupertinoIcons.forward,
-        color: MyColors.textColor,
+        color: context.colors.textPrimary,
       ),
       dense: true,
     );

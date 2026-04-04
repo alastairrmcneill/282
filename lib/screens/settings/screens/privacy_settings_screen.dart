@@ -1,81 +1,117 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class PrivacySettingsScreen extends StatelessWidget {
   static const String route = '${SettingsScreen.route}/privacy';
   PrivacySettingsScreen({super.key});
 
-  final List<String> _postVisibilityOptions = [
-    Privacy.public,
-    Privacy.friends,
-    Privacy.private,
-  ];
-
-  final List<String> _profileVisibilityOptions = [
-    Privacy.public,
-    Privacy.hidden,
-  ];
-
   @override
   Widget build(BuildContext context) {
     final settingsState = context.watch<SettingsState>();
     final userState = context.watch<UserState>();
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Privacy Settings"),
+        title: const Text("Privacy"),
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text('Default Post Visibility'),
-            trailing: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: settingsState.defaultPostVisibility,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    settingsState.setDefaultPostVisibility(newValue);
-                  }
-                },
-                items: _postVisibilityOptions.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value.capitalize(),
-                      style: const TextStyle(fontWeight: FontWeight.w400),
-                    ),
-                  );
-                }).toList(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: ListView(
+          children: [
+            const SizedBox(height: 20),
+            Text('Post visibility', style: textTheme.titleLarge),
+            const SizedBox(height: 6),
+            Text(
+              'Control who can view your posts.',
+              style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              margin: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  OptionListTile(
+                      title: 'Public',
+                      subtitle: 'Anyone can view your posts.',
+                      value: Privacy.public,
+                      groupValue: settingsState.defaultPostVisibility,
+                      onChanged: (value) {
+                        settingsState.setDefaultPostVisibility(value);
+                      }),
+                  Divider(
+                    endIndent: 15,
+                    indent: 15,
+                  ),
+                  OptionListTile(
+                      title: 'Friends',
+                      subtitle: 'Only people you follow can view your posts',
+                      value: Privacy.friends,
+                      groupValue: settingsState.defaultPostVisibility,
+                      onChanged: (value) {
+                        settingsState.setDefaultPostVisibility(value);
+                      }),
+                  Divider(
+                    endIndent: 15,
+                    indent: 15,
+                  ),
+                  OptionListTile(
+                      title: 'Private',
+                      subtitle: 'Only you can view your posts.',
+                      value: Privacy.private,
+                      groupValue: settingsState.defaultPostVisibility,
+                      onChanged: (value) {
+                        settingsState.setDefaultPostVisibility(value);
+                      }),
+                ],
               ),
             ),
-          ),
-          ListTile(
-            title: const Text('Profile Visibility'),
-            trailing: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: userState.currentUser?.profileVisibility ?? Privacy.public,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    context.read<UserState>().updateProfileVisibility(newValue);
-                  }
-                },
-                items: _profileVisibilityOptions.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value.capitalize(),
-                      style: const TextStyle(fontWeight: FontWeight.w400),
-                    ),
-                  );
-                }).toList(),
+            const SizedBox(height: 24),
+            Text('Profile visibility', style: textTheme.titleLarge),
+            const SizedBox(height: 6),
+            Text(
+              'Control who can view your profile.',
+              style: textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              margin: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  OptionListTile(
+                      title: 'Public',
+                      subtitle: 'Anyone can view your profile.',
+                      value: Privacy.public,
+                      groupValue: userState.currentUser?.profileVisibility,
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<UserState>().updateProfileVisibility(value);
+                        }
+                      }),
+                  Divider(
+                    endIndent: 15,
+                    indent: 15,
+                  ),
+                  OptionListTile(
+                      title: 'Hidden',
+                      subtitle: 'Only you can view your profile.',
+                      value: Privacy.hidden,
+                      groupValue: userState.currentUser?.profileVisibility,
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<UserState>().updateProfileVisibility(value);
+                        }
+                      }),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

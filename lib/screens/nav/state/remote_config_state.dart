@@ -45,7 +45,6 @@ class RemoteConfigState extends ChangeNotifier {
       latestAppVersion: _remoteConfigRepository.getString(RCFields.latestAppVersion),
       hardUpdateBuildNumber: _remoteConfigRepository.getInt(RCFields.hardUpdateBuildNumber),
       whatsNew: _remoteConfigRepository.getString(RCFields.whatsNew),
-      showPrivacyOption: _remoteConfigRepository.getBool(RCFields.showPrivacyOption),
       groupFilterNewIcon: _remoteConfigRepository.getBool(RCFields.groupFilterNewIcon),
       mapboxMapScreen: _remoteConfigRepository.getBool(RCFields.mapboxMapScreen),
     );
