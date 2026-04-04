@@ -48,7 +48,7 @@ class MyTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          side: BorderSide(color: AppColors.light.border, width: 1),
+          side: BorderSide(color: AppColors.light.border, width: 0.65),
           textStyle: textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w500),
           elevation: 0,
         ),
@@ -191,6 +191,14 @@ class MyTheme {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: AppColors.light.accent, width: 0.65),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.red, width: 0.65),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.red, width: 0.65),
+        ),
         filled: true,
         fillColor: AppColors.light.surface,
         contentPadding: const EdgeInsets.all(10),
@@ -199,11 +207,12 @@ class MyTheme {
         prefixIconColor: AppColors.light.textMuted,
       ),
       cardColor: AppColors.light.surface,
-      cardTheme: const CardThemeData(
+      cardTheme: CardThemeData(
         elevation: 0,
+        color: AppColors.light.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          side: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.15), width: 0.65),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          side: BorderSide(color: AppColors.light.border, width: 0.65),
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -299,7 +308,7 @@ class MyTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          side: BorderSide(color: AppColors.dark.border, width: 1),
+          side: BorderSide(color: AppColors.dark.border, width: 0.65),
           textStyle: textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w500),
           elevation: 0,
         ),
@@ -422,6 +431,14 @@ class MyTheme {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: AppColors.dark.accent, width: 0.65),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.red, width: 0.65),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.red, width: 0.65),
+        ),
         filled: true,
         fillColor: AppColors.dark.surface,
         contentPadding: const EdgeInsets.all(10),
@@ -434,8 +451,8 @@ class MyTheme {
         elevation: 0,
         color: AppColors.dark.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          side: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.1), width: 0.65),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          side: BorderSide(color: AppColors.dark.border, width: 0.65),
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -571,8 +588,7 @@ class MyDarkColors implements AppColors {
   @override
   Color get border => const Color(0x33FFFFFF); // white at 20% opacity
   @override
-  Color get divider =>
-      const Color(0xFF1F2937); // gray-800 //TODO: find a better divider color for dark mode that isn't surface color
+  Color get divider => const Color(0xFF364153); // gray-800
   @override
   Color get starColor => const Color(0xFFF59E0B); // amber-400
   // @override

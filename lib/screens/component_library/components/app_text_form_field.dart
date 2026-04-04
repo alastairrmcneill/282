@@ -11,6 +11,7 @@ class AppTextFormField extends StatelessWidget {
   final int maxLines;
   final int? minLines;
   final bool readOnly;
+  final bool autofocus;
   final String? hintText;
   final String? labelText;
   final TextCapitalization textCapitalization;
@@ -36,6 +37,7 @@ class AppTextFormField extends StatelessWidget {
     this.maxLines = 1,
     this.readOnly = false,
     this.onTap,
+    this.autofocus = false,
     this.hintText,
     this.labelText,
     this.textCapitalization = TextCapitalization.sentences,
@@ -65,6 +67,7 @@ class AppTextFormField extends StatelessWidget {
         obscureText: obscureText,
         readOnly: readOnly,
         onTap: onTap,
+        autofocus: autofocus,
         decoration: InputDecoration(
           hintText: hintText,
           labelText: labelText,

@@ -72,7 +72,7 @@ class SliverAppBarMultiButton extends StatelessWidget {
                         child: IconTheme(
                           data: IconThemeData(
                             color: AppColors.light.surface,
-                            size: 18,
+                            size: 20,
                           ),
                           child: button.icon,
                         ),

@@ -13,16 +13,20 @@ class SavedListMunroTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingState = context.read<SettingsState>();
+    final settingsState = context.read<SettingsState>();
     final textTheme = Theme.of(context).textTheme;
     return Card(
       margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.colors.border, width: 0.65),
+      ),
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(8),
               child: CachedNetworkImage(
                 imageUrl: munro.pictureURL,
                 width: 60,
@@ -35,11 +39,25 @@ class SavedListMunroTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(munro.name, style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500)),
-                Text(munro.area, style: textTheme.bodySmall?.copyWith(color: context.colors.textMuted)),
-                Text(
-                    "${settingState.metricHeight ? munro.meters.thousandsSeparator() : munro.feet.thousandsSeparator()}${settingState.metricHeight ? 'm' : 'ft'}",
-                    style: textTheme.bodySmall?.copyWith(color: context.colors.textMuted)),
+                Text(munro.name, style: textTheme.titleLarge),
+                Row(
+                  children: [
+                    Text(
+                      settingsState.metricHeight
+                          ? "${munro.meters.thousandsSeparator()}m"
+                          : "${munro.feet.thousandsSeparator()}ft",
+                      style: textTheme.bodySmall?.copyWith(color: context.colors.textSubtitle),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Text('•', style: textTheme.bodySmall?.copyWith(color: context.colors.textSubtitle)),
+                    ),
+                    Text(
+                      munro.area,
+                      style: textTheme.bodySmall?.copyWith(color: context.colors.textSubtitle),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

@@ -61,6 +61,7 @@ class DesignSystemTab extends StatelessWidget {
         },
         child: const Text('Continue'),
       ),
+      Divider(),
       SecondaryButton(
         analyticsEvent: 'secondary_button_pressed',
         analyticsProperties: {'source': 'design_system_tab'},
@@ -76,6 +77,7 @@ class DesignSystemTab extends StatelessWidget {
         },
         child: const Text('Create new list'),
       ),
+      Divider(),
       AppTextFormField(
         hintText: 'Hint Text',
       ),
@@ -89,6 +91,7 @@ class DesignSystemTab extends StatelessWidget {
         obscureText: true,
         suffixIcon: Icon(PhosphorIconsRegular.eyeSlash),
       ),
+      Divider(),
       Row(
         spacing: 16,
         children: [
