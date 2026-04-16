@@ -89,7 +89,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
             ),
           ),
           SizedBox(
-            child: state.status == PhotoGalleryStatus.paginating ? const CircularProgressIndicator() : null,
+            child: state.status == PhotoGalleryStatus.paginating ? const LoadingWidget(text: "", size: 32) : null,
           ),
         ],
       ),

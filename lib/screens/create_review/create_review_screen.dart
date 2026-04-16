@@ -88,7 +88,7 @@ class CreateReviewsScreen extends StatelessWidget {
                             onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
                           ),
                           const SizedBox(height: 5),
-                          TextFormFieldBase(
+                          AppTextFormField(
                             initialValue: createReviewState.reviews[munro.id]!["review"],
                             onSaved: (value) {
                               createReviewState.setMunroReview(munro.id, value?.trim() ?? "");

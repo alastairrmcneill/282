@@ -22,6 +22,7 @@ class SettingsState extends ChangeNotifier {
   bool get metricHeight => _appSettings?.metricHeight ?? false;
   bool get metricTemperature => _appSettings?.metricTemperature ?? true;
   String get defaultPostVisibility => _appSettings?.defaultPostVisibility ?? Privacy.public;
+  String get themeModeSetting => _appSettings?.themeMode ?? ThemeModeOption.system;
 
   set setError(Error error) {
     _status = SettingsStatus.error;
@@ -67,6 +68,7 @@ class SettingsState extends ChangeNotifier {
   Future<void> setMetricHeight(bool v) => update(_appSettings!.copyWith(metricHeight: v));
   Future<void> setMetricTemperature(bool v) => update(_appSettings!.copyWith(metricTemperature: v));
   Future<void> setDefaultPostVisibility(String v) => update(_appSettings!.copyWith(defaultPostVisibility: v));
+  Future<void> setThemeMode(String v) => update(_appSettings!.copyWith(themeMode: v));
 }
 
 enum SettingsStatus { initial, loading, loaded, error }

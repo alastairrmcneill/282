@@ -35,7 +35,7 @@ class InAppOnboardingMunroChallenge extends StatelessWidget {
           const SizedBox(height: 30),
           Form(
             key: args.formKey,
-            child: TextFormFieldBase(
+            child: AppTextFormField(
               initialValue: achievementsState.currentAchievement?.annualTarget?.toString() ?? '0',
               labelText: "Number of Munros",
               textInputAction: TextInputAction.done,

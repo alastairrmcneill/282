@@ -25,7 +25,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   BitmapDescriptor _incompletedIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor _selectedIcon = BitmapDescriptor.defaultMarker;
   double _currentZoom = 6.6;
-  int? _selectedMunroID;
   bool showTerrain = false;
 
   @override
@@ -47,7 +46,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           position: LatLng(munro.lat, munro.lng),
           visible: true,
           consumeTapEvents: true,
-          icon: _selectedMunroID == munro.id
+          icon: munroState.selectedMunroId == munro.id
               ? _selectedIcon
               : summited
                   ? _completedIcon
@@ -56,10 +55,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           draggable: false,
           onTap: () {
             markerTapped(munro);
-            setState(() {
-              _selectedMunroID = munro.id;
-            });
-
             munroState.setSelectedMunroId = munro.id;
           },
         ),
@@ -135,7 +130,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       ),
       onTap: (argument) {
         widget.searchFocusNode.unfocus();
-        setState(() => _selectedMunroID = null);
         munroState.setSelectedMunroId = null;
       },
       minMaxZoomPreference: const MinMaxZoomPreference(6.6, 11.5),
@@ -157,13 +151,13 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
+    final munroState = context.watch<MunroState>();
     final munroCompletionState = context.read<MunroCompletionState>();
     return Scaffold(
       body: Stack(
         children: [
           _buildGoogleMap(munroState, munroCompletionState.munroCompletions),
-          Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: _selectedMunroID)),
+          Align(alignment: Alignment.bottomCenter, child: MunroSummaryTile(munroId: munroState.selectedMunroId)),
         ],
       ),
     );

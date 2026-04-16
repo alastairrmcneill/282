@@ -8,7 +8,7 @@ class BioFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormFieldBase(
+    return AppTextFormField(
       controller: textEditingController,
       hintText: "Bio",
       minLines: 4,

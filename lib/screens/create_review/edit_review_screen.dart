@@ -80,7 +80,7 @@ class EditReviewScreen extends StatelessWidget {
                 onSaved: (newValue) => createReviewState.setCurrentMunroRating = newValue!,
               ),
               const SizedBox(height: 5),
-              TextFormFieldBase(
+              AppTextFormField(
                 initialValue: createReviewState.currentMunroReview,
                 onSaved: (value) {
                   createReviewState.setCurrentMunroReview = value?.trim() ?? "";

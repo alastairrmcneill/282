@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class AchievementCompletedWidget extends StatelessWidget {
   final Achievement achievement;
@@ -12,9 +12,9 @@ class AchievementCompletedWidget extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 20),
       child: Container(
         decoration: BoxDecoration(
-          color: MyColors.accentColor.withOpacity(0.05),
+          color: context.colors.accent.withOpacity(0.05),
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: MyColors.accentColor.withOpacity(0.2)),
+          border: Border.all(color: context.colors.accent.withOpacity(0.2)),
         ),
         width: double.infinity,
         child: Padding(

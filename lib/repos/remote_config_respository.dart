@@ -19,7 +19,6 @@ class RemoteConfigRespository {
       RCFields.latestAppVersion: defaultConfig.latestAppVersion,
       RCFields.hardUpdateBuildNumber: defaultConfig.hardUpdateBuildNumber,
       RCFields.whatsNew: defaultConfig.whatsNew,
-      RCFields.showPrivacyOption: defaultConfig.showPrivacyOption,
       RCFields.groupFilterNewIcon: defaultConfig.groupFilterNewIcon,
       RCFields.mapboxMapScreen: defaultConfig.mapboxMapScreen,
     });

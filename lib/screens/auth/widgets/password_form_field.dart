@@ -16,7 +16,7 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
   @override
   Widget build(BuildContext context) {
     final RegExp passwordRegex = RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z\d\s])[A-Za-z\d\W]{8,}$");
-    return TextFormFieldBase(
+    return AppTextFormField(
       labelText: 'Password',
       suffixIcon: IconButton(
         onPressed: () {

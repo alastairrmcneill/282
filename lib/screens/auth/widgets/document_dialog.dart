@@ -43,9 +43,7 @@ showDocumentDialog(BuildContext context, {required String mdFileName}) async {
                     },
                   );
                 }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const LoadingWidget(text: 'Loading document...');
               },
             ),
           ),

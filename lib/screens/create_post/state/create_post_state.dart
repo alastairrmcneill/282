@@ -13,7 +13,6 @@ class CreatePostState extends ChangeNotifier {
   final StorageRepository _storageRepository;
   final UserState _userState;
   final MunroCompletionState _munroCompletionState;
-  final RemoteConfigState _remoteConfigState;
   final Analytics _analytics;
   final Logger _logger;
 
@@ -23,7 +22,6 @@ class CreatePostState extends ChangeNotifier {
     this._storageRepository,
     this._userState,
     this._munroCompletionState,
-    this._remoteConfigState,
     this._analytics,
     this._logger,
   );
@@ -123,17 +121,16 @@ class CreatePostState extends ChangeNotifier {
       String postId = await _postsRepository.create(post: post);
 
       // Log event
-      bool showPrivacyOption = _remoteConfigState.config.showPrivacyOption;
-
       _analytics.track(
         AnalyticsEvent.createPost,
         props: {
+          AnalyticsProp.postId: postId,
+          AnalyticsProp.description: _description != null && _description!.isNotEmpty,
           AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
           AnalyticsProp.completionStartTime:
               _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
           AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
           AnalyticsProp.privacy: post.privacy,
-          AnalyticsProp.showPrivacyOption: showPrivacyOption,
           AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
           AnalyticsProp.imagesAdded:
               addedImageUrlsMap.values.fold<int>(0, (previousValue, element) => previousValue + element.length),

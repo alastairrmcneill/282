@@ -1,0 +1,249 @@
+import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/widgets/app_text_form_field.dart';
+import 'package:two_eight_two/widgets/cta_button.dart';
+import 'package:two_eight_two/widgets/sliver_app_bar_button.dart';
+import 'package:two_eight_two/widgets/sliver_app_bar_multi_button.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
+
+class DesignSystemTab extends StatelessWidget {
+  static const String route = '/design-system';
+
+  const DesignSystemTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> widgets = [
+      Text('Headline Large', style: Theme.of(context).textTheme.headlineLarge),
+      Text('Headline Medium', style: Theme.of(context).textTheme.headlineMedium),
+      Text('Headline Small', style: Theme.of(context).textTheme.headlineSmall),
+      Text('Title Large', style: Theme.of(context).textTheme.titleLarge),
+      Text('Title Medium', style: Theme.of(context).textTheme.titleMedium),
+      Text('Title Small', style: Theme.of(context).textTheme.titleSmall),
+      Text('Body Large', style: Theme.of(context).textTheme.bodyLarge),
+      Text('Body Medium', style: Theme.of(context).textTheme.bodyMedium),
+      Text('Body Small', style: Theme.of(context).textTheme.bodySmall),
+      Text('Label Large', style: Theme.of(context).textTheme.labelLarge),
+      Text('Label Medium', style: Theme.of(context).textTheme.labelMedium),
+      Text('Label Small', style: Theme.of(context).textTheme.labelSmall),
+      CtaButton(
+        analyticsEvent: 'cta_button_pressed',
+        analyticsProperties: {'source': 'design_system_tab'},
+        onPressed: () {
+          print('CTA Button Pressed');
+        },
+        child: const Text('Mark as Complete'),
+      ),
+      CtaButton(
+        disabled: true,
+        onPressed: () {
+          print('CTA Button Pressed');
+        },
+        child: const Text('Mark as Complete'),
+      ),
+      PrimaryButton(
+        analyticsEvent: 'primary_button_pressed',
+        analyticsProperties: {'source': 'design_system_tab'},
+        onPressed: () {
+          print('Primary Button Pressed');
+        },
+        child: const Text('Continue'),
+      ),
+      PrimaryButton(
+        disabled: true,
+        onPressed: () {
+          print('Primary Button Pressed');
+        },
+        child: const Text('Continue'),
+      ),
+      Divider(),
+      SecondaryButton(
+        analyticsEvent: 'secondary_button_pressed',
+        analyticsProperties: {'source': 'design_system_tab'},
+        onPressed: () {
+          print('Secondary Button Pressed');
+        },
+        child: const Text('Create new list'),
+      ),
+      SecondaryButton(
+        disabled: true,
+        onPressed: () {
+          print('Secondary Button Pressed');
+        },
+        child: const Text('Create new list'),
+      ),
+      Divider(),
+      AppTextFormField(
+        hintText: 'Hint Text',
+      ),
+      AppTextFormField(
+        hintText: 'Email',
+        prefixIcon: Icon(PhosphorIconsRegular.envelopeSimple),
+      ),
+      AppTextFormField(
+        hintText: 'Password',
+        prefixIcon: Icon(PhosphorIconsRegular.lock),
+        obscureText: true,
+        suffixIcon: Icon(PhosphorIconsRegular.eyeSlash),
+      ),
+      Divider(),
+      Row(
+        spacing: 16,
+        children: [
+          PrimaryIconButton(
+            onPressed: () {
+              print('Icon button pressed');
+            },
+            icon: Icon(
+              PhosphorIconsRegular.arrowSquareOut,
+              color: context.colors.accent,
+              size: 20,
+            ),
+          ),
+          PrimaryIconButton(
+            onPressed: () {
+              print('Icon button pressed');
+            },
+            icon: Icon(
+              PhosphorIconsRegular.funnel,
+              color: context.colors.textSubtitle,
+              size: 20,
+            ),
+          ),
+          PillButton(
+            onPressed: () {
+              print('Icon button pressed');
+            },
+            icon: Icon(PhosphorIconsRegular.funnel),
+            label: 'Filter',
+          ),
+        ],
+      ),
+      DefaultTabController(
+        length: 3,
+        child: TabBar(
+          tabs: [
+            Tab(text: 'Tab 1'),
+            Tab(text: 'Tab 2'),
+            Tab(text: 'Tab 3'),
+          ],
+        ),
+      ),
+      Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGF0dGVybmVkJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GlassCard(
+              child: Text(
+                'This is a glass card. It has a frosted glass effect on dark mode and a solid white background on light mode.',
+              ),
+            ),
+          ),
+        ],
+      ),
+      Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGF0dGVybmVkJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                spacing: 8,
+                children: [
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.caretLeft),
+                  ),
+                  Expanded(child: Container()),
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+                  ),
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.share),
+                  ),
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.dotsThreeVertical),
+                  ),
+                ],
+              )),
+        ],
+      ),
+      Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGF0dGVybmVkJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                spacing: 8,
+                children: [
+                  SliverAppBarButton(
+                    onPressed: () {},
+                    icon: Icon(PhosphorIconsRegular.caretLeft),
+                  ),
+                  Expanded(child: Container()),
+                  SliverAppBarMultiButton(
+                    buttons: [
+                      SliverAppBarButtonItem(
+                        analyticsEvent: 'save_munro_pressed',
+                        onPressed: () {},
+                        icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+                      ),
+                      SliverAppBarButtonItem(
+                        analyticsEvent: 'share_munro_pressed',
+                        onPressed: () {},
+                        icon: Icon(PhosphorIconsRegular.share),
+                      ),
+                      SliverAppBarButtonItem(
+                        analyticsEvent: 'more_options_munro_pressed',
+                        onPressed: () {},
+                        icon: Icon(PhosphorIconsRegular.dotsThreeVertical),
+                      ),
+                    ],
+                  ),
+                ],
+              )),
+        ],
+      ),
+    ];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Components'),
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: widgets[index],
+                ),
+                childCount: widgets.length,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

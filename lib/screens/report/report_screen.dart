@@ -14,7 +14,7 @@ class ReportScreen extends StatelessWidget {
       builder: (context, reportState, child) {
         switch (reportState.status) {
           case ReportStatus.loading:
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingWidget();
           case ReportStatus.error:
             return Scaffold(
               appBar: AppBar(),
@@ -52,7 +52,7 @@ class ReportScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 15),
-                    TextFormFieldBase(
+                    AppTextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter a comment";

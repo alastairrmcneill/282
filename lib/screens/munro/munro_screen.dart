@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/create_post/select_munros_screen.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroScreenArgs {
   final Munro munro;
@@ -21,63 +21,86 @@ class MunroScreen extends StatefulWidget {
 
 class _MunroScreenState extends State<MunroScreen> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _reviewsKey = GlobalKey();
 
   @override
   void initState() {
-    final munroDetailState = context.read<MunroDetailState>();
-    context.read<Analytics>().track(
-      AnalyticsEvent.munroViewed,
-      props: {
-        AnalyticsProp.munroId: (munroDetailState.selectedMunro?.id ?? 0).toString(),
-        AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
-      },
-    );
-
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final munroDetailState = context.read<MunroDetailState>();
+      context.read<ReviewsState>().getMunroReviewsAndRatings(munroDetailState.selectedMunro!.id);
+
+      context.read<Analytics>().track(
+        AnalyticsEvent.munroViewed,
+        props: {
+          AnalyticsProp.munroId: (munroDetailState.selectedMunro?.id ?? 0).toString(),
+          AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
+        },
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final munroDetailState = context.watch<MunroDetailState>();
+    final munroCompletionState = context.watch<MunroCompletionState>();
     final Munro munro = munroDetailState.selectedMunro!;
+
     return Scaffold(
-      floatingActionButton: const MunroSummitedButton(),
-      body: CustomScrollView(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          const MunroSliverAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  const SizedBox(height: 15),
-                  const MunroTitle(),
-                  const SizedBox(height: 25),
-                  MunroStatsRow(
-                    onReviewsTap: () {
-                      final context = _reviewsKey.currentContext;
-                      if (context != null) {
-                        Scrollable.ensureVisible(context, duration: const Duration(seconds: 1));
-                      }
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: _scrollController,
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              MunroSliverAppBar(munro: munro),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: MunroSummitedWidget(munro: munro),
+                    ),
+                    MunroDetailsTabs(munro: munro, scrollController: _scrollController)
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  stops: const [0, 0.85, 1],
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).scaffoldBackgroundColor.withAlpha(0),
+                  ],
+                ),
+              ),
+              width: double.infinity,
+              child: SafeArea(
+                bottom: true,
+                top: false,
+                left: true,
+                right: true,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 5),
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        SelectMunrosScreen.route,
+                        arguments: SelectMunrosScreenArgs(mainMunro: munro),
+                      );
                     },
+                    child: Text(munroCompletionState.isBagged(munro) ? 'Log Another Climb' : 'Log A Climb'),
                   ),
-                  const SizedBox(height: 20),
-                  const MunroSummitedWidget(),
-                  const PaddedDivider(),
-                  const MunroDescription(),
-                  const PaddedDivider(top: 15, bottom: 5),
-                  const MunroDirectionsWidget(),
-                  const PaddedDivider(top: 5, bottom: 20),
-                  const MunroPictureGallery(),
-                  const PaddedDivider(),
-                  MunroWeatherWidget(munro: munro),
-                  const PaddedDivider(),
-                  MunroReviewsWidget(key: _reviewsKey),
-                  const SizedBox(height: 80),
-                ],
+                ),
               ),
             ),
           ),

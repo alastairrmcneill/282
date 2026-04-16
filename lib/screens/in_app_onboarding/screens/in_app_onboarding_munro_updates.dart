@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/explore/widgets/app_search_bar.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class InAppOnboardingMunroUpdates extends StatelessWidget {
   final FocusNode searchFocusNode = FocusNode();
@@ -50,8 +50,8 @@ class InAppOnboardingMunroUpdates extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: MyColors.accentColor, width: 0.5),
+                  color: context.colors.background,
+                  border: Border.all(color: context.colors.accent, width: 0.5),
                   borderRadius: const BorderRadius.all(
                     Radius.circular(25),
                   ),
@@ -63,8 +63,8 @@ class InAppOnboardingMunroUpdates extends StatelessWidget {
                     return BulkMunroUpdateListTile(munro: munro);
                   },
                   separatorBuilder: (context, index) {
-                    return const Divider(
-                      color: Colors.grey,
+                    return Divider(
+                      color: context.colors.divider,
                     );
                   },
                 ),

@@ -55,7 +55,7 @@ class CreateMunroChallengeScreen extends StatelessWidget {
                   const SizedBox(height: 30),
                   Form(
                     key: _formKey,
-                    child: TextFormFieldBase(
+                    child: AppTextFormField(
                       initialValue: achievementsState.currentAchievement?.annualTarget?.toString() ?? '0',
                       labelText: "Number of Munros",
                       keyboardType: TextInputType.number,

@@ -1,82 +1,39 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:two_eight_two/enums/enums.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MunroSliverAppBar extends StatelessWidget {
-  const MunroSliverAppBar({super.key});
+class MunroSliverAppBar extends StatefulWidget {
+  final Munro munro;
+  const MunroSliverAppBar({super.key, required this.munro});
 
-  bool _isValidUrl(String url) {
-    if (url.isEmpty) return false;
-    try {
-      final uri = Uri.parse(url);
-      return uri.hasScheme && uri.host.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
-  }
+  @override
+  State<MunroSliverAppBar> createState() => _MunroSliverAppBarState();
+}
 
-  Widget _buildPopupMenu(
-    BuildContext context,
-    UserState userState,
-    MunroDetailState munroState,
-    MunroCompletionState munroCompletionState,
-  ) {
-    List<MenuItem> menuItems = [];
-    bool summited =
-        munroCompletionState.munroCompletions.where((mc) => mc.munroId == munroState.selectedMunro!.id).isNotEmpty;
+class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
+  double _collapseRatio = 0.0;
 
-    if (userState.currentUser != null) {
-      if (summited) {
-        menuItems.add(
-          MenuItem(
-            text: 'Unbag Munro',
-            onTap: () {
-              if (munroState.selectedMunro != null) {
-                Navigator.of(context).pushNamed(
-                  MunroSummitsScreen.route,
-                  arguments: MunroSummitsScreenArgs(munro: munroState.selectedMunro!),
-                );
-              }
-            },
-          ),
-        );
-      }
-    }
+  void _showActionsDialog(BuildContext context, {required Munro munro}) {
+    final munroCompletionState = context.read<MunroCompletionState>();
 
-    menuItems.add(
-      MenuItem(
-        text: "Share",
-        onTap: () async {
-          final link = await context.read<ShareMunroState>().createShareLink(
-                munroId: munroState.selectedMunro?.id ?? 0,
-                munroName: munroState.selectedMunro?.name ?? "",
-              );
+    bool summited = munroCompletionState.munroCompletions.where((mc) => mc.munroId == munro.id).isNotEmpty;
 
-          if (link == null) {
-            showSnackBar(context, 'Failed to share link.');
-            return;
-          }
-
-          await SharePlus.instance
-              .share(ShareParams(text: 'Check out ${munroState.selectedMunro?.name ?? "this munro"} - $link'));
-        },
-      ),
-    );
-
-    menuItems.add(
-      MenuItem(
-        text: "Send Feedback",
-        onTap: () async {
+    final items = [
+      ActionMenuItems(
+        title: "Send Feedback",
+        onPressed: () async {
           try {
             await launchUrl(
               Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
@@ -88,53 +45,124 @@ class MunroSliverAppBar extends StatelessWidget {
           }
         },
       ),
-    );
-
-    return PopupMenuBase(items: menuItems);
+      if (summited)
+        ActionMenuItems(
+          title: "Unbag Munro",
+          isDestructive: true,
+          onPressed: () async {
+            Navigator.of(context).pushNamed(
+              MunroSummitsScreen.route,
+              arguments: MunroSummitsScreenArgs(munro: munro),
+            );
+          },
+        ),
+    ];
+    showActionSheet(context, items);
   }
 
   @override
   Widget build(BuildContext context) {
-    final munroCompletionState = context.watch<MunroCompletionState>();
-    final munroState = context.read<MunroDetailState>();
-    final userState = context.watch<UserState>();
-    Munro munro = munroState.selectedMunro!;
+    final userId = context.read<AuthState>().currentUserId;
 
     return SliverAppBar(
-      backgroundColor: MyColors.backgroundColor,
+      backgroundColor: context.colors.background,
       expandedHeight: 300.0,
       floating: false,
       pinned: true,
+      leadingWidth: 16 + 40,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+        child: SliverAppBarButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(PhosphorIconsRegular.caretLeft),
+        ),
+      ),
       actions: [
-        _buildPopupMenu(context, userState, munroState, munroCompletionState),
+        SliverAppBarMultiButton(
+          buttons: [
+            SliverAppBarButtonItem(
+              analyticsEvent: AnalyticsEvent.munroSaveButtonClicked,
+              onPressed: () async {
+                if (userId == null) {
+                  Navigator.pushNamed(context, AuthHomeScreen.route);
+                } else {
+                  await SaveMunroBottomSheet.show(context, munroId: widget.munro.id);
+                }
+              },
+              icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+            ),
+            SliverAppBarButtonItem(
+              analyticsEvent: AnalyticsEvent.munroSharePressed,
+              onPressed: () async {
+                final link = await context.read<ShareState>().createMunroLink(
+                      munroId: widget.munro.id,
+                      munroName: widget.munro.name,
+                    );
+
+                if (link == null) {
+                  showSnackBar(context, 'Failed to share link.');
+                  return;
+                }
+
+                await SharePlus.instance.share(ShareParams(text: 'Check out ${widget.munro.name} - $link'));
+              },
+              icon: Icon(PhosphorIconsRegular.shareNetwork),
+            ),
+            SliverAppBarButtonItem(
+              analyticsEvent: AnalyticsEvent.munroMoreOptionsPressed,
+              analyticsProperties: {AnalyticsProp.munroId: widget.munro.id.toString()},
+              onPressed: () async {
+                _showActionsDialog(context, munro: widget.munro);
+              },
+              icon: Icon(PhosphorIconsBold.dotsThreeVertical),
+            ),
+          ],
+        ),
+        const SizedBox(width: 16),
       ],
-      flexibleSpace: FlexibleSpaceBar(
-        background: _isValidUrl(munro.pictureURL)
-            ? CachedNetworkImage(
-                imageUrl: munro.pictureURL,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(
-                  'assets/images/post_image_placeholder.png',
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
+      flexibleSpace: LayoutBuilder(
+        builder: (context, constraints) {
+          final topPadding = MediaQuery.of(context).padding.top;
+          final collapsedHeight = kToolbarHeight + topPadding;
+          final expandedHeight = 300.0 + topPadding;
+          final ratio =
+              ((expandedHeight - constraints.biggest.height) / (expandedHeight - collapsedHeight)).clamp(0.0, 1.0);
+          if (ratio != _collapseRatio) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) setState(() => _collapseRatio = ratio);
+            });
+          }
+          return FlexibleSpaceBar(
+            collapseMode: CollapseMode.pin,
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                MunroHeroImage(munro: widget.munro),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0.6, 0.7, 1.0],
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.1),
+                          Colors.black.withValues(alpha: 0.6),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                fadeInDuration: Duration.zero,
-                errorWidget: (context, url, error) {
-                  return Image.asset(
-                    'assets/images/post_image_placeholder.png',
-                    fit: BoxFit.cover,
-                    width: MediaQuery.of(context).size.width,
-                    height: 300,
-                  );
-                },
-              )
-            : Image.asset(
-                'assets/images/post_image_placeholder.png',
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: 300,
-              ),
+                Positioned(
+                  left: 16,
+                  bottom: 16,
+                  child: MunroTitle(munro: widget.munro),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

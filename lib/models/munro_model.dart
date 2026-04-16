@@ -19,6 +19,7 @@ class Munro {
   double? averageRating;
   int? reviewCount;
   List<MunroCommonlyClimbedWith> commonlyClimbedWith;
+  int totalSummitCount;
 
   Munro({
     required this.id,
@@ -39,56 +40,61 @@ class Munro {
     this.averageRating,
     this.reviewCount,
     required this.commonlyClimbedWith,
+    required this.totalSummitCount,
   });
 
   static Munro fromJSON(Map<String, dynamic> json) {
     return Munro(
-        id: json[MunroFields.id] as int,
-        name: json[MunroFields.name] as String,
-        extra: json[MunroFields.extra] as String,
-        area: json[MunroFields.area] as String,
-        meters: json[MunroFields.maters] as int,
-        section: json[MunroFields.section] as String,
-        region: json[MunroFields.region] as String,
-        feet: json[MunroFields.feet] as int,
-        lat: json[MunroFields.lat] as double,
-        lng: json[MunroFields.lng] as double,
-        link: json[MunroFields.link] as String,
-        description: json[MunroFields.description] as String,
-        pictureURL: json[MunroFields.pictureURL] as String,
-        startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
-        saved: json[MunroFields.saved] as bool? ?? false,
-        averageRating:
-            json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
-        reviewCount: json[MunroFields.reviewCount] as int?,
-        commonlyClimbedWith: (json[MunroFields.commonlyClimbedWith] as List)
-            .map((e) => MunroCommonlyClimbedWith.fromJSON(e as Map<String, dynamic>))
-            .toList());
+      id: json[MunroFields.id] as int,
+      name: json[MunroFields.name] as String,
+      extra: json[MunroFields.extra] as String,
+      area: json[MunroFields.area] as String,
+      meters: json[MunroFields.meters] as int,
+      section: json[MunroFields.section] as String,
+      region: json[MunroFields.region] as String,
+      feet: json[MunroFields.feet] as int,
+      lat: json[MunroFields.lat] as double,
+      lng: json[MunroFields.lng] as double,
+      link: json[MunroFields.link] as String,
+      description: json[MunroFields.description] as String,
+      pictureURL: json[MunroFields.pictureURL] as String,
+      startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
+      saved: json[MunroFields.saved] as bool? ?? false,
+      averageRating:
+          json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
+      reviewCount: json[MunroFields.reviewCount] as int?,
+      commonlyClimbedWith: (json[MunroFields.commonlyClimbedWith] as List)
+          .map((e) => MunroCommonlyClimbedWith.fromJSON(e as Map<String, dynamic>))
+          .toList(),
+      totalSummitCount: json[MunroFields.totalSummitCount] as int? ?? 0,
+    );
   }
 
   static Munro fromPost(Map<String, dynamic> json) {
     return Munro(
-        id: int.parse(json[MunroFields.id] as String),
-        name: json[MunroFields.name] as String? ?? "",
-        extra: json[MunroFields.extra] as String? ?? "",
-        area: json[MunroFields.area] as String? ?? "",
-        meters: json[MunroFields.maters] as int? ?? 0,
-        section: json[MunroFields.section] as String? ?? "",
-        region: json[MunroFields.region] as String? ?? "",
-        feet: json[MunroFields.feet] as int? ?? 0,
-        lat: json[MunroFields.lat] as double? ?? 0.0,
-        lng: json[MunroFields.lng] as double? ?? 0.0,
-        link: json[MunroFields.link] as String? ?? "",
-        description: json[MunroFields.description] as String? ?? "",
-        pictureURL: json[MunroFields.pictureURL] as String? ?? "",
-        startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
-        saved: json[MunroFields.saved] as bool? ?? false,
-        averageRating:
-            json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
-        reviewCount: json[MunroFields.reviewCount] as int?,
-        commonlyClimbedWith: (json[MunroFields.commonlyClimbedWith] as List)
-            .map((e) => MunroCommonlyClimbedWith.fromJSON(e as Map<String, dynamic>))
-            .toList());
+      id: int.parse(json[MunroFields.id] as String),
+      name: json[MunroFields.name] as String? ?? "",
+      extra: json[MunroFields.extra] as String? ?? "",
+      area: json[MunroFields.area] as String? ?? "",
+      meters: json[MunroFields.meters] as int? ?? 0,
+      section: json[MunroFields.section] as String? ?? "",
+      region: json[MunroFields.region] as String? ?? "",
+      feet: json[MunroFields.feet] as int? ?? 0,
+      lat: json[MunroFields.lat] as double? ?? 0.0,
+      lng: json[MunroFields.lng] as double? ?? 0.0,
+      link: json[MunroFields.link] as String? ?? "",
+      description: json[MunroFields.description] as String? ?? "",
+      pictureURL: json[MunroFields.pictureURL] as String? ?? "",
+      startingPointURL: json[MunroFields.startingPointURL] as String? ?? "",
+      saved: json[MunroFields.saved] as bool? ?? false,
+      averageRating:
+          json[MunroFields.averageRating] != null ? (json[MunroFields.averageRating] as num).toDouble() : null,
+      reviewCount: json[MunroFields.reviewCount] as int?,
+      commonlyClimbedWith: (json[MunroFields.commonlyClimbedWith] as List)
+          .map((e) => MunroCommonlyClimbedWith.fromJSON(e as Map<String, dynamic>))
+          .toList(),
+      totalSummitCount: json[MunroFields.totalSummitCount] as int? ?? 0,
+    );
   }
 
   static Munro get empty {
@@ -111,6 +117,7 @@ class Munro {
       averageRating: null,
       reviewCount: null,
       commonlyClimbedWith: [],
+      totalSummitCount: 0,
     );
   }
 
@@ -133,6 +140,7 @@ class Munro {
     double? averageRating,
     int? reviewCount,
     List<MunroCommonlyClimbedWith>? commonlyClimbedWith,
+    int? totalSummitCount,
   }) {
     return Munro(
       id: id ?? this.id,
@@ -153,6 +161,7 @@ class Munro {
       averageRating: averageRating ?? this.averageRating,
       reviewCount: reviewCount ?? this.reviewCount,
       commonlyClimbedWith: commonlyClimbedWith ?? this.commonlyClimbedWith,
+      totalSummitCount: totalSummitCount ?? this.totalSummitCount,
     );
   }
 }
@@ -162,7 +171,7 @@ class MunroFields {
   static String name = "name";
   static String extra = "extra";
   static String area = "area";
-  static String maters = "meters";
+  static String meters = "meters";
   static String section = "section";
   static String region = "region";
   static String feet = "feet";
@@ -179,4 +188,5 @@ class MunroFields {
   static String sumOfRatings = "sum_of_ratings";
   static String ratings = "ratings";
   static String commonlyClimbedWith = "commonly_climbed_with";
+  static String totalSummitCount = "total_summit_count";
 }
