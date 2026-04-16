@@ -20,7 +20,7 @@ class _PasswordFormFieldState extends State<ConfirmPasswordFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormFieldBase(
+    return AppTextFormField(
       labelText: 'Confirm Password',
       suffixIcon: IconButton(
         onPressed: () {

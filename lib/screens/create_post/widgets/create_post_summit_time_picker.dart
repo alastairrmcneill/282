@@ -23,7 +23,7 @@ class CreatePostSummitTimePicker extends StatelessWidget {
       children: [
         Text('Start Time', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted)),
         const SizedBox(height: 2),
-        TextFormFieldBase(
+        AppTextFormField(
           controller: timeController,
           hintText: '--.--',
           prefixIcon: Icon(

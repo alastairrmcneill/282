@@ -24,7 +24,7 @@ class CreatePostDurationPicker extends StatelessWidget {
       children: [
         Text('Duration', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted)),
         const SizedBox(height: 2),
-        TextFormFieldBase(
+        AppTextFormField(
           controller: durationController,
           prefixIcon: Icon(
             PhosphorIconsRegular.timer,

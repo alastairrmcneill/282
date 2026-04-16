@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:two_eight_two/screens/component_library/components/secondary_button.dart';
+import 'package:two_eight_two/widgets/secondary_button.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 
 class CreateNewSavedListWidget extends StatefulWidget {

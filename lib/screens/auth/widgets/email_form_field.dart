@@ -9,7 +9,7 @@ class EmailFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     final RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
 
-    return TextFormFieldBase(
+    return AppTextFormField(
       labelText: "Email",
       textInputAction: TextInputAction.next,
       maxLines: 1,

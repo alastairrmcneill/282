@@ -287,7 +287,7 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                           const Divider(height: 32),
 
                           const SizedBox(height: 12),
-                          TextFormFieldBase(
+                          AppTextFormField(
                             initialValue: createPostState.description,
                             hintText: "Share your experience...",
                             maxLines: 4,

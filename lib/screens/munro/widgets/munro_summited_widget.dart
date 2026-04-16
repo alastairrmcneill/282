@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroSummitedWidget extends StatelessWidget {
   final Munro munro;
@@ -72,8 +73,7 @@ class MunroSummitedWidget extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 15),
+    return GlassCard(
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(12),

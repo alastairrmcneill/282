@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/screens/component_library/components/sliver_app_bar_multi_button.dart';
+import 'package:two_eight_two/widgets/sliver_app_bar_multi_button.dart';
 
 class SliverAppBarButton extends StatelessWidget {
   final VoidCallback? onPressed;

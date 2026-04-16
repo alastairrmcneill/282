@@ -60,34 +60,6 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
     showActionSheet(context, items);
   }
 
-  Widget _buildSliverBarButton(IconData icon, Future<void> Function() onTap) {
-    final t = ((_collapseRatio - 0.8) / 0.2).clamp(0.0, 1.0);
-    final bgColor = Color.lerp(
-      Colors.black.withValues(alpha: 0.4),
-      Colors.transparent,
-      t,
-    );
-    final iconColor = Color.lerp(Colors.white, Colors.black, t);
-
-    return InkWell(
-      onTap: () async => await onTap(),
-      child: Container(
-        width: 40,
-        height: 40,
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          icon,
-          color: iconColor,
-          size: 22,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final userId = context.read<AuthState>().currentUserId;
@@ -97,58 +69,54 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
       expandedHeight: 300.0,
       floating: false,
       pinned: true,
-      leadingWidth: 60,
+      leadingWidth: 16 + 40,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: Center(
-          child: _buildSliverBarButton(
-            Icons.arrow_back,
-            () async {
-              Navigator.of(context).pop();
-            },
-          ),
+        padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+        child: SliverAppBarButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(PhosphorIconsRegular.caretLeft),
         ),
       ),
       actions: [
-        _buildSliverBarButton(
-          PhosphorIconsRegular.bookmarkSimple,
-          () async {
-            context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
-              AnalyticsProp.source: "Munro Tile",
-              AnalyticsProp.munroId: (widget.munro.id).toString(),
-              AnalyticsProp.munroName: widget.munro.name,
-            });
+        SliverAppBarMultiButton(
+          buttons: [
+            SliverAppBarButtonItem(
+              analyticsEvent: AnalyticsEvent.munroSaveButtonClicked,
+              onPressed: () async {
+                if (userId == null) {
+                  Navigator.pushNamed(context, AuthHomeScreen.route);
+                } else {
+                  await SaveMunroBottomSheet.show(context, munroId: widget.munro.id);
+                }
+              },
+              icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+            ),
+            SliverAppBarButtonItem(
+              analyticsEvent: AnalyticsEvent.munroSharePressed,
+              onPressed: () async {
+                final link = await context.read<ShareState>().createMunroLink(
+                      munroId: widget.munro.id,
+                      munroName: widget.munro.name,
+                    );
 
-            if (userId == null) {
-              Navigator.pushNamed(context, AuthHomeScreen.route);
-            } else {
-              await SaveMunroBottomSheet.show(context, munroId: widget.munro.id);
-            }
-          },
-        ),
-        const SizedBox(width: 12),
-        _buildSliverBarButton(
-          PhosphorIconsRegular.shareNetwork,
-          () async {
-            final link = await context.read<ShareState>().createMunroLink(
-                  munroId: widget.munro.id,
-                  munroName: widget.munro.name,
-                );
+                if (link == null) {
+                  showSnackBar(context, 'Failed to share link.');
+                  return;
+                }
 
-            if (link == null) {
-              showSnackBar(context, 'Failed to share link.');
-              return;
-            }
-
-            await SharePlus.instance.share(ShareParams(text: 'Check out ${widget.munro.name} - $link'));
-          },
-        ),
-        const SizedBox(width: 12),
-        _buildSliverBarButton(
-          PhosphorIconsBold.dotsThreeVertical,
-          () async {
-            _showActionsDialog(context, munro: widget.munro);
-          },
+                await SharePlus.instance.share(ShareParams(text: 'Check out ${widget.munro.name} - $link'));
+              },
+              icon: Icon(PhosphorIconsRegular.shareNetwork),
+            ),
+            SliverAppBarButtonItem(
+              analyticsEvent: AnalyticsEvent.munroMoreOptionsPressed,
+              analyticsProperties: {AnalyticsProp.munroId: widget.munro.id.toString()},
+              onPressed: () async {
+                _showActionsDialog(context, munro: widget.munro);
+              },
+              icon: Icon(PhosphorIconsBold.dotsThreeVertical),
+            ),
+          ],
         ),
         const SizedBox(width: 16),
       ],
@@ -190,22 +158,6 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
                   left: 16,
                   bottom: 16,
                   child: MunroTitle(munro: widget.munro),
-                ),
-                Positioned(
-                  right: 16,
-                  bottom: 16,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: BoxBorder.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
-                    ),
-                    height: 70,
-                    width: 70,
-                    child: MunroMapWidget(munro: widget.munro),
-                  ),
                 ),
               ],
             ),

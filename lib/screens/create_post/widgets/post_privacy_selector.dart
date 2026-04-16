@@ -47,7 +47,7 @@ class PostPrivacySelector extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        TextFormFieldBase(
+        AppTextFormField(
           controller: controller,
           prefixIcon: Icon(icon),
           suffixIcon: const Icon(Icons.arrow_drop_down),

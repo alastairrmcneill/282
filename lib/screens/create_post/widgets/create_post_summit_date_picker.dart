@@ -28,7 +28,7 @@ class CreatePostSummitDatePicker extends StatelessWidget {
       children: [
         Text('Summit Date', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted)),
         const SizedBox(height: 2),
-        TextFormFieldBase(
+        AppTextFormField(
           controller: dateController,
           prefixIcon: Icon(
             PhosphorIconsRegular.calendarBlank,

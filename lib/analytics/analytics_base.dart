@@ -52,6 +52,10 @@ class AnalyticsEvent {
 
   static const createSavedListCancel = 'create_saved_list_cancel';
   static const createSavedListCreate = 'create_saved_list_create';
+
+  static const munroMoreOptionsPressed = 'munro_more_options_pressed';
+  static const munroSaveButtonClicked = 'munro_save_button_clicked';
+  static const munroSharePressed = 'munro_share_pressed';
 }
 
 class AnalyticsProp {

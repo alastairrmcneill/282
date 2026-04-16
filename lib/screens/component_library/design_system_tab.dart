@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/screens/component_library/components/app_text_form_field.dart';
-import 'package:two_eight_two/screens/component_library/components/cta_button.dart';
-import 'package:two_eight_two/screens/component_library/components/glass_card.dart';
-import 'package:two_eight_two/screens/component_library/components/pill_button.dart';
-import 'package:two_eight_two/screens/component_library/components/primary_button.dart';
-import 'package:two_eight_two/screens/component_library/components/primary_icon_button.dart';
-import 'package:two_eight_two/screens/component_library/components/secondary_button.dart';
-import 'package:two_eight_two/screens/component_library/components/sliver_app_bar_button.dart';
-import 'package:two_eight_two/screens/component_library/components/sliver_app_bar_multi_button.dart';
+import 'package:two_eight_two/widgets/app_text_form_field.dart';
+import 'package:two_eight_two/widgets/cta_button.dart';
+import 'package:two_eight_two/widgets/sliver_app_bar_button.dart';
+import 'package:two_eight_two/widgets/sliver_app_bar_multi_button.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class DesignSystemTab extends StatelessWidget {
   static const String route = '/design-system';

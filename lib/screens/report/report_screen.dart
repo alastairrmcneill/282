@@ -52,7 +52,7 @@ class ReportScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 15),
-                    TextFormFieldBase(
+                    AppTextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter a comment";
