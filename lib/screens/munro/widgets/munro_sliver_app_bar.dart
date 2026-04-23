@@ -156,7 +156,7 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
                 ),
                 Positioned(
                   left: 16,
-                  bottom: 16,
+                  bottom: 24,
                   child: MunroTitle(munro: widget.munro),
                 ),
               ],

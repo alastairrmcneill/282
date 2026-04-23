@@ -15,3 +15,4 @@ export 'reviews_tab.dart';
 export 'outline_link_button.dart';
 export 'munro_commonly_climbed_with_tabs.dart';
 export 'munro_commonly_climbed_with_horizontal.dart';
+export 'munro_bottom_buttons.dart';

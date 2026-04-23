@@ -16,50 +16,49 @@ class MunroSummitedWidget extends StatelessWidget {
     List<MunroCompletion> completions,
   ) {
     final textTheme = Theme.of(context).textTheme;
-    if (completions.length == 1) {
-      DateTime date = completions.first.dateTimeCompleted;
+    final sorted = [...completions]..sort((a, b) => b.dateTimeCompleted.compareTo(a.dateTimeCompleted));
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Completed',
-            style: textTheme.titleMedium!.copyWith(
-              color: context.colors.accent,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Completed ${sorted.length} ${sorted.length == 1 ? 'time' : 'times'}',
+          style: textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Most recent: ${DateFormat('dd/MM/yyyy').format(sorted.first.dateTimeCompleted)}',
+          style: textTheme.bodySmall!.copyWith(
+            color: context.colors.textSubtitle,
           ),
-          Text(
-            'You climbed this on ${DateFormat('dd/MM/yyyy').format(date)}',
-            style: textTheme.bodyMedium!.copyWith(
-              color: context.colors.textSubtitle.withAlpha(170),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Completed ${completions.length} times',
-            style: textTheme.titleMedium!.copyWith(
-              color: context.colors.accent,
-            ),
-          ),
-          ...completions.map((date) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                '• ${DateFormat('dd/MM/yyyy').format(date.dateTimeCompleted)}',
-                style: textTheme.bodyMedium!.copyWith(
-                  color: context.colors.textSubtitle.withAlpha(170),
+        ),
+        const SizedBox(height: 12),
+        ...sorted.map((completion) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: context.colors.accent,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-              ),
-            );
-          }),
-        ],
-      );
-    }
+                const SizedBox(width: 8),
+                Text(
+                  DateFormat('dd/MM/yyyy').format(completion.dateTimeCompleted),
+                  style: textTheme.bodySmall!.copyWith(
+                    color: context.colors.textSubtitle,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
   }
 
   @override
@@ -74,29 +73,18 @@ class MunroSummitedWidget extends StatelessWidget {
     }
 
     return GlassCard(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(45, 106, 79, 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Color.fromRGBO(45, 106, 79, 0.2),
-            width: 0.7,
+      solidLightBackground: true,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            PhosphorIconsFill.checkCircle,
+            color: context.colors.accent,
+            size: 48,
           ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              PhosphorIconsFill.checkCircle,
-              color: Color.fromRGBO(45, 106, 79, 1),
-              size: 40,
-            ),
-            const SizedBox(width: 12),
-            Expanded(child: _buildBody(context, completions)),
-          ],
-        ),
+          const SizedBox(width: 16),
+          Expanded(child: _buildBody(context, completions)),
+        ],
       ),
     );
   }
