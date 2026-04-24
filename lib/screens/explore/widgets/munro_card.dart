@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/cached_munro_image.dart';
 
 class MunroCard extends StatelessWidget {
   final Munro munro;
@@ -22,7 +22,7 @@ class MunroCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              MunroHeroImage(munro: munro),
+              CachedMunroImage(imageUrl: munro.pictureURL),
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(

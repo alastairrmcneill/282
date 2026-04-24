@@ -137,23 +137,8 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
             background: Stack(
               fit: StackFit.expand,
               children: [
-                MunroHeroImage(munro: widget.munro),
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        stops: const [0.6, 0.7, 1.0],
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.1),
-                          Colors.black.withValues(alpha: 0.6),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                CachedMunroImage(imageUrl: widget.munro.pictureURL),
+                OverlayGradient(),
                 Positioned(
                   left: 16,
                   bottom: 24,
