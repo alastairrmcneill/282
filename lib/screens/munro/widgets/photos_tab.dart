@@ -36,22 +36,25 @@ class _PhotosTabState extends State<PhotosTab> {
   }
 
   Widget _buildLoadingScreen() {
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: Column(
+        children: [
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+            ),
+            itemCount: 12,
+            itemBuilder: (context, index) => ShimmerBox(width: double.infinity, height: 100, borderRadius: 12),
           ),
-          itemCount: 12,
-          itemBuilder: (context, index) => ShimmerBox(width: double.infinity, height: 100, borderRadius: 12),
-        ),
-        const SizedBox(height: 90),
-      ],
+          const SizedBox(height: 90),
+        ],
+      ),
     );
   }
 
@@ -98,41 +101,44 @@ class _PhotosTabState extends State<PhotosTab> {
       return _buildEmptyScreen();
     }
 
-    return Column(
-      children: [
-        const SizedBox(height: 10),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+            ),
+            itemCount: state.photos.length,
+            itemBuilder: (context, index) {
+              MunroPicture munroPicture = state.photos[index];
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: ClickableImage(
+                  image: munroPicture,
+                  munroPictures: state.photos,
+                  initialIndex: index,
+                  fetchMorePhotos: () async {
+                    return await state.paginate();
+                  },
+                ),
+              );
+            },
           ),
-          itemCount: state.photos.length,
-          itemBuilder: (context, index) {
-            MunroPicture munroPicture = state.photos[index];
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: ClickableImage(
-                image: munroPicture,
-                munroPictures: state.photos,
-                initialIndex: index,
-                fetchMorePhotos: () async {
-                  return await state.paginate();
-                },
-              ),
-            );
-          },
-        ),
-        if (state.status == PhotoGalleryStatus.paginating)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: CircularProgressIndicator(),
-          ),
-        const SizedBox(height: 110),
-      ],
+          if (state.status == PhotoGalleryStatus.paginating)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: CircularProgressIndicator(),
+            ),
+          const SizedBox(height: 110),
+        ],
+      ),
     );
   }
 
@@ -145,8 +151,12 @@ class _PhotosTabState extends State<PhotosTab> {
             return _buildErrorScreen(state.error.message);
           case PhotoGalleryStatus.loading:
             return _buildLoadingScreen();
-          default:
+          case PhotoGalleryStatus.loaded:
             return _buildScreen(context, state);
+          case PhotoGalleryStatus.paginating:
+            return _buildScreen(context, state);
+          default:
+            return _buildLoadingScreen();
         }
       },
     );
