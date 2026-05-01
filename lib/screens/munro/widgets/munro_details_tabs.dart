@@ -71,16 +71,25 @@ class _MunroDetailsTabsState extends State<MunroDetailsTabs> with SingleTickerPr
   }
 
   Widget _buildTabContent(Munro munro) {
+    final double minHeight = MediaQuery.of(context).size.height;
+    Widget content;
     switch (_currentIndex) {
       case 0:
-        return OverviewTab(munro: munro);
+        content = OverviewTab(munro: munro);
+        break;
       case 1:
-        return PhotosTab(scrollController: widget.scrollController);
+        content = PhotosTab(scrollController: widget.scrollController);
+        break;
       case 2:
-        return ReviewsTab(munroId: widget.munro.id, scrollController: widget.scrollController);
+        content = ReviewsTab(munroId: widget.munro.id, scrollController: widget.scrollController);
+        break;
       default:
-        return OverviewTab(munro: munro);
+        content = OverviewTab(munro: munro);
     }
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: minHeight),
+      child: content,
+    );
   }
 
   @override

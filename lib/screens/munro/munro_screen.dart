@@ -66,7 +66,18 @@ class _MunroScreenState extends State<MunroScreen> {
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    if (isBagged) SizedBox(height: spacerHeight),
+                    if (isBagged)
+                      AnimatedBuilder(
+                        animation: _scrollController,
+                        builder: (context, _) {
+                          final topPadding = MediaQuery.of(context).padding.top;
+                          final scrollOffset = _scrollController.hasClients ? _scrollController.offset : 0.0;
+                          final top = _heroExpandedHeight + topPadding - _heroOverlap - scrollOffset;
+                          final collapsedBarHeight = kToolbarHeight + topPadding;
+                          final opacity = ((top - collapsedBarHeight) / cardHeight).clamp(0.0, 1.0);
+                          return SizedBox(height: spacerHeight * opacity);
+                        },
+                      ),
                     MunroDetailsTabs(munro: munro, scrollController: _scrollController),
                   ],
                 ),
@@ -81,15 +92,17 @@ class _MunroScreenState extends State<MunroScreen> {
                 final scrollOffset = _scrollController.hasClients ? _scrollController.offset : 0.0;
                 final top = _heroExpandedHeight + topPadding - _heroOverlap - scrollOffset;
                 final collapsedBarHeight = kToolbarHeight + topPadding;
-                final opacity = ((top + cardHeight - collapsedBarHeight) / cardHeight).clamp(0.0, 1.0);
+                final opacity = ((top - collapsedBarHeight) / cardHeight).clamp(0.0, 1.0);
 
                 return Positioned(
                   top: top,
                   left: 15,
                   right: 15,
-                  child: Opacity(
-                    opacity: opacity,
-                    child: MunroSummitedWidget(munro: munro),
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: opacity,
+                      child: MunroSummitedWidget(munro: munro),
+                    ),
                   ),
                 );
               },
