@@ -81,7 +81,7 @@ class _ReviewsTabState extends State<ReviewsTab> {
             width: 80,
             height: 80,
             child: Icon(
-              PhosphorIconsRegular.camera,
+              PhosphorIconsRegular.chatCircleDots,
               size: 35,
               color: context.colors.textMuted,
             ),

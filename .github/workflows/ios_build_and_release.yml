@@ -8,7 +8,7 @@ on:
 jobs:
   setup_and_build_IPA:
     name: Setup and Build IPA
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Use Xcode 16
         uses: maxim-lobanov/setup-xcode@v1
@@ -58,7 +58,7 @@ jobs:
   release_to_app_store:
     name: Release to App Store
     needs: setup_and_build_IPA
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Use Xcode 16
         uses: maxim-lobanov/setup-xcode@v1
