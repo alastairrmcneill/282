@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
+import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 
 class RatingsBreakdownWidget extends StatelessWidget {
   final MunroRatingsBreakdown ratingsBreakdown;

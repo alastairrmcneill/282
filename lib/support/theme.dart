@@ -211,7 +211,7 @@ class MyTheme {
         elevation: 0,
         color: AppColors.light.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
           side: BorderSide(color: AppColors.light.border, width: 0.65),
         ),
       ),
@@ -451,7 +451,7 @@ class MyTheme {
         elevation: 0,
         color: AppColors.dark.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
           side: BorderSide(color: AppColors.dark.border, width: 0.65),
         ),
       ),

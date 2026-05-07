@@ -7,14 +7,18 @@ class WeatherItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        Icon(iconData),
+        Icon(
+          iconData,
+          size: 20,
+        ),
+        const SizedBox(width: 5),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 3),
           child: Text(
             value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.labelMedium,
           ),
         ),
       ],

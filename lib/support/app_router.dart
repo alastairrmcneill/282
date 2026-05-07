@@ -77,11 +77,7 @@ class AppRouter {
           ),
           settings: settings,
         );
-      case WeatherScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => WeatherScreen(),
-          settings: settings,
-        );
+
       case LoginScreen.route:
         return MaterialPageRoute(
           builder: (_) => LoginScreen(),
@@ -274,13 +270,6 @@ class AppRouter {
       case CommentsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const CommentsScreen(),
-          settings: settings,
-        );
-      case ReviewsScreen.route:
-        final args = settings.arguments as ReviewsScreenArgs;
-
-        return MaterialPageRoute(
-          builder: (_) => ReviewsScreen(args: args),
           settings: settings,
         );
       case NotificationsScreen.route:

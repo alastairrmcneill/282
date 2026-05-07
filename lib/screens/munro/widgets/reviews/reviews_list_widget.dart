@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/reviews/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewsListWidget extends StatelessWidget {

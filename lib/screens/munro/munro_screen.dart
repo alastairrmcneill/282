@@ -60,7 +60,7 @@ class _MunroScreenState extends State<MunroScreen> {
         children: [
           CustomScrollView(
             controller: _scrollController,
-            physics: const ClampingScrollPhysics(),
+            // physics: const ClampingScrollPhysics(),
             slivers: [
               MunroSliverAppBar(munro: munro),
               SliverToBoxAdapter(

@@ -26,7 +26,8 @@ class WeatherState extends ChangeNotifier {
 
   Future getWeather(Munro munro) async {
     try {
-      setStatus = WeatherStatus.loading;
+      _status = WeatherStatus.loading;
+      notifyListeners();
 
       double lat = munro.lat;
       double long = munro.lng;
@@ -35,25 +36,17 @@ class WeatherState extends ChangeNotifier {
       var response = await _weatherRepository.fetchWeather(lat: lat, lon: long, metric: metric, apiKey: apiKey);
 
       _forecast = response;
-      setStatus = WeatherStatus.loaded;
+      _status = WeatherStatus.loaded;
+      notifyListeners();
     } catch (error, stackTrace) {
-      setError = Error(
+      _status = WeatherStatus.error;
+      _error = Error(
         code: error.toString(),
         message: "There was an error fetching the weather data.",
       );
       _logger.error(error.toString(), stackTrace: stackTrace);
+      notifyListeners();
     }
-  }
-
-  set setStatus(WeatherStatus weatherStatus) {
-    _status = weatherStatus;
-    notifyListeners();
-  }
-
-  set setError(Error error) {
-    _status = WeatherStatus.error;
-    _error = error;
-    notifyListeners();
   }
 }
 
