@@ -1,5 +1,5 @@
 -- Add detail column to notifications table
-ALTER TABLE notifications ADD COLUMN detail TEXT;
+ALTER TABLE notifications ADD COLUMN IF NOT EXISTS detail TEXT;
 
 -- Populate detail column based on type
 UPDATE notifications

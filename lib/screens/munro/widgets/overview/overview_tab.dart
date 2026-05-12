@@ -18,9 +18,9 @@ class OverviewTab extends StatelessWidget {
           MunroMapWidget(munro: munro, showExpandButton: true),
           const SizedBox(height: 30),
           MunroWeatherWidget(munro: munro),
-          SizedBox(height: munro.commonlyClimbedWith.isEmpty ? 0 : 30),
+          const SizedBox(height: 30),
           MunrosCommonlyClimbedWithGrid(munro: munro),
-          SizedBox(height: munro.commonlyClimbedWith.isEmpty ? 0 : 10),
+          const SizedBox(height: 100),
         ],
       ),
     );

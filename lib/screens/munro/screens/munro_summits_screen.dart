@@ -17,7 +17,7 @@ class MunroSummitsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final munroCompletionState = context.watch<MunroCompletionState>();
+    final munroCompletionState = context.read<MunroCompletionState>();
 
     List<MunroCompletion> munroCompletions =
         munroCompletionState.munroCompletions.where((mc) => mc.munroId == munro.id).toList();
@@ -29,13 +29,20 @@ class MunroSummitsScreen extends StatelessWidget {
       body: munroCompletions.isEmpty
           ? const CenterText(text: "You haven't summited this Munro yet.")
           : SingleChildScrollView(
-              child: Column(
-                children: [
-                  ...munroCompletions.map(
-                    (mc) =>
-                        MunroCompletionWidget(index: munroCompletions.indexOf(mc), munroCompletion: mc, munro: munro),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                child: Column(
+                  spacing: 12,
+                  children: [
+                    ...munroCompletions.map(
+                      (mc) => MunroCompletionWidget(
+                        index: munroCompletions.indexOf(mc),
+                        munroCompletion: mc,
+                        munro: munro,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
     );
