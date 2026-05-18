@@ -38,10 +38,12 @@ class HomeScreenState extends State<HomeScreen> {
       final layoutState = context.read<LayoutState>();
 
       _loadData();
-      final RenderBox renderBox = _bottomNavigationKey.currentContext!.findRenderObject() as RenderBox;
-      setState(() {
-        layoutState.setBottomNavBarHeight = renderBox.size.height;
-      });
+      final renderBox = _bottomNavigationKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        setState(() {
+          layoutState.setBottomNavBarHeight = renderBox.size.height;
+        });
+      }
     });
   }
 
