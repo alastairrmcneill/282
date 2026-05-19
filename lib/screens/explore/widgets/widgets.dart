@@ -11,6 +11,7 @@ export 'munro_rating_text.dart';
 export 'munro_card_title_text.dart';
 export 'explore_header_filter_button.dart';
 export 'explore_header_group_button.dart';
+export 'explore_header_icon_button.dart';
 export 'filter_screen_sort_options.dart';
 export 'filter_screen_completed_group.dart';
 export 'filter_screen_area_group.dart';

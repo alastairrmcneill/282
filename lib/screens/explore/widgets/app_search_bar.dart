@@ -31,7 +31,7 @@ class AppSearchBarSpecs {
         return SearchBarSpec(
           height: 44,
           boxDecoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(50),
             border: Border.all(
               color: context.colors.accent,
@@ -40,8 +40,8 @@ class AppSearchBarSpecs {
           ),
           contentPadding: const EdgeInsets.only(left: 20, right: 0, top: 10, bottom: 10),
           iconSize: 18,
-          textStyle: theme.textTheme.bodyLarge!,
-          hintStyle: theme.textTheme.bodyLarge!.copyWith(color: Colors.grey),
+          textStyle: theme.textTheme.bodyLarge!.copyWith(color: context.colors.textPrimary),
+          hintStyle: theme.textTheme.bodyLarge!.copyWith(color: context.colors.textMuted),
         );
       case SearchBarVariant.standard:
         return SearchBarSpec(
@@ -49,15 +49,15 @@ class AppSearchBarSpecs {
           boxDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Colors.transparent,
-              width: 0,
+              color: context.colors.border,
+              width: 0.65,
             ),
-            color: Colors.grey[200],
+            color: context.colors.surface,
           ),
           contentPadding: const EdgeInsets.only(left: 20, right: 0, top: 10, bottom: 10),
           iconSize: 16,
-          textStyle: theme.textTheme.bodyLarge!,
-          hintStyle: theme.textTheme.bodyLarge!.copyWith(color: Colors.grey),
+          textStyle: theme.textTheme.bodyLarge!.copyWith(color: context.colors.textPrimary),
+          hintStyle: theme.textTheme.bodyLarge!.copyWith(color: context.colors.textMuted),
         );
       case SearchBarVariant.compact:
         return SearchBarSpec(
@@ -65,15 +65,15 @@ class AppSearchBarSpecs {
           boxDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: Colors.transparent,
-              width: 0,
+              color: context.colors.border,
+              width: 0.65,
             ),
-            color: Colors.grey[200],
+            color: context.colors.surface,
           ),
           contentPadding: const EdgeInsets.only(left: 20, right: 0, top: 6, bottom: 6),
           iconSize: 14,
-          textStyle: theme.textTheme.bodySmall!,
-          hintStyle: theme.textTheme.bodySmall!.copyWith(color: Colors.grey),
+          textStyle: theme.textTheme.bodySmall!.copyWith(color: context.colors.textPrimary),
+          hintStyle: theme.textTheme.bodySmall!.copyWith(color: context.colors.textMuted),
         );
     }
   }
@@ -152,6 +152,9 @@ class _AppSearchBarState extends State<AppSearchBar> {
                     hintText: widget.hintText,
                     hintStyle: spec.hintStyle,
                     border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    filled: false,
                     contentPadding: EdgeInsets.zero,
                   ),
                   onChanged: (value) {

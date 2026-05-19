@@ -27,6 +27,7 @@ main() async {
   await Firebase.initializeApp();
   final prefs = await SharedPreferences.getInstance();
   final mixpanel = await Mixpanel.init(config.mixpanelToken, trackAutomaticEvents: true);
+  mixpanel.setServerURL("https://api-eu.mixpanel.com");
 
   MapboxOptions.setAccessToken(config.mapboxToken);
   await Supabase.initialize(

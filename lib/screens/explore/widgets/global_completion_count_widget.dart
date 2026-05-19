@@ -18,7 +18,7 @@ class GlobalCompletionCountWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         height: 34,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(50),
           border: Border.all(
             color: context.colors.accent,
