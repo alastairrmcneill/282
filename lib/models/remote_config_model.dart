@@ -4,7 +4,6 @@ class RemoteConfig {
   final int hardUpdateBuildNumber;
   final String whatsNew;
   final bool groupFilterNewIcon;
-  final bool mapboxMapScreen;
 
   const RemoteConfig({
     required this.feedbackSurveyNumber,
@@ -12,7 +11,6 @@ class RemoteConfig {
     required this.hardUpdateBuildNumber,
     required this.whatsNew,
     required this.groupFilterNewIcon,
-    required this.mapboxMapScreen,
   });
 
   static RemoteConfig get defaultConfig => RemoteConfig(
@@ -21,7 +19,6 @@ class RemoteConfig {
         hardUpdateBuildNumber: 0,
         whatsNew: "No new features this time. We are working hard to bring you new features soon.",
         groupFilterNewIcon: true,
-        mapboxMapScreen: false,
       );
 
   @override
@@ -32,7 +29,7 @@ class RemoteConfig {
                 hardUpdateBuildNumber: $hardUpdateBuildNumber, 
                 whatsNew: $whatsNew, 
                 groupFilterNewIcon: $groupFilterNewIcon, 
-                mapboxMapScreen: $mapboxMapScreen)''';
+              )''';
   }
 }
 
@@ -42,5 +39,4 @@ class RCFields {
   static const hardUpdateBuildNumber = "hard_update_build_number";
   static const whatsNew = "whats_new";
   static const groupFilterNewIcon = "group_filter_new_icon";
-  static const mapboxMapScreen = "mapbox_map_screen";
 }

@@ -100,9 +100,7 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: EdgeInsets.only(
                 bottom: bottomNavBarHeight + bottomPadding,
               ),
-              child: context.read<RemoteConfigState>().config.mapboxMapScreen
-                  ? MapboxMapScreen(searchFocusNode: _searchFocusNode)
-                  : GoogleMapScreen(searchFocusNode: _searchFocusNode),
+              child: MapboxMapScreen(searchFocusNode: _searchFocusNode),
             ),
           ),
           _buildSearchOverlay(),

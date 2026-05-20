@@ -20,7 +20,6 @@ class RemoteConfigRespository {
       RCFields.hardUpdateBuildNumber: defaultConfig.hardUpdateBuildNumber,
       RCFields.whatsNew: defaultConfig.whatsNew,
       RCFields.groupFilterNewIcon: defaultConfig.groupFilterNewIcon,
-      RCFields.mapboxMapScreen: defaultConfig.mapboxMapScreen,
     });
 
     await remoteConfig.fetchAndActivate();

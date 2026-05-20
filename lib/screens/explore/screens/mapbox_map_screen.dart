@@ -19,11 +19,14 @@ class MapboxMapScreen extends StatefulWidget {
 }
 
 class _MapboxMapScreenState extends State<MapboxMapScreen> {
+  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmpcs9ivx002m01r110ljakxt";
+  static const String _darkStyleUri = "mapbox://styles/alastairm94/cmpdpqwg2000001siaqwm3zx5";
+
   bool loading = true;
   late MapboxMap _mapboxMap;
+  Brightness? _lastBrightness;
   Map<int, PointAnnotation?> allAnnotations = {};
   String scotlandRegionId = "scotland-tile-region";
-  String styleUri = "mapbox://styles/alastairm94/cmm377uhm006i01qwayyyfxpe";
 
   PointAnnotation? selectedAnnotation;
   late PointAnnotationManager _annotationManager;
@@ -52,11 +55,26 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   Uint8List? selectedIcon;
   String mapAreaId = "full_map_area";
 
+  String _activeStyleUri(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
+  }
+
   @override
   void initState() {
     super.initState();
     checkAndDownloadMap();
     loadData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final brightness = Theme.of(context).brightness;
+    if (_lastBrightness != null && _lastBrightness != brightness) {
+      final uri = brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
+      _mapboxMap.loadStyleURI(uri);
+    }
+    _lastBrightness = brightness;
   }
 
   void loadData() async {
@@ -117,7 +135,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     );
 
     await offlineManager.loadStylePack(
-      styleUri,
+      _lightStyleUri,
       stylePackLoadOptions,
       (progress) {},
     );
@@ -126,7 +144,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       geometry: regionGeometry,
       descriptorsOptions: [
         TilesetDescriptorOptions(
-          styleURI: styleUri,
+          styleURI: _lightStyleUri,
           minZoom: 6,
           maxZoom: 7,
         ),
@@ -307,7 +325,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
                         munroState,
                         munroCompletionState,
                       ),
-                      styleUri: styleUri,
+                      styleUri: _activeStyleUri(context),
                       cameraOptions: startingCamera,
                       onTapListener: (context) {
                         widget.searchFocusNode.unfocus();

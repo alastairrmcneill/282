@@ -46,7 +46,6 @@ class RemoteConfigState extends ChangeNotifier {
       hardUpdateBuildNumber: _remoteConfigRepository.getInt(RCFields.hardUpdateBuildNumber),
       whatsNew: _remoteConfigRepository.getString(RCFields.whatsNew),
       groupFilterNewIcon: _remoteConfigRepository.getBool(RCFields.groupFilterNewIcon),
-      mapboxMapScreen: _remoteConfigRepository.getBool(RCFields.mapboxMapScreen),
     );
   }
 }
