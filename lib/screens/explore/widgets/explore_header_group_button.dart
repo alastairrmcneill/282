@@ -19,7 +19,7 @@ class ExploreHeaderGroupButton extends StatelessWidget {
         if (userId == null) {
           Navigator.of(context).pushNamed(AuthHomeScreen.route);
         } else {
-          Navigator.of(context).pushNamed(GroupFilterScreen.route);
+          Navigator.of(context).pushNamed(GroupFilterIntroScreen.route);
         }
       },
       showBadge: groupFilterState.selectedFriendsUids.isNotEmpty,

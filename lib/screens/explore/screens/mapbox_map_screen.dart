@@ -26,8 +26,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   late MapboxMap _mapboxMap;
   Brightness? _lastBrightness;
   Map<int, PointAnnotation?> allAnnotations = {};
-  String scotlandRegionId = "scotland-tile-region";
-
   PointAnnotation? selectedAnnotation;
   late PointAnnotationManager _annotationManager;
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
@@ -53,7 +51,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   Uint8List? incompleteIcon;
   Uint8List? completeIcon;
   Uint8List? selectedIcon;
-  String mapAreaId = "full_map_area";
 
   String _activeStyleUri(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
@@ -62,7 +59,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   @override
   void initState() {
     super.initState();
-    checkAndDownloadMap();
     loadData();
   }
 
@@ -82,86 +78,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     completeIcon = await _loadMarker('assets/munro_complete.png');
     selectedIcon = await _loadMarker('assets/munro_selected.png');
     if (mounted) setState(() => loading = false);
-  }
-
-  Future<void> checkAndDownloadMap() async {
-    final OfflineManager offlineManager = await OfflineManager.create();
-    final TileStore tileStore = await TileStore.createDefault();
-
-    if (await _isRegionAlreadyDownloaded(tileStore)) {
-      await _handleExistingRegion(offlineManager, tileStore);
-    } else {
-      await _downloadRegion(offlineManager, tileStore);
-    }
-  }
-
-  Future<bool> _isRegionAlreadyDownloaded(TileStore tileStore) async {
-    final List<TileRegion> regions = await tileStore.allTileRegions();
-    return regions.any((region) => region.id == scotlandRegionId);
-  }
-
-  Future<void> _handleExistingRegion(OfflineManager offlineManager, TileStore tileStore) async {
-    final List<TileRegion> regions = await tileStore.allTileRegions();
-    final TileRegion region = regions.firstWhere((region) => region.id == scotlandRegionId);
-
-    print("🚀 ~ region.completedResourceCount: ${region.completedResourceCount}");
-    print("🚀 ~ region.requiredResourceCount: ${region.requiredResourceCount}");
-
-    if (region.completedResourceCount < region.requiredResourceCount) {
-      print("🚀 ~ removing region and starting again");
-      await tileStore.removeRegion(scotlandRegionId);
-      await _downloadRegion(offlineManager, tileStore);
-    }
-  }
-
-  Future<void> _downloadRegion(OfflineManager offlineManager, TileStore tileStore) async {
-    const double west = -6.3, south = 56, east = -2.9, north = 58.5;
-
-    final scotlandPolygon = Polygon(coordinates: [
-      [
-        Position(west, south),
-        Position(east, south),
-        Position(east, north),
-        Position(west, north),
-        Position(west, south), // Close the ring
-      ]
-    ]);
-
-    final regionGeometry = scotlandPolygon.toJson();
-    final stylePackLoadOptions = StylePackLoadOptions(
-      glyphsRasterizationMode: GlyphsRasterizationMode.IDEOGRAPHS_RASTERIZED_LOCALLY,
-      metadata: {"tag": "scotland"},
-      acceptExpired: false,
-    );
-
-    await offlineManager.loadStylePack(
-      _lightStyleUri,
-      stylePackLoadOptions,
-      (progress) {},
-    );
-
-    final tileRegionLoadOptions = TileRegionLoadOptions(
-      geometry: regionGeometry,
-      descriptorsOptions: [
-        TilesetDescriptorOptions(
-          styleURI: _lightStyleUri,
-          minZoom: 6,
-          maxZoom: 7,
-        ),
-      ],
-      metadata: {"tag": "scotland"},
-      acceptExpired: true,
-      networkRestriction: NetworkRestriction.NONE,
-    );
-
-    await tileStore.loadTileRegion(
-      scotlandRegionId,
-      tileRegionLoadOptions,
-      (progress) {
-        print("🚀 ~ progress.completedResourceCount: ${progress.completedResourceCount}");
-        print("🚀 ~ progress.requiredResourceCount: ${progress.requiredResourceCount}");
-      },
-    );
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/screens/group_filter/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -16,20 +18,20 @@ class GroupFilterScreen extends StatefulWidget {
 
 class _GroupFilterScreenState extends State<GroupFilterScreen> {
   late ScrollController _scrollController;
-  final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  String _currentQuery = '';
 
   @override
   void initState() {
-    GroupFilterState groupFilterState = context.read<GroupFilterState>();
-
+    final groupFilterState = context.read<GroupFilterState>();
     final userId = context.read<AuthState>().currentUserId;
+
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange &&
           groupFilterState.status != GroupFilterStatus.paginating) {
-        groupFilterState.paginateSearch(query: _searchController.text.trim());
+        groupFilterState.paginateSearch(query: _currentQuery);
       }
     });
 
@@ -41,126 +43,154 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    GroupFilterState groupFilterState = context.read<GroupFilterState>();
+    final groupFilterState = context.read<GroupFilterState>();
+
     return Scaffold(
-      appBar: AppBar(
-        leading: CustomAppBarBackButton(
-          onPressed: () {
-            groupFilterState.clearSelection();
-            Navigator.pop(context);
-          },
-        ),
-        title: AppSearchBar(
-          focusNode: _focusNode,
-          hintText: "Find friends",
-          onClear: () {
-            _searchController.clear();
-            groupFilterState.clearSearch();
-          },
-          onSearchTap: () {},
-          onChanged: (value) {
-            if (value.trim().length >= 2) {
-              groupFilterState.search(query: value.trim());
-            }
-          },
-        ),
+      appBar: _buildAppBar(context),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: AppSearchBar(
+              focusNode: _focusNode,
+              hintText: "Find friends",
+              onClear: () {
+                _currentQuery = '';
+                groupFilterState.clearSearch();
+              },
+              onSearchTap: () {},
+              onChanged: (q) {
+                _currentQuery = q;
+                if (q.length >= 2) groupFilterState.search(query: q);
+              },
+            ),
+          ),
+          Expanded(
+            child: Consumer<GroupFilterState>(
+              builder: (context, state, child) {
+                if (state.status == GroupFilterStatus.loading) {
+                  return _FriendListLoading();
+                }
+                if (state.status == GroupFilterStatus.error) {
+                  return CenterText(text: state.error.message);
+                }
+                return _FriendList(
+                  groupFilterState: state,
+                  scrollController: _scrollController,
+                );
+              },
+            ),
+          ),
+        ],
       ),
-      body: Consumer<GroupFilterState>(
-        builder: (context, groupFilterState, child) {
-          switch (groupFilterState.status) {
-            case GroupFilterStatus.loading:
-              return _buildLoadingScreen(groupFilterState);
-            case GroupFilterStatus.error:
-              return CenterText(text: groupFilterState.error.message);
-            default:
-              return _buildScreen(
-                context,
-                groupFilterState: groupFilterState,
-                scrollController: _scrollController,
-              );
-          }
+      bottomNavigationBar: Consumer<GroupFilterState>(
+        builder: (context, state, child) {
+          return GroupFilterBottomBar(
+            selectedCount: state.selectedFriendsUids.length,
+            onClear: state.clearSelection,
+            onConfirm: state.selectedFriendsUids.isNotEmpty
+                ? () async {
+                    context.read<Analytics>().track(AnalyticsEvent.groupViewFilterApplied);
+                    await state.filterMunrosBySelection();
+                    if (context.mounted) Navigator.pop(context);
+                  }
+                : null,
+          );
         },
       ),
     );
   }
 
-  Widget _buildLoadingScreen(GroupFilterState groupFilterState) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 30,
-      itemBuilder: (context, index) => const ShimmerListTile(),
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      leading: CustomAppBarBackButton(
+        onPressed: () {
+          context.read<GroupFilterState>().clearSelection();
+          Navigator.pop(context);
+        },
+      ),
+      centerTitle: true,
+      title: Consumer<GroupFilterState>(
+        builder: (context, state, child) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Select Friends"),
+              if (state.selectedFriendsUids.isNotEmpty)
+                Text(
+                  "${state.selectedFriendsUids.length} selected",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: context.colors.textSubtitle,
+                      ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
+}
 
-  Widget _buildScreen(
-    BuildContext context, {
-    required GroupFilterState groupFilterState,
-    required ScrollController scrollController,
-  }) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: groupFilterState.friends.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(15),
-                    child: CenterText(text: "No friends found."),
-                  )
-                : ListView(
-                    controller: _scrollController,
-                    children: groupFilterState.friends.map(
-                      (followingRelationship) {
-                        return ListTile(
-                          leading: CircularProfilePicture(
-                            radius: 20,
-                            profilePictureURL: followingRelationship.targetProfilePictureURL,
-                            profileUid: followingRelationship.targetId,
-                          ),
-                          title: Text(followingRelationship.targetDisplayName ?? ""),
-                          trailing: groupFilterState.selectedFriendsUids.contains(followingRelationship.targetId)
-                              ? const Icon(Icons.check)
-                              : null,
-                          onTap: () {
-                            if (groupFilterState.selectedFriendsUids.contains(followingRelationship.targetId)) {
-                              groupFilterState.removeSelectedFriend(uid: followingRelationship.targetId);
-                            } else {
-                              groupFilterState.addSelectedFriend(uid: followingRelationship.targetId);
-                            }
-                          },
-                        );
-                      },
-                    ).toList(),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 2, right: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    groupFilterState.clearSelection();
-                  },
-                  child: const Text("Clear"),
-                ),
-                ElevatedButton(
-                  onPressed: groupFilterState.selectedFriendsUids.isNotEmpty
-                      ? () async {
-                          // Run the filter
-                          context.read<Analytics>().track(AnalyticsEvent.groupViewFilterApplied);
-                          await groupFilterState.filterMunrosBySelection();
-                          Navigator.pop(context);
-                        }
-                      : null,
-                  child: Text(
-                      "Select ${groupFilterState.selectedFriendsUids.length} friend${groupFilterState.selectedFriendsUids.length == 1 ? '' : 's'}"),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+class _FriendListLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      itemCount: 12,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, __) => const ShimmerListTile(),
+    );
+  }
+}
+
+
+class _FriendList extends StatelessWidget {
+  final GroupFilterState groupFilterState;
+  final ScrollController scrollController;
+
+  const _FriendList({
+    required this.groupFilterState,
+    required this.scrollController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (groupFilterState.friends.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: CenterText(text: "No friends found."),
+      );
+    }
+
+    return ListView.separated(
+      controller: scrollController,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      itemCount: groupFilterState.friends.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final friend = groupFilterState.friends[index];
+        final isSelected = groupFilterState.selectedFriendsUids.contains(friend.targetId);
+        return FriendListTile(
+          friend: friend,
+          isSelected: isSelected,
+          onTap: () {
+            if (isSelected) {
+              groupFilterState.removeSelectedFriend(uid: friend.targetId);
+            } else {
+              groupFilterState.addSelectedFriend(uid: friend.targetId);
+            }
+          },
+        );
+      },
     );
   }
 }

@@ -277,6 +277,11 @@ class AppRouter {
           builder: (_) => const NotificationsScreen(),
           settings: settings,
         );
+      case GroupFilterIntroScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const GroupFilterIntroScreen(),
+          settings: settings,
+        );
       case GroupFilterScreen.route:
         return MaterialPageRoute(
           builder: (_) => const GroupFilterScreen(),
