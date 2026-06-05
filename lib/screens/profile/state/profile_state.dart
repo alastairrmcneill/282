@@ -165,6 +165,12 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void adjustFollowersCount(int delta) {
+    if (_profile == null) return;
+    _profile = _profile!.copyWith(followersCount: (_profile!.followersCount ?? 0) + delta);
+    notifyListeners();
+  }
+
   set setError(Error error) {
     _status = ProfileStatus.error;
     _error = error;

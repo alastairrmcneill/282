@@ -173,19 +173,35 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) {
-            return ChangeNotifierProvider<ProfileState>(
-              create: (ctx) => ProfileState(
-                ctx.read<ProfileRepository>(),
-                ctx.read<MunroPicturesRepository>(),
-                ctx.read<PostsRepository>(),
-                ctx.read<UserState>(),
-                ctx.read<UserLikeState>(),
-                ctx.read<MunroCompletionsRepository>(),
-                ctx.read<Logger>(),
-              )..loadProfileFromUserId(userId: args.userId),
-              child: ProfileScreen(
-                userId: args.userId,
-              ),
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider<ProfileState>(
+                  create: (ctx) => ProfileState(
+                    ctx.read<ProfileRepository>(),
+                    ctx.read<MunroPicturesRepository>(),
+                    ctx.read<PostsRepository>(),
+                    ctx.read<UserState>(),
+                    ctx.read<UserLikeState>(),
+                    ctx.read<MunroCompletionsRepository>(),
+                    ctx.read<Logger>(),
+                  )..loadProfileFromUserId(userId: args.userId),
+                ),
+                ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
+                  create: (ctx) => PhotoGalleryState<MunroPicture>(
+                    ctx.read<UserState>(),
+                    ctx.read<Logger>(),
+                    ({required offset, required count, required excludedAuthorIds}) {
+                      return ctx.read<MunroPicturesRepository>().readProfilePictures(
+                            profileId: args.userId,
+                            excludedAuthorIds: excludedAuthorIds,
+                            offset: offset,
+                            count: count,
+                          );
+                    },
+                  )..loadInitital(),
+                ),
+              ],
+              child: ProfileScreen(userId: args.userId),
             );
           },
           settings: settings,

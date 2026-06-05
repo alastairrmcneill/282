@@ -1,109 +1,119 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/munro_challenge/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class CreateMunroChallengeScreen extends StatelessWidget {
-  CreateMunroChallengeScreen({super.key});
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class CreateMunroChallengeScreen extends StatefulWidget {
   static const String route = '/munro_challenge/create';
+  const CreateMunroChallengeScreen({super.key});
+
+  @override
+  State<CreateMunroChallengeScreen> createState() =>
+      _CreateMunroChallengeScreenState();
+}
+
+class _CreateMunroChallengeScreenState
+    extends State<CreateMunroChallengeScreen> {
+  int _goal = 12;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final target =
+          context.read<AchievementsState>().currentAchievement?.annualTarget;
+      if (target != null && mounted) setState(() => _goal = target);
+    });
+  }
+
+  void _save(AchievementsState achievementsState) {
+    achievementsState.setAchievementFormCount = _goal;
+    achievementsState.setMunroChallenge();
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AchievementsState>(
-      builder: (context, achievementsState, child) {
-        switch (achievementsState.status) {
-          case AchievementsStatus.error:
-            print(achievementsState.error.code);
-            return Scaffold(
+      builder: (context, achievementsState, _) {
+        if (achievementsState.status == AchievementsStatus.error) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Update Challenge')),
+            body: CenterText(text: achievementsState.error.message),
+          );
+        }
+
+        final completedCount = context
+            .watch<MunroCompletionState>()
+            .munroCompletions
+            .where((mc) => mc.dateTimeCompleted.year == DateTime.now().year)
+            .length;
+
+        return Stack(
+          children: [
+            Scaffold(
               appBar: AppBar(
-                title: const Text('Update Munro Challenge'),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Update Challenge'),
+                    Text(
+                      'Set your ${DateTime.now().year} goal',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context)
+                                .appBarTheme
+                                .foregroundColor
+                                ?.withValues(alpha: 0.6),
+                          ),
+                    ),
+                  ],
+                ),
                 centerTitle: false,
               ),
-              body: CenterText(text: achievementsState.error.message),
-            );
-          case AchievementsStatus.loaded:
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              }
-            });
-            return const SizedBox();
-          default:
-            return _buildScreen(context, achievementsState);
-        }
-      },
-    );
-  }
-
-  Widget _buildScreen(BuildContext context, AchievementsState achievementsState) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            title: const Text('Munro Challenge'),
-            centerTitle: false,
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Text(
-                      'Challenge yourself by setting a goal for how many munros you want to climb in ${DateTime.now().year}.'),
-                  const SizedBox(height: 30),
-                  Form(
-                    key: _formKey,
-                    child: AppTextFormField(
-                      initialValue: achievementsState.currentAchievement?.annualTarget?.toString() ?? '0',
-                      labelText: "Number of Munros",
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            int.tryParse(value) == null ||
-                            int.parse(value) < 1 ||
-                            int.parse(value) > 282) {
-                          return 'Please enter a number between 1 and 282.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        achievementsState.setAchievementFormCount = int.parse(value!);
-                      },
+              bottomNavigationBar: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.viewInsetsOf(context).bottom,
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: PrimaryButton(
+                      onPressed: () => _save(achievementsState),
+                      child: const Text('Save Challenge Goal'),
                     ),
                   ),
+                ),
+              ),
+              body: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  ChallengeProgressCard(
+                    completedCount: completedCount,
+                    goal: _goal,
+                  ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    height: 44,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        }
-                        _formKey.currentState!.save();
-                        achievementsState.setMunroChallenge();
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Create Munro Challenge'),
-                    ),
+                  ChallengeGoalSelector(
+                    goal: _goal,
+                    onChanged: (value) => setState(() => _goal = value),
+                  ),
+                  const SizedBox(height: 20),
+                  ChallengeImpactStats(
+                    goal: _goal,
+                    completedCount: completedCount,
                   ),
                 ],
               ),
             ),
-          ),
-        ),
-        achievementsState.status == AchievementsStatus.loading
-            ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.8,
+            if (achievementsState.status == AchievementsStatus.loading)
+              Container(
                 color: Colors.transparent,
                 child: const LoadingWidget(),
-              )
-            : const SizedBox(),
-      ],
+              ),
+          ],
+        );
+      },
     );
   }
 }

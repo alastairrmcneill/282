@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,6 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class ProfileScreenArgs {
   final String userId;
-
   ProfileScreenArgs({required this.userId});
 }
 
@@ -25,34 +23,38 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  late ScrollController _scrollController;
+class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final ScrollController _outerScrollController = ScrollController();
+
   @override
   void initState() {
-    final profileState = context.read<ProfileState>();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-          !_scrollController.position.outOfRange &&
-          profileState.status != ProfileStatus.paginating) {
-        profileState.paginateProfilePosts();
-      }
-    });
-
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChange);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _tabController.removeListener(_onTabChange);
+    _tabController.dispose();
+    _outerScrollController.dispose();
     super.dispose();
+  }
+
+  void _onTabChange() {
+    if (_tabController.indexIsChanging) return;
+    if (_outerScrollController.hasClients &&
+        _outerScrollController.position.hasContentDimensions &&
+        _outerScrollController.position.maxScrollExtent > 0) {
+      _outerScrollController.jumpTo(_outerScrollController.position.maxScrollExtent);
+    }
   }
 
   void _showActionsDialog(BuildContext context) {
     final profileState = context.read<ProfileState>();
     final reportState = context.read<ReportState>();
-
-    final items = [
+    showActionSheet(context, [
       ActionMenuItems(
         title: 'Block',
         isDestructive: true,
@@ -61,8 +63,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             context,
             message: "Are you sure you want to block this user?",
             onConfirm: () async {
-              await context.read<UserState>().blockUser(userId: profileState.profile?.id ?? "");
-              Navigator.of(context).pop();
+              await context.read<UserState>().blockUser(userId: profileState.profile?.id ?? '');
+              if (context.mounted) Navigator.of(context).pop();
             },
           );
         },
@@ -70,188 +72,286 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ActionMenuItems(
         title: 'Report',
         isDestructive: true,
-        onPressed: () async {
-          reportState.setContentId = profileState.profile?.id ?? "";
-          reportState.setType = "user";
+        onPressed: () {
+          reportState.setContentId = profileState.profile?.id ?? '';
+          reportState.setType = 'user';
           Navigator.of(context).pushNamed(ReportScreen.route);
         },
       ),
-    ];
-    showActionSheet(context, items);
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ProfileState>(
-      builder: (context, profileState, child) {
-        switch (profileState.status) {
-          case ProfileStatus.loading:
-            return _buildLoadingScreen(profileState);
-          case ProfileStatus.error:
-            print(profileState.error.code);
-            return Scaffold(
-              appBar: AppBar(),
-              body: CenterText(text: profileState.error.message),
-            );
-          default:
-            return _buildScreen(context, profileState);
+      builder: (context, profileState, _) {
+        if (profileState.status == ProfileStatus.loading) {
+          return const _LoadingScreen();
         }
+        if (profileState.status == ProfileStatus.error) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: CenterText(text: profileState.error.message),
+          );
+        }
+        return _buildScreen(context, profileState);
       },
     );
   }
 
-  Widget _buildLoadingScreen(ProfileState profileState) {
+  AppBar _buildAppBar(BuildContext context, ProfileState profileState) {
+    return AppBar(
+      title: Text(profileState.profile?.displayName ?? ''),
+      centerTitle: true,
+      leading: profileState.isCurrentUser
+          ? null
+          : IconButton(
+              icon: Icon(PhosphorIconsRegular.caretLeft),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+      actions: [
+        profileState.isCurrentUser
+            ? IconButton(
+                onPressed: () => Navigator.of(context).pushNamed(SettingsScreen.route),
+                icon: Icon(PhosphorIconsRegular.gear),
+              )
+            : IconButton(
+                icon: Icon(PhosphorIconsBold.dotsThreeVertical, color: context.colors.textMuted),
+                onPressed: () => _showActionsDialog(context),
+              ),
+      ],
+    );
+  }
+
+  Widget _buildScreen(BuildContext context, ProfileState profileState) {
+    final currentUserFollowerState = context.watch<CurrentUserFollowerState>();
+    final userLikeState = context.read<UserLikeState>();
+    final canViewContent = profileState.isCurrentUser || currentUserFollowerState.isFollowing(widget.userId);
+
+    if (!canViewContent) {
+      return Scaffold(
+        appBar: _buildAppBar(context, profileState),
+        body: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              const ProfileHeaderSection(),
+              _PrivateAccountMessage(),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: _buildAppBar(context, profileState),
+      body: RefreshIndicator(
+        onRefresh: () async => profileState.loadProfileFromUserId(userId: profileState.profile?.id ?? ''),
+        child: NestedScrollView(
+          controller: _outerScrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            const SliverToBoxAdapter(child: ProfileHeaderSection()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    const ProfileMunroProgressCard(),
+                    const SizedBox(height: 12),
+                    if (profileState.isCurrentUser) ...[
+                      const ProfileLogPastCard(),
+                      const SizedBox(height: 12),
+                    ],
+                    const ProfileChallengeCard(),
+                    const SizedBox(height: 12),
+                    const ProfileAchievementsCard(),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverPersistentHeader(
+                pinned: true,
+                delegate: _TabBarDelegate(_tabController),
+              ),
+            ),
+          ],
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              _PostsTab(profileState: profileState, userLikeState: userLikeState),
+              const ProfilePhotosWidget(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabController tabController;
+  _TabBarDelegate(this.tabController);
+
+  @override
+  double get minExtent => 48.0;
+
+  @override
+  double get maxExtent => 48.0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: TabBar(
+        controller: tabController,
+        tabs: const [Tab(text: 'Posts'), Tab(text: 'Photos')],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_TabBarDelegate old) => old.tabController != tabController;
+}
+
+class _PostsTab extends StatelessWidget {
+  final ProfileState profileState;
+  final UserLikeState userLikeState;
+
+  const _PostsTab({required this.profileState, required this.userLikeState});
+
+  @override
+  Widget build(BuildContext context) {
+    if (profileState.posts.isEmpty) {
+      return CustomScrollView(
+        slivers: [
+          SliverOverlapInjector(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: Center(child: CenterText(text: 'No posts yet')),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification.metrics.pixels >= notification.metrics.maxScrollExtent - 300 &&
+            context.read<ProfileState>().status != ProfileStatus.paginating) {
+          context.read<ProfileState>().paginateProfilePosts();
+        }
+        return false;
+      },
+      child: CustomScrollView(
+        slivers: [
+          SliverOverlapInjector(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final post = profileState.posts[index];
+                return PostWidget(
+                  post: post,
+                  inFeed: false,
+                  onEdit: () async {
+                    final createPostState = context.read<CreatePostState>();
+                    final settingsState = context.read<SettingsState>();
+                    createPostState.reset();
+                    createPostState.loadPost = post;
+                    createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+                    final result = await Navigator.of(context).pushNamed(CreatePostScreen.route);
+                    if (result is Post) {
+                      context.read<ProfileState>().updatePost(result);
+                    }
+                  },
+                  onDelete: () async {
+                    final createPostState = context.read<CreatePostState>();
+                    await createPostState.deletePost(post: post);
+                    context.read<ProfileState>().removePost(post);
+                  },
+                  onLikeTap: () async {
+                    if (userLikeState.likedPosts.contains(post.uid)) {
+                      userLikeState.unLikePost(
+                        post: post,
+                        onPostUpdated: context.read<ProfileState>().updatePost,
+                      );
+                    } else {
+                      userLikeState.likePost(
+                        post: post,
+                        onPostUpdated: context.read<ProfileState>().updatePost,
+                      );
+                    }
+                  },
+                );
+              },
+              childCount: profileState.posts.length,
+            ),
+          ),
+          const SliverFillRemaining(hasScrollBody: false, child: SizedBox()),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingScreen extends StatelessWidget {
+  const _LoadingScreen();
+
+  @override
+  Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.white,
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
         slivers: [
           LoadingSliverHeader(),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ShimmerBox(width: 300, height: 24, borderRadius: 5),
                   SizedBox(height: 20),
-                  ShimmerBox(
-                    width: double.infinity,
-                    height: 40,
-                    borderRadius: 5,
-                  ),
+                  ShimmerBox(width: double.infinity, height: 40, borderRadius: 5),
                   SizedBox(height: 20),
-                  ShimmerPostTile(),
                   ShimmerPostTile(),
                   ShimmerPostTile(),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildScreen(BuildContext context, ProfileState profileState) {
-    UserLikeState userLikeState = context.read<UserLikeState>();
-    CurrentUserFollowerState currentUserFollowerState = context.watch<CurrentUserFollowerState>();
-
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 35,
-        elevation: 0,
-        actions: [
-          profileState.isCurrentUser
-              ? IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(SettingsScreen.route);
-                  },
-                  icon: const Icon(Icons.settings_rounded),
-                )
-              : SizedBox(
-                  width: 32,
-                  height: 32,
-                  child: IconButton(
-                    padding: EdgeInsets.all(0),
-                    icon: Icon(
-                      PhosphorIconsBold.dotsThreeVertical,
-                      color: context.colors.textMuted,
-                    ),
-                    onPressed: () => _showActionsDialog(context),
-                  ),
-                )
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          profileState.loadProfileFromUserId(userId: profileState.profile?.id ?? "");
-        },
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              const ProfileHeader(),
-              const PaddedDivider(left: 15, right: 15),
-              !(profileState.isCurrentUser || currentUserFollowerState.isFollowing(widget.userId))
-                  ? const SizedBox(
-                      width: double.infinity,
-                      height: 100,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(CupertinoIcons.lock),
-                            Text('You are not following this user'),
-                          ],
-                        ),
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        const ProfileMunroStats(),
-                        const PaddedDivider(left: 15, right: 15),
-                        const ProfilePhotosWidget(),
-                        const PaddedDivider(
-                          top: 20,
-                          left: 15,
-                          right: 15,
-                          bottom: 5,
-                        ),
-                        profileState.posts.isEmpty
-                            ? const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20),
-                                child: CenterText(text: "No posts"),
-                              )
-                            : Column(
-                                children: profileState.posts
-                                    .map(
-                                      (Post post) => PostWidget(
-                                        post: post,
-                                        inFeed: false,
-                                        onEdit: () async {
-                                          final createPostState = context.read<CreatePostState>();
-                                          final settingsState = context.read<SettingsState>();
-
-                                          createPostState.reset();
-                                          createPostState.loadPost = post;
-                                          createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-
-                                          final result = await Navigator.of(context).pushNamed(
-                                            CreatePostScreen.route,
-                                          );
-
-                                          if (result is Post) {
-                                            context.read<ProfileState>().updatePost(result);
-                                          }
-                                        },
-                                        onDelete: () async {
-                                          final createPostState = context.read<CreatePostState>();
-                                          await createPostState.deletePost(post: post);
-
-                                          context.read<ProfileState>().removePost(post);
-                                        },
-                                        onLikeTap: () async {
-                                          if (userLikeState.likedPosts.contains(post.uid)) {
-                                            userLikeState.unLikePost(
-                                              post: post,
-                                              onPostUpdated: profileState.updatePost,
-                                            );
-                                          } else {
-                                            userLikeState.likePost(
-                                              post: post,
-                                              onPostUpdated: profileState.updatePost,
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
-                      ],
-                    ),
-            ],
-          ),
+class _PrivateAccountMessage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 120,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.lock_outline, color: context.colors.textMuted),
+            const SizedBox(height: 8),
+            Text(
+              'You are not following this user',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+            ),
+          ],
         ),
       ),
     );
