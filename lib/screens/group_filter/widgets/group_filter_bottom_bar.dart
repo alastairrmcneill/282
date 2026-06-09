@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class GroupFilterBottomBar extends StatelessWidget {
   final int selectedCount;
@@ -17,6 +18,7 @@ class GroupFilterBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SafeArea(
+      bottom: false,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -33,11 +35,11 @@ class GroupFilterBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: FilledButton(
+              child: PrimaryButton(
                 onPressed: onConfirm,
                 child: Text(
                   "View Munros ($selectedCount ${selectedCount == 1 ? 'friend' : 'friends'})",
-                  style: theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+                  style: theme.textTheme.labelLarge,
                 ),
               ),
             ),
