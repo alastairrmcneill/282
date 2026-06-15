@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
@@ -9,18 +8,14 @@ class ExploreTabHeader extends StatelessWidget {
   final double headerHeight;
   final FocusNode searchFocusNode;
   final VoidCallback onSearchTap;
-  final bool isSearchVisible;
   final bool isMunroListViewVisible;
-  final void Function() onBackTap;
 
   const ExploreTabHeader({
     super.key,
     required this.headerHeight,
     required this.searchFocusNode,
     required this.onSearchTap,
-    required this.isSearchVisible,
     required this.isMunroListViewVisible,
-    required this.onBackTap,
   });
 
   @override
@@ -31,30 +26,18 @@ class ExploreTabHeader extends StatelessWidget {
       left: 0,
       right: 0,
       child: Container(
-        color: isMunroListViewVisible || isSearchVisible ? context.colors.background : Colors.transparent,
+        color: isMunroListViewVisible ? context.colors.background : Colors.transparent,
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Container(
-          color: isMunroListViewVisible || isSearchVisible ? context.colors.background : Colors.transparent,
+          color: isMunroListViewVisible ? context.colors.background : Colors.transparent,
           height: headerHeight,
           child: Padding(
-            padding: EdgeInsets.only(
-              left: isSearchVisible ? 0 : 15,
-              right: 15,
-            ),
+            padding: const EdgeInsets.only(left: 15, right: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Row(
                   children: [
-                    isSearchVisible
-                        ? IconButton(
-                            icon: Icon(
-                              CupertinoIcons.arrow_left,
-                              color: context.colors.accent,
-                            ),
-                            onPressed: onBackTap,
-                          )
-                        : const SizedBox(),
                     Expanded(
                       flex: 1,
                       child: AppSearchBar(

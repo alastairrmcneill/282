@@ -8,8 +8,6 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-import 'screens/munro_search_screen.dart';
-
 class ExploreTab extends StatefulWidget {
   const ExploreTab({super.key});
   static const String route = '/explore';
@@ -22,10 +20,8 @@ class _ExploreTabState extends State<ExploreTab> {
   final PanelController panelController = PanelController();
   final FocusNode _searchFocusNode = FocusNode();
 
-  bool _isSearchVisible = false;
   bool _isMunroListViewVisible = false;
   bool _hasLoggedPanelOpen = false;
-  bool _hasLoggedSearchOpen = false;
 
   BorderRadius borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
 
@@ -88,6 +84,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
                 borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
+                _searchFocusNode.unfocus();
               }
             }),
             panelBuilder: (sc) {
@@ -103,28 +100,12 @@ class _ExploreTabState extends State<ExploreTab> {
               child: MapboxMapScreen(searchFocusNode: _searchFocusNode),
             ),
           ),
-          _buildSearchOverlay(),
           ExploreTabHeader(
             headerHeight: headerHeight,
             searchFocusNode: _searchFocusNode,
-            isSearchVisible: _isSearchVisible,
             isMunroListViewVisible: _isMunroListViewVisible,
-            onBackTap: () {
-              setState(() {
-                _isSearchVisible = false;
-                _searchFocusNode.unfocus();
-                _hasLoggedSearchOpen = false;
-                context.read<AppRouteObserver>().updateCurrentScreen(ExploreTab.route);
-              });
-            },
             onSearchTap: () {
-              setState(() {
-                _isSearchVisible = true;
-                if (!_hasLoggedSearchOpen) {
-                  _hasLoggedSearchOpen = true;
-                  context.read<AppRouteObserver>().updateCurrentScreen(MunroSearchScreen.route);
-                }
-              });
+              panelController.open();
             },
           ),
         ],
@@ -132,14 +113,4 @@ class _ExploreTabState extends State<ExploreTab> {
     );
   }
 
-  Widget _buildSearchOverlay() {
-    return AnimatedOpacity(
-      opacity: _isSearchVisible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 500),
-      child: Visibility(
-        visible: _isSearchVisible,
-        child: const MunroSearchScreen(),
-      ),
-    );
-  }
 }
