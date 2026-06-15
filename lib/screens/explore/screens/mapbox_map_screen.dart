@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
@@ -23,11 +24,13 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   static const String _darkStyleUri = "mapbox://styles/alastairm94/cmpdpqwg2000001siaqwm3zx5";
 
   bool loading = true;
+  bool _mapInitialized = false;
   late MapboxMap _mapboxMap;
   Brightness? _lastBrightness;
   Map<int, PointAnnotation?> allAnnotations = {};
   PointAnnotation? selectedAnnotation;
   late PointAnnotationManager _annotationManager;
+  List<int> _lastFilteredIds = [];
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
     bounds: CoordinateBounds(
       southwest: Point(
@@ -85,19 +88,19 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
     _mapboxMap.setBounds(cameraBounds);
-    _addMunroSymbols(
+    await _addMunroSymbols(
       munroState: munroState,
       completedMunros: munroCompletionState.munroCompletions,
     );
+    _lastFilteredIds = munroState.filteredMunroList.map((m) => m.id).toList();
+    _mapInitialized = true;
   }
 
   Future<void> _addMunroSymbols(
       {required MunroState munroState, required List<MunroCompletion> completedMunros}) async {
     final List<Munro> munros = munroState.filteredMunroList;
 
-    // Safety check: ensure icons are loaded before creating markers
     if (incompleteIcon == null || completeIcon == null || selectedIcon == null) {
-      print('⚠️ Icons not loaded yet, skipping marker creation');
       return;
     }
 
@@ -124,6 +127,33 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
     var annotations = await _annotationManager.createMulti(pointAnnotationOptions);
 
+    for (var i = 0; i < annotations.length; i++) {
+      allAnnotations[munros[i].id] = annotations[i];
+    }
+  }
+
+  Future<void> _refreshAnnotations(MunroState munroState, MunroCompletionState munroCompletionState) async {
+    if (incompleteIcon == null || completeIcon == null || selectedIcon == null) return;
+
+    await _annotationManager.deleteAll();
+    allAnnotations.clear();
+    selectedAnnotation = null;
+    munroState.setSelectedMunroId = null;
+
+    final munros = munroState.filteredMunroList;
+    if (munros.isEmpty) return;
+
+    List<PointAnnotationOptions> options = [];
+    for (var munro in munros) {
+      final summited = munroCompletionState.munroCompletions.any((e) => e.munroId == munro.id);
+      options.add(PointAnnotationOptions(
+        geometry: Point(coordinates: Position(munro.lng, munro.lat)),
+        image: summited ? completeIcon! : incompleteIcon!,
+        iconSize: 0.6,
+      ));
+    }
+
+    var annotations = await _annotationManager.createMulti(options);
     for (var i = 0; i < annotations.length; i++) {
       allAnnotations[munros[i].id] = annotations[i];
     }
@@ -173,7 +203,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
     if (selectedAnnotation != null && munroState.selectedMunroId != null) {
-      // Safety check: ensure icons are loaded
       if (completeIcon == null || incompleteIcon == null) return;
 
       final Munro munro = munroState.munroList.firstWhere(
@@ -196,7 +225,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
-    // Safety check: ensure icons are loaded
     if (selectedIcon == null) return;
 
     final munroState = context.read<MunroState>();
@@ -223,6 +251,17 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   Widget build(BuildContext context) {
     final munroState = context.watch<MunroState>();
     final munroCompletionState = context.read<MunroCompletionState>();
+
+    if (_mapInitialized) {
+      final currentIds = munroState.filteredMunroList.map((m) => m.id).toList();
+      if (!listEquals(currentIds, _lastFilteredIds)) {
+        _lastFilteredIds = currentIds;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _refreshAnnotations(munroState, munroCompletionState);
+        });
+      }
+    }
+
     return Scaffold(
       body: loading
           ? MapShimmerLoader()
