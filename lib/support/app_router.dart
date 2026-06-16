@@ -308,21 +308,9 @@ class AppRouter {
           builder: (_) => ForgotPasswordScreen(),
           settings: settings,
         );
-      case RegistrationEmailScreen.route:
+      case SignUpScreen.route:
         return MaterialPageRoute(
-          builder: (_) => RegistrationEmailScreen(),
-          settings: settings,
-        );
-      case RegistrationNamesScreen.route:
-        final args = settings.arguments as RegistrationNamesScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => RegistrationNamesScreen(args: args),
-          settings: settings,
-        );
-      case RegistrationPasswordScreen.route:
-        final args = settings.arguments as RegistrationPasswordScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => RegistrationPasswordScreen(args: args),
+          builder: (_) => const SignUpScreen(),
           settings: settings,
         );
       case BulkMunroUpdateScreen.route:

@@ -310,8 +310,12 @@ class _LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: CustomScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: ShimmerBox(width: 120, height: 18, borderRadius: 4),
+        centerTitle: true,
+      ),
+      body: const CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
         slivers: [
           LoadingSliverHeader(),
