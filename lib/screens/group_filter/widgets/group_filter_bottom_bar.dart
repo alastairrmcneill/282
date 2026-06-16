@@ -17,34 +17,32 @@ class GroupFilterBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SafeArea(
-      bottom: false,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          border: Border(
-            top: BorderSide(color: context.colors.border, width: 0.65),
-          ),
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    return Container(
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + bottomInset),
+      decoration: BoxDecoration(
+        color: context.colors.surface,
+        border: Border(
+          top: BorderSide(color: context.colors.border, width: 0.65),
         ),
-        child: Row(
-          children: [
-            TextButton(
-              onPressed: onClear,
-              child: const Text("Clear"),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: PrimaryButton(
-                onPressed: onConfirm,
-                child: Text(
-                  "View Munros ($selectedCount ${selectedCount == 1 ? 'friend' : 'friends'})",
-                  style: theme.textTheme.labelLarge,
-                ),
+      ),
+      child: Row(
+        children: [
+          TextButton(
+            onPressed: onClear,
+            child: const Text("Clear"),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: PrimaryButton(
+              onPressed: onConfirm,
+              child: Text(
+                "View Munros ($selectedCount ${selectedCount == 1 ? 'friend' : 'friends'})",
+                style: theme.textTheme.labelLarge,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

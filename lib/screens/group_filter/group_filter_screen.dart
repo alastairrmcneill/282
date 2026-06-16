@@ -73,6 +73,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
               },
             ),
           ),
+          const SelectedFriendsScroll(),
           Expanded(
             child: Consumer<GroupFilterState>(
               builder: (context, state, child) {
@@ -186,7 +187,7 @@ class _FriendList extends StatelessWidget {
             if (isSelected) {
               groupFilterState.removeSelectedFriend(uid: friend.targetId);
             } else {
-              groupFilterState.addSelectedFriend(uid: friend.targetId);
+              groupFilterState.addSelectedFriend(friend: friend);
             }
           },
         );

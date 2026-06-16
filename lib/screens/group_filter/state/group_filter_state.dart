@@ -22,11 +22,13 @@ class GroupFilterState extends ChangeNotifier {
   Error _error = Error();
   List<FollowingRelationship> _friends = [];
   List<String> _selectedFriendsUids = [];
+  List<FollowingRelationship> _selectedFriends = [];
 
   GroupFilterStatus get status => _status;
   Error get error => _error;
   List<FollowingRelationship> get friends => _friends;
   List<String> get selectedFriendsUids => _selectedFriendsUids;
+  List<FollowingRelationship> get selectedFriends => _selectedFriends;
 
   Future getInitialFriends({required String userId}) async {
     if (_userState.currentUser == null) return;
@@ -96,18 +98,21 @@ class GroupFilterState extends ChangeNotifier {
     setFriends = [];
   }
 
-  void addSelectedFriend({required String uid}) {
-    _selectedFriendsUids.add(uid);
+  void addSelectedFriend({required FollowingRelationship friend}) {
+    _selectedFriendsUids.add(friend.targetId);
+    _selectedFriends.add(friend);
     notifyListeners();
   }
 
   void removeSelectedFriend({required String uid}) {
-    if (_selectedFriendsUids.contains(uid)) _selectedFriendsUids.remove(uid);
+    _selectedFriendsUids.remove(uid);
+    _selectedFriends.removeWhere((f) => f.targetId == uid);
     notifyListeners();
   }
 
   void clearSelection() {
     _selectedFriendsUids = [];
+    _selectedFriends = [];
     _munroState.setGroupFilterMunroIds = [];
     notifyListeners();
   }
@@ -117,6 +122,7 @@ class GroupFilterState extends ChangeNotifier {
     _error = Error();
     _friends = [];
     _selectedFriendsUids = [];
+    _selectedFriends = [];
     notifyListeners();
   }
 

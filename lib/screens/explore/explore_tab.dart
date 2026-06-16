@@ -100,6 +100,12 @@ class _ExploreTabState extends State<ExploreTab> {
               child: MapboxMapScreen(searchFocusNode: _searchFocusNode),
             ),
           ),
+          Positioned(
+            top: topPadding + headerHeight + 8,
+            left: 0,
+            right: 0,
+            child: const Center(child: GroupFilterActiveChip()),
+          ),
           ExploreTabHeader(
             headerHeight: headerHeight,
             searchFocusNode: _searchFocusNode,
