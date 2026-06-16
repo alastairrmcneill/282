@@ -128,10 +128,9 @@ class MyTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.light.textPrimary,
+          foregroundColor: AppColors.light.accent,
           textStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            decoration: TextDecoration.underline,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -376,10 +375,9 @@ class MyTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.dark.textPrimary,
+          foregroundColor: AppColors.dark.accent,
           textStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            decoration: TextDecoration.underline,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
