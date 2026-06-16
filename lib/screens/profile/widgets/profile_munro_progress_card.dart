@@ -48,7 +48,7 @@ class ProfileMunroProgressCard extends StatelessWidget {
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
-                              ?.copyWith(color: context.colors.textMuted),
+                              ?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
                         ),
                         Text(
                           'Progress towards all 282',
@@ -69,13 +69,13 @@ class ProfileMunroProgressCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: '$completed',
-                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             color: context.colors.textPrimary,
                           ),
                     ),
                     TextSpan(
-                      text: ' / $total',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      text: ' / $total munros',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: context.colors.textMuted,
                           ),
                     ),

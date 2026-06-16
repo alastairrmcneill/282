@@ -165,8 +165,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                     ],
                     const ProfileChallengeCard(),
                     const SizedBox(height: 12),
-                    const ProfileAchievementsCard(),
-                    const SizedBox(height: 8),
+                    if (profileState.isCurrentUser) ...[
+                      const ProfileAchievementsCard(),
+                      const SizedBox(height: 8),
+                    ],
                   ],
                 ),
               ),
@@ -315,16 +317,15 @@ class _LoadingScreen extends StatelessWidget {
           LoadingSliverHeader(),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ShimmerBox(width: 300, height: 24, borderRadius: 5),
-                  SizedBox(height: 20),
-                  ShimmerBox(width: double.infinity, height: 40, borderRadius: 5),
-                  SizedBox(height: 20),
-                  ShimmerPostTile(),
-                  ShimmerPostTile(),
+                  ShimmerBox(width: double.infinity, height: 140, borderRadius: 12),
+                  SizedBox(height: 12),
+                  ShimmerBox(width: double.infinity, height: 140, borderRadius: 12),
+                  SizedBox(height: 12),
+                  ShimmerBox(width: double.infinity, height: 180, borderRadius: 12),
                 ],
               ),
             ),

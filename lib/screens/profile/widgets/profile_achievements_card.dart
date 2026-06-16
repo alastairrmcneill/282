@@ -17,17 +17,21 @@ class ProfileAchievementsCard extends StatelessWidget {
     final preview = achievements.take(8).toList();
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _AchievementsHeader(
-              completedCount: completedCount,
-              total: achievements.length,
-            ),
-            const SizedBox(height: 12),
-            _AchievementsGrid(achievements: preview),
-          ],
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => Navigator.of(context).pushNamed(AchievementListScreen.route),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _AchievementsHeader(
+                completedCount: completedCount,
+                total: achievements.length,
+              ),
+              const SizedBox(height: 12),
+              _AchievementsGrid(achievements: preview),
+            ],
+          ),
         ),
       ),
     );
@@ -44,24 +48,32 @@ class _AchievementsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(PhosphorIconsRegular.trophy, color: context.colors.starColor, size: 18),
-        const SizedBox(width: 8),
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: context.colors.starColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(PhosphorIconsRegular.trophy, color: context.colors.starColor, size: 20),
+        ),
+        const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            'Achievements',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Achievements',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
+              ),
+              Text(
+                '$completedCount / $total earned',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
+              ),
+            ],
           ),
         ),
-        GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed(AchievementListScreen.route),
-          child: Text(
-            '$completedCount / $total',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.colors.accent,
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
-        ),
+        Icon(Icons.chevron_right, color: context.colors.textMuted, size: 20),
       ],
     );
   }
@@ -96,18 +108,15 @@ class _AchievementTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unlocked = achievement.completed;
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed(AchievementListScreen.route),
-      child: Container(
-        decoration: BoxDecoration(
-          color: unlocked ? context.colors.accent.withValues(alpha: 0.1) : context.colors.border.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(
-          PhosphorIconsRegular.trophy,
-          size: 20,
-          color: unlocked ? context.colors.accent : context.colors.textMuted.withValues(alpha: 0.4),
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        color: unlocked ? context.colors.accent.withValues(alpha: 0.1) : context.colors.border.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(
+        PhosphorIconsRegular.trophy,
+        size: 20,
+        color: unlocked ? context.colors.accent : context.colors.textMuted.withValues(alpha: 0.4),
       ),
     );
   }

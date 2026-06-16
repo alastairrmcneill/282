@@ -19,7 +19,40 @@ class ProfileChallengeCard extends StatelessWidget {
     final annualGoalId = profileState.profile?.annualGoalId ?? '';
     final isCurrentUser = profileState.isCurrentUser;
 
-    if (target == 0) return const SizedBox.shrink();
+    if (target == 0) {
+      if (!isCurrentUser) return const SizedBox.shrink();
+      return Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => Navigator.of(context).pushNamed(MunroChallengeDetailScreen.route),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                _ChallengeIcon(),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Annual Challenge',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
+                      ),
+                      Text(
+                        'Set a goal for this year',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: context.colors.textMuted, size: 20),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     final percent = (progress / target).clamp(0.0, 1.0);
     final remaining = target - progress;
@@ -55,7 +88,7 @@ class ProfileChallengeCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
                         ),
                         Text(
-                          'Your annual goal',
+                          isCurrentUser ? 'Your annual goal' : 'Their annual goal',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                         ),
                       ],
@@ -96,7 +129,9 @@ class ProfileChallengeCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                remaining > 0 ? '$remaining more to reach your goal' : 'Goal reached!',
+                remaining > 0
+                    ? '$remaining more to reach ${isCurrentUser ? 'your' : 'their'} goal'
+                    : 'Goal reached!',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
               ),
             ],
