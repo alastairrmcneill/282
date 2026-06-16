@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -104,10 +105,40 @@ class SettingsScreen extends StatelessWidget {
               ListTile(
                 onTap: () async {
                   try {
-                    await launchUrl(
-                      Uri.parse('mailto:alastair.r.mcneill@gmail.com?subject=282%20Feedback'),
+                    final packageInfo = await PackageInfo.fromPlatform();
+                    final devicePlugin = DeviceInfoPlugin();
+                    String deviceModel = 'Unknown';
+                    String osVersion = 'Unknown';
+
+                    if (Platform.isIOS) {
+                      final iosInfo = await devicePlugin.iosInfo;
+                      deviceModel = iosInfo.utsname.machine;
+                      osVersion = 'iOS ${iosInfo.systemVersion}';
+                    } else if (Platform.isAndroid) {
+                      final androidInfo = await devicePlugin.androidInfo;
+                      deviceModel = androidInfo.model;
+                      osVersion = 'Android ${androidInfo.version.release}';
+                    }
+
+                    if (!context.mounted) return;
+                    final userId = context.read<UserState>().currentUser?.uid ?? 'Unknown';
+                    final now = DateTime.now().toUtc();
+                    final body = '[Write your message here]\n\n\n---\n'
+                        'App: v${packageInfo.version} (${packageInfo.buildNumber})\n'
+                        'Date: ${now.toIso8601String().split('.').first} UTC\n'
+                        'User ID: $userId\n\n'
+                        'Device: $deviceModel\n'
+                        'OS: $osVersion';
+
+                    final uri = Uri(
+                      scheme: 'mailto',
+                      path: 'alastair.r.mcneill@gmail.com',
+                      query: 'subject=${Uri.encodeComponent('282 Feedback')}&body=${Uri.encodeComponent(body)}',
                     );
+
+                    await launchUrl(uri);
                   } on Exception catch (error, stackTrace) {
+                    if (!context.mounted) return;
                     context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
                     Clipboard.setData(ClipboardData(text: "alastair.r.mcneill@gmail.com"));
                     showSnackBar(context, 'Copied email address. Go to email app to send.');

@@ -29,6 +29,7 @@ class SettingsGroup extends StatelessWidget {
           if (title != null) const SizedBox(height: 2),
           Card(
             margin: const EdgeInsets.all(0),
+            clipBehavior: Clip.antiAlias,
             child: ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
