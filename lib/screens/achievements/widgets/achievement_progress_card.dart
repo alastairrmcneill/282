@@ -25,12 +25,19 @@ class AchievementProgressCard extends StatelessWidget {
     return '$progress / $target';
   }
 
+  int _effectiveTarget() {
+    if (achievement.type == AchievementTypes.monthlyMunro) return 12;
+    final c = achievement.criteriaCount ?? 0;
+    return c > 0 ? c : 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isCompleted = achievement.completed;
     final criteriaCount = achievement.criteriaCount ?? 0;
-    final target = criteriaCount > 0 ? criteriaCount : 1;
+    final isMonthly = achievement.type == AchievementTypes.monthlyMunro;
+    final target = _effectiveTarget();
     final progressPct = (achievement.progress / target).clamp(0.0, 1.0);
 
     return Container(
@@ -63,7 +70,7 @@ class AchievementProgressCard extends StatelessWidget {
               ),
             ],
           ),
-          if (criteriaCount > 0) ...[
+          if (criteriaCount > 0 || isMonthly) ...[
             const SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(999),
@@ -85,7 +92,7 @@ class AchievementProgressCard extends StatelessWidget {
               ],
             ),
           ],
-          if (criteriaCount == 0) ...[
+          if (criteriaCount == 0 && !isMonthly) ...[
             const SizedBox(height: 4),
             Text(
               isCompleted
