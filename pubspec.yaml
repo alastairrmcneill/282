@@ -100,7 +100,6 @@ flutter:
   assets:
     - assets/
     - assets/images/
-    - assets/documents/
     - assets/weather/
     - assets/icons/
     - assets/branch-config.json

@@ -11,7 +11,7 @@ class TextDivider extends StatelessWidget {
       children: [
         const Expanded(
           child: Divider(
-            thickness: 1.5,
+            thickness: 0.5,
             color: Colors.white,
           ),
         ),
@@ -19,12 +19,12 @@ class TextDivider extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, height: 1.1),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400, height: 1),
           ),
         ),
         const Expanded(
           child: Divider(
-            thickness: 1.5,
+            thickness: 0.5,
             color: Colors.white,
           ),
         ),

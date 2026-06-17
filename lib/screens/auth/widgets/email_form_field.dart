@@ -10,11 +10,13 @@ class EmailFormField extends StatelessWidget {
     final RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
 
     return AppTextFormField(
-      labelText: "Email",
+      hintText: "Email",
       textInputAction: TextInputAction.next,
       maxLines: 1,
       autocorrect: false,
+      enableSuggestions: false,
       keyboardType: TextInputType.emailAddress,
+      textCapitalization: TextCapitalization.none,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Required';

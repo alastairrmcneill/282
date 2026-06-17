@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -10,7 +11,6 @@ class LoginHeader extends StatelessWidget {
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.green,
-          // child: Text('282'),
           child: Image.asset(
             "assets/icons/app_icon.png",
           ),
@@ -18,11 +18,15 @@ class LoginHeader extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           'Welcome back!',
-          style: Theme.of(context).textTheme.headlineLarge,
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
         ),
         Text(
           'Time to get out into the munros!',
-          style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 20),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: context.colors.textSubtitle,
+              ),
         ),
       ],
     );

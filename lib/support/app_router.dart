@@ -69,15 +69,6 @@ class AppRouter {
           builder: (_) => const AchievementListScreen(),
           settings: settings,
         );
-      case DocumentScreen.route:
-        final args = settings.arguments as DocumentScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => DocumentScreen(
-            args: args,
-          ),
-          settings: settings,
-        );
-
       case LoginScreen.route:
         return MaterialPageRoute(
           builder: (_) => LoginScreen(),

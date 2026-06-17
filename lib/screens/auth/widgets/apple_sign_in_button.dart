@@ -5,17 +5,16 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
-// Apple sign in button for login screen
 class AppleSignInButton extends StatelessWidget {
   final SignInWithAppleButtonStyle? style;
   const AppleSignInButton({super.key, this.style});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (Platform.isIOS) {
-      // Check if the device is an iOS device
       return SignInWithAppleButton(
-        style: style ?? SignInWithAppleButtonStyle.white,
+        style: style ?? (isDark ? SignInWithAppleButtonStyle.white : SignInWithAppleButtonStyle.black),
         onPressed: () async {
           final authResult = await context.read<AuthState>().signInWithApple();
           if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
@@ -34,7 +33,8 @@ class AppleSignInButton extends StatelessWidget {
             );
           }
         },
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        height: 48,
+        borderRadius: BorderRadius.circular(100),
       );
     } else {
       // If not then return nothing

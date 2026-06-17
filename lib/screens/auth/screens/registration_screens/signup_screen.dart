@@ -1,12 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -84,11 +83,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const AppleSignInButton(style: SignInWithAppleButtonStyle.black),
+                  const AppleSignInButton(),
                   const SizedBox(height: 10),
                   const GoogleSignInButton(),
                   const SizedBox(height: 20),
-                  const _OrDivider(),
+                  const TextDivider(text: "or"),
                   const SizedBox(height: 20),
                   Row(
                     children: [
@@ -124,12 +123,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ],
                   const SizedBox(height: 20),
-                  SizedBox(
-                    height: 44,
-                    child: ElevatedButton(
-                      onPressed: _submit,
-                      child: const Text('Create account'),
-                    ),
+                  CtaButton(
+                    onPressed: _submit,
+                    child: const Text('Create Account'),
                   ),
                   const SizedBox(height: 16),
                   const _TermsText(),
@@ -144,29 +140,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-class _OrDivider extends StatelessWidget {
-  const _OrDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Expanded(child: Divider()),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'or',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.colors.textSubtitle,
-                ),
-          ),
-        ),
-        const Expanded(child: Divider()),
-      ],
-    );
-  }
-}
-
 class _TermsText extends StatelessWidget {
   const _TermsText();
 
@@ -175,37 +148,33 @@ class _TermsText extends StatelessWidget {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        text: 'By continuing to use 282, you agree to our ',
+        text: "By continuing to use 282, you agree to our ",
         style: Theme.of(context).textTheme.bodySmall,
         children: [
           TextSpan(
-            text: 'Terms & Conditions',
-            style: TextStyle(
-              color: context.colors.accent,
+            text: "Terms & Conditions",
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
               decoration: TextDecoration.underline,
             ),
             recognizer: TapGestureRecognizer()
-              ..onTap = () => showDocumentDialog(
-                    context,
-                    mdFileName: 'assets/documents/terms_and_conditions.md',
-                  ),
+              ..onTap = () {
+                openTermsUrl();
+              },
           ),
-          const TextSpan(text: ' and '),
+          const TextSpan(text: " and "),
           TextSpan(
-            text: 'Privacy Policy',
-            style: TextStyle(
-              color: context.colors.accent,
+            text: "Privacy Policy",
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
               decoration: TextDecoration.underline,
             ),
             recognizer: TapGestureRecognizer()
-              ..onTap = () => showDocumentDialog(
-                    context,
-                    mdFileName: 'assets/documents/privacy_policy.md',
-                  ),
+              ..onTap = () {
+                openPrivacyPolicyUrl();
+              },
           ),
-          const TextSpan(text: '.'),
+          const TextSpan(text: "."),
         ],
       ),
     );

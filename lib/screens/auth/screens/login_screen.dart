@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -98,23 +97,19 @@ class LoginScreen extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 15),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 44,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (!_formKey.currentState!.validate()) {
-                                return;
-                              }
-                              _formKey.currentState!.save();
-                              await _submit(context);
-                            },
-                            child: const Text('Log in'),
-                          ),
+                        CtaButton(
+                          onPressed: () async {
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            _formKey.currentState!.save();
+                            await _submit(context);
+                          },
+                          child: const Text('Log in'),
                         ),
                         const ForgotPasswordButton(),
                         const SizedBox(height: 20),
-                        const AppleSignInButton(style: SignInWithAppleButtonStyle.black),
+                        const AppleSignInButton(),
                         const SizedBox(height: 10),
                         const GoogleSignInButton(),
                       ],

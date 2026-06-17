@@ -10,6 +10,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/settings/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -176,29 +177,13 @@ class SettingsScreen extends StatelessWidget {
                 title: const Text("Terms of Service"),
                 leading: Icon(PhosphorIconsRegular.fileText, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    DocumentScreen.route,
-                    arguments: DocumentScreenArgs(
-                      title: 'Terms of Service',
-                      mdFileName: 'assets/documents/terms_and_conditions.md',
-                    ),
-                  );
-                },
+                onTap: () { openTermsUrl(); },
               ),
               ListTile(
                 title: const Text("Privacy Policy"),
                 leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    DocumentScreen.route,
-                    arguments: DocumentScreenArgs(
-                      title: 'Privacy Policy',
-                      mdFileName: 'assets/documents/privacy_policy.md',
-                    ),
-                  );
-                },
+                onTap: () { openPrivacyPolicyUrl(); },
               ),
             ],
           ),

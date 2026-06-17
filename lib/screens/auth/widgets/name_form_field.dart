@@ -12,7 +12,8 @@ class NameFormField extends StatelessWidget {
       controller: textEditingController,
       hintText: hintText ?? "Name",
       textCapitalization: TextCapitalization.words,
-      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.text,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Required';

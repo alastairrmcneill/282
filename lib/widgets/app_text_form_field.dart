@@ -22,6 +22,7 @@ class AppTextFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool obscureText;
   final bool autocorrect;
+  final bool enableSuggestions;
   final InputBorder? border;
   final Color? fillColor;
 
@@ -48,6 +49,7 @@ class AppTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.textInputAction,
     this.autocorrect = true,
+    this.enableSuggestions = true,
     this.border,
     this.fillColor,
   });
@@ -84,6 +86,7 @@ class AppTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         autocorrect: autocorrect,
+        enableSuggestions: enableSuggestions,
         style: Theme.of(context).textTheme.bodyLarge);
   }
 }

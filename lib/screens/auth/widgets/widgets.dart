@@ -6,7 +6,6 @@ export 'name_form_field.dart';
 export 'password_form_field.dart';
 export 'create_free_account_button.dart';
 export 'sign_in_button.dart';
-export 'document_dialog.dart';
 export 'apple_sign_in_button.dart';
 export 'google_sign_in_button.dart';
 export 'text_divider.dart';
