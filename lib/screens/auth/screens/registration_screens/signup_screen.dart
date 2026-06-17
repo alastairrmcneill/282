@@ -83,6 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: 10),
                   const AppleSignInButton(),
                   const SizedBox(height: 10),
                   const GoogleSignInButton(),
