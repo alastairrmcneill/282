@@ -1,52 +1,76 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/screens/auth/auth_error_messages.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class LoginScreen extends StatelessWidget {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class LoginScreen extends StatefulWidget {
   static const String route = '${AuthHomeScreen.authRoute}/login';
+  const LoginScreen({super.key});
 
-  LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
-  Future _submit(BuildContext context) async {
-    final authResult = await context.read<AuthState>().signInWithEmail(
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(_clearError);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _clearError() {
+    if (_error != null && mounted) setState(() => _error = null);
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+
+    final result = await context.read<AuthState>().signInWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
 
-    if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
+    if (!mounted) return;
+
+    if (result.success && result.showOnboarding && result.userId != null) {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
-        arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
+        arguments: InAppOnboardingScreenArgs(userId: result.userId!),
       );
-    } else if (authResult.success) {
-      // Load munro completions before navigating to home
+    } else if (result.success) {
       await context.read<MunroCompletionState>().loadUserMunroCompletions();
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomeScreen.route,
-        (route) => false,
-      );
+      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (route) => false);
+    } else {
+      setState(() => _error = mapAuthErrorMessage(result.errorMessage));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthState>().status == AuthStatus.loading;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          SafeArea(
+    return Stack(
+      children: [
+        Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -58,19 +82,15 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                              border: Border.all(width: 0.3, color: Colors.black54),
-                              color: Colors.white,
-                              shape: BoxShape.circle),
+                            border: Border.all(width: 0.3, color: Colors.black54),
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
                           child: IconButton(
                             constraints: const BoxConstraints(),
                             padding: const EdgeInsets.all(2),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(
-                              CupertinoIcons.xmark,
-                              size: 18,
-                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: const Icon(CupertinoIcons.xmark, size: 18),
                           ),
                         ),
                       ],
@@ -81,11 +101,17 @@ class LoginScreen extends StatelessWidget {
                   Form(
                     key: _formKey,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        if (_error != null) ...[
+                          AuthErrorBanner(message: _error!),
+                          const SizedBox(height: 12),
+                        ],
                         const SizedBox(height: 10),
-                        EmailFormField(textEditingController: _emailController),
+                        EmailFormField(
+                          textEditingController: _emailController,
+                          onChanged: (_) => _clearError(),
+                        ),
                         const SizedBox(height: 15),
                         PasswordFormField(
                           textEditingController: _passwordController,
@@ -98,20 +124,14 @@ class LoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 15),
                         CtaButton(
-                          onPressed: () async {
-                            if (!_formKey.currentState!.validate()) {
-                              return;
-                            }
-                            _formKey.currentState!.save();
-                            await _submit(context);
-                          },
+                          onPressed: _submit,
                           child: const Text('Log in'),
                         ),
                         const ForgotPasswordButton(),
                         const SizedBox(height: 20),
-                        const AppleSignInButton(),
+                        AppleSignInButton(onError: (msg) => setState(() => _error = msg)),
                         const SizedBox(height: 10),
-                        const GoogleSignInButton(),
+                        GoogleSignInButton(onError: (msg) => setState(() => _error = msg)),
                       ],
                     ),
                   ),
@@ -119,9 +139,9 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-          if (isLoading) BlockingLoadingOverlay(),
-        ],
-      ),
+        ),
+        if (isLoading) BlockingLoadingOverlay(),
+      ],
     );
   }
 }

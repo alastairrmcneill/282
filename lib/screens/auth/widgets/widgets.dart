@@ -1,4 +1,7 @@
+export 'auth_error_banner.dart';
 export 'confirm_password_form_field.dart';
+export 'forgot_password_form_view.dart';
+export 'forgot_password_success_view.dart';
 export 'email_form_field.dart';
 export 'forgot_password_button.dart';
 export 'login_header.dart';

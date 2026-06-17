@@ -7,7 +7,8 @@ import 'package:two_eight_two/screens/screens.dart';
 
 class AppleSignInButton extends StatelessWidget {
   final SignInWithAppleButtonStyle? style;
-  const AppleSignInButton({super.key, this.style});
+  final void Function(String)? onError;
+  const AppleSignInButton({super.key, this.style, this.onError});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,8 @@ class AppleSignInButton extends StatelessWidget {
               HomeScreen.route,
               (route) => false,
             );
+          } else if (!authResult.canceled) {
+            onError?.call('Sign in failed. Please try again.');
           }
         },
         height: 48,

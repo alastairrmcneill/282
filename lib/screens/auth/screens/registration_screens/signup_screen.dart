@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/auth/auth_error_messages.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -23,12 +24,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _passwordController.addListener(() => setState(() {}));
-    _confirmPasswordController.addListener(() => setState(() {}));
+    _passwordController.addListener(_onFieldChanged);
+    _confirmPasswordController.addListener(_onFieldChanged);
   }
 
   @override
@@ -39,6 +41,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _onFieldChanged() {
+    if (mounted) setState(() => _error = null);
   }
 
   Future<void> _submit() async {
@@ -63,6 +69,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } else if (authResult.success) {
       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (route) => false);
+    } else {
+      setState(() => _error = mapAuthErrorMessage(authResult.errorMessage));
     }
   }
 
@@ -90,6 +98,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 20),
                   const TextDivider(text: "or"),
                   const SizedBox(height: 20),
+                  if (_error != null) ...[
+                    AuthErrorBanner(message: _error!),
+                    const SizedBox(height: 12),
+                  ],
                   Row(
                     children: [
                       Expanded(
@@ -108,7 +120,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  EmailFormField(textEditingController: _emailController),
+                  EmailFormField(
+                    textEditingController: _emailController,
+                    onChanged: (_) => _onFieldChanged(),
+                  ),
                   const SizedBox(height: 12),
                   PasswordFormField(textEditingController: _passwordController),
                   const SizedBox(height: 12),

@@ -3,7 +3,8 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class EmailFormField extends StatelessWidget {
   final TextEditingController textEditingController;
-  const EmailFormField({Key? key, required this.textEditingController}) : super(key: key);
+  final void Function(String)? onChanged;
+  const EmailFormField({Key? key, required this.textEditingController, this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class EmailFormField extends StatelessWidget {
       enableSuggestions: false,
       keyboardType: TextInputType.emailAddress,
       textCapitalization: TextCapitalization.none,
+      onChanged: onChanged,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Required';
