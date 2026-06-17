@@ -88,7 +88,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                     const SizedBox(height: 20),
                     const GoogleSignInButton(),
                     const SizedBox(height: 15),
-                    const TextDivider(text: "or"),
+                    const TextDivider(text: "or", color: Colors.white),
                     const SizedBox(height: 15),
                     const CreateFreeAccountButton(),
                     const SizedBox(height: 15),
@@ -126,7 +126,9 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () { openTermsUrl(); },
+                              ..onTap = () {
+                                openTermsUrl();
+                              },
                           ),
                           const TextSpan(text: " and "),
                           TextSpan(
@@ -136,7 +138,9 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () { openPrivacyPolicyUrl(); },
+                              ..onTap = () {
+                                openPrivacyPolicyUrl();
+                              },
                           ),
                           const TextSpan(text: "."),
                         ],
