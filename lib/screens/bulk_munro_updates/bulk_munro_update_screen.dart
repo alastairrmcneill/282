@@ -34,6 +34,42 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
     final munroCompletionState = context.watch<MunroCompletionState>();
     final bulkMunroUpdateState = context.watch<BulkMunroUpdateState>();
 
+    final Widget segmentedButton = UnconstrainedBox(
+      child: SizedBox(
+        width: 88,
+        height: 44,
+        child: SegmentedButton<MunroListViewMode>(
+          showSelectedIcon: false,
+          style: ButtonStyle(
+            padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) return null;
+              return Theme.of(context).scaffoldBackgroundColor;
+            }),
+          ),
+          segments: const [
+            ButtonSegment(
+              value: MunroListViewMode.list,
+              label: SizedBox.square(
+                dimension: 44,
+                child: Center(child: Icon(PhosphorIconsRegular.listBullets, size: 20)),
+              ),
+            ),
+            ButtonSegment(
+              value: MunroListViewMode.map,
+              label: SizedBox.square(
+                dimension: 44,
+                child: Center(child: Icon(PhosphorIconsRegular.mapTrifold, size: 20)),
+              ),
+            ),
+          ],
+          selected: {_viewMode},
+          onSelectionChanged: (newValue) => setState(() => _viewMode = newValue.first),
+        ),
+      ),
+    );
+
     final listItems = <Widget>[
       const SizedBox(height: 5),
       Container(
@@ -49,65 +85,13 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           ),
         ),
       ),
-      Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: AppSearchBar(
-              focusNode: searchFocusNode,
-              icon: PhosphorIconsRegular.magnifyingGlass,
-              hintText: "Search munros...",
-              onSearchTap: () {},
-              onChanged: (value) {
-                munroState.setBulkMunroUpdateFilterString = value;
-              },
-              onClear: () {
-                munroState.setBulkMunroUpdateFilterString = '';
-              },
-            ),
-          ),
-          const SizedBox(width: 10),
-          UnconstrainedBox(
-            child: SizedBox(
-              width: 88,
-              height: 44,
-              child: SegmentedButton<MunroListViewMode>(
-                showSelectedIcon: false,
-                style: ButtonStyle(
-                  padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                segments: const [
-                  ButtonSegment(
-                    value: MunroListViewMode.list,
-                    label: SizedBox.square(
-                      dimension: 44,
-                      child: Center(child: Icon(PhosphorIconsRegular.listBullets, size: 20)),
-                    ),
-                  ),
-                  ButtonSegment(
-                    value: MunroListViewMode.map,
-                    label: SizedBox.square(
-                      dimension: 44,
-                      child: Center(child: Icon(PhosphorIconsRegular.mapTrifold, size: 20)),
-                    ),
-                  ),
-                ],
-                selected: {_viewMode},
-                onSelectionChanged: (newValue) => setState(() => _viewMode = newValue.first),
-              ),
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 5),
       ...munroState.bulkMunroUpdateList.map((Munro munro) => BulkMunroUpdateListTile(munro: munro)),
       const SizedBox(height: 10),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bulk Munro Update'),
+        title: const Text('Log Past Summits'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15),
@@ -133,14 +117,54 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: ListView.separated(
-          itemCount: listItems.length,
-          itemBuilder: (context, index) => listItems[index],
-          separatorBuilder: (context, index) => const SizedBox(height: 10),
-        ),
-      ),
+      body: _viewMode == MunroListViewMode.list
+          ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: AppSearchBar(
+                          focusNode: searchFocusNode,
+                          icon: PhosphorIconsRegular.magnifyingGlass,
+                          hintText: "Search munros...",
+                          onSearchTap: () {},
+                          onChanged: (value) {
+                            munroState.setBulkMunroUpdateFilterString = value;
+                          },
+                          onClear: () {
+                            munroState.setBulkMunroUpdateFilterString = '';
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      segmentedButton,
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: ListView.separated(
+                      itemCount: listItems.length,
+                      itemBuilder: (context, index) => listItems[index],
+                      separatorBuilder: (context, index) => const SizedBox(height: 10),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Stack(
+              children: [
+                const BulkMunroMapScreen(),
+                Positioned(
+                  top: 8,
+                  right: 15,
+                  child: segmentedButton,
+                ),
+              ],
+            ),
     );
   }
 }

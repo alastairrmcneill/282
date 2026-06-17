@@ -46,6 +46,16 @@ class BulkMunroUpdateState extends ChangeNotifier {
     _addedMunroCompletions.removeWhere((element) => element.munroId == id);
     notifyListeners();
   }
+
+  void removeMunroCompletionForDate(int munroId, DateTime date) {
+    final index = _addedMunroCompletions.indexWhere(
+      (c) => c.munroId == munroId && c.dateTimeCompleted == date,
+    );
+    if (index != -1) {
+      _addedMunroCompletions.removeAt(index);
+      notifyListeners();
+    }
+  }
 }
 
 enum BulkMunroUpdateStatus { initial, loading, loaded, error }
