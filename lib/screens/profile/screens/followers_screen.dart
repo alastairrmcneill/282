@@ -1,11 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FollowersFollowingScreenArgs {
@@ -76,16 +78,35 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
     super.dispose();
   }
 
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text("Community"),
+      actions: [
+        IconButton(
+          icon: const Icon(PhosphorIconsRegular.magnifyingGlass),
+          onPressed: () => Navigator.of(context).pushNamed(UserSearchScreen.route),
+        ),
+      ],
+      bottom: TabBar(
+        controller: _tabController,
+        tabs: const [
+          Tab(text: "Following"),
+          Tab(text: "Followers"),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<FollowersListState>(
       builder: (context, followersListState, child) {
         switch (followersListState.status) {
           case FollowersListStatus.loading:
-            return _buildLoadingScreen(followersListState);
+            return _buildLoadingScreen();
           case FollowersListStatus.error:
             return Scaffold(
-              appBar: AppBar(),
+              appBar: _buildAppBar(),
               body: CenterText(text: followersListState.error.message),
             );
           default:
@@ -100,31 +121,20 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
     );
   }
 
-  Widget _buildLoadingScreen(FollowersListState followersListState) {
+  Widget _buildLoadingScreen() {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(""),
-        centerTitle: false,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          tabs: const [
-            Tab(text: "Following"),
-            Tab(text: "Followers"),
-          ],
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: TabBarView(
         controller: _tabController,
         children: [
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 30,
+            itemCount: 20,
             itemBuilder: (context, index) => const ShimmerListTile(),
           ),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 30,
+            itemCount: 20,
             itemBuilder: (context, index) => const ShimmerListTile(),
           ),
         ],
@@ -139,83 +149,112 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
     required ScrollController followingScrollController,
   }) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(""),
-        centerTitle: false,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "Following"),
-            Tab(text: "Followers"),
-          ],
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: TabBarView(
         controller: _tabController,
         children: [
           followersListState.following.isEmpty
               ? const Padding(
                   padding: EdgeInsets.all(15),
-                  child: CenterText(text: "Not following anyone."),
+                  child: CenterText(text: "Not following anyone yet."),
                 )
-              : ListView(
+              : ListView.builder(
                   controller: followingScrollController,
-                  children: followersListState.following.map(
-                    (f) {
-                      return ListTile(
-                        leading: CircularProfilePicture(
-                          radius: 20,
-                          profilePictureURL: f.targetProfilePictureURL,
-                          profileUid: f.targetId,
-                        ),
-                        title: Text(f.targetDisplayName ?? ""),
-                        trailing: UserTrailingButton(
-                          profileUserId: f.targetId,
-                          profileUserDisplayName: f.targetDisplayName ?? "",
-                          profileUserPictureURL: f.targetProfilePictureURL ?? "",
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            ProfileScreen.route,
-                            arguments: ProfileScreenArgs(userId: f.targetId),
-                          );
-                        },
-                      );
-                    },
-                  ).toList(),
+                  itemCount: followersListState.following.length,
+                  itemBuilder: (context, index) {
+                    final f = followersListState.following[index];
+                    return _UserTile(
+                      userId: f.targetId,
+                      displayName: f.targetDisplayName ?? "",
+                      profilePictureURL: f.targetProfilePictureURL,
+                      munrosCompleted: f.targetMunrosCompleted,
+                    );
+                  },
                 ),
           followersListState.followers.isEmpty
               ? const Padding(
                   padding: EdgeInsets.all(15),
-                  child: CenterText(text: "No followers."),
+                  child: CenterText(text: "No followers yet."),
                 )
-              : ListView(
+              : ListView.builder(
                   controller: followersScrollController,
-                  children: followersListState.followers.map(
-                    (f) {
-                      return ListTile(
-                        leading: CircularProfilePicture(
-                          radius: 20,
-                          profilePictureURL: f.sourceProfilePictureURL,
-                          profileUid: f.sourceId,
-                        ),
-                        title: Text(f.sourceDisplayName ?? ""),
-                        trailing: UserTrailingButton(
-                          profileUserId: f.sourceId,
-                          profileUserDisplayName: f.sourceDisplayName ?? "",
-                          profileUserPictureURL: f.sourceProfilePictureURL ?? "",
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            ProfileScreen.route,
-                            arguments: ProfileScreenArgs(userId: f.sourceId),
-                          );
-                        },
-                      );
-                    },
-                  ).toList(),
+                  itemCount: followersListState.followers.length,
+                  itemBuilder: (context, index) {
+                    final f = followersListState.followers[index];
+                    return _UserTile(
+                      userId: f.sourceId,
+                      displayName: f.sourceDisplayName ?? "",
+                      profilePictureURL: f.sourceProfilePictureURL,
+                      munrosCompleted: f.sourceMunrosCompleted,
+                    );
+                  },
                 ),
         ],
+      ),
+    );
+  }
+}
+
+class _UserTile extends StatelessWidget {
+  final String userId;
+  final String displayName;
+  final String? profilePictureURL;
+  final int? munrosCompleted;
+
+  const _UserTile({
+    required this.userId,
+    required this.displayName,
+    this.profilePictureURL,
+    this.munrosCompleted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).brightness == Brightness.dark ? AppColors.dark : AppColors.light;
+    final textTheme = Theme.of(context).textTheme;
+
+    return InkWell(
+      onTap: () => Navigator.of(context).pushNamed(
+        ProfileScreen.route,
+        arguments: ProfileScreenArgs(userId: userId),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            CircularProfilePicture(
+              radius: 22,
+              profilePictureURL: profilePictureURL,
+              profileUid: userId,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    displayName,
+                    style: textTheme.titleSmall?.copyWith(color: colors.textPrimary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "${munrosCompleted ?? 0} Munros",
+                    style: textTheme.bodySmall?.copyWith(color: colors.textMuted),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            UserTrailingButton(
+              profileUserId: userId,
+              profileUserDisplayName: displayName,
+              profileUserPictureURL: profilePictureURL ?? "",
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -6,6 +6,8 @@ class FollowingRelationship {
   final String? targetSearchName;
   final String? sourceDisplayName;
   final String? sourceProfilePictureURL;
+  final int? sourceMunrosCompleted;
+  final int? targetMunrosCompleted;
 
   FollowingRelationship({
     required this.sourceId,
@@ -15,6 +17,8 @@ class FollowingRelationship {
     this.targetSearchName,
     this.sourceDisplayName,
     this.sourceProfilePictureURL,
+    this.sourceMunrosCompleted,
+    this.targetMunrosCompleted,
   });
 
   Map<String, dynamic> toJSON() {
@@ -34,6 +38,8 @@ class FollowingRelationship {
           json[FollowingRelationshipFields.targetDisplayName] as String?,
       sourceDisplayName: json[FollowingRelationshipFields.sourceDisplayName] as String?,
       sourceProfilePictureURL: json[FollowingRelationshipFields.sourceProfilePictureURL] as String?,
+      sourceMunrosCompleted: json[FollowingRelationshipFields.sourceMunrosCompleted] as int?,
+      targetMunrosCompleted: json[FollowingRelationshipFields.targetMunrosCompleted] as int?,
     );
   }
 
@@ -45,6 +51,8 @@ class FollowingRelationship {
     String? targetSearchName,
     String? sourceDisplayName,
     String? sourceProfilePictureURL,
+    int? sourceMunrosCompleted,
+    int? targetMunrosCompleted,
   }) {
     return FollowingRelationship(
       sourceId: sourceId ?? this.sourceId,
@@ -54,12 +62,14 @@ class FollowingRelationship {
       targetSearchName: targetSearchName ?? this.targetSearchName,
       sourceDisplayName: sourceDisplayName ?? this.sourceDisplayName,
       sourceProfilePictureURL: sourceProfilePictureURL ?? this.sourceProfilePictureURL,
+      sourceMunrosCompleted: sourceMunrosCompleted ?? this.sourceMunrosCompleted,
+      targetMunrosCompleted: targetMunrosCompleted ?? this.targetMunrosCompleted,
     );
   }
 
   @override
   String toString() =>
-      'FollowingRelationship(sourceId: $sourceId, targetId: $targetId, targetDisplayName: $targetDisplayName, targetSearchName: $targetSearchName, targetProfilePictureURL: $targetProfilePictureURL, sourceDisplayName: $sourceDisplayName, sourceProfilePictureURL: $sourceProfilePictureURL)';
+      'FollowingRelationship(sourceId: $sourceId, targetId: $targetId, targetDisplayName: $targetDisplayName, targetSearchName: $targetSearchName, targetProfilePictureURL: $targetProfilePictureURL, sourceDisplayName: $sourceDisplayName, sourceProfilePictureURL: $sourceProfilePictureURL, sourceMunrosCompleted: $sourceMunrosCompleted, targetMunrosCompleted: $targetMunrosCompleted)';
 }
 
 class FollowingRelationshipFields {
@@ -70,4 +80,6 @@ class FollowingRelationshipFields {
   static String targetSearchName = "target_search_name";
   static String sourceDisplayName = 'source_display_name';
   static String sourceProfilePictureURL = 'source_profile_picture_url';
+  static String sourceMunrosCompleted = 'source_munros_completed';
+  static String targetMunrosCompleted = 'target_munros_completed';
 }

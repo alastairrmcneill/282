@@ -13,6 +13,7 @@ class AppUser {
   final String? signInMethod;
   final DateTime? dateCreated;
   final String? profileVisibility;
+  final int? munrosCompleted;
 
   AppUser({
     this.uid,
@@ -27,6 +28,7 @@ class AppUser {
     this.signInMethod,
     this.dateCreated,
     this.profileVisibility,
+    this.munrosCompleted,
   });
 
   Map<String, dynamic> toJSON() {
@@ -57,6 +59,7 @@ class AppUser {
       signInMethod: json[AppUserFields.signInMethod] as String?,
       dateCreated: DateTime.parse(json[AppUserFields.dateCreated] as String? ?? DateTime.now().toUtc().toString()),
       profileVisibility: json[AppUserFields.profileVisibility] as String?,
+      munrosCompleted: json[AppUserFields.munrosCompleted] as int?,
     );
   }
 
@@ -73,6 +76,7 @@ class AppUser {
     String? signInMethod,
     DateTime? dateCreated,
     String? profileVisibility,
+    int? munrosCompleted,
   }) {
     return AppUser(
       uid: uid ?? this.uid,
@@ -87,6 +91,7 @@ class AppUser {
       signInMethod: signInMethod ?? this.signInMethod,
       dateCreated: dateCreated ?? this.dateCreated,
       profileVisibility: profileVisibility ?? this.profileVisibility,
+      munrosCompleted: munrosCompleted ?? this.munrosCompleted,
     );
   }
 
@@ -111,6 +116,7 @@ class AppUser {
       ${AppUserFields.signInMethod}: $signInMethod,
       ${AppUserFields.dateCreated}: $dateCreated,
       ${AppUserFields.profileVisibility}: $profileVisibility,
+      ${AppUserFields.munrosCompleted}: $munrosCompleted,
       )''';
 }
 
@@ -127,4 +133,5 @@ class AppUserFields {
   static String signInMethod = 'sign_in_method';
   static String dateCreated = 'date_created';
   static String profileVisibility = 'profile_visibility';
+  static String munrosCompleted = 'munros_completed';
 }

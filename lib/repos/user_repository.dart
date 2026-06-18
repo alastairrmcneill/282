@@ -7,6 +7,7 @@ class UserRepository {
   UserRepository(this._db);
 
   SupabaseQueryBuilder get _table => _db.from('users');
+  SupabaseQueryBuilder get _searchView => _db.from('vu_user_search');
 
   // Create user
   Future<void> create({required AppUser appUser}) async {
@@ -41,7 +42,7 @@ class UserRepository {
   }) async {
     int pageSize = 30;
 
-    final response = await _table
+    final response = await _searchView
         .select()
         .ilike(AppUserFields.searchName, '%$searchTerm%')
         .not(AppUserFields.uid, 'in', excludedAuthorIds)
