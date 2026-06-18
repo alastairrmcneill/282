@@ -149,7 +149,6 @@ class _ChallengeGoalSelectorState extends State<ChallengeGoalSelector> {
                 _motivationalMessage,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: context.colors.accent,
-                      fontStyle: FontStyle.italic,
                     ),
                 textAlign: TextAlign.center,
               ),

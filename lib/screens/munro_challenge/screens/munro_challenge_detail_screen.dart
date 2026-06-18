@@ -2,32 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro_challenge/screens/create_munro_challenge_screen.dart';
 import 'package:two_eight_two/screens/munro_challenge/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/profile/widgets/munro_completed_tile.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroChallengeDetailScreen extends StatelessWidget {
   const MunroChallengeDetailScreen({super.key});
   static const String route = '/munro_challenge/detail';
 
-  int _monthStreak(List<MunroCompletion> completions) {
-    final now = DateTime.now();
-    int streak = 0;
-    for (int m = now.month; m >= 1; m--) {
-      final hasCompletion = completions.any(
-        (c) => c.dateTimeCompleted.year == now.year && c.dateTimeCompleted.month == m,
-      );
-      if (hasCompletion) {
-        streak++;
-      } else {
-        break;
-      }
-    }
-    return streak;
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(PhosphorIconsRegular.trophy, size: 64, color: context.colors.textMuted),
+            const SizedBox(height: 24),
+            Text(
+              'No challenge set for ${DateTime.now().year}',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Set a target and track how many Munros you can bag this year.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            PrimaryButton(
+              onPressed: () => Navigator.of(context).pushNamed(CreateMunroChallengeScreen.route),
+              child: const Text('Set My Target'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     final achievementsState = context.watch<AchievementsState>();
     final munroCompletionState = context.watch<MunroCompletionState>();
@@ -52,7 +67,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
           children: [
             Text('${DateTime.now().year} Annual Challenge'),
             Text(
-              '$completedCount of $goal munros',
+              goal == 0 ? 'No goal set' : '$completedCount of $goal munros',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: context.colors.textMuted,
                   ),
@@ -65,18 +80,20 @@ class MunroChallengeDetailScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          ChallengeDetailHeroCard(completed: completedCount, goal: goal),
-          const SizedBox(height: 24),
-          CompletedThisYearSection(
-            completions: yearCompletions,
-            munros: completedMunros,
-            completedCount: completedCount,
-          ),
-        ],
-      ),
+      body: goal == 0
+          ? _buildEmptyState(context)
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                ChallengeDetailHeroCard(completed: completedCount, goal: goal),
+                const SizedBox(height: 24),
+                CompletedThisYearSection(
+                  completions: yearCompletions,
+                  munros: completedMunros,
+                  completedCount: completedCount,
+                ),
+              ],
+            ),
     );
   }
 }

@@ -16,7 +16,8 @@ class ChallengeDetailHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final progress = goal > 0 ? (completed / goal).clamp(0.0, 1.0) : 0.0;
-    final isComplete = completed >= goal;
+    final isComplete = goal > 0 && completed >= goal;
+    final remaining = (goal - completed).clamp(0, goal);
     final percent = (progress * 100).round();
 
     return Container(
@@ -49,7 +50,7 @@ class ChallengeDetailHeroCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Text(
-                      isComplete ? 'Goal achieved!' : 'In progress',
+                      isComplete ? 'Goal achieved!' : '$remaining ${remaining == 1 ? 'munro' : 'munros'} to go',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: context.colors.textMuted,
                           ),
@@ -105,7 +106,7 @@ class ChallengeDetailHeroCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pushNamed(CreateMunroChallengeScreen.route),
-              child: const Text('Update Challenge Goal'),
+              child: const Text('Update Goal'),
             ),
           ),
         ],
