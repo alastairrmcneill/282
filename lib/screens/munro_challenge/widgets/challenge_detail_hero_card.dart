@@ -57,7 +57,6 @@ class ChallengeDetailHeroCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (isComplete) const Text('🎉', style: TextStyle(fontSize: 28)),
             ],
           ),
           const SizedBox(height: 28),
