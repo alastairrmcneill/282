@@ -47,7 +47,7 @@ class PostMunroList extends StatelessWidget {
                           Icon(
                             LucideIcons.map_pin,
                             size: 14,
-                            color: Colors.black,
+                            color: context.colors.textPrimary,
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -60,7 +60,7 @@ class PostMunroList extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium
-                                ?.copyWith(fontWeight: FontWeight.w400, color: context.colors.textMuted),
+                                ?.copyWith(fontWeight: FontWeight.w400, color: context.colors.textSubtitle),
                           ),
                         ],
                       ),

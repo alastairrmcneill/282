@@ -96,15 +96,13 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
                       width: 3,
                     ),
                   ),
-                  labelStyle: const TextStyle(fontWeight: FontWeight.w500),
-                  unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400),
                   tabs: const [
                     Tab(
                       child: Row(
                         children: [
                           Icon(PhosphorIconsRegular.globe, size: 18),
                           SizedBox(width: 6),
-                          Text('All Munro Baggers'),
+                          Text('All Baggers'),
                         ],
                       ),
                     ),
@@ -113,13 +111,14 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
                         children: [
                           Icon(PhosphorIconsRegular.users, size: 18),
                           SizedBox(width: 8),
-                          Text('Friends'),
+                          Text('Pals'),
                         ],
                       ),
                     ),
                   ],
                 ),
                 const Spacer(),
+                const FindFriendsIconButton(),
                 const NotificationIconButton(),
               ],
             ),

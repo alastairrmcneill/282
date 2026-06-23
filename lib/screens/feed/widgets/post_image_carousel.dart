@@ -105,11 +105,12 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                   ),
                 ),
               ),
-        Positioned(
-          bottom: 10,
-          left: 10,
-          child: MunroImageOverlay(munro: shownMunro),
-        ),
+        if (widget.post.includedMunroIds.length > 1)
+          Positioned(
+            bottom: 10,
+            left: 10,
+            child: MunroImageOverlay(munro: shownMunro),
+          ),
       ],
     );
   }

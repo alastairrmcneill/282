@@ -5,6 +5,7 @@ import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/user_search/widgets/widgets.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -78,7 +79,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                 builder: (context, userSearchState, child) {
                   switch (userSearchState.status) {
                     case SearchStatus.initial:
-                      return const CenterText(text: "Search for fellow 282 users");
+                      return const EmptyUserSearch();
                     case SearchStatus.loading:
                       return _buildLoadingScreen();
                     case SearchStatus.error:
@@ -116,7 +117,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
     required String currentUserId,
   }) {
     if (userSearchState.users.isEmpty) {
-      return const CenterText(text: "No users found");
+      return const NoResultsUserSearch();
     }
 
     return ListView.builder(
