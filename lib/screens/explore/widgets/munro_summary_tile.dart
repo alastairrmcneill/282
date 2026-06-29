@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro/helpers/log_climb_navigation.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -20,7 +21,6 @@ class MunroSummaryTile extends StatelessWidget {
     final userId = context.read<AuthState>().currentUserId;
     final munroState = context.watch<MunroState>();
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
-    final createPostState = context.watch<CreatePostState>();
     final settingsState = context.watch<SettingsState>();
     final savedListState = context.watch<SavedListState>();
     final munroCompletionState = context.watch<MunroCompletionState>();
@@ -133,20 +133,14 @@ class MunroSummaryTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
                           if (userId == null) {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
-                          } else {
-                            if (munroSummited) return;
-                            munroState.setSelectedMunroId = munro.id; // TODO is this needed
-                            createPostState.reset();
-                            createPostState.addMunro(munro.id);
-                            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-                            Navigator.of(context).pushNamed(
-                              SelectMunrosScreen.route,
-                              arguments: SelectMunrosScreenArgs(mainMunro: munro),
-                            );
+                            return;
                           }
+                          if (munroSummited) return;
+                          munroState.setSelectedMunroId = munro.id;
+                          await navigateToLogClimb(context: context, munro: munro);
                         },
                         child: Icon(munroSummited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
                       ),

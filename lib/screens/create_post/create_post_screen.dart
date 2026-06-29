@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/create_post/widgets/create_post_munro_tile.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/saved/widgets/saved_list_munro_tile.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -29,14 +29,6 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
       child: Consumer<CreatePostState>(
         builder: (context, createPostState, child) {
           switch (createPostState.status) {
-            case CreatePostStatus.error:
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text('Create Post'),
-                  centerTitle: false,
-                ),
-                body: CenterText(text: createPostState.error.message),
-              );
             case CreatePostStatus.loaded:
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (createPostState.editingPost == null) {
@@ -112,6 +104,14 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
         );
       },
     );
+  }
+
+  void _retrySubmit(CreatePostState createPostState) {
+    if (createPostState.editingPost == null) {
+      createPostState.createPost();
+    } else {
+      createPostState.editPost();
+    }
   }
 
   Future<void> _submitPost(BuildContext context, CreatePostState createPostState) async {
@@ -228,6 +228,20 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
             key: _formKey,
             child: Column(
               children: [
+                if (createPostState.status == CreatePostStatus.error)
+                  MaterialBanner(
+                    content: Text(createPostState.error.message),
+                    actions: [
+                      TextButton(
+                        onPressed: () => _retrySubmit(createPostState),
+                        child: const Text('Try Again'),
+                      ),
+                      TextButton(
+                        onPressed: () => createPostState.setStatus = CreatePostStatus.initial,
+                        child: const Text('Dismiss'),
+                      ),
+                    ],
+                  ),
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(),
@@ -265,9 +279,9 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                             );
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8),
-                              child: CreatePostMunroTile(
+                              child: SavedListMunroTile(
                                 munro: munro,
-                                onRemove: () {
+                                onDelete: () async {
                                   createPostState.removeMunro(munro.id);
                                   setState(() {});
                                 },

@@ -179,7 +179,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
                   child: Column(
                     children: [
                       Text(
-                        'Track Every Summit',
+                        'Every summit counts',
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -189,7 +189,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Watch your progress grow with every peak you conquer.',
+                        "Watch your adventure story grow with every peak you conquer — and see exactly how far you've come.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],

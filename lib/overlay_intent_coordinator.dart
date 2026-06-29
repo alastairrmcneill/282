@@ -102,14 +102,18 @@ class OverlayIntentCoordinator extends StatelessWidget {
       case BulkMunroUpdateDialogIntent():
         navCtx.read<Analytics>().track(AnalyticsEvent.bulkMunroUpdateDidalogShown);
 
-        await showDialog(
+        final wantsBulk = await showDialog<bool>(
           context: navCtx,
           builder: (BuildContext context) {
-            return BulkMunroUpdateDialog();
+            return const BulkMunroUpdateDialog();
           },
-        ).then(
-          (_) => navCtx.read<AppFlagsRepository>().setShowBulkMunroDialog(false),
         );
+
+        await navCtx.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
+
+        if (wantsBulk == true) {
+          Navigator.of(navCtx).pushNamed(BulkMunroUpdateScreen.route);
+        }
 
         return;
 

@@ -11,7 +11,8 @@ import 'package:two_eight_two/screens/bulk_munro_updates/widgets/bulk_munro_map_
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class BulkMunroMapScreen extends StatefulWidget {
-  const BulkMunroMapScreen({super.key});
+  final double bottomPadding;
+  const BulkMunroMapScreen({super.key, this.bottomPadding = 0});
 
   @override
   State<BulkMunroMapScreen> createState() => _BulkMunroMapScreenState();
@@ -281,7 +282,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
                 alignment: Alignment.bottomCenter,
                 child: SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: EdgeInsets.only(bottom: 12 + widget.bottomPadding),
                     child: BulkMunroMapSummaryCard(munroId: _selectedMunroId!),
                   ),
                 ),

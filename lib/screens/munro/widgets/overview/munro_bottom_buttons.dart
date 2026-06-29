@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/munro/helpers/log_climb_navigation.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,17 +21,7 @@ class MunroBottomButtons extends StatelessWidget {
       children: [
         Expanded(
           child: CtaButton(
-            onPressed: () {
-              final createPostState = context.read<CreatePostState>();
-              final settingsState = context.read<SettingsState>();
-              createPostState.reset();
-              createPostState.addMunro(munro.id);
-              createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-              Navigator.of(context).pushNamed(
-                SelectMunrosScreen.route,
-                arguments: SelectMunrosScreenArgs(mainMunro: munro),
-              );
-            },
+            onPressed: () => navigateToLogClimb(context: context, munro: munro),
             child: Text(isBagged ? 'Log Another Climb' : 'Log A Climb'),
           ),
         ),

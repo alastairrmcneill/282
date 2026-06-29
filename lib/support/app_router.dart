@@ -309,6 +309,26 @@ class AppRouter {
           builder: (_) => const BulkMunroUpdateScreen(),
           settings: settings,
         );
+      case OnboardingBulkLogScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingBulkLogScreen(),
+          settings: settings,
+        );
+      case OnboardingSignInPromptScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingSignInPromptScreen(),
+          settings: settings,
+        );
+      case OnboardingAnnualChallengeScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingAnnualChallengeScreen(),
+          settings: settings,
+        );
+      case OnboardingNotificationsScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingNotificationsScreen(),
+          settings: settings,
+        );
 
       case CreatePostScreen.route:
         return MaterialPageRoute(

@@ -141,11 +141,6 @@ class HomeScreenState extends State<HomeScreen> {
           setState(() => _currentIndex = value);
 
           if (userId != null) {
-            bool showBulkMunroDialog = context.read<AppFlagsRepository>().showBulkMunroDialog;
-            if (showBulkMunroDialog) {
-              context.read<OverlayIntentState>().enqueue(BulkMunroUpdateDialogIntent());
-            }
-
             final thisYearMunroChallenge = context.read<AchievementsState>().achievements.where((achievement) =>
                 achievement.type == AchievementTypes.annualGoal &&
                 achievement.criteriaValue == DateTime.now().year.toString());

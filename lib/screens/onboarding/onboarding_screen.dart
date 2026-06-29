@@ -5,7 +5,8 @@ import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
 import 'package:two_eight_two/screens/onboarding/screens/welcome_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/progress_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/achievement_screen.dart';
-import 'package:two_eight_two/screens/onboarding/screens/community_screen.dart';
+import 'package:two_eight_two/screens/onboarding/screens/munro_question_screen.dart';
+import 'package:two_eight_two/screens/onboarding/screens/onboarding_bulk_log_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String route = '/onboarding';
@@ -52,17 +53,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void _onGetStarted() async {
-    context.read<OnboardingState>().markOnboardingCompleted();
+  Future<void> _onNo() async {
+    await context.read<OnboardingState>().markOnboardingCompleted();
+    // RootGate rebuilds automatically when hasCompletedOnboarding changes
+  }
+
+  Future<void> _onYes() async {
+    if (mounted) {
+      Navigator.pushNamed(context, OnboardingBulkLogScreen.route);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<OnboardingState>();
+
+    // Pages 1 and 3 have light backgrounds — use dark dots for contrast
+    final bool lightBackground = state.currentPage == 1 || state.currentPage == 3;
+
     return Scaffold(
       body: Stack(
         children: [
-          // PageView with screens
           RepaintBoundary(
             child: PageView(
               controller: _pageController,
@@ -71,29 +82,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 WelcomeScreen(onNext: _nextPage),
                 ProgressScreen(onNext: _nextPage, onBack: _previousPage),
                 AchievementScreen(onNext: _nextPage, onBack: _previousPage),
-                CommunityScreen(onNext: _onGetStarted),
+                MunroQuestionScreen(onNo: _onNo, onYes: _onYes),
               ],
             ),
           ),
-          // Page indicator dots
-          Positioned(
-            bottom: 32,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SmoothPageIndicator(
-                controller: _pageController,
-                count: OnboardingState.totalPages,
-                effect: ExpandingDotsEffect(
-                  dotHeight: 8,
-                  dotWidth: 8,
-                  activeDotColor: const Color(0xFF10b981),
-                  dotColor: state.currentPage == 1 ? Colors.black.withOpacity(0.3) : Colors.white.withOpacity(0.3),
-                  spacing: 8,
+          // Hide dots on question page — it has its own CTA layout
+          if (state.currentPage < 3)
+            Positioned(
+              bottom: 32,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: SmoothPageIndicator(
+                  controller: _pageController,
+                  count: OnboardingState.totalPages,
+                  effect: ExpandingDotsEffect(
+                    dotHeight: 8,
+                    dotWidth: 8,
+                    activeDotColor: const Color(0xFF10b981),
+                    dotColor: lightBackground
+                        ? Colors.black.withOpacity(0.3)
+                        : Colors.white.withOpacity(0.3),
+                    spacing: 8,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

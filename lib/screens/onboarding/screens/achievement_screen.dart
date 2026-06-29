@@ -1,9 +1,6 @@
-import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:provider/provider.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
 class AchievementScreen extends StatefulWidget {
@@ -18,13 +15,12 @@ class AchievementScreen extends StatefulWidget {
 
 class _AchievementScreenState extends State<AchievementScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _trophyScaleAnimation;
-  late Animation<double> _trophyRotateAnimation;
+  late Animation<double> _iconAnimation;
   late Animation<double> _titleAnimation;
-  late Animation<double> _achievement1Animation;
-  late Animation<double> _achievement2Animation;
-  late Animation<double> _achievement3Animation;
-  late Animation<double> _achievement4Animation;
+  late Animation<double> _card1Animation;
+  late Animation<double> _card2Animation;
+  late Animation<double> _card3Animation;
+  late Animation<double> _buttonAnimation;
 
   @override
   void initState() {
@@ -34,53 +30,28 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
       vsync: this,
     );
 
-    _trophyRotateAnimation = Tween<double>(begin: -math.pi, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-      ),
-    );
-
-    _trophyScaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.elasticOut),
-      ),
+    _iconAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.4, curve: Curves.elasticOut)),
     );
 
     _titleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.2, 0.5, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _controller, curve: const Interval(0.2, 0.5, curve: Curves.easeOut)),
     );
 
-    _achievement1Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.4, 0.6, curve: Curves.easeOut),
-      ),
+    _card1Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.4, 0.65, curve: Curves.easeOut)),
     );
 
-    _achievement2Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.5, 0.7, curve: Curves.easeOut),
-      ),
+    _card2Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.5, 0.75, curve: Curves.easeOut)),
     );
 
-    _achievement3Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.6, 0.8, curve: Curves.easeOut),
-      ),
+    _card3Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.6, 0.85, curve: Curves.easeOut)),
     );
 
-    _achievement4Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.7, 0.9, curve: Curves.easeOut),
-      ),
+    _buttonAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.7, 1.0, curve: Curves.easeOut)),
     );
 
     _controller.forward();
@@ -94,13 +65,12 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<OnboardingState>();
     return Stack(
       children: [
         // Background image
         Positioned.fill(
           child: Image.network(
-            'https://images.unsplash.com/photo-1764377725269-a26ada9b551a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3VudGFpbiUyMGNsaW1iZXIlMjBzdW1taXQlMjBhY2hpZXZlbWVudHxlbnwxfHx8fDE3NzAyMDM5NzR8MA&ixlib=rb-4.1.0&q=80&w=1080',
+            'https://images.unsplash.com/photo-1673886084132-9b5fd8e4acdf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoaWtpbmclMjBmcmllbmRzJTIwbW91bnRhaW58ZW58MXx8fHwxNzcwMjAzMTA2fDA&ixlib=rb-4.1.0&q=80&w=1080',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Container(color: Colors.grey[800]);
@@ -116,10 +86,10 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.black.withOpacity(0.3),
-                  Colors.black.withOpacity(0.2),
-                  Colors.black.withOpacity(0.8),
+                  Colors.black.withOpacity(0.15),
+                  Colors.black.withOpacity(0.85),
                 ],
-                stops: const [0.0, 0.5, 1.0],
+                stops: const [0.0, 0.45, 1.0],
               ),
             ),
           ),
@@ -131,123 +101,103 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
           top: 0,
           bottom: 80,
           child: RepaintBoundary(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // Trophy icon
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Transform.rotate(
-                        angle: _trophyRotateAnimation.value,
-                        child: Transform.scale(
-                          scale: _trophyScaleAnimation.value,
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: ClipOval(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFFf59e0b).withOpacity(0.2),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              LucideIcons.trophy,
-                              size: 40,
-                              color: Color(0xFFfbbf24),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Icon
+                    AnimatedBuilder(
+                      animation: _iconAnimation,
+                      builder: (context, child) => Transform.scale(
+                        scale: _iconAnimation.value.clamp(0.0, 1.5),
+                        child: Opacity(opacity: _iconAnimation.value.clamp(0.0, 1.0), child: child),
+                      ),
+                      child: ClipOval(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFF10b981).withOpacity(0.2),
+                            ),
+                            child: const Center(
+                              child: Icon(LucideIcons.users, size: 40, color: Color(0xFF6ee7b7)),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Title
-                  AnimatedBuilder(
-                    animation: _titleAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
+                    const SizedBox(height: 20),
+                    // Title
+                    AnimatedBuilder(
+                      animation: _titleAnimation,
+                      builder: (context, child) => Transform.translate(
                         offset: Offset(0, 30 * (1 - _titleAnimation.value)),
-                        child: Opacity(
-                          opacity: _titleAnimation.value,
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Unlock Achievements',
-                          style: TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        child: Opacity(opacity: _titleAnimation.value, child: child),
+                      ),
+                      child: const Column(
+                        children: [
+                          Text(
+                            'Bag more, together',
+                            style: TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Earn badges and celebrate milestones as you climb',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xFFe2e8f0),
-                            height: 1.5,
+                          SizedBox(height: 12),
+                          Text(
+                            'See what your friends are climbing, share your proudest moments, and push each other to new heights.',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFFe2e8f0),
+                              height: 1.5,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Achievement cards
-                  _buildAchievementCard(
-                    animation: _achievement1Animation,
-                    icon: LucideIcons.target,
-                    title: state.achievements[0].name,
-                    description: state.achievements[0].description,
-                    locked: false,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildAchievementCard(
-                    animation: _achievement2Animation,
-                    icon: LucideIcons.star,
-                    title: state.achievements[1].name,
-                    description: state.achievements[1].description,
-                    locked: false,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildAchievementCard(
-                    animation: _achievement3Animation,
-                    icon: LucideIcons.trophy,
-                    title: state.achievements[2].name,
-                    description: state.achievements[2].description,
-                    locked: true,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildAchievementCard(
-                    animation: _achievement4Animation,
-                    icon: LucideIcons.award,
-                    title: state.achievements[3].name,
-                    description: state.achievements[3].description,
-                    locked: true,
-                  ),
-                  const SizedBox(height: 32),
-                  // Navigation buttons
-                  OnboardingNavigationButtons(
-                    onNext: widget.onNext,
-                    onBack: widget.onBack,
-                    nextText: 'Continue',
-                    backButtonLight: true,
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    _buildFeatureCard(
+                      animation: _card1Animation,
+                      icon: LucideIcons.share_2,
+                      title: 'Share your summits',
+                      subtitle: 'Post photos and tag the Munros you conquer',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildFeatureCard(
+                      animation: _card2Animation,
+                      icon: LucideIcons.heart,
+                      title: 'Celebrate together',
+                      subtitle: 'Like and comment on your friends\' climbs',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildFeatureCard(
+                      animation: _card3Animation,
+                      icon: LucideIcons.trophy,
+                      title: 'Earn achievements',
+                      subtitle: 'Unlock badges and celebrate milestones',
+                    ),
+                    const SizedBox(height: 32),
+                    AnimatedBuilder(
+                      animation: _buttonAnimation,
+                      builder: (context, child) => Opacity(opacity: _buttonAnimation.value, child: child),
+                      child: OnboardingNavigationButtons(
+                        onNext: widget.onNext,
+                        onBack: widget.onBack,
+                        nextText: 'Continue',
+                        backButtonLight: true,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -256,24 +206,18 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
     );
   }
 
-  Widget _buildAchievementCard({
+  Widget _buildFeatureCard({
     required Animation<double> animation,
     required IconData icon,
     required String title,
-    required String description,
-    required bool locked,
+    required String subtitle,
   }) {
     return AnimatedBuilder(
       animation: animation,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(-50 * (1 - animation.value), 0),
-          child: Opacity(
-            opacity: animation.value,
-            child: child,
-          ),
-        );
-      },
+      builder: (context, child) => Transform.translate(
+        offset: Offset(-30 * (1 - animation.value), 0),
+        child: Opacity(opacity: animation.value, child: child),
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: BackdropFilter(
@@ -282,46 +226,25 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1,
-              ),
+              border: Border.all(color: Colors.white.withOpacity(0.2)),
             ),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    gradient: locked
-                        ? null
-                        : const LinearGradient(
-                            colors: [Color(0xFF6ee7b7), Color(0xFF14b8a6)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                    color: locked ? Colors.grey[600] : null,
-                    boxShadow: locked
-                        ? null
-                        : [
-                            BoxShadow(
-                              color: const Color(0xFF10b981).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                  ),
-                  child: Center(
-                    child: Icon(
-                      icon,
-                      size: 24,
-                      color: Colors.white,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF6ee7b7), Color(0xFF14b8a6)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                   ),
+                  child: Center(child: Icon(icon, size: 20, color: Colors.white)),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,32 +252,19 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
-                        description,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFFcbd5e1),
-                        ),
+                        subtitle,
+                        style: const TextStyle(fontSize: 13, color: Color(0xFFcbd5e1)),
                       ),
                     ],
                   ),
                 ),
-                locked
-                    ? const Text(
-                        '🔒',
-                        style: TextStyle(fontSize: 20),
-                      )
-                    : const Icon(
-                        LucideIcons.star,
-                        size: 16,
-                        color: Color(0xFFfbbf24),
-                      ),
               ],
             ),
           ),

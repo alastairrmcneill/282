@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class BulkMunroUpdateDialog extends StatelessWidget {
@@ -9,49 +9,57 @@ class BulkMunroUpdateDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
-      clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                PhosphorIconsRegular.mountains,
+                size: 36,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(
-              'Already bagged some Munros?',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w700),
+              'Bagged a few already?',
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             Text(
-              'Get started faster by logging your past climbs in one go. It only takes a minute and you\'ll be up to date straight away.',
-              style: Theme.of(context).textTheme.bodyMedium,
+              "If you've climbed Munros before joining, log all your past summits in one go — no need to add them one by one.",
+              style: textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             PrimaryButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
+              onPressed: () {
                 final bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
                 final munroCompletionState = context.read<MunroCompletionState>();
                 final munroState = context.read<MunroState>();
-
-                bulkMunroUpdateState.setStartingBulkMunroUpdateList =
-                    munroCompletionState.munroCompletions;
+                bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
                 munroState.setBulkMunroUpdateFilterString = '';
-
-                Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
+                Navigator.of(context).pop(true);
               },
-              child: const Text("Let's Go"),
+              child: const Text('Yes, log past summits'),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             SecondaryButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Maybe Later'),
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('No, just this one'),
             ),
           ],
         ),
