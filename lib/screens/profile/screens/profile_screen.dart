@@ -52,7 +52,6 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
   }
 
   void _showActionsDialog(BuildContext context) {
-    final profileState = context.read<ProfileState>();
     final reportState = context.read<ReportState>();
     showActionSheet(context, [
       ActionMenuItems(
@@ -63,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             context,
             message: "Are you sure you want to block this user?",
             onConfirm: () async {
-              await context.read<UserState>().blockUser(userId: profileState.profile?.id ?? '');
+              await context.read<UserState>().blockUser(userId: widget.userId);
               if (context.mounted) Navigator.of(context).pop();
             },
           );
@@ -73,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
         title: 'Report',
         isDestructive: true,
         onPressed: () {
-          reportState.setContentId = profileState.profile?.id ?? '';
+          reportState.setContentId = widget.userId;
           reportState.setType = 'user';
           Navigator.of(context).pushNamed(ReportScreen.route);
         },
@@ -146,7 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     return Scaffold(
       appBar: _buildAppBar(context, profileState),
       body: RefreshIndicator(
-        onRefresh: () async => profileState.loadProfileFromUserId(userId: profileState.profile?.id ?? ''),
+        onRefresh: () async => profileState.loadProfileFromUserId(userId: widget.userId),
         child: NestedScrollView(
           controller: _outerScrollController,
           physics: const AlwaysScrollableScrollPhysics(),

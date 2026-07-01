@@ -48,10 +48,13 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future _loadData() async {
-    await context.read<AchievementsState>().getUserAchievements();
-    await context.read<CurrentUserFollowerState>().loadInitial();
+    final achievementsState = context.read<AchievementsState>();
+    final currentUserFollowerState = context.read<CurrentUserFollowerState>();
+    final globalCompletionState = context.read<GlobalCompletionState>();
 
-    await context.read<GlobalCompletionState>().fetchGlobalCompletionCount();
+    await achievementsState.getUserAchievements();
+    await currentUserFollowerState.loadInitial();
+    await globalCompletionState.fetchGlobalCompletionCount();
   }
 
   @override

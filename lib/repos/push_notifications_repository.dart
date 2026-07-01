@@ -18,7 +18,8 @@ class PushNotificationRepository {
 
   Future<String?> getToken() async {
     if (Platform.isIOS) {
-      await _ensureApnsToken();
+      final apnsReady = await _ensureApnsToken();
+      if (!apnsReady) return null;
     }
     return _messaging.getToken();
   }
@@ -31,13 +32,14 @@ class PushNotificationRepository {
     return _messaging.getInitialMessage();
   }
 
-  Future<void> _ensureApnsToken() async {
+  Future<bool> _ensureApnsToken() async {
     for (int i = 0; i < 20; i++) {
       try {
         final apns = await _messaging.getAPNSToken();
-        if (apns != null) return;
+        if (apns != null) return true;
       } catch (_) {}
       await Future.delayed(const Duration(milliseconds: 500));
     }
+    return false;
   }
 }
