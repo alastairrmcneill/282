@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/models/munro_model.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/widgets/cached_munro_image.dart';
+import 'package:two_eight_two/widgets/app_cached_image.dart';
 
 class MunroCardPicture extends StatelessWidget {
   final Munro munro;
@@ -20,7 +20,7 @@ class MunroCardPicture extends StatelessWidget {
         height: width,
         child: Stack(
           children: [
-            CachedMunroImage(imageUrl: munro.pictureURL),
+            AppCachedImage(imageUrl: munro.pictureURL),
             Align(
               alignment: Alignment.topRight,
               child: MunroSaveButton(munro: munro),

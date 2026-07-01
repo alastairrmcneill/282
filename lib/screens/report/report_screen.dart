@@ -14,7 +14,7 @@ class ReportScreen extends StatelessWidget {
       builder: (context, reportState, child) {
         switch (reportState.status) {
           case ReportStatus.loading:
-            return const LoadingWidget();
+            return const Scaffold(body: LoadingWidget());
           case ReportStatus.error:
             return Scaffold(
               appBar: AppBar(),

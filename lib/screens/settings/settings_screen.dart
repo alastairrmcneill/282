@@ -157,6 +157,7 @@ class SettingsScreen extends StatelessWidget {
                   try {
                     await launchUrl(
                       Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
                     );
                   } on Exception catch (error, stackTrace) {
                     context.read<Logger>().error(error.toString(), stackTrace: stackTrace);

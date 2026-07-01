@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/feed/widgets/munro_image_overlay.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 
 class PostImagesCarousel extends StatefulWidget {
   final Post post;
@@ -19,16 +17,8 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
-
-    Map<String, int> imageUrlToMunroId = {
-      for (var entry in widget.post.imageUrlsMap.entries)
-        for (var url in entry.value) url: entry.key
-    };
-    if (imageUrlToMunroId.isEmpty) return const SizedBox();
-
-    Munro shownMunro = munroState.munroList
-        .firstWhere((m) => m.id == imageUrlToMunroId[imageUrlToMunroId.keys.elementAt(_selectedIndex)]!);
+    final List<String> imageUrls = widget.post.imageUrlsMap.values.expand((urls) => urls).toList();
+    if (imageUrls.isEmpty) return const SizedBox();
 
     return Stack(
       children: [
@@ -43,7 +33,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
             height: 300,
             onPageChanged: (index, reason) => setState(() => _selectedIndex = index),
           ),
-          items: imageUrlToMunroId.keys
+          items: imageUrls
               .map(
                 (url) => Container(
                   margin: EdgeInsets.zero,
@@ -60,56 +50,38 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                         height: 300,
                       ),
                       fadeInDuration: Duration.zero,
-                      errorWidget: (context, url, error) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.error),
-                              Text(
-                                error
-                                        .toString()
-                                        .contains('ClientException with SocketException: Connection reset by peer')
-                                    ? "Error loading image. Please check your internet connection and try again."
-                                    : error.toString(),
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                      errorWidget: (context, url, error) => Center(
+                        child: Icon(
+                          PhosphorIconsRegular.warning,
+                          size: 40,
+                          color: Colors.grey[400],
+                        ),
+                      ),
                     ),
                   ),
                 ),
               )
               .toList(),
         ),
-        imageUrlToMunroId.length < 2
-            ? const SizedBox()
-            : SizedBox(
-                height: 300,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: AnimatedSmoothIndicator(
-                      activeIndex: _selectedIndex,
-                      count: imageUrlToMunroId.length,
-                      effect: const ExpandingDotsEffect(
-                        dotWidth: 8,
-                        dotHeight: 8,
-                        activeDotColor: Colors.white,
-                        dotColor: Color.fromARGB(255, 154, 171, 147),
-                      ),
-                    ),
+        if (imageUrls.length > 1)
+          SizedBox(
+            height: 300,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: AnimatedSmoothIndicator(
+                  activeIndex: _selectedIndex,
+                  count: imageUrls.length,
+                  effect: const ExpandingDotsEffect(
+                    dotWidth: 8,
+                    dotHeight: 8,
+                    activeDotColor: Colors.white,
+                    dotColor: Color.fromARGB(255, 154, 171, 147),
                   ),
                 ),
               ),
-        if (widget.post.includedMunroIds.length > 1)
-          Positioned(
-            bottom: 10,
-            left: 10,
-            child: MunroImageOverlay(munro: shownMunro),
+            ),
           ),
       ],
     );

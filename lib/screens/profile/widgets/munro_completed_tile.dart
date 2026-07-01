@@ -6,7 +6,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/widgets/cached_munro_image.dart';
+import 'package:two_eight_two/widgets/app_cached_image.dart';
 
 class MunroCompletedTile extends StatelessWidget {
   final Munro munro;
@@ -52,7 +52,7 @@ class MunroCompletedTile extends StatelessWidget {
             children: [
               SizedBox(
                 width: 90,
-                child: CachedMunroImage(imageUrl: munro.pictureURL),
+                child: AppCachedImage(imageUrl: munro.pictureURL),
               ),
               Expanded(
                 child: Padding(

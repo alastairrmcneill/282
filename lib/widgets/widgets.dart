@@ -34,5 +34,5 @@ export 'primary_icon_button.dart';
 export 'secondary_button.dart';
 export 'sliver_app_bar_button.dart';
 export 'sliver_app_bar_multi_button.dart';
-export 'cached_munro_image.dart';
+export 'app_cached_image.dart';
 export 'overlay_gradient.dart';

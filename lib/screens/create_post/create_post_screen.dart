@@ -420,14 +420,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
           ),
         ),
 
-        // Loading overlay
         if (createPostState.status == CreatePostStatus.loading)
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.8,
-            color: Colors.transparent,
-            child: const LoadingWidget(),
-          ),
+          const BlockingLoadingOverlay(text: 'Uploading...'),
       ],
     );
   }

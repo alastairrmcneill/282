@@ -7,7 +7,7 @@ import 'package:two_eight_two/screens/munro/helpers/log_climb_navigation.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/widgets/cached_munro_image.dart';
+import 'package:two_eight_two/widgets/app_cached_image.dart';
 
 class MunroSummaryTile extends StatelessWidget {
   final int? munroId;
@@ -49,7 +49,7 @@ class MunroSummaryTile extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12),
                   ),
-                  child: CachedMunroImage(imageUrl: munro.pictureURL),
+                  child: AppCachedImage(imageUrl: munro.pictureURL),
                 ),
                 Expanded(
                   flex: 1,

@@ -42,7 +42,7 @@ class MunroCompletionWidget extends StatelessWidget {
                 topLeft: Radius.circular(15),
                 bottomLeft: Radius.circular(15),
               ),
-              child: SizedBox(width: 100, height: 100, child: CachedMunroImage(imageUrl: munro.pictureURL)),
+              child: SizedBox(width: 100, height: 100, child: AppCachedImage(imageUrl: munro.pictureURL)),
             ),
             Expanded(
               flex: 1,

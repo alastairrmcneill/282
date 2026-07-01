@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/widgets/cached_munro_image.dart';
+import 'package:two_eight_two/widgets/app_cached_image.dart';
 import 'package:two_eight_two/widgets/overlay_gradient.dart';
 
 class MunroClimbedWithTile extends StatelessWidget {
@@ -28,7 +28,7 @@ class MunroClimbedWithTile extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            CachedMunroImage(imageUrl: munro.pictureURL),
+            AppCachedImage(imageUrl: munro.pictureURL),
             OverlayGradient(stops: const [0.2, 0.5, 1.0]),
             Positioned(
               bottom: 0,

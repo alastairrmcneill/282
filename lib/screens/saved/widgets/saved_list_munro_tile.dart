@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/munro_model.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class SavedListMunroTile extends StatelessWidget {
   final Munro munro;
@@ -27,11 +27,10 @@ class SavedListMunroTile extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                imageUrl: munro.pictureURL,
+              child: SizedBox(
                 width: 60,
                 height: 60,
-                fit: BoxFit.cover,
+                child: AppCachedImage(imageUrl: munro.pictureURL),
               ),
             ),
           ),

@@ -171,7 +171,7 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
             background: Stack(
               fit: StackFit.expand,
               children: [
-                CachedMunroImage(imageUrl: widget.munro.pictureURL),
+                AppCachedImage(imageUrl: widget.munro.pictureURL),
                 OverlayGradient(),
                 Positioned(
                   left: 16,
