@@ -6,10 +6,17 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class CreateReviewsScreen extends StatelessWidget {
-  CreateReviewsScreen({super.key});
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class CreateReviewsScreen extends StatefulWidget {
+  const CreateReviewsScreen({super.key});
   static const String route = '/review/create';
+
+  @override
+  State<CreateReviewsScreen> createState() => _CreateReviewsScreenState();
+}
+
+class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _hasHandledLoaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +42,17 @@ class CreateReviewsScreen extends StatelessWidget {
               ),
             );
           case CreateReviewStatus.loaded:
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomeScreen.route, // The name of the route you want to navigate to
-                (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-              );
-            });
+            if (!_hasHandledLoaded) {
+              _hasHandledLoaded = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  HomeScreen.route, // The name of the route you want to navigate to
+                  (Route<dynamic> route) => false, // This predicate ensures all routes are removed
+                );
+              });
+            }
             return const SizedBox();
           default:
             return _buildScreen(context, createReviewState);
@@ -53,7 +64,6 @@ class CreateReviewsScreen extends StatelessWidget {
   Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) => createReviewState.setStatus = CreateReviewStatus.loaded,
       child: Scaffold(
         appBar: AppBar(
           title: const Text("How was your hike?"),
@@ -105,14 +115,16 @@ class CreateReviewsScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 44,
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        }
-                        _formKey.currentState!.save();
+                      onPressed: createReviewState.status == CreateReviewStatus.initial
+                          ? () {
+                              if (!_formKey.currentState!.validate()) {
+                                return;
+                              }
+                              _formKey.currentState!.save();
 
-                        createReviewState.createReview();
-                      },
+                              createReviewState.createReview();
+                            }
+                          : null,
                       child: const Text("Submit"),
                     ),
                   ),

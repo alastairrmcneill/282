@@ -6,7 +6,6 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/screens/in_app_onboarding_notifications.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
-import 'package:two_eight_two/screens/onboarding/widgets/onboarding_step_indicator.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class OnboardingNotificationsScreen extends StatefulWidget {
@@ -44,18 +43,16 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
 
       final bulkState = context.read<BulkMunroUpdateState>();
       final munroCompletionState = context.read<MunroCompletionState>();
-      final achievementsState = context.read<AchievementsState>();
       final appFlagsRepo = context.read<AppFlagsRepository>();
       final userState = context.read<UserState>();
 
       if (bulkState.addedMunroCompletions.isNotEmpty) {
-        await munroCompletionState.addBulkCompletions(
-          munroCompletions: bulkState.addedMunroCompletions,
-        );
-      }
-
-      if (achievementsState.achievementFormCount > 0) {
-        await achievementsState.setMunroChallenge();
+        final uid = userState.currentUser?.uid;
+        if (uid != null) {
+          final remapped = bulkState.addedMunroCompletions.map((c) => c.copyWith(userId: uid)).toList();
+          await munroCompletionState.addBulkCompletions(munroCompletions: remapped);
+          bulkState.setStartingBulkMunroUpdateList = [];
+        }
       }
 
       await appFlagsRepo.setShowBulkMunroDialog(false);
@@ -96,10 +93,6 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
                       ),
                     ],
                   ),
-                ),
-                OnboardingStepIndicator(
-                  currentStep: 1,
-                  steps: const ['Set a goal', 'Notifications'],
                 ),
                 const Expanded(child: InAppOnboardingNotifications()),
                 if (_error != null)

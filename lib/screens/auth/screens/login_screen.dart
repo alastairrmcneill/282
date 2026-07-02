@@ -7,9 +7,16 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class LoginScreenArgs {
+  final bool fromOnboarding;
+  const LoginScreenArgs({this.fromOnboarding = false});
+}
+
 class LoginScreen extends StatefulWidget {
   static const String route = '${AuthHomeScreen.authRoute}/login';
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.fromOnboarding = false});
+
+  final bool fromOnboarding;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -49,7 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (!mounted) return;
 
-    if (result.success && result.showOnboarding && result.userId != null) {
+    if (result.success && widget.fromOnboarding) {
+      await context.read<MunroCompletionState>().loadUserMunroCompletions();
+      if (mounted) {
+        Navigator.pushNamed(context, OnboardingNotificationsScreen.route);
+      }
+    } else if (result.success && result.showOnboarding && result.userId != null) {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
@@ -128,10 +140,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text('Log in'),
                         ),
                         const ForgotPasswordButton(),
-                        const SizedBox(height: 20),
-                        AppleSignInButton(onError: (msg) => setState(() => _error = msg)),
-                        const SizedBox(height: 10),
-                        GoogleSignInButton(onError: (msg) => setState(() => _error = msg)),
+                        if (!widget.fromOnboarding) ...[
+                          const SizedBox(height: 20),
+                          AppleSignInButton(onError: (msg) => setState(() => _error = msg)),
+                          const SizedBox(height: 10),
+                          GoogleSignInButton(onError: (msg) => setState(() => _error = msg)),
+                        ],
                       ],
                     ),
                   ),

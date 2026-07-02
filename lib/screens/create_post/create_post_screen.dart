@@ -20,6 +20,7 @@ class CreatePostScreen extends StatefulWidget {
 class _CreatePostScreen1State extends State<CreatePostScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _munroError;
+  bool _hasHandledLoaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +31,26 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
         builder: (context, createPostState, child) {
           switch (createPostState.status) {
             case CreatePostStatus.loaded:
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (createPostState.editingPost == null) {
-                  final createReviewState = context.read<CreateReviewState>();
-                  final munroState = context.read<MunroState>();
-                  createReviewState.reset();
-                  List<Munro> selectedMunros = munroState.munroList
-                      .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
-                      .toList();
-                  createReviewState.setMunrosToReview = selectedMunros;
-                  Navigator.of(context).pushNamed(CreateReviewsScreen.route);
-                } else {
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
+              if (!_hasHandledLoaded) {
+                _hasHandledLoaded = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted) return;
+                  if (createPostState.editingPost == null) {
+                    final createReviewState = context.read<CreateReviewState>();
+                    final munroState = context.read<MunroState>();
+                    createReviewState.reset();
+                    List<Munro> selectedMunros = munroState.munroList
+                        .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
+                        .toList();
+                    createReviewState.setMunrosToReview = selectedMunros;
+                    Navigator.of(context).pushNamed(CreateReviewsScreen.route);
+                  } else {
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
                   }
-                }
-              });
+                });
+              }
               return const SizedBox();
             default:
               return _buildScreen(context, createPostState);
@@ -115,6 +120,9 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
   }
 
   Future<void> _submitPost(BuildContext context, CreatePostState createPostState) async {
+    // Guard against double-submission (e.g. rapid double-tap)
+    if (createPostState.status != CreatePostStatus.initial) return;
+
     // Validate munro selection
     if (createPostState.selectedMunroIds.isEmpty) {
       setState(() => _munroError = "Select at least one munro.");
@@ -400,7 +408,9 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                   child: SizedBox(
                     height: 52,
                     child: ElevatedButton.icon(
-                      onPressed: () => _submitPost(context, createPostState),
+                      onPressed: createPostState.status == CreatePostStatus.initial
+                          ? () => _submitPost(context, createPostState)
+                          : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1E293B),
                         foregroundColor: Colors.white,

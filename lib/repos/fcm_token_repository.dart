@@ -33,7 +33,7 @@ class FcmTokenRepository {
     String? osVersion,
     String? deviceModel,
   }) async {
-    await _table.delete().eq(FcmTokenFields.token, token).eq(FcmTokenFields.userId, userId);
+    await _table.delete().eq(FcmTokenFields.token, token);
 
     await _table.upsert(
       {

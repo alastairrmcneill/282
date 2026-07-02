@@ -9,9 +9,16 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class SignUpScreenArgs {
+  final bool fromOnboarding;
+  const SignUpScreenArgs({this.fromOnboarding = false});
+}
+
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({super.key, this.fromOnboarding = false});
   static const String route = '${AuthHomeScreen.authRoute}/signup';
+
+  final bool fromOnboarding;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -61,7 +68,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final authResult = await context.read<AuthState>().registerWithEmail(registrationData: data);
 
     if (!mounted) return;
-    if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
+    if (authResult.success && widget.fromOnboarding) {
+      await context.read<MunroCompletionState>().loadUserMunroCompletions();
+      if (mounted) {
+        Navigator.pushNamed(context, OnboardingNotificationsScreen.route);
+      }
+    } else if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
@@ -91,13 +103,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 10),
-                  const AppleSignInButton(),
-                  const SizedBox(height: 10),
-                  const GoogleSignInButton(),
-                  const SizedBox(height: 20),
-                  const TextDivider(text: "or"),
-                  const SizedBox(height: 20),
+                  if (!widget.fromOnboarding) ...[
+                    const SizedBox(height: 10),
+                    const AppleSignInButton(),
+                    const SizedBox(height: 10),
+                    const GoogleSignInButton(),
+                    const SizedBox(height: 20),
+                    const TextDivider(text: "or"),
+                    const SizedBox(height: 20),
+                  ],
                   if (_error != null) ...[
                     AuthErrorBanner(message: _error!),
                     const SizedBox(height: 12),

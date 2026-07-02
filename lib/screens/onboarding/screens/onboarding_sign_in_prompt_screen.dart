@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/onboarding/screens/onboarding_annual_challenge_screen.dart';
+import 'package:two_eight_two/screens/onboarding/screens/onboarding_notifications_screen.dart';
 import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -26,7 +26,7 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
     if (result.success && result.userId != null) {
       await context.read<MunroCompletionState>().loadUserMunroCompletions();
       if (mounted) {
-        Navigator.pushNamed(context, OnboardingAnnualChallengeScreen.route);
+        Navigator.pushNamed(context, OnboardingNotificationsScreen.route);
       }
     } else if (!result.canceled) {
       setState(() => _errorMessage = 'Sign in failed. Please try again.');
@@ -167,7 +167,11 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                     CtaButton(
                       height: 52,
                       disabled: isLoading,
-                      onPressed: () => Navigator.pushNamed(context, SignUpScreen.route),
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        SignUpScreen.route,
+                        arguments: const SignUpScreenArgs(fromOnboarding: true),
+                      ),
                       child: const Text(
                         'Create a free account',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -189,7 +193,11 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               color: Colors.white,
                             ),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () => Navigator.pushNamed(context, LoginScreen.route),
+                              ..onTap = () => Navigator.pushNamed(
+                                    context,
+                                    LoginScreen.route,
+                                    arguments: const LoginScreenArgs(fromOnboarding: true),
+                                  ),
                           ),
                         ],
                       ),

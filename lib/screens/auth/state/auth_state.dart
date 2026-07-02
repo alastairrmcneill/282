@@ -105,6 +105,12 @@ class AuthState extends ChangeNotifier {
         AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
       });
 
+      // Load essential user data after successful authentication
+      if (currentUserId != null) {
+        await _userState.readUser(uid: currentUserId);
+        await _userState.loadBlockedUsers();
+      }
+
       // State doesn’t navigate – just tell UI what to do.
       final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
 

@@ -70,8 +70,9 @@ class AppRouter {
           settings: settings,
         );
       case LoginScreen.route:
+        final args = settings.arguments as LoginScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => LoginScreen(),
+          builder: (_) => LoginScreen(fromOnboarding: args?.fromOnboarding ?? false),
           settings: settings,
         );
       case EditReviewScreen.route:
@@ -300,8 +301,9 @@ class AppRouter {
           settings: settings,
         );
       case SignUpScreen.route:
+        final args = settings.arguments as SignUpScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => const SignUpScreen(),
+          builder: (_) => SignUpScreen(fromOnboarding: args?.fromOnboarding ?? false),
           settings: settings,
         );
       case BulkMunroUpdateScreen.route:
@@ -317,11 +319,6 @@ class AppRouter {
       case OnboardingSignInPromptScreen.route:
         return MaterialPageRoute(
           builder: (_) => const OnboardingSignInPromptScreen(),
-          settings: settings,
-        );
-      case OnboardingAnnualChallengeScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const OnboardingAnnualChallengeScreen(),
           settings: settings,
         );
       case OnboardingNotificationsScreen.route:

@@ -12,7 +12,7 @@ Future<void> navigateToLogClimb({
 }) async {
   final appFlags = context.read<AppFlagsRepository>();
 
-  if (!appFlags.showBulkMunroDialog) {
+  if (appFlags.showBulkMunroDialog) {
     await appFlags.setShowBulkMunroDialog(false);
 
     if (!context.mounted) return;

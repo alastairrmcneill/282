@@ -11,7 +11,6 @@ export 'nav/home_screen.dart';
 export 'onboarding/onboarding_screen.dart';
 export 'onboarding/screens/onboarding_bulk_log_screen.dart';
 export 'onboarding/screens/onboarding_sign_in_prompt_screen.dart';
-export 'onboarding/screens/onboarding_annual_challenge_screen.dart';
 export 'onboarding/screens/onboarding_notifications_screen.dart';
 export 'profile/profile_tab.dart';
 export 'saved/saved_tab.dart';
