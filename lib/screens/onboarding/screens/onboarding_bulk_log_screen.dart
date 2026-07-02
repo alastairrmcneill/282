@@ -5,6 +5,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/onboarding/screens/onboarding_notifications_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/onboarding_sign_in_prompt_screen.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
 
@@ -13,9 +14,18 @@ enum _ViewMode { list, map }
 // Nav button area height above safe area: 12 (top) + 50 (button) + 24 (bottom) = 86
 const double _navAreaHeight = 86;
 
+class OnboardingBulkLogScreenArgs {
+  final bool alreadyAuthenticated;
+  const OnboardingBulkLogScreenArgs({this.alreadyAuthenticated = false});
+}
+
 class OnboardingBulkLogScreen extends StatefulWidget {
   static const String route = '/onboarding/bulk_log';
-  const OnboardingBulkLogScreen({super.key});
+  const OnboardingBulkLogScreen({super.key, this.alreadyAuthenticated = false});
+
+  /// True when reached from a flow where the user is already signed in
+  /// (e.g. in-app onboarding) - skips the sign-in prompt on continue.
+  final bool alreadyAuthenticated;
 
   @override
   State<OnboardingBulkLogScreen> createState() => _OnboardingBulkLogScreenState();
@@ -90,7 +100,9 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
           ),
           const SizedBox(height: 6),
           Text(
-            "Select the Munros you've already climbed. We'll save them once you sign in.",
+            widget.alreadyAuthenticated
+                ? "Select the Munros you've already climbed. We'll save them when you continue."
+                : "Select the Munros you've already climbed. We'll save them once you sign in.",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: context.colors.textMuted,
                   height: 1.4,
@@ -129,7 +141,13 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       child: OnboardingNavigationButtons(
         onBack: () => Navigator.pop(context),
-        onNext: () => Navigator.pushNamed(context, OnboardingSignInPromptScreen.route),
+        onNext: () => widget.alreadyAuthenticated
+            ? Navigator.pushNamed(
+                context,
+                OnboardingNotificationsScreen.route,
+                arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true),
+              )
+            : Navigator.pushNamed(context, OnboardingSignInPromptScreen.route),
         nextText: count > 0 ? 'Continue ($count)' : 'Continue',
       ),
     );

@@ -80,6 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
       );
     } else if (authResult.success) {
+      await context.read<MunroCompletionState>().loadUserMunroCompletions();
       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (route) => false);
     } else {
       setState(() => _error = mapAuthErrorMessage(authResult.errorMessage));

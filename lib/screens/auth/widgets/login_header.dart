@@ -10,9 +10,9 @@ class LoginHeader extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 50,
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.transparent,
           child: Image.asset(
-            "assets/icons/app_icon.png",
+            "assets/icons/app_icon_transparent.png",
           ),
         ),
         const SizedBox(height: 10),

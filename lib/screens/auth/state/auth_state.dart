@@ -245,6 +245,7 @@ class AuthState extends ChangeNotifier {
     _setLoading();
     try {
       final cred = await _authRepo.signInWithGoogle();
+      final isNewUser = cred.additionalUserInfo?.isNewUser ?? false;
       final firebaseUser = cred.user;
       if (firebaseUser == null) {
         throw Exception("User not returned from Google sign-in.");
@@ -282,10 +283,12 @@ class AuthState extends ChangeNotifier {
 
       await _userState.createUser(appUser: appUser);
 
-      _analytics.track(AnalyticsEvent.signUp, props: {
-        AnalyticsProp.method: 'google',
-        AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
-      });
+      if (isNewUser) {
+        _analytics.track(AnalyticsEvent.signUp, props: {
+          AnalyticsProp.method: 'google',
+          AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
+        });
+      }
 
       // Load essential user data after successful authentication
       if (currentUserId != null) {

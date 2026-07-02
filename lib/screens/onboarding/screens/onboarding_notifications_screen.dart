@@ -7,10 +7,20 @@ import 'package:two_eight_two/screens/in_app_onboarding/screens/in_app_onboardin
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
+
+class OnboardingNotificationsScreenArgs {
+  final bool fromInAppOnboarding;
+  const OnboardingNotificationsScreenArgs({this.fromInAppOnboarding = false});
+}
 
 class OnboardingNotificationsScreen extends StatefulWidget {
   static const String route = '/onboarding/notifications';
-  const OnboardingNotificationsScreen({super.key});
+  const OnboardingNotificationsScreen({super.key, this.fromInAppOnboarding = false});
+
+  /// True when reached from the in-app onboarding flow rather than the
+  /// first-run onboarding flow - skips marking first-run onboarding complete.
+  final bool fromInAppOnboarding;
 
   @override
   State<OnboardingNotificationsScreen> createState() => _OnboardingNotificationsScreenState();
@@ -63,8 +73,12 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
       }
 
       if (mounted) {
-        await context.read<OnboardingState>().markOnboardingCompleted();
-        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (_) => false);
+        if (!widget.fromInAppOnboarding) {
+          await context.read<OnboardingState>().markOnboardingCompleted();
+        }
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (_) => false);
+        }
       }
     } catch (e) {
       setState(() {
@@ -141,13 +155,7 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
                 ),
               ],
             ),
-            if (_isSaving)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(0.25),
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
-              ),
+            if (_isSaving) const BlockingLoadingOverlay(),
           ],
         ),
       ),

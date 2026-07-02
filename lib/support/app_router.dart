@@ -260,12 +260,7 @@ class AppRouter {
                 ctx.read<UserState>(),
                 ctx.read<MunroCompletionState>(),
                 ctx.read<BulkMunroUpdateState>(),
-                ctx.read<AchievementsState>(),
-                ctx.read<UserAchievementsRepository>(),
                 ctx.read<MunroState>(),
-                ctx.read<AppFlagsRepository>(),
-                ctx.read<SettingsState>(),
-                ctx.read<PushNotificationState>(),
                 ctx.read<Analytics>(),
                 ctx.read<Logger>(),
               ),
@@ -312,8 +307,9 @@ class AppRouter {
           settings: settings,
         );
       case OnboardingBulkLogScreen.route:
+        final bulkLogArgs = settings.arguments as OnboardingBulkLogScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => const OnboardingBulkLogScreen(),
+          builder: (_) => OnboardingBulkLogScreen(alreadyAuthenticated: bulkLogArgs?.alreadyAuthenticated ?? false),
           settings: settings,
         );
       case OnboardingSignInPromptScreen.route:
@@ -322,8 +318,10 @@ class AppRouter {
           settings: settings,
         );
       case OnboardingNotificationsScreen.route:
+        final notificationsArgs = settings.arguments as OnboardingNotificationsScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => const OnboardingNotificationsScreen(),
+          builder: (_) =>
+              OnboardingNotificationsScreen(fromInAppOnboarding: notificationsArgs?.fromInAppOnboarding ?? false),
           settings: settings,
         );
 
@@ -346,17 +344,6 @@ class AppRouter {
       case FilterScreen.route:
         return MaterialPageRoute(
           builder: (_) => const FilterScreen(),
-          settings: settings,
-        );
-      case InAppOnboardingMunroChallenge.route:
-        final args = settings.arguments as InAppOnboardingMunroChallengeArgs;
-        return MaterialPageRoute(
-          builder: (_) => InAppOnboardingMunroChallenge(args: args),
-          settings: settings,
-        );
-      case InAppOnboardingWelcome.route:
-        return MaterialPageRoute(
-          builder: (_) => const InAppOnboardingWelcome(),
           settings: settings,
         );
       case MunroMapScreen.route:
