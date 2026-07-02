@@ -62,6 +62,12 @@ class AppFlagsRepository {
     if (!ok) throw Exception('Failed to persist $_kShowInAppOnboarding');
   }
 
+  bool hasShownAnnualChallengeDialog(String key) => _prefs.getBool('shownAnnualChallengeDialog-$key') ?? false;
+  Future<void> setShownAnnualChallengeDialog(String key) async {
+    final ok = await _prefs.setBool('shownAnnualChallengeDialog-$key', true);
+    if (!ok) throw Exception('Failed to persist shownAnnualChallengeDialog-$key');
+  }
+
   int get openCount => _prefs.getInt(_kOpenCount) ?? 0;
   Future<void> setOpenCount(int v) async {
     final ok = await _prefs.setInt(_kOpenCount, v);

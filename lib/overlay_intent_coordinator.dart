@@ -127,6 +127,10 @@ class OverlayIntentCoordinator extends StatelessWidget {
           },
         );
 
+        await navCtx.read<AppFlagsRepository>().setShownAnnualChallengeDialog(
+              '${intent.achievement.userId}-${intent.achievement.achievementId}',
+            );
+
         if (go == true) {
           navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogConfirmed);
           navCtx.read<AchievementsState>()

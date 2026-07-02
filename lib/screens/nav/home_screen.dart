@@ -150,10 +150,13 @@ class HomeScreenState extends State<HomeScreen> {
 
             if (thisYearMunroChallenge.isEmpty) return;
 
-            if (thisYearMunroChallenge.first.annualTarget == null || thisYearMunroChallenge.first.annualTarget == 0) {
-              context
-                  .read<OverlayIntentState>()
-                  .enqueue(AnnualMunroChallengeDialogIntent(achievement: thisYearMunroChallenge.first));
+            final achievement = thisYearMunroChallenge.first;
+            if (achievement.annualTarget == null || achievement.annualTarget == 0) {
+              final appFlags = context.read<AppFlagsRepository>();
+              final key = '${achievement.userId}-${achievement.achievementId}';
+              if (!appFlags.hasShownAnnualChallengeDialog(key)) {
+                context.read<OverlayIntentState>().enqueue(AnnualMunroChallengeDialogIntent(achievement: achievement));
+              }
             }
           }
         },
