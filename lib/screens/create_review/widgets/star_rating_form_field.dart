@@ -9,6 +9,11 @@ class StarRatingFormField extends FormField<int> {
     super.validator,
     int super.initialValue = 0,
     AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
+    double itemSize = 40,
+    double spacing = 0,
+    Color activeColor = Colors.amber,
+    Color? inactiveColor,
+    ValueChanged<int>? onChanged,
   }) : super(
           autovalidateMode: autovalidateMode,
           builder: (FormFieldState<int> state) {
@@ -19,13 +24,16 @@ class StarRatingFormField extends FormField<int> {
                   initialRating: initialValue.toDouble(),
                   minRating: 1,
                   maxRating: 5,
+                  itemSize: itemSize,
+                  itemPadding: EdgeInsets.only(right: spacing),
                   onRatingUpdate: (rating) {
                     state.didChange(rating.toInt());
+                    onChanged?.call(rating.toInt());
                   },
                   ratingWidget: RatingWidget(
-                    full: const Icon(CupertinoIcons.star_fill, color: Colors.amber),
-                    half: const Icon(Icons.star, color: Colors.grey),
-                    empty: Icon(CupertinoIcons.star_fill, color: Colors.grey[200]),
+                    full: Icon(CupertinoIcons.star_fill, color: activeColor),
+                    half: Icon(Icons.star, color: inactiveColor ?? Colors.grey),
+                    empty: Icon(CupertinoIcons.star_fill, color: inactiveColor ?? Colors.grey[200]),
                   ),
                   allowHalfRating: false,
                 ),

@@ -137,74 +137,7 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
       context.read<Analytics>().track(AnalyticsEvent.createPostNoPhotosDialogShown);
       bool? carryOn = await showDialog<bool>(
         context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            elevation: 5,
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(color: Colors.blue.shade100, shape: BoxShape.circle),
-                    padding: const EdgeInsets.all(16),
-                    child: const Icon(Icons.camera_alt_rounded, size: 50, color: Colors.blue),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Oops, No Photos!',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(color: Colors.blue, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Would you like to add some awesome photos to your post before sharing your adventure?',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton.icon(
-                        style: TextButton.styleFrom(foregroundColor: Colors.red.shade400),
-                        icon: const Icon(Icons.cancel_rounded),
-                        label: const Text('No, Skip'),
-                        onPressed: () {
-                          context.read<Analytics>().track(
-                            AnalyticsEvent.createPostNoPhotosDialogResponse,
-                            props: {AnalyticsProp.response: "skip"},
-                          );
-                          Navigator.of(context).pop(true);
-                        },
-                      ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade400,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        icon: const Icon(Icons.check_circle_rounded),
-                        label: const Text('Yes, Add!'),
-                        onPressed: () {
-                          context.read<Analytics>().track(
-                            AnalyticsEvent.createPostNoPhotosDialogResponse,
-                            props: {AnalyticsProp.response: "add"},
-                          );
-                          Navigator.of(context).pop(false);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+        builder: (BuildContext context) => const NoPhotosDialog(),
       );
       if (carryOn == null || carryOn == false) return;
     }
@@ -270,9 +203,10 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                               ),
                               GestureDetector(
                                 onTap: _showMunroModalSheet,
-                                child: const Text(
+                                child: Text(
                                   '+ Add Munro',
-                                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14),
+                                  style: TextStyle(
+                                      color: context.colors.accent, fontWeight: FontWeight.w600, fontSize: 14),
                                 ),
                               ),
                             ],
@@ -398,30 +332,16 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                 ),
 
                 // --- Bottom Bag Munro Button ---
-                Container(
-                  width: double.infinity,
+                Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(top: BorderSide(color: Colors.grey.shade200)),
-                  ),
-                  child: SizedBox(
-                    height: 52,
-                    child: ElevatedButton.icon(
-                      onPressed: createPostState.status == CreatePostStatus.initial
-                          ? () => _submitPost(context, createPostState)
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E293B),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 0,
-                      ),
-                      icon: const Icon(Icons.check, size: 20),
-                      label: Text(
-                        'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
+                  child: PrimaryButton(
+                    analyticsEvent: AnalyticsEvent.createPostBagMunroButtonPressed,
+                    onPressed: createPostState.status == CreatePostStatus.initial
+                        ? () => _submitPost(context, createPostState)
+                        : null,
+                    child: Text(
+                      'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
@@ -429,9 +349,7 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
             ),
           ),
         ),
-
-        if (createPostState.status == CreatePostStatus.loading)
-          const BlockingLoadingOverlay(text: 'Uploading...'),
+        if (createPostState.status == CreatePostStatus.loading) const BlockingLoadingOverlay(text: 'Uploading...'),
       ],
     );
   }

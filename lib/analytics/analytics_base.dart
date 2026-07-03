@@ -56,6 +56,8 @@ class AnalyticsEvent {
   static const munroMoreOptionsPressed = 'munro_more_options_pressed';
   static const munroSaveButtonClicked = 'munro_save_button_clicked';
   static const munroSharePressed = 'munro_share_pressed';
+
+  static const createPostBagMunroButtonPressed = 'create_post_bag_munro_button_pressed';
 }
 
 class AnalyticsProp {
