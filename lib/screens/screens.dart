@@ -33,6 +33,5 @@ export 'report/report_screen.dart';
 export 'whats_new/whats_new_screen.dart';
 export 'in_app_onboarding/in_app_onboarding_screen.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_notifications.dart';
-export 'group_filter/group_filter_screen.dart';
-export 'group_filter/group_filter_intro_screen.dart';
+export 'group_filter/group_filter_tab.dart';
 export 'photo_gallery/photo_gallery_screen.dart';

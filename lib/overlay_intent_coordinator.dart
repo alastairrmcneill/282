@@ -138,6 +138,22 @@ class OverlayIntentCoordinator extends StatelessWidget {
             ..setCurrentAchievement = intent.achievement;
           Navigator.of(navCtx).pushNamed(MunroChallengeDetailScreen.route);
         }
+        return;
+
+      case GroupFilterIntroDialogIntent():
+        final userId = navCtx.read<AuthState>().currentUserId;
+
+        await showDialog(
+          context: navCtx,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const GroupFilterIntroDialog();
+          },
+        );
+
+        if (userId != null) {
+          await navCtx.read<AppFlagsRepository>().setShownGroupFilterIntroDialog(userId);
+        }
     }
   }
 }

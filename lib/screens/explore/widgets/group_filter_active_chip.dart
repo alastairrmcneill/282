@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/screens/group_filter/group_filter_screen.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 
 class GroupFilterActiveChip extends StatelessWidget {
@@ -21,7 +21,7 @@ class GroupFilterActiveChip extends StatelessWidget {
       shadowColor: Colors.black26,
       child: InkWell(
         borderRadius: BorderRadius.circular(100),
-        onTap: () => Navigator.pushNamed(context, GroupFilterScreen.route),
+        onTap: () => homeScreenKey.currentState?.switchTab(2),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           child: Row(

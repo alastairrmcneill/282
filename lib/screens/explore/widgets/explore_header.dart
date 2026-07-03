@@ -53,7 +53,6 @@ class ExploreTabHeader extends StatelessWidget {
                         },
                       ),
                     ),
-                    const ExploreHeaderGroupButton(),
                     const ExploreHeaderFilterButton(),
                   ],
                 ),

@@ -1,10 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
-import 'package:two_eight_two/screens/component_library/design_system_tab.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -25,10 +24,12 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const ExploreTab(),
     const FeedTab(),
+    const GroupFilterTab(),
     const SavedTab(),
     const ProfileTab(),
-    const DesignSystemTab(),
   ];
+
+  void switchTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
@@ -95,11 +96,11 @@ class HomeScreenState extends State<HomeScreen> {
       case 1:
         return FeedTab.route;
       case 2:
-        return SavedTab.route;
+        return GroupFilterTab.route;
       case 3:
-        return ProfileTab.route;
+        return SavedTab.route;
       case 4:
-        return DesignSystemTab.route;
+        return ProfileTab.route;
       default:
         return HomeScreen.route;
     }
@@ -113,7 +114,7 @@ class HomeScreenState extends State<HomeScreen> {
         onTap: (value) {
           final userId = context.read<AuthRepository>().currentUserId;
 
-          if (value == 1 || value == 2 || value == 3) {
+          if (value != 0) {
             if (userId == null) {
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
               return;
@@ -132,7 +133,7 @@ class HomeScreenState extends State<HomeScreen> {
             notificationsState.getUserNotifications();
           }
 
-          if (value == 2) {
+          if (value == 3) {
             context.read<SavedListState>().readUserSavedLists();
           }
 
@@ -166,29 +167,29 @@ class HomeScreenState extends State<HomeScreen> {
         unselectedFontSize: 13,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.map),
-            activeIcon: Icon(CupertinoIcons.map_fill),
+            icon: Icon(PhosphorIconsRegular.mapTrifold),
+            activeIcon: Icon(PhosphorIconsFill.mapTrifold),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.news),
-            activeIcon: Icon(CupertinoIcons.news_solid),
+            icon: Icon(PhosphorIconsRegular.newspaper),
+            activeIcon: Icon(PhosphorIconsFill.newspaper),
             label: 'Feed',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.bookmark),
-            activeIcon: Icon(CupertinoIcons.bookmark_fill),
+            icon: Icon(PhosphorIconsRegular.usersThree),
+            activeIcon: Icon(PhosphorIconsFill.usersThree),
+            label: 'Friends',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+            activeIcon: Icon(PhosphorIconsFill.bookmarkSimple),
             label: 'Saved',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person),
-            activeIcon: Icon(CupertinoIcons.person_fill),
+            icon: Icon(PhosphorIconsRegular.user),
+            activeIcon: Icon(PhosphorIconsFill.user),
             label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.square_grid_2x2),
-            activeIcon: Icon(CupertinoIcons.square_grid_2x2_fill),
-            label: 'Components',
           ),
         ],
       ),

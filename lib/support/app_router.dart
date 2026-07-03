@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -11,7 +12,6 @@ import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-import '../screens/component_library/design_system_tab.dart';
 import '../screens/screens.dart';
 
 class AppRouter {
@@ -19,32 +19,32 @@ class AppRouter {
     switch (settings.name) {
       case HomeScreen.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 0),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
           settings: settings,
         );
       case ExploreTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 0),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
           settings: settings,
         );
       case FeedTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 1),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 1),
+          settings: settings,
+        );
+      case GroupFilterTab.route:
+        return MaterialPageRoute(
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 2),
           settings: settings,
         );
       case SavedTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 2),
-          settings: settings,
-        );
-      case DesignSystemTab.route:
-        return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 4),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 3),
           settings: settings,
         );
       case ProfileTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 3),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 4),
           settings: settings,
         );
       case AuthHomeScreen.route:
@@ -280,16 +280,6 @@ class AppRouter {
           builder: (_) => const NotificationsScreen(),
           settings: settings,
         );
-      case GroupFilterIntroScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const GroupFilterIntroScreen(),
-          settings: settings,
-        );
-      case GroupFilterScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const GroupFilterScreen(),
-          settings: settings,
-        );
       case ForgotPasswordScreen.route:
         return MaterialPageRoute(
           builder: (_) => ForgotPasswordScreen(),
@@ -435,7 +425,7 @@ class AppRouter {
 
       default:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 0),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
           settings: settings,
         );
     }

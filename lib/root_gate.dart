@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
@@ -10,6 +11,8 @@ class RootGate extends StatelessWidget {
   Widget build(BuildContext context) {
     final onboarding = context.watch<OnboardingState>();
 
-    return onboarding.hasCompletedOnboarding ? const HomeScreen(startingIndex: 0) : const OnboardingScreen();
+    return onboarding.hasCompletedOnboarding
+        ? HomeScreen(key: homeScreenKey, startingIndex: 0)
+        : const OnboardingScreen();
   }
 }

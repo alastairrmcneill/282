@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/group_filter/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/app_route_observer.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class GroupFilterScreen extends StatefulWidget {
-  const GroupFilterScreen({super.key});
-  static const String route = '${ExploreTab.route}/group_filter';
+class GroupFilterTab extends StatefulWidget {
+  const GroupFilterTab({super.key});
+  static const String route = '/group_filter_tab';
 
   @override
-  State<GroupFilterScreen> createState() => _GroupFilterScreenState();
+  State<GroupFilterTab> createState() => _GroupFilterTabState();
 }
 
-class _GroupFilterScreenState extends State<GroupFilterScreen> {
+class _GroupFilterTabState extends State<GroupFilterTab> {
   late ScrollController _scrollController;
   final FocusNode _focusNode = FocusNode();
   String _currentQuery = '';
@@ -25,6 +28,8 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
   void initState() {
     final groupFilterState = context.read<GroupFilterState>();
     final userId = context.read<AuthState>().currentUserId;
+
+    context.read<AppRouteObserver>().updateCurrentScreen(GroupFilterTab.route);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() {
@@ -39,6 +44,10 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       groupFilterState.getInitialFriends(userId: userId ?? '');
+
+      if (userId != null && !context.read<AppFlagsRepository>().hasShownGroupFilterIntroDialog(userId)) {
+        context.read<OverlayIntentState>().enqueue(const GroupFilterIntroDialogIntent());
+      }
     });
   }
 
@@ -101,7 +110,7 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
                 ? () async {
                     context.read<Analytics>().track(AnalyticsEvent.groupViewFilterApplied);
                     await state.filterMunrosBySelection();
-                    if (context.mounted) Navigator.pop(context);
+                    homeScreenKey.currentState?.switchTab(0);
                   }
                 : null,
           );
@@ -112,12 +121,6 @@ class _GroupFilterScreenState extends State<GroupFilterScreen> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      leading: CustomAppBarBackButton(
-        onPressed: () {
-          context.read<GroupFilterState>().clearSelection();
-          Navigator.pop(context);
-        },
-      ),
       centerTitle: true,
       title: Consumer<GroupFilterState>(
         builder: (context, state, child) {
