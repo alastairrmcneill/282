@@ -13,7 +13,8 @@ class ProgressScreen extends StatefulWidget {
   State<ProgressScreen> createState() => _ProgressScreenState();
 }
 
-class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProviderStateMixin {
+class _ProgressScreenState extends State<ProgressScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _progressAnimation;
   late Animation<double> _scaleAnimation;
@@ -101,7 +102,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         child: SafeArea(
           bottom: false,
           child: Padding(
-            padding: const EdgeInsets.only(left: 32, right: 32, bottom: 60),
+            padding: const EdgeInsets.only(left: 32, right: 32, bottom: 80),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -120,7 +121,8 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
                             CustomPaint(
                               size: const Size(220, 220),
                               painter: _ProgressCirclePainter(
-                                progress: _progressAnimation.value * (completedCount / munroCount),
+                                progress: _progressAnimation.value *
+                                    (completedCount / munroCount),
                                 backgroundColor: Colors.grey[300]!,
                                 progressColor: const Color(0xFF10b981),
                               ),

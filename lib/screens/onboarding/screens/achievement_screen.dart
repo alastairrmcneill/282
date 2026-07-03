@@ -7,13 +7,15 @@ class AchievementScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
 
-  const AchievementScreen({super.key, required this.onNext, required this.onBack});
+  const AchievementScreen(
+      {super.key, required this.onNext, required this.onBack});
 
   @override
   State<AchievementScreen> createState() => _AchievementScreenState();
 }
 
-class _AchievementScreenState extends State<AchievementScreen> with SingleTickerProviderStateMixin {
+class _AchievementScreenState extends State<AchievementScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _iconAnimation;
   late Animation<double> _titleAnimation;
@@ -31,27 +33,39 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
     );
 
     _iconAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.4, curve: Curves.elasticOut)),
+      CurvedAnimation(
+          parent: _controller,
+          curve: const Interval(0.0, 0.4, curve: Curves.elasticOut)),
     );
 
     _titleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.2, 0.5, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _controller,
+          curve: const Interval(0.2, 0.5, curve: Curves.easeOut)),
     );
 
     _card1Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.4, 0.65, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _controller,
+          curve: const Interval(0.4, 0.65, curve: Curves.easeOut)),
     );
 
     _card2Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.5, 0.75, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _controller,
+          curve: const Interval(0.5, 0.75, curve: Curves.easeOut)),
     );
 
     _card3Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.6, 0.85, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _controller,
+          curve: const Interval(0.6, 0.85, curve: Curves.easeOut)),
     );
 
     _buttonAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.7, 1.0, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _controller,
+          curve: const Interval(0.7, 1.0, curve: Curves.easeOut)),
     );
 
     _controller.forward();
@@ -113,7 +127,9 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                       animation: _iconAnimation,
                       builder: (context, child) => Transform.scale(
                         scale: _iconAnimation.value.clamp(0.0, 1.5),
-                        child: Opacity(opacity: _iconAnimation.value.clamp(0.0, 1.0), child: child),
+                        child: Opacity(
+                            opacity: _iconAnimation.value.clamp(0.0, 1.0),
+                            child: child),
                       ),
                       child: ClipOval(
                         child: BackdropFilter(
@@ -126,7 +142,8 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                               color: const Color(0xFF10b981).withOpacity(0.2),
                             ),
                             child: const Center(
-                              child: Icon(LucideIcons.users, size: 40, color: Color(0xFF6ee7b7)),
+                              child: Icon(LucideIcons.users,
+                                  size: 40, color: Color(0xFF6ee7b7)),
                             ),
                           ),
                         ),
@@ -138,7 +155,8 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                       animation: _titleAnimation,
                       builder: (context, child) => Transform.translate(
                         offset: Offset(0, 30 * (1 - _titleAnimation.value)),
-                        child: Opacity(opacity: _titleAnimation.value, child: child),
+                        child: Opacity(
+                            opacity: _titleAnimation.value, child: child),
                       ),
                       child: const Column(
                         children: [
@@ -188,7 +206,8 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                     const SizedBox(height: 32),
                     AnimatedBuilder(
                       animation: _buttonAnimation,
-                      builder: (context, child) => Opacity(opacity: _buttonAnimation.value, child: child),
+                      builder: (context, child) => Opacity(
+                          opacity: _buttonAnimation.value, child: child),
                       child: OnboardingNavigationButtons(
                         onNext: widget.onNext,
                         onBack: widget.onBack,
@@ -242,7 +261,8 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child: Center(child: Icon(icon, size: 20, color: Colors.white)),
+                  child:
+                      Center(child: Icon(icon, size: 20, color: Colors.white)),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -260,7 +280,8 @@ class _AchievementScreenState extends State<AchievementScreen> with SingleTicker
                       const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: const TextStyle(fontSize: 13, color: Color(0xFFcbd5e1)),
+                        style: const TextStyle(
+                            fontSize: 13, color: Color(0xFFcbd5e1)),
                       ),
                     ],
                   ),

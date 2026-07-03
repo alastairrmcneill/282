@@ -61,11 +61,13 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
     );
   }
 
-  Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
+  Widget _buildScreen(
+      BuildContext context, CreateReviewState createReviewState) {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.colors;
     final munros = createReviewState.munrosToReview;
-    final allRated = munros.isNotEmpty && munros.every((munro) => (_ratings[munro.id] ?? 0) > 0);
+    final allRated = munros.isNotEmpty &&
+        munros.every((munro) => (_ratings[munro.id] ?? 0) > 0);
     final isSubmitting = createReviewState.status == CreateReviewStatus.loading;
 
     return PopScope(
@@ -87,11 +89,13 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
                   children: [
                     Text(
                       'Tips & Conditions',
-                      style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      style: textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 12),
                     AppTextFormField(
-                      hintText: 'e.g. Path conditions, difficulty, weather, advice for future climbers...',
+                      hintText:
+                          'e.g. Path conditions, difficulty, weather, advice for future climbers...',
                       maxLines: 5,
                       onSaved: (value) {
                         final text = value?.trim() ?? '';
@@ -103,7 +107,8 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
                     const SizedBox(height: 24),
                     Text(
                       'Rate Each Munro',
-                      style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      style: textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 12),
                     ...munros.map((Munro munro) {
@@ -116,16 +121,19 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
                             children: [
                               Text(
                                 munro.name,
-                                style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                                style: textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 '${munro.meters}m • ${munro.area}',
-                                style: textTheme.bodyMedium?.copyWith(color: colors.textSubtitle),
+                                style: textTheme.bodyMedium
+                                    ?.copyWith(color: colors.textSubtitle),
                               ),
                               const SizedBox(height: 12),
                               StarRatingFormField(
-                                initialValue: createReviewState.reviews[munro.id]!["rating"],
+                                initialValue: createReviewState
+                                    .reviews[munro.id]!["rating"],
                                 itemSize: 32,
                                 spacing: 8,
                                 activeColor: colors.starColor,
@@ -136,8 +144,10 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
                                   }
                                   return null;
                                 },
-                                onChanged: (value) => setState(() => _ratings[munro.id] = value),
-                                onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
+                                onChanged: (value) =>
+                                    setState(() => _ratings[munro.id] = value),
+                                onSaved: (newValue) => createReviewState
+                                    .setMunroRating(munro.id, newValue!),
                               ),
                             ],
                           ),
@@ -148,13 +158,12 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
                 ),
               ),
             ),
-            bottomNavigationBar: SafeArea(
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                decoration: BoxDecoration(
-                  color: colors.background,
-                  border: Border(top: BorderSide(color: colors.divider)),
-                ),
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: colors.background,
+                border: Border(top: BorderSide(color: colors.divider)),
+              ),
+              child: BottomButtonBar(
                 child: CtaButton(
                   disabled: isSubmitting || !allRated,
                   onPressed: () {

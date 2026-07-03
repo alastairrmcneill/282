@@ -13,7 +13,7 @@ class AppFlagsRepository {
   static const _kOpenCount = 'open_count';
   static const _kOnboardingCompletedKey = 'onboarding_completed';
 
-  bool get onboardingCompleted => _prefs.getBool(_kOnboardingCompletedKey) ?? false;
+  bool get onboardingCompleted => false; //_prefs.getBool(_kOnboardingCompletedKey) ?? false;
   Future<void> setOnboardingCompleted(bool v) async {
     final ok = await _prefs.setBool(_kOnboardingCompletedKey, v);
     if (!ok) throw Exception('Failed to persist $_kOnboardingCompletedKey');

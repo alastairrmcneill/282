@@ -45,27 +45,21 @@ class _FilterScreenState extends State<FilterScreen> {
             ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FilterScreenSortOptions(),
-                  SizedBox(height: 24),
-                  FilterScreenCompletedGroup(),
-                  SizedBox(height: 24),
-                  FilterScreenAreaGroup(),
-                  SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ),
-          _ApplyButton(munroState: munroState),
-        ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FilterScreenSortOptions(),
+            SizedBox(height: 24),
+            FilterScreenCompletedGroup(),
+            SizedBox(height: 24),
+            FilterScreenAreaGroup(),
+            SizedBox(height: 24),
+          ],
+        ),
       ),
+      bottomNavigationBar: _ApplyButton(munroState: munroState),
     );
   }
 }
@@ -80,11 +74,10 @@ class _ApplyButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: context.colors.surface,
-        border: Border(top: BorderSide(color: context.colors.border, width: 0.65)),
+        border:
+            Border(top: BorderSide(color: context.colors.border, width: 0.65)),
       ),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-      child: SafeArea(
-        top: false,
+      child: BottomButtonBar(
         child: CtaButton(
           onPressed: () => Navigator.pop(context),
           child: Text('Show $count ${count == 1 ? "Munro" : "Munros"}'),

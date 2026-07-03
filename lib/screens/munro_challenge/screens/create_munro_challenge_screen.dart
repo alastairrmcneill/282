@@ -9,17 +9,20 @@ class CreateMunroChallengeScreen extends StatefulWidget {
   const CreateMunroChallengeScreen({super.key});
 
   @override
-  State<CreateMunroChallengeScreen> createState() => _CreateMunroChallengeScreenState();
+  State<CreateMunroChallengeScreen> createState() =>
+      _CreateMunroChallengeScreenState();
 }
 
-class _CreateMunroChallengeScreenState extends State<CreateMunroChallengeScreen> {
+class _CreateMunroChallengeScreenState
+    extends State<CreateMunroChallengeScreen> {
   int _goal = 12;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final target = context.read<AchievementsState>().currentAchievement?.annualTarget;
+      final target =
+          context.read<AchievementsState>().currentAchievement?.annualTarget;
       if (target != null && mounted) setState(() => _goal = target);
     });
   }
@@ -58,7 +61,10 @@ class _CreateMunroChallengeScreenState extends State<CreateMunroChallengeScreen>
                     Text(
                       'Set your ${DateTime.now().year} goal',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).appBarTheme.foregroundColor?.withValues(alpha: 0.6),
+                            color: Theme.of(context)
+                                .appBarTheme
+                                .foregroundColor
+                                ?.withValues(alpha: 0.6),
                           ),
                     ),
                   ],
@@ -69,14 +75,10 @@ class _CreateMunroChallengeScreenState extends State<CreateMunroChallengeScreen>
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.viewInsetsOf(context).bottom,
                 ),
-                child: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: PrimaryButton(
-                      onPressed: () => _save(achievementsState),
-                      child: const Text('Save Goal'),
-                    ),
+                child: BottomButtonBar(
+                  child: PrimaryButton(
+                    onPressed: () => _save(achievementsState),
+                    child: const Text('Save Goal'),
                   ),
                 ),
               ),

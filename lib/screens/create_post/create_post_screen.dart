@@ -40,7 +40,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                     final munroState = context.read<MunroState>();
                     createReviewState.reset();
                     List<Munro> selectedMunros = munroState.munroList
-                        .where((munro) => createPostState.selectedMunroIds.contains(munro.id))
+                        .where((munro) =>
+                            createPostState.selectedMunroIds.contains(munro.id))
                         .toList();
                     createReviewState.setMunrosToReview = selectedMunros;
                     Navigator.of(context).pushNamed(CreateReviewsScreen.route);
@@ -76,19 +77,25 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                 return ListView(
                   children: [
                     const CreatePostMunroSearchbar(),
-                    ...munroState.createPostFilteredMunroList.map((Munro munro) {
+                    ...munroState.createPostFilteredMunroList
+                        .map((Munro munro) {
                       return Column(
                         children: [
                           ListTile(
-                            title: Text(munro.name, style: const TextStyle(fontSize: 14)),
-                            subtitle: munro.extra == "" ? Text(munro.area) : Text("${munro.extra} - ${munro.area}"),
-                            trailing: createPostState.selectedMunroIds.contains(munro.id)
+                            title: Text(munro.name,
+                                style: const TextStyle(fontSize: 14)),
+                            subtitle: munro.extra == ""
+                                ? Text(munro.area)
+                                : Text("${munro.extra} - ${munro.area}"),
+                            trailing: createPostState.selectedMunroIds
+                                    .contains(munro.id)
                                 ? const Icon(Icons.check_rounded)
                                 : null,
                             dense: true,
                             visualDensity: VisualDensity.compact,
                             onTap: () {
-                              if (createPostState.selectedMunroIds.contains(munro.id)) {
+                              if (createPostState.selectedMunroIds
+                                  .contains(munro.id)) {
                                 createPostState.removeMunro(munro.id);
                               } else {
                                 createPostState.addMunro(munro.id);
@@ -119,7 +126,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
     }
   }
 
-  Future<void> _submitPost(BuildContext context, CreatePostState createPostState) async {
+  Future<void> _submitPost(
+      BuildContext context, CreatePostState createPostState) async {
     // Guard against double-submission (e.g. rapid double-tap)
     if (createPostState.status != CreatePostStatus.initial) return;
 
@@ -134,7 +142,9 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
     _formKey.currentState!.save();
 
     if (!createPostState.hasImage) {
-      context.read<Analytics>().track(AnalyticsEvent.createPostNoPhotosDialogShown);
+      context
+          .read<Analytics>()
+          .track(AnalyticsEvent.createPostNoPhotosDialogShown);
       bool? carryOn = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) => const NoPhotosDialog(),
@@ -178,7 +188,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                         child: const Text('Try Again'),
                       ),
                       TextButton(
-                        onPressed: () => createPostState.setStatus = CreatePostStatus.initial,
+                        onPressed: () => createPostState.setStatus =
+                            CreatePostStatus.initial,
                         child: const Text('Dismiss'),
                       ),
                     ],
@@ -199,14 +210,19 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                             children: [
                               Text(
                                 'Munros',
-                                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(fontWeight: FontWeight.bold),
                               ),
                               GestureDetector(
                                 onTap: _showMunroModalSheet,
                                 child: Text(
                                   '+ Add Munro',
                                   style: TextStyle(
-                                      color: context.colors.accent, fontWeight: FontWeight.w600, fontSize: 14),
+                                      color: context.colors.accent,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14),
                                 ),
                               ),
                             ],
@@ -214,7 +230,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                           const SizedBox(height: 12),
 
                           // --- Selected Munros List ---
-                          ...createPostState.selectedMunroIds.map((int munroId) {
+                          ...createPostState.selectedMunroIds
+                              .map((int munroId) {
                             final munro = munroState.munroList.firstWhere(
                               (m) => m.id == munroId,
                               orElse: () => Munro.empty,
@@ -235,7 +252,9 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                               padding: const EdgeInsets.only(top: 4),
                               child: Text(
                                 _munroError!,
-                                style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12),
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.error,
+                                    fontSize: 12),
                               ),
                             ),
 
@@ -260,9 +279,11 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                           const SizedBox(height: 10),
                           Row(
                             children: [
-                              const Expanded(flex: 1, child: CreatePostSummitTimePicker()),
+                              const Expanded(
+                                  flex: 1, child: CreatePostSummitTimePicker()),
                               const SizedBox(width: 10),
-                              const Expanded(flex: 1, child: CreatePostDurationPicker()),
+                              const Expanded(
+                                  flex: 1, child: CreatePostDurationPicker()),
                             ],
                           ),
 
@@ -274,7 +295,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                           //   style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                           // ),
                           const SizedBox(height: 12),
-                          ...createPostState.selectedMunroIds.map((int munroId) {
+                          ...createPostState.selectedMunroIds
+                              .map((int munroId) {
                             final munro = munroState.munroList.firstWhere(
                               (m) => m.id == munroId,
                               orElse: () => Munro.empty,
@@ -285,7 +307,8 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.grey.shade200),
+                                  border:
+                                      Border.all(color: Colors.grey.shade200),
                                 ),
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -293,22 +316,29 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        Icon(Icons.location_on_outlined, color: Colors.grey.shade600, size: 24),
+                                        Icon(Icons.location_on_outlined,
+                                            color: Colors.grey.shade600,
+                                            size: 24),
                                         const SizedBox(width: 10),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(munro.name,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium!
-                                                    .copyWith(fontWeight: FontWeight.w500)),
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w500)),
                                             Text(
                                               '${munro.meters}m • ${munro.area}',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!
-                                                  .copyWith(color: context.colors.textMuted),
+                                                  .copyWith(
+                                                      color: context
+                                                          .colors.textMuted),
                                             ),
                                           ],
                                         ),
@@ -330,26 +360,25 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                     ),
                   ),
                 ),
-
-                // --- Bottom Bag Munro Button ---
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
-                  child: PrimaryButton(
-                    analyticsEvent: AnalyticsEvent.createPostBagMunroButtonPressed,
-                    onPressed: createPostState.status == CreatePostStatus.initial
-                        ? () => _submitPost(context, createPostState)
-                        : null,
-                    child: Text(
-                      'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
+          bottomNavigationBar: BottomButtonBar(
+            child: PrimaryButton(
+              analyticsEvent: AnalyticsEvent.createPostBagMunroButtonPressed,
+              onPressed: createPostState.status == CreatePostStatus.initial
+                  ? () => _submitPost(context, createPostState)
+                  : null,
+              child: Text(
+                'Bag Munro${createPostState.selectedMunroIds.length > 1 ? 's' : ''}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
         ),
-        if (createPostState.status == CreatePostStatus.loading) const BlockingLoadingOverlay(text: 'Uploading...'),
+        if (createPostState.status == CreatePostStatus.loading)
+          const BlockingLoadingOverlay(text: 'Uploading...'),
       ],
     );
   }

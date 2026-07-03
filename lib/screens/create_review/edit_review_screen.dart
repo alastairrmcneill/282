@@ -63,7 +63,8 @@ class _EditReviewScreenState extends State<EditReviewScreen> {
     );
   }
 
-  Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
+  Widget _buildScreen(
+      BuildContext context, CreateReviewState createReviewState) {
     final munroState = context.read<MunroState>();
     final textTheme = Theme.of(context).textTheme;
     final colors = context.colors;
@@ -90,21 +91,25 @@ class _EditReviewScreenState extends State<EditReviewScreen> {
                 children: [
                   Text(
                     'Tips & Conditions',
-                    style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 12),
                   AppTextFormField(
                     initialValue: createReviewState.currentMunroReview,
-                    hintText: 'e.g. Path conditions, difficulty, weather, advice for future climbers...',
+                    hintText:
+                        'e.g. Path conditions, difficulty, weather, advice for future climbers...',
                     maxLines: 5,
                     onSaved: (value) {
-                      createReviewState.setCurrentMunroReview = value?.trim() ?? "";
+                      createReviewState.setCurrentMunroReview =
+                          value?.trim() ?? "";
                     },
                   ),
                   const SizedBox(height: 24),
                   Text(
                     'Rate This Munro',
-                    style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 12),
                   Card(
@@ -116,12 +121,14 @@ class _EditReviewScreenState extends State<EditReviewScreen> {
                         children: [
                           Text(
                             munro.name,
-                            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                            style: textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             '${munro.meters}m • ${munro.area}',
-                            style: textTheme.bodyMedium?.copyWith(color: colors.textSubtitle),
+                            style: textTheme.bodyMedium
+                                ?.copyWith(color: colors.textSubtitle),
                           ),
                           const SizedBox(height: 12),
                           StarRatingFormField(
@@ -136,8 +143,10 @@ class _EditReviewScreenState extends State<EditReviewScreen> {
                               }
                               return null;
                             },
-                            onChanged: (value) => setState(() => _rating = value),
-                            onSaved: (newValue) => createReviewState.setCurrentMunroRating = newValue!,
+                            onChanged: (value) =>
+                                setState(() => _rating = value),
+                            onSaved: (newValue) => createReviewState
+                                .setCurrentMunroRating = newValue!,
                           ),
                         ],
                       ),
@@ -147,13 +156,12 @@ class _EditReviewScreenState extends State<EditReviewScreen> {
               ),
             ),
           ),
-          bottomNavigationBar: SafeArea(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-              decoration: BoxDecoration(
-                color: colors.background,
-                border: Border(top: BorderSide(color: colors.divider)),
-              ),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: colors.background,
+              border: Border(top: BorderSide(color: colors.divider)),
+            ),
+            child: BottomButtonBar(
               child: CtaButton(
                 disabled: isSubmitting || _rating < 1,
                 onPressed: () {
@@ -162,7 +170,8 @@ class _EditReviewScreenState extends State<EditReviewScreen> {
                   }
                   _formKey.currentState!.save();
                   createReviewState.editReview(
-                    onReviewUpdated: (newReview) => context.read<ReviewsState>().replaceReview = newReview,
+                    onReviewUpdated: (newReview) =>
+                        context.read<ReviewsState>().replaceReview = newReview,
                   );
                 },
                 child: const Row(

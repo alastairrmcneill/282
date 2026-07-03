@@ -10,10 +10,15 @@ class PushNotificationRepository {
 
   Stream<RemoteMessage> get onForegroundMessage => FirebaseMessaging.onMessage;
 
-  Stream<RemoteMessage> get onNotificationOpened => FirebaseMessaging.onMessageOpenedApp;
+  Stream<RemoteMessage> get onNotificationOpened =>
+      FirebaseMessaging.onMessageOpenedApp;
 
   Future<NotificationSettings> requestPermission() {
     return _messaging.requestPermission();
+  }
+
+  Future<NotificationSettings> getNotificationSettings() {
+    return _messaging.getNotificationSettings();
   }
 
   Future<String?> getToken() async {

@@ -12,7 +12,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _iconAnimation;
   late Animation<double> _titleAnimation;
@@ -112,130 +113,134 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
           top: 0,
           bottom: 80,
           child: RepaintBoundary(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // Icon
-                  AnimatedBuilder(
-                    animation: _iconAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 30 * (1 - _iconAnimation.value)),
-                        child: Opacity(
-                          opacity: _iconAnimation.value,
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: ClipOval(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF10b981).withOpacity(0.2),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Icon
+                    AnimatedBuilder(
+                      animation: _iconAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(0, 30 * (1 - _iconAnimation.value)),
+                          child: Opacity(
+                            opacity: _iconAnimation.value,
+                            child: child,
                           ),
-                          child: const Center(
-                            child: Icon(
-                              LucideIcons.mountain,
-                              size: 40,
-                              color: Color(0xFF6ee7b7),
+                        );
+                      },
+                      child: ClipOval(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFF10b981).withOpacity(0.2),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                LucideIcons.mountain,
+                                size: 40,
+                                color: Color(0xFF6ee7b7),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Title
-                  AnimatedBuilder(
-                    animation: _titleAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 30 * (1 - _titleAnimation.value)),
-                        child: Opacity(
-                          opacity: _titleAnimation.value,
-                          child: child,
+                    const SizedBox(height: 20),
+                    // Title
+                    AnimatedBuilder(
+                      animation: _titleAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(0, 30 * (1 - _titleAnimation.value)),
+                          child: Opacity(
+                            opacity: _titleAnimation.value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Your Munro Journey Begins',
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          height: 1.2,
                         ),
-                      );
-                    },
-                    child: const Text(
-                      'Your Munro Journey Begins',
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1.2,
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Subtitle
-                  AnimatedBuilder(
-                    animation: _subtitleAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 30 * (1 - _subtitleAnimation.value)),
-                        child: Opacity(
-                          opacity: _subtitleAnimation.value,
-                          child: child,
+                    const SizedBox(height: 16),
+                    // Subtitle
+                    AnimatedBuilder(
+                      animation: _subtitleAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset:
+                              Offset(0, 30 * (1 - _subtitleAnimation.value)),
+                          child: Opacity(
+                            opacity: _subtitleAnimation.value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '282 peaks. Endless adventures. One incredible story - yours.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xFFe2e8f0),
+                          height: 1.5,
                         ),
-                      );
-                    },
-                    child: const Text(
-                      '282 peaks. Endless adventures. One incredible story - yours.',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color(0xFFe2e8f0),
-                        height: 1.5,
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  // Button
-                  AnimatedBuilder(
-                    animation: _buttonAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 30 * (1 - _buttonAnimation.value)),
-                        child: Opacity(
-                          opacity: _buttonAnimation.value,
+                    const SizedBox(height: 32),
+                    // Button
+                    AnimatedBuilder(
+                      animation: _buttonAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(0, 30 * (1 - _buttonAnimation.value)),
+                          child: Opacity(
+                            opacity: _buttonAnimation.value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: OnboardingPrimaryButton(
+                        onPressed: widget.onNext,
+                        text: 'Continue',
+                        height: 64,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // Footer text
+                    AnimatedBuilder(
+                      animation: _fadeAnimation,
+                      builder: (context, child) {
+                        return Opacity(
+                          opacity: _fadeAnimation.value,
                           child: child,
+                        );
+                      },
+                      child: const Text(
+                        'Join thousands of baggers conquering Scotland\'s peaks',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFFcbd5e1),
                         ),
-                      );
-                    },
-                    child: OnboardingPrimaryButton(
-                      onPressed: widget.onNext,
-                      text: 'Continue',
-                      height: 64,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  // Footer text
-                  AnimatedBuilder(
-                    animation: _fadeAnimation,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: _fadeAnimation.value,
-                        child: child,
-                      );
-                    },
-                    child: const Text(
-                      'Join thousands of baggers conquering Scotland\'s peaks',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFFcbd5e1),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

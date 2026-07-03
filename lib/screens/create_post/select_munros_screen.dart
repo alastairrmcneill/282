@@ -5,6 +5,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 // Design System Colors
 class SelectMunroColors {
@@ -41,7 +42,8 @@ class TestMunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = isSelected || isMain ? SelectMunroColors.emerald50 : Colors.white;
+    Color backgroundColor =
+        isSelected || isMain ? SelectMunroColors.emerald50 : Colors.white;
     Color borderColor = isMain
         ? SelectMunroColors.emerald200
         : isSelected
@@ -69,9 +71,13 @@ class TestMunroCard extends StatelessWidget {
               )
             else
               Icon(
-                isSelected ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+                isSelected
+                    ? Icons.check_box_rounded
+                    : Icons.check_box_outline_blank_rounded,
                 size: 20,
-                color: isSelected ? SelectMunroColors.emerald600 : SelectMunroColors.slate400,
+                color: isSelected
+                    ? SelectMunroColors.emerald600
+                    : SelectMunroColors.slate400,
               ),
             const SizedBox(width: 12),
             Expanded(
@@ -148,11 +154,15 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
     final createPostState = context.watch<CreatePostState>();
 
     List<Munro> commonlyClimbedWith = munroState.munroList
-        .where((munro) => widget.mainMunro.commonlyClimbedWith.map((e) => e.climbedWithId).contains(munro.id))
+        .where((munro) => widget.mainMunro.commonlyClimbedWith
+            .map((e) => e.climbedWithId)
+            .contains(munro.id))
         .toList();
 
     List<Munro> otherMunros = munroState.munroList
-        .where((munro) => munro.id != widget.mainMunro.id && !commonlyClimbedWith.map((e) => e.id).contains(munro.id))
+        .where((munro) =>
+            munro.id != widget.mainMunro.id &&
+            !commonlyClimbedWith.map((e) => e.id).contains(munro.id))
         .toList();
 
     var selectedMunroIds = createPostState.selectedMunroIds;
@@ -167,162 +177,160 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Select any munros you climbed with ${widget.mainMunro.name}',
-                    style: textTheme.titleSmall?.copyWith(color: context.colors.textSubtitle),
-                  ),
-                  const SizedBox(height: 16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Select any munros you climbed with ${widget.mainMunro.name}',
+              style: textTheme.titleSmall
+                  ?.copyWith(color: context.colors.textSubtitle),
+            ),
+            const SizedBox(height: 16),
 
-                  // Main Munro Card
-                  TestMunroCard(
-                    munro: widget.mainMunro,
-                    isMain: true,
-                  ),
-                  const SizedBox(height: 24),
+            // Main Munro Card
+            TestMunroCard(
+              munro: widget.mainMunro,
+              isMain: true,
+            ),
+            const SizedBox(height: 24),
 
-                  // Often Climbed Together Section
-                  if (commonlyClimbedWith.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: SectionHeader(text: 'Often Climbed Together'),
-                    ),
-                    ...commonlyClimbedWith.map((munro) {
-                      bool selected = selectedMunroIds.contains(munro.id);
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: TestMunroCard(
-                          munro: munro,
-                          isSelected: selected,
-                          onTap: () {
-                            if (selected) {
-                              createPostState.removeMunro(munro.id);
-                            } else {
-                              createPostState.addMunro(munro.id);
-                            }
-                          },
+            // Often Climbed Together Section
+            if (commonlyClimbedWith.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: SectionHeader(text: 'Often Climbed Together'),
+              ),
+              ...commonlyClimbedWith.map((munro) {
+                bool selected = selectedMunroIds.contains(munro.id);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: TestMunroCard(
+                    munro: munro,
+                    isSelected: selected,
+                    onTap: () {
+                      if (selected) {
+                        createPostState.removeMunro(munro.id);
+                      } else {
+                        createPostState.addMunro(munro.id);
+                      }
+                    },
+                  ),
+                );
+              }),
+              const SizedBox(height: 12),
+            ],
+
+            // Other Munros Section
+            if (_expanded) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SectionHeader(text: 'Other Munros'),
+                    GestureDetector(
+                      onTap: () => setState(() => _expanded = false),
+                      child: Text(
+                        'Hide',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: SelectMunroColors.emerald600,
+                          fontWeight: FontWeight.w500,
                         ),
-                      );
-                    }),
-                    const SizedBox(height: 12),
+                      ),
+                    ),
                   ],
-
-                  // Other Munros Section
-                  if (_expanded) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SectionHeader(text: 'Other Munros'),
-                          GestureDetector(
-                            onTap: () => setState(() => _expanded = false),
-                            child: Text(
-                              'Hide',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: SelectMunroColors.emerald600,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ...otherMunros.map((munro) {
-                      bool selected = selectedMunroIds.contains(munro.id);
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: TestMunroCard(
-                          munro: munro,
-                          isSelected: selected,
-                          onTap: () {
-                            if (selected) {
-                              createPostState.removeMunro(munro.id);
-                            } else {
-                              createPostState.addMunro(munro.id);
-                            }
-                          },
-                        ),
-                      );
-                    }),
-                  ] else
-                    InkWell(
-                      onTap: () => setState(() => _expanded = true),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Ink(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: SelectMunroColors.slate200, width: 1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              'Other Munros',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: SelectMunroColors.slate900,
-                              ),
-                            ),
-                            Icon(
-                              Icons.chevron_right,
-                              size: 20,
-                              color: SelectMunroColors.slate400,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
+                ),
               ),
-            ),
-          ),
-
-          // Continue Button
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: SelectMunroColors.slate200, width: 1),
-              ),
-            ),
-            child: SizedBox(
-              height: 48,
-              child: FilledButton(
-                onPressed: () {
-                  context.read<Analytics>().track(AnalyticsEvent.selectCommonlyClimbedMunros, props: {
-                    AnalyticsProp.munroId: widget.mainMunro.id,
-                    AnalyticsProp.commonlyClimbedWithCount: commonlyClimbedWith.length,
-                    AnalyticsProp.selectedMunroCount: createPostState.selectedMunroIds.length,
-                  });
-                  Navigator.of(context).pushNamed(CreatePostScreen.route);
-                },
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+              ...otherMunros.map((munro) {
+                bool selected = selectedMunroIds.contains(munro.id);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: TestMunroCard(
+                    munro: munro,
+                    isSelected: selected,
+                    onTap: () {
+                      if (selected) {
+                        createPostState.removeMunro(munro.id);
+                      } else {
+                        createPostState.addMunro(munro.id);
+                      }
+                    },
                   ),
+                );
+              }),
+            ] else
+              InkWell(
+                onTap: () => setState(() => _expanded = true),
+                borderRadius: BorderRadius.circular(8),
+                child: Ink(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border:
+                        Border.all(color: SelectMunroColors.slate200, width: 1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        'Other Munros',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: SelectMunroColors.slate900,
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right,
+                        size: 20,
+                        color: SelectMunroColors.slate400,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: SelectMunroColors.slate200, width: 1),
+          ),
+        ),
+        child: BottomButtonBar(
+          child: SizedBox(
+            height: 48,
+            child: FilledButton(
+              onPressed: () {
+                context
+                    .read<Analytics>()
+                    .track(AnalyticsEvent.selectCommonlyClimbedMunros, props: {
+                  AnalyticsProp.munroId: widget.mainMunro.id,
+                  AnalyticsProp.commonlyClimbedWithCount:
+                      commonlyClimbedWith.length,
+                  AnalyticsProp.selectedMunroCount:
+                      createPostState.selectedMunroIds.length,
+                });
+                Navigator.of(context).pushNamed(CreatePostScreen.route);
+              },
+              child: const Text(
+                'Continue',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

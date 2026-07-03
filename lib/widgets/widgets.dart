@@ -31,6 +31,7 @@ export 'cta_button.dart';
 export 'glass_card.dart';
 export 'pill_button.dart';
 export 'primary_button.dart';
+export 'bottom_button_bar.dart';
 export 'primary_icon_button.dart';
 export 'secondary_button.dart';
 export 'sliver_app_bar_button.dart';

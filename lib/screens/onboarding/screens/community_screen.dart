@@ -16,7 +16,8 @@ class CommunityScreen extends StatefulWidget {
   State<CommunityScreen> createState() => _CommunityScreenState();
 }
 
-class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProviderStateMixin {
+class _CommunityScreenState extends State<CommunityScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _iconScaleAnimation;
   late Animation<double> _iconRotateAnimation;
@@ -236,8 +237,10 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
                                         width: 48,
                                         height: 48,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                          color: const Color(0xFF10b981).withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: const Color(0xFF10b981)
+                                              .withOpacity(0.2),
                                         ),
                                         child: const Center(
                                           child: Icon(
@@ -249,7 +252,8 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        state.totals?.totalUsers.toString() ?? '0',
+                                        state.totals?.totalUsers.toString() ??
+                                            '0',
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
@@ -274,8 +278,10 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
                                         width: 48,
                                         height: 48,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                          color: const Color(0xFF10b981).withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: const Color(0xFF10b981)
+                                              .withOpacity(0.2),
                                         ),
                                         child: Center(
                                           child: Icon(
@@ -287,7 +293,9 @@ class _CommunityScreenState extends State<CommunityScreen> with SingleTickerProv
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        state.totals?.totalMunroCompletions.toString() ?? '0',
+                                        state.totals?.totalMunroCompletions
+                                                .toString() ??
+                                            '0',
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
