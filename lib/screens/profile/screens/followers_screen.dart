@@ -160,8 +160,13 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                 )
               : ListView.builder(
                   controller: followingScrollController,
-                  itemCount: followersListState.following.length,
+                  itemCount: followersListState.following.length + 1,
                   itemBuilder: (context, index) {
+                    if (index == followersListState.following.length) {
+                      return followersListState.status == FollowersListStatus.paginating
+                          ? const PaginationLoader()
+                          : const SizedBox.shrink();
+                    }
                     final f = followersListState.following[index];
                     return _UserTile(
                       userId: f.targetId,
@@ -178,8 +183,13 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> wit
                 )
               : ListView.builder(
                   controller: followersScrollController,
-                  itemCount: followersListState.followers.length,
+                  itemCount: followersListState.followers.length + 1,
                   itemBuilder: (context, index) {
+                    if (index == followersListState.followers.length) {
+                      return followersListState.status == FollowersListStatus.paginating
+                          ? const PaginationLoader()
+                          : const SizedBox.shrink();
+                    }
                     final f = followersListState.followers[index];
                     return _UserTile(
                       userId: f.sourceId,

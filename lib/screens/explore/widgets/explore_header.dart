@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -33,32 +35,42 @@ class ExploreTabHeader extends StatelessWidget {
           height: headerHeight,
           child: Padding(
             padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: AppSearchBar(
-                        variant: SearchBarVariant.hero,
-                        focusNode: searchFocusNode,
-                        hintText: "Search Munros",
-                        onSearchTap: onSearchTap,
-                        onChanged: (value) {
-                          munroState.setFilterString = value;
-                        },
-                        onClear: () {
-                          munroState.setFilterString = '';
+            child: isMunroListViewVisible
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: AppSearchBar(
+                          variant: SearchBarVariant.hero,
+                          focusNode: searchFocusNode,
+                          hintText: "Search Munros",
+                          onSearchTap: onSearchTap,
+                          onChanged: (value) {
+                            munroState.setFilterString = value;
+                          },
+                          onClear: () {
+                            context.read<Analytics>().track(AnalyticsEvent.exploreSearchClearTapped);
+                            munroState.setFilterString = '';
+                          },
+                          trailing: const ExploreHeaderFilterButton(),
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const GlobalCompletionCountWidget(),
+                      const SizedBox(height: 8),
+                      ExploreHeaderIconButton(
+                        icon: PhosphorIconsRegular.magnifyingGlass,
+                        showBadge: munroState.isFilterOptionsSet || munroState.isSearchActive,
+                        onPressed: () {
+                          context.read<Analytics>().track(AnalyticsEvent.exploreSearchButtonTapped);
+                          onSearchTap();
                         },
                       ),
-                    ),
-                    const ExploreHeaderFilterButton(),
-                  ],
-                ),
-                const GlobalCompletionCountWidget(),
-              ],
-            ),
+                    ],
+                  ),
           ),
         ),
       ),

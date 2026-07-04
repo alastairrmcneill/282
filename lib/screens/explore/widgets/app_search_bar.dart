@@ -87,6 +87,7 @@ class AppSearchBar extends StatefulWidget {
   final String hintText;
   final IconData? icon;
   final SearchBarVariant variant;
+  final Widget? trailing;
   const AppSearchBar({
     super.key,
     required this.focusNode,
@@ -96,6 +97,7 @@ class AppSearchBar extends StatefulWidget {
     required this.hintText,
     this.icon,
     this.variant = SearchBarVariant.standard,
+    this.trailing,
   });
 
   @override
@@ -182,6 +184,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
                   },
                 ),
               ),
+            if (widget.trailing != null) widget.trailing!,
           ],
         ),
       ),

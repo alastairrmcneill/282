@@ -48,8 +48,10 @@ class AchievementDetailScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: textTheme.bodyMedium?.copyWith(color: colors.textSubtitle),
             ),
-            const SizedBox(height: 32),
-            AchievementProgressCard(achievement: achievement),
+            if (achievement.type != AchievementTypes.multiMunroDay) ...[
+              const SizedBox(height: 32),
+              AchievementProgressCard(achievement: achievement),
+            ],
           ],
         ),
       ),

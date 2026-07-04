@@ -96,13 +96,7 @@ class ProfilePhotosWidget extends StatelessWidget {
               ),
             ),
           ),
-          if (state.status == PhotoGalleryStatus.paginating)
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            ),
+          if (state.status == PhotoGalleryStatus.paginating) const SliverToBoxAdapter(child: PaginationLoader()),
           const SliverFillRemaining(hasScrollBody: false, child: SizedBox()),
         ];
     }
@@ -128,10 +122,7 @@ class _EmptyPhotos extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             'Photos from adventures will appear here.',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: context.colors.textMuted),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,
           ),
         ],

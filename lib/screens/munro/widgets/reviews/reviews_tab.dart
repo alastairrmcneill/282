@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReviewsTab extends StatefulWidget {
@@ -121,11 +122,7 @@ class _ReviewsTabState extends State<ReviewsTab> {
             },
             separatorBuilder: (context, index) => Divider(height: 1, thickness: 1, color: Colors.grey[200]),
           ),
-          if (reviewsState.status == ReviewsStatus.paginating)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: CircularProgressIndicator(),
-            ),
+          if (reviewsState.status == ReviewsStatus.paginating) const PaginationLoader(),
           const SizedBox(height: 90),
         ],
       ),

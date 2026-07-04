@@ -58,6 +58,10 @@ class AnalyticsEvent {
   static const munroSharePressed = 'munro_share_pressed';
 
   static const createPostBagMunroButtonPressed = 'create_post_bag_munro_button_pressed';
+
+  static const exploreSearchButtonTapped = 'explore_search_button_tapped';
+  static const exploreFilterButtonTapped = 'explore_filter_button_tapped';
+  static const exploreSearchClearTapped = 'explore_search_clear_tapped';
 }
 
 class AnalyticsProp {

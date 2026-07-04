@@ -68,12 +68,6 @@ class AppFlagsRepository {
     if (!ok) throw Exception('Failed to persist shownAnnualChallengeDialog-$key');
   }
 
-  bool hasShownGroupFilterIntroDialog(String userId) => _prefs.getBool('shownGroupFilterIntroDialog-$userId') ?? false;
-  Future<void> setShownGroupFilterIntroDialog(String userId) async {
-    final ok = await _prefs.setBool('shownGroupFilterIntroDialog-$userId', true);
-    if (!ok) throw Exception('Failed to persist shownGroupFilterIntroDialog-$userId');
-  }
-
   int get openCount => _prefs.getInt(_kOpenCount) ?? 0;
   Future<void> setOpenCount(int v) async {
     final ok = await _prefs.setInt(_kOpenCount, v);

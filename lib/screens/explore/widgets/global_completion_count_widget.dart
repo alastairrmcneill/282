@@ -1,9 +1,9 @@
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
 
 class GlobalCompletionCountWidget extends StatelessWidget {
   const GlobalCompletionCountWidget({super.key});
@@ -30,17 +30,9 @@ class GlobalCompletionCountWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              'assets/icons/mountain.svg',
-              colorFilter: ColorFilter.mode(context.colors.accent, BlendMode.srcIn),
-              width: 20,
-              height: 20,
-            ),
-            Container(
-              width: 0.5,
-              height: 20,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              color: context.colors.accent,
+            Text(
+              'Total bagged: ',
+              style: textTheme.bodyMedium?.copyWith(color: context.colors.textPrimary),
             ),
             AnimatedFlipCounter(
               value: state.globalCompletionCount,

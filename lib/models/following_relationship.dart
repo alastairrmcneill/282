@@ -9,6 +9,8 @@ class FollowingRelationship {
   final int? sourceMunrosCompleted;
   final int? targetMunrosCompleted;
 
+  String get targetFirstName => (targetDisplayName ?? '').split(' ').first;
+
   FollowingRelationship({
     required this.sourceId,
     required this.targetId,

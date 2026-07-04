@@ -179,7 +179,7 @@ class HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(PhosphorIconsRegular.usersThree),
             activeIcon: Icon(PhosphorIconsFill.usersThree),
-            label: 'Friends',
+            label: 'Groups',
           ),
           BottomNavigationBarItem(
             icon: Icon(PhosphorIconsRegular.bookmarkSimple),

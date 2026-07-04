@@ -35,6 +35,7 @@ class MunroState extends ChangeNotifier {
   LatLngBounds? get latLngBounds => _latLngBounds;
   FilterOptions get filterOptions => _filterOptions;
   bool get isFilterOptionsSet => _isFilterOptionsSet;
+  bool get isSearchActive => _filterString.isNotEmpty;
   int? get selectedMunroId => _selectedMunroId;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;

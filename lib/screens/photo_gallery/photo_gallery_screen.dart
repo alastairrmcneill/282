@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:loading_animation_widget/loading_animation_widget.dart";
 import "package:provider/provider.dart";
 import "package:two_eight_two/models/models.dart";
 import "package:two_eight_two/screens/notifiers.dart";
@@ -89,19 +88,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
               },
             ),
           ),
-          SizedBox(
-            child: state.status == PhotoGalleryStatus.paginating
-                ? Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Center(
-                      child: LoadingAnimationWidget.dotsTriangle(
-                        color: Theme.of(context).primaryColor,
-                        size: 30,
-                      ),
-                    ),
-                  )
-                : null,
-          ),
+          if (state.status == PhotoGalleryStatus.paginating) const PaginationLoader(),
         ],
       ),
     );

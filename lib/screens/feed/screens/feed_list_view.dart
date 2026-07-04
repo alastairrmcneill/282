@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FeedListView extends StatefulWidget {
@@ -88,19 +88,7 @@ class _FeedListViewState extends State<FeedListView> {
 
           // Loading indicator at the bottom
           if (index == widget.posts.length + 1) {
-            return SizedBox(
-              child: feedState.status == FeedStatus.paginating
-                  ? Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Center(
-                        child: LoadingAnimationWidget.dotsTriangle(
-                          color: Theme.of(context).primaryColor,
-                          size: 30,
-                        ),
-                      ),
-                    )
-                  : null,
-            );
+            return feedState.status == FeedStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
           }
 
           // Post items

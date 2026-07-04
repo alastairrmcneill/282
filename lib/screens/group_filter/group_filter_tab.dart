@@ -3,12 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/group_filter/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class GroupFilterTab extends StatefulWidget {
@@ -27,7 +26,6 @@ class _GroupFilterTabState extends State<GroupFilterTab> {
   @override
   void initState() {
     final groupFilterState = context.read<GroupFilterState>();
-    final userId = context.read<AuthState>().currentUserId;
 
     context.read<AppRouteObserver>().updateCurrentScreen(GroupFilterTab.route);
 
@@ -41,14 +39,6 @@ class _GroupFilterTabState extends State<GroupFilterTab> {
     });
 
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      groupFilterState.getInitialFriends(userId: userId ?? '');
-
-      if (userId != null && !context.read<AppFlagsRepository>().hasShownGroupFilterIntroDialog(userId)) {
-        context.read<OverlayIntentState>().enqueue(const GroupFilterIntroDialogIntent());
-      }
-    });
   }
 
   @override
@@ -72,32 +62,40 @@ class _GroupFilterTabState extends State<GroupFilterTab> {
               focusNode: _focusNode,
               hintText: "Find friends",
               onClear: () {
-                _currentQuery = '';
+                setState(() => _currentQuery = '');
                 groupFilterState.clearSearch();
               },
               onSearchTap: () {},
               onChanged: (q) {
-                _currentQuery = q;
+                setState(() => _currentQuery = q);
                 if (q.length >= 2) groupFilterState.search(query: q);
               },
             ),
           ),
           const SelectedFriendsScroll(),
           Expanded(
-            child: Consumer<GroupFilterState>(
-              builder: (context, state, child) {
-                if (state.status == GroupFilterStatus.loading) {
-                  return _FriendListLoading();
-                }
-                if (state.status == GroupFilterStatus.error) {
-                  return CenterText(text: state.error.message);
-                }
-                return _FriendList(
-                  groupFilterState: state,
-                  scrollController: _scrollController,
-                );
-              },
-            ),
+            child: _currentQuery.isEmpty
+                ? Consumer<GroupFilterState>(
+                    builder: (context, state, child) {
+                      return state.selectedFriends.isEmpty
+                          ? const GroupFilterInfoView()
+                          : const GroupFilterSelectionPrompt();
+                    },
+                  )
+                : Consumer<GroupFilterState>(
+                    builder: (context, state, child) {
+                      if (state.status == GroupFilterStatus.loading) {
+                        return _FriendListLoading();
+                      }
+                      if (state.status == GroupFilterStatus.error) {
+                        return CenterText(text: state.error.message);
+                      }
+                      return _FriendList(
+                        groupFilterState: state,
+                        scrollController: _scrollController,
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -121,7 +119,6 @@ class _GroupFilterTabState extends State<GroupFilterTab> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      centerTitle: true,
       title: Consumer<GroupFilterState>(
         builder: (context, state, child) {
           return Column(
@@ -156,7 +153,6 @@ class _FriendListLoading extends StatelessWidget {
   }
 }
 
-
 class _FriendList extends StatelessWidget {
   final GroupFilterState groupFilterState;
   final ScrollController scrollController;
@@ -171,16 +167,21 @@ class _FriendList extends StatelessWidget {
     if (groupFilterState.friends.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
-        child: CenterText(text: "No friends found."),
+        child: CenterText(text: "No results found, try another search."),
       );
     }
 
     return ListView.separated(
       controller: scrollController,
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      itemCount: groupFilterState.friends.length,
+      itemCount: groupFilterState.friends.length + 1,
       separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
+        if (index == groupFilterState.friends.length) {
+          return groupFilterState.status == GroupFilterStatus.paginating
+              ? const PaginationLoader()
+              : const SizedBox.shrink();
+        }
         final friend = groupFilterState.friends[index];
         final isSelected = groupFilterState.selectedFriendsUids.contains(friend.targetId);
         return FriendListTile(

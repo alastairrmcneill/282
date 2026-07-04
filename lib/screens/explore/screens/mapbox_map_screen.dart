@@ -87,6 +87,9 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
+    await mapboxMap.gestures.updateSettings(
+      GesturesSettings(rotateEnabled: false, pitchEnabled: false),
+    );
     _mapboxMap.setBounds(cameraBounds);
     await _addMunroSymbols(
       munroState: munroState,

@@ -30,25 +30,6 @@ class GroupFilterState extends ChangeNotifier {
   List<String> get selectedFriendsUids => _selectedFriendsUids;
   List<FollowingRelationship> get selectedFriends => _selectedFriends;
 
-  Future getInitialFriends({required String userId}) async {
-    if (_userState.currentUser == null) return;
-    List<String> blockedUsers = _userState.blockedUsers;
-
-    try {
-      setStatus = GroupFilterStatus.loading;
-
-      setFriends = await _followersRepository.getFollowingFromUid(
-        sourceId: userId,
-        excludedUserIds: blockedUsers,
-      );
-
-      setStatus = GroupFilterStatus.loaded;
-    } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(message: "There was an issue. Please try again.");
-    }
-  }
-
   Future search({required String query}) async {
     if (_userState.currentUser == null) return;
 

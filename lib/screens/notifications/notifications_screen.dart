@@ -85,11 +85,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   separatorBuilder: (context, index) => const Divider(height: 1),
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: notificationsState.notifications.length + 1,
+                  itemCount: notificationsState.notifications.length + 2,
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       int unreadCount = notificationsState.notifications.where((notif) => !notif.read).length;
                       return UnreadNotificatiosWidget(count: unreadCount);
+                    }
+                    if (index == notificationsState.notifications.length + 1) {
+                      return notificationsState.status == NotificationsStatus.paginating
+                          ? const PaginationLoader()
+                          : const SizedBox.shrink();
                     }
                     final notification = notificationsState.notifications[index - 1];
                     return NotificationTile(notification: notification);

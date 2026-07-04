@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class PhotosTab extends StatefulWidget {
@@ -131,11 +132,7 @@ class _PhotosTabState extends State<PhotosTab> {
               );
             },
           ),
-          if (state.status == PhotoGalleryStatus.paginating)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: CircularProgressIndicator(),
-            ),
+          if (state.status == PhotoGalleryStatus.paginating) const PaginationLoader(),
           const SizedBox(height: 110),
         ],
       ),

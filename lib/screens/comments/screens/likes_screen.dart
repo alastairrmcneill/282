@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class LikesScreenArgs {
@@ -89,6 +90,7 @@ class _LikesScreenState extends State<LikesScreen> {
                   like: like,
                 ),
               ),
+              if (likesState.status == LikesStatus.paginating) const PaginationLoader(),
             ],
           ),
         ),

@@ -122,8 +122,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
 
     return ListView.builder(
       controller: scrollController,
-      itemCount: userSearchState.users.length,
+      itemCount: userSearchState.users.length + 1,
       itemBuilder: (context, index) {
+        if (index == userSearchState.users.length) {
+          return userSearchState.status == SearchStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
+        }
+
         final AppUser user = userSearchState.users[index];
         if (user.uid == currentUserId) return const SizedBox.shrink();
 

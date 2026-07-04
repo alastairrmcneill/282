@@ -60,7 +60,7 @@ class _ExploreTabState extends State<ExploreTab> {
     final double topPadding = MediaQuery.of(context).padding.top;
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
     final double bottomNavBarHeight = layoutState.bottomNavBarHeight;
-    const double headerHeight = 90;
+    final double headerHeight = _isMunroListViewVisible ? 64 : 100;
 
     return Scaffold(
       body: Stack(
@@ -112,11 +112,11 @@ class _ExploreTabState extends State<ExploreTab> {
             isMunroListViewVisible: _isMunroListViewVisible,
             onSearchTap: () {
               panelController.open();
+              _searchFocusNode.requestFocus();
             },
           ),
         ],
       ),
     );
   }
-
 }

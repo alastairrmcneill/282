@@ -4,6 +4,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/likes_screen.dart';
 import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsScreen extends StatefulWidget {
@@ -100,9 +101,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                             height: 150,
                             width: double.infinity,
                             child: AppCachedImage(
-                              imageUrl: commentsState.post.imageUrlsMap.values
-                                  .expand((element) => element)
-                                  .toList()[0],
+                              imageUrl: commentsState.post.imageUrlsMap.values.expand((element) => element).toList()[0],
                             ),
                           ),
                     Padding(
@@ -145,6 +144,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         comment: comment,
                       ),
                     ),
+                    if (commentsState.status == CommentsStatus.paginating) const PaginationLoader(),
                   ],
                 ),
               ),

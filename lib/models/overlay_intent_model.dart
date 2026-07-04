@@ -67,10 +67,3 @@ final class AnnualMunroChallengeDialogIntent extends OverlayIntent {
   @override
   String get dedupeKey => 'annual_munro_challenge_dialog';
 }
-
-final class GroupFilterIntroDialogIntent extends OverlayIntent {
-  const GroupFilterIntroDialogIntent();
-
-  @override
-  String get dedupeKey => 'group_filter_intro_dialog';
-}
