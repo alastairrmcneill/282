@@ -5,6 +5,8 @@ import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class ExploreTabHeader extends StatelessWidget {
   final double headerHeight;
@@ -61,13 +63,29 @@ class ExploreTabHeader extends StatelessWidget {
                     children: [
                       const GlobalCompletionCountWidget(),
                       const SizedBox(height: 8),
-                      ExploreHeaderIconButton(
-                        icon: PhosphorIconsRegular.magnifyingGlass,
-                        showBadge: munroState.isFilterOptionsSet || munroState.isSearchActive,
-                        onPressed: () {
-                          context.read<Analytics>().track(AnalyticsEvent.exploreSearchButtonTapped);
-                          onSearchTap();
-                        },
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SliverAppBarButton(
+                            icon: Icon(PhosphorIconsRegular.magnifyingGlass),
+                            analyticsEvent: AnalyticsEvent.exploreSearchButtonTapped,
+                            onPressed: onSearchTap,
+                          ),
+                          if (munroState.isFilterOptionsSet || munroState.isSearchActive)
+                            Positioned(
+                              right: 2,
+                              top: -2,
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: context.colors.accent,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: AppColors.light.surface, width: 1.5),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),

@@ -1,7 +1,8 @@
+import 'dart:ui';
+
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 
@@ -14,32 +15,32 @@ class GlobalCompletionCountWidget extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 5),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        height: 34,
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(
-            color: context.colors.accent,
-            width: 0.5,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Total bagged: ',
+                  style: textTheme.bodyMedium?.copyWith(color: AppColors.light.surface),
+                ),
+                AnimatedFlipCounter(
+                  value: state.globalCompletionCount,
+                  thousandSeparator: ',',
+                  textStyle: TextStyle(height: 1.0, color: AppColors.light.surface, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Total bagged: ',
-              style: textTheme.bodyMedium?.copyWith(color: context.colors.textPrimary),
-            ),
-            AnimatedFlipCounter(
-              value: state.globalCompletionCount,
-              thousandSeparator: ',',
-              textStyle: const TextStyle(height: 1.0),
-            ),
-          ],
         ),
       ),
     );
