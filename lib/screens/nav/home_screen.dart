@@ -167,13 +167,13 @@ class HomeScreenState extends State<HomeScreen> {
         unselectedFontSize: 13,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(PhosphorIconsRegular.mapTrifold),
-            activeIcon: Icon(PhosphorIconsFill.mapTrifold),
+            icon: Icon(PhosphorIconsRegular.mountains),
+            activeIcon: Icon(PhosphorIconsFill.mountains),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(PhosphorIconsRegular.newspaper),
-            activeIcon: Icon(PhosphorIconsFill.newspaper),
+            icon: Icon(PhosphorIconsRegular.newspaperClipping),
+            activeIcon: Icon(PhosphorIconsFill.newspaperClipping),
             label: 'Feed',
           ),
           BottomNavigationBarItem(

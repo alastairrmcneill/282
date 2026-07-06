@@ -19,7 +19,7 @@ class ExploreHeaderFilterButton extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           IconButton(
-            icon: Icon(PhosphorIconsRegular.funnel, color: context.colors.accent, size: 18),
+            icon: Icon(PhosphorIconsRegular.slidersHorizontal, color: context.colors.accent, size: 18),
             onPressed: () {
               context.read<Analytics>().track(AnalyticsEvent.exploreFilterButtonTapped);
               Navigator.of(context).pushNamed(FilterScreen.route);
