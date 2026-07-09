@@ -19,7 +19,7 @@ class BulkMunroMapScreen extends StatefulWidget {
 }
 
 class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
-  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmpcs9ivx002m01r110ljakxt";
+  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmrabh9j4003r01r08baw5o6a";
   static const String _darkStyleUri = "mapbox://styles/alastairm94/cmpdpqwg2000001siaqwm3zx5";
 
   bool loading = true;
@@ -88,8 +88,8 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState,
-      MunroCompletionState munroCompletionState, BulkMunroUpdateState bulkMunroUpdateState) async {
+  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState,
+      BulkMunroUpdateState bulkMunroUpdateState) async {
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
@@ -141,17 +141,15 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     required bool isFocused,
   }) {
     if (isFocused) return selectedIcon!;
-    final existingCompletion =
-        munroCompletionState.munroCompletions.any((c) => c.munroId == munroId);
+    final existingCompletion = munroCompletionState.munroCompletions.any((c) => c.munroId == munroId);
     if (existingCompletion) return completeIcon!;
-    final bulkSelected =
-        bulkMunroUpdateState.addedMunroCompletions.any((c) => c.munroId == munroId);
+    final bulkSelected = bulkMunroUpdateState.addedMunroCompletions.any((c) => c.munroId == munroId);
     if (bulkSelected) return bulkSelectedIcon!;
     return incompleteIcon!;
   }
 
-  void handleMapTap(ScreenCoordinate tapScreenPoint, MunroState munroState,
-      MunroCompletionState munroCompletionState, BulkMunroUpdateState bulkMunroUpdateState) async {
+  void handleMapTap(ScreenCoordinate tapScreenPoint, MunroState munroState, MunroCompletionState munroCompletionState,
+      BulkMunroUpdateState bulkMunroUpdateState) async {
     const double threshold = 40.0;
 
     int? closestMunroId;

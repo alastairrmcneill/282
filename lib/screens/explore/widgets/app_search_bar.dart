@@ -88,6 +88,7 @@ class AppSearchBar extends StatefulWidget {
   final IconData? icon;
   final SearchBarVariant variant;
   final Widget? trailing;
+  final String? initialValue;
   const AppSearchBar({
     super.key,
     required this.focusNode,
@@ -98,6 +99,7 @@ class AppSearchBar extends StatefulWidget {
     this.icon,
     this.variant = SearchBarVariant.standard,
     this.trailing,
+    this.initialValue,
   });
 
   @override
@@ -105,7 +107,7 @@ class AppSearchBar extends StatefulWidget {
 }
 
 class _AppSearchBarState extends State<AppSearchBar> {
-  TextEditingController textEditingController = TextEditingController();
+  late final TextEditingController textEditingController = TextEditingController(text: widget.initialValue);
 
   @override
   void dispose() {

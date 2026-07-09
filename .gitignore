@@ -61,4 +61,5 @@ functions/prod-81998-firebase-adminsdk-jx7qx-97f185bbac.json
 functions/firebase-admin.txt
 config/prod.json
 config/dev.json
+scripts/mapbox_style/.secret_token
 assets/branch-config.json

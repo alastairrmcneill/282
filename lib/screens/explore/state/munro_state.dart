@@ -36,6 +36,7 @@ class MunroState extends ChangeNotifier {
   FilterOptions get filterOptions => _filterOptions;
   bool get isFilterOptionsSet => _isFilterOptionsSet;
   bool get isSearchActive => _filterString.isNotEmpty;
+  String get filterString => _filterString;
   int? get selectedMunroId => _selectedMunroId;
   List<Munro> get createPostFilteredMunroList => _createPostFilteredMunroList;
   List<Munro> get bulkMunroUpdateList => _bulkMunroUpdateList;

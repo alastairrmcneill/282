@@ -45,6 +45,7 @@ class ExploreTabHeader extends StatelessWidget {
                           variant: SearchBarVariant.hero,
                           focusNode: searchFocusNode,
                           hintText: "Search Munros",
+                          initialValue: munroState.filterString,
                           onSearchTap: onSearchTap,
                           onChanged: (value) {
                             munroState.setFilterString = value;
