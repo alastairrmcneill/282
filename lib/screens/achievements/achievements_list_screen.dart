@@ -12,7 +12,6 @@ class AchievementListScreen extends StatelessWidget {
 
   static const _categoryOrder = [
     AchievementTypes.totalCount,
-    AchievementTypes.annualGoal,
     AchievementTypes.multiMunroDay,
     AchievementTypes.areaGoal,
     AchievementTypes.highestMunros,
@@ -23,7 +22,11 @@ class AchievementListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final achievements = context.watch<AchievementsState>().achievements;
+    final achievements = context
+        .watch<AchievementsState>()
+        .achievements
+        .where((a) => a.type != AchievementTypes.annualGoal)
+        .toList();
     final unlocked = achievements.where((a) => a.completed).length;
 
     final grouped = <String, List<Achievement>>{};
