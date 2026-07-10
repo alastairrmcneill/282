@@ -135,6 +135,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 image: CachedNetworkImageProvider(
                                   _photoURL!,
                                 ),
+                                onError: (error, stackTrace) {
+                                  context.read<Logger>().error(
+                                        'Failed to load photo',
+                                        error: error,
+                                        stackTrace: stackTrace,
+                                        context: {'imageUrl': _photoURL},
+                                      );
+                                },
                               ),
                             ),
                           )
