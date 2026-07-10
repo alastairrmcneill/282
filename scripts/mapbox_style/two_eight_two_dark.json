@@ -35093,96 +35093,161 @@
   ],
   "layers": [
     {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "motorway"
-        ],
-        true,
-        false
-      ],
-      "id": "Motorway Outline",
-      "layout": {
-        "line-join": "round"
-      },
-      "metadata": {
-        "mapbox:featureStateHandler": {},
-        "mapbox:group": "faa19266bea0a83bd07065753e1204f1"
-      },
-      "minzoom": 3,
+      "id": "landcover-recolor",
+      "maxzoom": 12,
+      "minzoom": 0,
       "paint": {
-        "line-color": "rgb(120, 122, 126)",
-        "line-width": [
+        "fill-antialias": false,
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "built-up",
+          "rgb(184, 181, 175)",
+          [
+            "grass",
+            "crop",
+            "range"
+          ],
+          "rgb(140, 178, 120)",
+          [
+            "wood",
+            "scrub"
+          ],
+          "rgb(115, 155, 95)",
+          "snow",
+          "rgb(225, 228, 230)",
+          "rgb(160, 182, 142)"
+        ],
+        "fill-opacity": [
           "interpolate",
           [
-            "exponential",
-            1.31
+            "linear"
           ],
           [
             "zoom"
           ],
-          0,
-          1.1,
-          15.21,
-          18,
-          22,
-          22
+          10,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "wood",
+              "scrub"
+            ],
+            0.5,
+            [
+              "grass",
+              "crop",
+              "range"
+            ],
+            0.8,
+            1
+          ],
+          12,
+          0
         ]
       },
-      "slot": "",
+      "slot": "bottom",
       "source": "composite",
-      "source-layer": "road",
-      "type": "line"
+      "source-layer": "landcover",
+      "type": "fill"
     },
     {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "motorway"
-        ],
-        true,
-        false
-      ],
-      "id": "Motorway Inside",
-      "layout": {
-        "line-join": "round"
-      },
-      "metadata": {
-        "mapbox:featureStateHandler": {},
-        "mapbox:group": "faa19266bea0a83bd07065753e1204f1"
-      },
-      "minzoom": 3,
+      "id": "landuse-recolor",
+      "minzoom": 4,
       "paint": {
-        "line-color": "rgb(200, 200, 202)",
-        "line-width": [
+        "fill-antialias": false,
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "residential",
+            "commercial_area",
+            "industrial",
+            "facility",
+            "hospital",
+            "school",
+            "parking",
+            "parking_garage",
+            "quarry",
+            "rock",
+            "cemetery"
+          ],
+          "rgb(184, 181, 175)",
+          [
+            "grass",
+            "park",
+            "garden",
+            "golf_course",
+            "agriculture",
+            "pitch",
+            "piste",
+            "scrub"
+          ],
+          "rgb(130, 168, 112)",
+          "wood",
+          "rgb(108, 150, 92)",
+          [
+            "sand",
+            "beach"
+          ],
+          "rgb(172, 168, 145)",
+          [
+            "airport",
+            "aboriginal_lands"
+          ],
+          "rgb(168, 168, 165)",
+          "glacier",
+          "rgb(225, 228, 230)",
+          "rgb(160, 182, 142)"
+        ],
+        "fill-opacity": [
           "interpolate",
           [
-            "exponential",
-            1.31
+            "linear"
           ],
           [
             "zoom"
           ],
+          8,
           0,
-          1,
-          15.21,
-          16,
-          22,
-          20
+          11,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            "wood",
+            0.5,
+            [
+              "grass",
+              "park",
+              "garden",
+              "golf_course",
+              "agriculture",
+              "pitch",
+              "piste",
+              "scrub"
+            ],
+            0.8,
+            1
+          ]
         ]
       },
-      "slot": "",
+      "slot": "bottom",
       "source": "composite",
-      "source-layer": "road",
-      "type": "line"
+      "source-layer": "landuse",
+      "type": "fill"
     },
     {
       "id": "mapbox-dem",
@@ -35209,6 +35274,96 @@
       "slot": "bottom",
       "source": "mapbox://mapbox.mapbox-terrain-dem-v1",
       "type": "hillshade"
+    },
+    {
+      "filter": [
+        "match",
+        [
+          "get",
+          "class"
+        ],
+        [
+          "motorway"
+        ],
+        true,
+        false
+      ],
+      "id": "Motorway Outline",
+      "layout": {
+        "line-join": "round"
+      },
+      "metadata": {
+        "mapbox:group": "faa19266bea0a83bd07065753e1204f1"
+      },
+      "minzoom": 3,
+      "paint": {
+        "line-color": "rgb(120, 122, 126)",
+        "line-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.31
+          ],
+          [
+            "zoom"
+          ],
+          0,
+          1.1,
+          15.21,
+          18,
+          22,
+          22
+        ]
+      },
+      "slot": "middle",
+      "source": "composite",
+      "source-layer": "road",
+      "type": "line"
+    },
+    {
+      "filter": [
+        "match",
+        [
+          "get",
+          "class"
+        ],
+        [
+          "motorway"
+        ],
+        true,
+        false
+      ],
+      "id": "Motorway Inside",
+      "layout": {
+        "line-join": "round"
+      },
+      "metadata": {
+        "mapbox:group": "faa19266bea0a83bd07065753e1204f1"
+      },
+      "minzoom": 3,
+      "paint": {
+        "line-color": "rgb(200, 200, 202)",
+        "line-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.31
+          ],
+          [
+            "zoom"
+          ],
+          0,
+          1,
+          15.21,
+          16,
+          22,
+          20
+        ]
+      },
+      "slot": "middle",
+      "source": "composite",
+      "source-layer": "road",
+      "type": "line"
     },
     {
       "filter": [
@@ -35373,9 +35528,9 @@
             "brightness"
           ],
           0.25,
-          "hsla (0, 0%, 100%, 0.6)",
+          "hsla(0, 0%, 100%, 0.6)",
           0.3,
-          "hsla (0, 0%, 16%, 0.5)"
+          "hsla(0, 0%, 16%, 0.5)"
         ],
         "line-dasharray": [
           "step",
@@ -35793,7 +35948,7 @@
           0.25,
           "hsl(0, 0%, 78%)",
           0.3,
-          "hsl(0, 0, 18%)"
+          "hsl(0, 0%, 18%)"
         ],
         "text-halo-blur": 0.5,
         "text-halo-color": [
@@ -35816,142 +35971,6 @@
       "source": "composite",
       "source-layer": "road",
       "type": "symbol"
-    },
-    {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "grass"
-        ],
-        true,
-        false
-      ],
-      "id": "Landcover Grass",
-      "layout": {},
-      "maxzoom": 13,
-      "minzoom": 4,
-      "paint": {
-        "fill-color": "rgb(140, 178, 120)",
-        "fill-opacity": 0.55
-      },
-      "source": "composite",
-      "source-layer": "landcover",
-      "type": "fill"
-    },
-    {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "built-up"
-        ],
-        true,
-        false
-      ],
-      "id": "Built-up Area",
-      "layout": {},
-      "maxzoom": 13,
-      "minzoom": 4,
-      "paint": {
-        "fill-color": "rgb(184, 181, 175)",
-        "fill-opacity": 0.75
-      },
-      "source": "composite",
-      "source-layer": "landcover",
-      "type": "fill"
-    },
-    {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "residential",
-          "commercial_area",
-          "industrial",
-          "facility",
-          "hospital",
-          "school",
-          "parking",
-          "parking_garage",
-          "quarry",
-          "rock"
-        ],
-        true,
-        false
-      ],
-      "id": "Residential Area",
-      "layout": {},
-      "maxzoom": 13,
-      "minzoom": 4,
-      "paint": {
-        "fill-color": "rgb(184, 181, 175)",
-        "fill-opacity": 0.75
-      },
-      "source": "composite",
-      "source-layer": "landuse",
-      "type": "fill"
-    },
-    {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "grass",
-          "park",
-          "garden",
-          "golf_course",
-          "agriculture"
-        ],
-        true,
-        false
-      ],
-      "id": "Green Landuse Area",
-      "layout": {},
-      "maxzoom": 13,
-      "minzoom": 4,
-      "paint": {
-        "fill-color": "rgb(130, 168, 112)",
-        "fill-opacity": 0.6
-      },
-      "source": "composite",
-      "source-layer": "landuse",
-      "type": "fill"
-    },
-    {
-      "filter": [
-        "match",
-        [
-          "get",
-          "class"
-        ],
-        [
-          "wood"
-        ],
-        true,
-        false
-      ],
-      "id": "Wood",
-      "layout": {},
-      "paint": {
-        "fill-color": "rgb(108, 150, 92)",
-        "fill-opacity": 0.45
-      },
-      "source": "composite",
-      "source-layer": "landuse",
-      "type": "fill"
     }
   ],
   "metadata": {
