@@ -19,8 +19,8 @@ class MapboxMapScreen extends StatefulWidget {
 }
 
 class _MapboxMapScreenState extends State<MapboxMapScreen> {
-  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmrabh9j4003r01r08baw5o6a";
-  static const String _darkStyleUri = "mapbox://styles/alastairm94/cmpdpqwg2000001siaqwm3zx5";
+  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmrery5gw002e01sc228mf3ca";
+  static const String _darkStyleUri = "mapbox://styles/alastairm94/cmresimnz003h01qwddir1nnh";
 
   bool loading = true;
   bool _mapInitialized = false;
