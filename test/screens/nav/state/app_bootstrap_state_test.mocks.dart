@@ -382,6 +382,26 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as _i5.Future<void>);
 
   @override
+  bool hasShownAnnualChallengeDialog(String? key) => (super.noSuchMethod(
+        Invocation.method(
+          #hasShownAnnualChallengeDialog,
+          [key],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Future<void> setShownAnnualChallengeDialog(String? key) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setShownAnnualChallengeDialog,
+          [key],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
   _i5.Future<void> setOpenCount(int? v) => (super.noSuchMethod(
         Invocation.method(
           #setOpenCount,
@@ -515,6 +535,15 @@ class MockSettingsState extends _i1.Mock implements _i3.SettingsState {
       ) as String);
 
   @override
+  String get themeModeSetting => (super.noSuchMethod(
+        Invocation.getter(#themeModeSetting),
+        returnValue: _i7.dummyValue<String>(
+          this,
+          Invocation.getter(#themeModeSetting),
+        ),
+      ) as String);
+
+  @override
   set setError(_i2.Error? error) => super.noSuchMethod(
         Invocation.setter(
           #setError,
@@ -584,6 +613,16 @@ class MockSettingsState extends _i1.Mock implements _i3.SettingsState {
   _i5.Future<void> setDefaultPostVisibility(String? v) => (super.noSuchMethod(
         Invocation.method(
           #setDefaultPostVisibility,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setThemeMode(String? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setThemeMode,
           [v],
         ),
         returnValue: _i5.Future<void>.value(),
@@ -1097,6 +1136,21 @@ class MockMunroState extends _i1.Mock implements _i3.MunroState {
       ) as bool);
 
   @override
+  bool get isSearchActive => (super.noSuchMethod(
+        Invocation.getter(#isSearchActive),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  String get filterString => (super.noSuchMethod(
+        Invocation.getter(#filterString),
+        returnValue: _i7.dummyValue<String>(
+          this,
+          Invocation.getter(#filterString),
+        ),
+      ) as String);
+
+  @override
   List<_i2.Munro> get createPostFilteredMunroList => (super.noSuchMethod(
         Invocation.getter(#createPostFilteredMunroList),
         returnValue: <_i2.Munro>[],
@@ -1463,6 +1517,15 @@ class MockMunroCompletionState extends _i1.Mock
         ),
         returnValueForMissingStub: null,
       );
+
+  @override
+  bool isBagged(_i2.Munro? munro) => (super.noSuchMethod(
+        Invocation.method(
+          #isBagged,
+          [munro],
+        ),
+        returnValue: false,
+      ) as bool);
 
   @override
   void addListener(_i6.VoidCallback? listener) => super.noSuchMethod(

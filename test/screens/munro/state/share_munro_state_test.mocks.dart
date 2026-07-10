@@ -36,6 +36,21 @@ class MockShareLinkRepository extends _i1.Mock
   }
 
   @override
+  _i3.Future<String> createAppLink() => (super.noSuchMethod(
+        Invocation.method(
+          #createAppLink,
+          [],
+        ),
+        returnValue: _i3.Future<String>.value(_i4.dummyValue<String>(
+          this,
+          Invocation.method(
+            #createAppLink,
+            [],
+          ),
+        )),
+      ) as _i3.Future<String>);
+
+  @override
   _i3.Future<String> createMunroLink(int? munroId) => (super.noSuchMethod(
         Invocation.method(
           #createMunroLink,

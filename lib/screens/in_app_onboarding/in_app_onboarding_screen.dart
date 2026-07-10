@@ -61,6 +61,7 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
         body: MunroQuestionScreen(
           onYes: _onMunroQuestionYes,
           onNo: _onMunroQuestionNo,
+          source: 'in_app_onboarding',
         ),
       ),
     );

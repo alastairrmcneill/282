@@ -35,6 +35,7 @@ class InAppOnboardingState extends ChangeNotifier {
         AnalyticsEvent.onboardingScreenViewed,
         props: {
           AnalyticsProp.screenIndex: 0,
+          AnalyticsProp.source: 'in_app_onboarding',
         },
       );
       analytics.track(

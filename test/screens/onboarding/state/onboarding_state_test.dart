@@ -135,7 +135,7 @@ void main() {
         verify(mockAnalytics.track(AnalyticsEvent.onboardingStarted)).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 0},
+          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
         )).called(1);
       });
 
@@ -258,7 +258,7 @@ void main() {
         // Assert
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 1},
+          props: {AnalyticsProp.screenIndex: 1, AnalyticsProp.source: 'first_run_onboarding'},
         )).called(1);
       });
 
@@ -691,19 +691,19 @@ void main() {
         onboardingState.nextPage(); // Page 1
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 1},
+          props: {AnalyticsProp.screenIndex: 1, AnalyticsProp.source: 'first_run_onboarding'},
         )).called(1);
 
         onboardingState.nextPage(); // Page 2
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 2},
+          props: {AnalyticsProp.screenIndex: 2, AnalyticsProp.source: 'first_run_onboarding'},
         )).called(1);
 
         onboardingState.nextPage(); // Page 3
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 3},
+          props: {AnalyticsProp.screenIndex: 3, AnalyticsProp.source: 'first_run_onboarding'},
         )).called(1);
       });
 
@@ -732,7 +732,7 @@ void main() {
         verify(mockAnalytics.track(AnalyticsEvent.onboardingStarted)).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 0},
+          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
         )).called(1);
       });
 

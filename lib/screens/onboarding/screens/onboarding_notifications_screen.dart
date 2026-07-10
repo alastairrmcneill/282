@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/in_app_onboarding/screens/in_app_onboarding_notifications.dart';
@@ -31,6 +32,13 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
   String? _error;
 
   Future<void> _complete({required bool enableNotifications}) async {
+    context.read<Analytics>().track(
+      AnalyticsEvent.onboardingNotificationsResponse,
+      props: {
+        AnalyticsProp.response: enableNotifications ? 'enable' : 'skip',
+        AnalyticsProp.source: widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+      },
+    );
     setState(() {
       _isSaving = true;
       _error = null;
@@ -73,7 +81,12 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
       }
 
       if (mounted) {
-        if (!widget.fromInAppOnboarding) {
+        if (widget.fromInAppOnboarding) {
+          context.read<Analytics>().track(
+            AnalyticsEvent.inAppOnboardingProgress,
+            props: {AnalyticsProp.status: 'completed'},
+          );
+        } else {
           await context.read<OnboardingState>().markOnboardingCompleted();
         }
         if (mounted) {

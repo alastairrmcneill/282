@@ -150,6 +150,7 @@ void main() {
           AnalyticsEvent.onboardingScreenViewed,
           props: {
             AnalyticsProp.screenIndex: 0,
+            AnalyticsProp.source: 'in_app_onboarding',
           },
         )).called(1);
         verify(mockAnalytics.track(
@@ -276,6 +277,7 @@ void main() {
           AnalyticsEvent.onboardingScreenViewed,
           props: {
             AnalyticsProp.screenIndex: 0,
+            AnalyticsProp.source: 'in_app_onboarding',
           },
         )).called(3);
       });

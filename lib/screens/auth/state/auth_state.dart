@@ -139,6 +139,8 @@ class AuthState extends ChangeNotifier {
         await _userState.loadBlockedUsers();
       }
 
+      _analytics.track(AnalyticsEvent.signIn, props: {AnalyticsProp.method: 'email'});
+
       final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
 
       _setAuthenticated();
@@ -208,6 +210,8 @@ class AuthState extends ChangeNotifier {
           AnalyticsProp.method: 'apple',
           AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
         });
+      } else {
+        _analytics.track(AnalyticsEvent.signIn, props: {AnalyticsProp.method: 'apple'});
       }
 
       // Load essential user data after successful authentication
@@ -288,6 +292,8 @@ class AuthState extends ChangeNotifier {
           AnalyticsProp.method: 'google',
           AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
         });
+      } else {
+        _analytics.track(AnalyticsEvent.signIn, props: {AnalyticsProp.method: 'google'});
       }
 
       // Load essential user data after successful authentication

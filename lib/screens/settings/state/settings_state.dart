@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 
 class SettingsState extends ChangeNotifier {
   final SettingsRepository _repository;
+  final Analytics _analytics;
   final Logger _logger;
 
   SettingsState(
     this._repository,
+    this._analytics,
     this._logger,
   );
 
@@ -64,11 +67,37 @@ class SettingsState extends ChangeNotifier {
     }
   }
 
-  Future<void> setEnablePushNotifications(bool v) => update(_appSettings!.copyWith(pushNotifications: v));
-  Future<void> setMetricHeight(bool v) => update(_appSettings!.copyWith(metricHeight: v));
-  Future<void> setMetricTemperature(bool v) => update(_appSettings!.copyWith(metricTemperature: v));
-  Future<void> setDefaultPostVisibility(String v) => update(_appSettings!.copyWith(defaultPostVisibility: v));
-  Future<void> setThemeMode(String v) => update(_appSettings!.copyWith(themeMode: v));
+  void _trackSettingChanged(String setting, Object value) {
+    _analytics.track(
+      AnalyticsEvent.settingChanged,
+      props: {AnalyticsProp.setting: setting, AnalyticsProp.value: value},
+    );
+  }
+
+  Future<void> setEnablePushNotifications(bool v) {
+    _trackSettingChanged('push_notifications', v);
+    return update(_appSettings!.copyWith(pushNotifications: v));
+  }
+
+  Future<void> setMetricHeight(bool v) {
+    _trackSettingChanged('metric_height', v);
+    return update(_appSettings!.copyWith(metricHeight: v));
+  }
+
+  Future<void> setMetricTemperature(bool v) {
+    _trackSettingChanged('metric_temperature', v);
+    return update(_appSettings!.copyWith(metricTemperature: v));
+  }
+
+  Future<void> setDefaultPostVisibility(String v) {
+    _trackSettingChanged('default_post_visibility', v);
+    return update(_appSettings!.copyWith(defaultPostVisibility: v));
+  }
+
+  Future<void> setThemeMode(String v) {
+    _trackSettingChanged('theme_mode', v);
+    return update(_appSettings!.copyWith(themeMode: v));
+  }
 }
 
 enum SettingsStatus { initial, loading, loaded, error }

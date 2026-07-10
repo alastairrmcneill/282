@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -11,10 +12,12 @@ import 'settings_state_test.mocks.dart';
 // Generate mocks
 @GenerateMocks([
   SettingsRepository,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockSettingsRepository mockSettingsRepository;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late SettingsState settingsState;
 
@@ -31,8 +34,9 @@ void main() {
     );
 
     mockSettingsRepository = MockSettingsRepository();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
-    settingsState = SettingsState(mockSettingsRepository, mockLogger);
+    settingsState = SettingsState(mockSettingsRepository, mockAnalytics, mockLogger);
   });
 
   group('SettingsState', () {

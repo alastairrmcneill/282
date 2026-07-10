@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -59,11 +61,21 @@ class AchievementCategorySection extends StatelessWidget {
             final achievement = achievements[index];
             return AchievementBadgeTile(
               achievement: achievement,
-              onTap: () => Navigator.pushNamed(
-                context,
-                AchievementDetailScreen.route,
-                arguments: AchievementDetailsScreenArgs(achievement: achievement),
-              ),
+              onTap: () {
+                context.read<Analytics>().track(
+                  AnalyticsEvent.achievementTapped,
+                  props: {
+                    AnalyticsProp.achievementId: achievement.achievementId,
+                    AnalyticsProp.achievementName: achievement.name,
+                    AnalyticsProp.status: achievement.completed ? 'unlocked' : 'locked',
+                  },
+                );
+                Navigator.pushNamed(
+                  context,
+                  AchievementDetailScreen.route,
+                  arguments: AchievementDetailsScreenArgs(achievement: achievement),
+                );
+              },
             );
           },
         ),

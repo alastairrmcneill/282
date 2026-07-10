@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -12,11 +13,13 @@ import 'user_search_state_test.mocks.dart';
 @GenerateMocks([
   UserRepository,
   UserState,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockUserRepository mockUserRepository;
   late MockUserState mockUserState;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late UserSearchState userSearchState;
 
@@ -54,10 +57,12 @@ void main() {
 
     mockUserRepository = MockUserRepository();
     mockUserState = MockUserState();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
     userSearchState = UserSearchState(
       mockUserRepository,
       mockUserState,
+      mockAnalytics,
       mockLogger,
     );
 

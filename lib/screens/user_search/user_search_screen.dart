@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -60,6 +61,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             focusNode: _focusNode,
             hintText: "Find friends",
             onClear: () {
+              context.read<Analytics>().track(AnalyticsEvent.userSearchClearTapped);
               _searchController.clear();
               userSearchState.clearSearch();
             },
@@ -148,10 +150,13 @@ class _UserSearchTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return InkWell(
-      onTap: () => Navigator.of(context).pushNamed(
-        ProfileScreen.route,
-        arguments: ProfileScreenArgs(userId: user.uid!),
-      ),
+      onTap: () {
+        context.read<Analytics>().track(AnalyticsEvent.userSearchResultTapped);
+        Navigator.of(context).pushNamed(
+          ProfileScreen.route,
+          arguments: ProfileScreenArgs(userId: user.uid!),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(

@@ -82,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 WelcomeScreen(onNext: _nextPage),
                 ProgressScreen(onNext: _nextPage, onBack: _previousPage),
                 AchievementScreen(onNext: _nextPage, onBack: _previousPage),
-                MunroQuestionScreen(onNo: _onNo, onYes: _onYes),
+                MunroQuestionScreen(onNo: _onNo, onYes: _onYes, source: 'first_run_onboarding'),
               ],
             ),
           ),

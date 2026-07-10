@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -18,6 +19,10 @@ class NotificationTile extends StatelessWidget {
 
     return InkWell(
       onTap: () {
+        context.read<Analytics>().track(
+          AnalyticsEvent.notificationTapped,
+          props: {AnalyticsProp.notificationType: notification.type},
+        );
         notification.read = true;
         notificationsState.markNotificationAsRead(notification);
         if (notification.type == "like" || notification.type == "comment") {

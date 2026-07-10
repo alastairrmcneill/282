@@ -242,6 +242,7 @@ class AppRouter {
               create: (ctx) => UserSearchState(
                 ctx.read<UserRepository>(),
                 ctx.read<UserState>(),
+                ctx.read<Analytics>(),
                 ctx.read<Logger>(),
               )..clearSearch(),
               child: const UserSearchScreen(),

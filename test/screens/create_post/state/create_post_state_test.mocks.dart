@@ -95,16 +95,6 @@ class _FakeUserState_5 extends _i1.SmartFake implements _i4.UserState {
         );
 }
 
-class _FakeRemoteConfig_6 extends _i1.SmartFake implements _i3.RemoteConfig {
-  _FakeRemoteConfig_6(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [PostsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -748,89 +738,13 @@ class MockMunroCompletionState extends _i1.Mock
       );
 
   @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  bool isBagged(_i3.Munro? munro) => (super.noSuchMethod(
         Invocation.method(
-          #addListener,
-          [listener],
+          #isBagged,
+          [munro],
         ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [RemoteConfigState].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockRemoteConfigState extends _i1.Mock implements _i4.RemoteConfigState {
-  MockRemoteConfigState() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i4.RemoteConfigStatus get status => (super.noSuchMethod(
-        Invocation.getter(#status),
-        returnValue: _i4.RemoteConfigStatus.initial,
-      ) as _i4.RemoteConfigStatus);
-
-  @override
-  _i3.Error get error => (super.noSuchMethod(
-        Invocation.getter(#error),
-        returnValue: _FakeError_3(
-          this,
-          Invocation.getter(#error),
-        ),
-      ) as _i3.Error);
-
-  @override
-  _i3.RemoteConfig get config => (super.noSuchMethod(
-        Invocation.getter(#config),
-        returnValue: _FakeRemoteConfig_6(
-          this,
-          Invocation.getter(#config),
-        ),
-      ) as _i3.RemoteConfig);
-
-  @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
         returnValue: false,
       ) as bool);
-
-  @override
-  _i5.Future<void> init() => (super.noSuchMethod(
-        Invocation.method(
-          #init,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
 
   @override
   void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(

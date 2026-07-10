@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -7,11 +8,13 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class ReportState extends ChangeNotifier {
   final ReportRepository _repository;
   final UserState _userState;
+  final Analytics _analytics;
   final Logger _logger;
 
   ReportState(
     this._repository,
     this._userState,
+    this._analytics,
     this._logger,
   );
 
@@ -40,6 +43,11 @@ class ReportState extends ChangeNotifier {
 
       // Upload report
       await _repository.create(report: report);
+
+      _analytics.track(
+        AnalyticsEvent.reportSubmitted,
+        props: {AnalyticsProp.reportType: _type},
+      );
 
       // Update state
       setStatus = ReportStatus.loaded;

@@ -1,13 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 
 class MunroQuestionScreen extends StatefulWidget {
   final VoidCallback onYes;
   final VoidCallback onNo;
+  final String source;
 
   const MunroQuestionScreen(
-      {super.key, required this.onYes, required this.onNo});
+      {super.key, required this.onYes, required this.onNo, required this.source});
 
   @override
   State<MunroQuestionScreen> createState() => _MunroQuestionScreenState();
@@ -60,6 +63,22 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handleYes() {
+    context.read<Analytics>().track(
+      AnalyticsEvent.munroQuestionAnswered,
+      props: {AnalyticsProp.response: 'yes', AnalyticsProp.source: widget.source},
+    );
+    widget.onYes();
+  }
+
+  void _handleNo() {
+    context.read<Analytics>().track(
+      AnalyticsEvent.munroQuestionAnswered,
+      props: {AnalyticsProp.response: 'no', AnalyticsProp.source: widget.source},
+    );
+    widget.onNo();
   }
 
   @override
@@ -170,7 +189,7 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen>
                     width: double.infinity,
                     height: 58,
                     child: FilledButton(
-                      onPressed: widget.onYes,
+                      onPressed: _handleYes,
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF10b981),
                         shape: RoundedRectangleBorder(
@@ -207,7 +226,7 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen>
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                         child: OutlinedButton(
-                          onPressed: widget.onNo,
+                          onPressed: _handleNo,
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
                                 color: Colors.white.withOpacity(0.5),

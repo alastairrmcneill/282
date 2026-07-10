@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
@@ -136,18 +137,31 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
     );
   }
 
+  void _onContinue(BuildContext context, int count) {
+    context.read<Analytics>().track(
+      AnalyticsEvent.bulkLogContinueTapped,
+      props: {
+        AnalyticsProp.selectedMunroCount: count,
+        AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+      },
+    );
+    if (widget.alreadyAuthenticated) {
+      Navigator.pushNamed(
+        context,
+        OnboardingNotificationsScreen.route,
+        arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true),
+      );
+    } else {
+      Navigator.pushNamed(context, OnboardingSignInPromptScreen.route);
+    }
+  }
+
   Widget _buildNavButtons(BuildContext context, int count) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       child: OnboardingNavigationButtons(
         onBack: () => Navigator.pop(context),
-        onNext: () => widget.alreadyAuthenticated
-            ? Navigator.pushNamed(
-                context,
-                OnboardingNotificationsScreen.route,
-                arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true),
-              )
-            : Navigator.pushNamed(context, OnboardingSignInPromptScreen.route),
+        onNext: () => _onContinue(context, count),
         nextText: count > 0 ? 'Continue ($count)' : 'Continue',
       ),
     );

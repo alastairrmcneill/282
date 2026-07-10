@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
@@ -83,6 +84,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 appUser: newAppUser,
                 profilePicture: _image,
               );
+
+              context.read<Analytics>().track(
+                AnalyticsEvent.profileEditSaved,
+                props: {
+                  AnalyticsProp.nameChanged: newAppUser.displayName != appUser.displayName,
+                  AnalyticsProp.bioChanged: newAppUser.bio != appUser.bio,
+                  AnalyticsProp.photoChanged: _image != null,
+                  AnalyticsProp.status: userState.status == UserStatus.loaded ? 'success' : 'error',
+                },
+              );
+
               if (userState.status == UserStatus.loaded) {
                 Navigator.of(context).pop(true);
               } else if (userState.status == UserStatus.error) {

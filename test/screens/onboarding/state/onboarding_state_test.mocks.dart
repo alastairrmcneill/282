@@ -243,6 +243,26 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as _i4.Future<void>);
 
   @override
+  bool hasShownAnnualChallengeDialog(String? key) => (super.noSuchMethod(
+        Invocation.method(
+          #hasShownAnnualChallengeDialog,
+          [key],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i4.Future<void> setShownAnnualChallengeDialog(String? key) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setShownAnnualChallengeDialog,
+          [key],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
   _i4.Future<void> setOpenCount(int? v) => (super.noSuchMethod(
         Invocation.method(
           #setOpenCount,

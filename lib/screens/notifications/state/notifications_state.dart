@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -7,10 +8,12 @@ import 'package:two_eight_two/screens/notifiers.dart';
 class NotificationsState extends ChangeNotifier {
   final NotificationsRepository _repository;
   final UserState _userState;
+  final Analytics _analytics;
   final Logger _logger;
   NotificationsState(
     this._repository,
     this._userState,
+    this._analytics,
     this._logger,
   );
 
@@ -91,6 +94,13 @@ class NotificationsState extends ChangeNotifier {
 
   Future<void> markAllNotificationsAsRead() async {
     try {
+      final unreadCount = _notifications.where((notif) => !notif.read).length;
+      if (unreadCount > 0) {
+        _analytics.track(
+          AnalyticsEvent.notificationsMarkAllReadTapped,
+          props: {AnalyticsProp.notificationCount: unreadCount},
+        );
+      }
       for (Notif notification in _notifications.where((notif) => !notif.read)) {
         Notif newNotification = notification.copyWith(read: true);
         await _repository.updateNotif(notification: newNotification);

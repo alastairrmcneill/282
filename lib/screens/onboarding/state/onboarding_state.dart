@@ -52,7 +52,7 @@ class OnboardingState extends ChangeNotifier {
       _analytics.track(AnalyticsEvent.onboardingStarted);
       _analytics.track(
         AnalyticsEvent.onboardingScreenViewed,
-        props: {AnalyticsProp.screenIndex: 0},
+        props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
       );
     } catch (error, stackTrace) {
       _logger.error(
@@ -76,7 +76,7 @@ class OnboardingState extends ChangeNotifier {
       notifyListeners();
       _analytics.track(
         AnalyticsEvent.onboardingScreenViewed,
-        props: {AnalyticsProp.screenIndex: _currentPage},
+        props: {AnalyticsProp.screenIndex: _currentPage, AnalyticsProp.source: 'first_run_onboarding'},
       );
     }
   }

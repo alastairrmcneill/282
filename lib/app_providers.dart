@@ -187,12 +187,14 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => NotificationsState(
           ctx.read<NotificationsRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<SettingsState>(
         create: (ctx) => SettingsState(
           ctx.read<SettingsRepository>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -229,6 +231,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<UserAchievementsRepository>(),
           ctx.read<UserState>(),
           ctx.read<OverlayIntentState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -254,6 +257,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => ReportState(
           ctx.read<ReportRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -280,6 +284,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => DeepLinkState(
           ctx.read<DeepLinkRepository>(),
           ctx.read<NavigationIntentState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
