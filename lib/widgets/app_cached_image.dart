@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/logging/logging.dart';
 
 class AppCachedImage extends StatelessWidget {
   final String imageUrl;
@@ -33,13 +35,20 @@ class AppCachedImage extends StatelessWidget {
         'assets/images/post_image_placeholder.png',
         fit: BoxFit.cover,
       ),
-      errorWidget: (context, url, error) => Center(
-        child: Icon(
-          PhosphorIconsRegular.warning,
-          size: 40,
-          color: context.colors.divider,
-        ),
-      ),
+      errorWidget: (context, url, error) {
+        context.read<Logger>().error(
+              'Failed to load photo',
+              error: error,
+              context: {'imageUrl': url},
+            );
+        return Center(
+          child: Icon(
+            PhosphorIconsRegular.warning,
+            size: 40,
+            color: context.colors.divider,
+          ),
+        );
+      },
     );
   }
 }

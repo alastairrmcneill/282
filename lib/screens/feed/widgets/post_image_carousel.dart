@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class PostImagesCarousel extends StatefulWidget {
@@ -50,13 +52,20 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                         height: 300,
                       ),
                       fadeInDuration: Duration.zero,
-                      errorWidget: (context, url, error) => Center(
-                        child: Icon(
-                          PhosphorIconsRegular.warning,
-                          size: 40,
-                          color: Colors.grey[400],
-                        ),
-                      ),
+                      errorWidget: (context, url, error) {
+                        context.read<Logger>().error(
+                              'Failed to load photo',
+                              error: error,
+                              context: {'imageUrl': url},
+                            );
+                        return Center(
+                          child: Icon(
+                            PhosphorIconsRegular.warning,
+                            size: 40,
+                            color: Colors.grey[400],
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
