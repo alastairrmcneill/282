@@ -42,9 +42,7 @@ void main() {
       latestAppVersion: '1.0.0',
       hardUpdateBuildNumber: 0,
       whatsNew: 'New features',
-      showPrivacyOption: true,
       groupFilterNewIcon: true,
-      mapboxMapScreen: false,
     ));
 
     // `maybeEnqueueWhatsNew()` calls this before checking `firstAppVersion`.
@@ -61,9 +59,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 101,
           whatsNew: 'New features',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         // Act
@@ -85,9 +81,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 101,
           whatsNew: 'New features',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         // Act
@@ -105,9 +99,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 101,
           whatsNew: 'New features',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         // Act
@@ -127,9 +119,7 @@ void main() {
           latestAppVersion: '1.2.3',
           hardUpdateBuildNumber: 0,
           whatsNew: 'Release notes',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         // Act
@@ -147,9 +137,7 @@ void main() {
           latestAppVersion: '1.1.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'Release notes',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         final today = DateFormat('dd/MM/yyyy').format(DateTime.now());
@@ -170,9 +158,7 @@ void main() {
           latestAppVersion: '1.1.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'Release notes',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         final oldEnough = DateFormat('dd/MM/yyyy').format(
@@ -204,9 +190,7 @@ void main() {
           latestAppVersion: '1.10.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'Big update',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
 
         final oldEnough = DateFormat('dd/MM/yyyy').format(
@@ -297,9 +281,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'x',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
         when(mockAppFlagsRepository.lastFeedbackSurveyNumber).thenReturn(-1);
 
@@ -318,9 +300,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'x',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
         when(mockAppFlagsRepository.lastFeedbackSurveyNumber).thenReturn(5);
 
@@ -338,9 +318,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'x',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         ));
         when(mockAppFlagsRepository.lastFeedbackSurveyNumber).thenReturn(5);
 

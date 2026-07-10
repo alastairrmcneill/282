@@ -18,7 +18,7 @@ void main() {
   late MockShareLinkRepository mockShareLinkRepository;
   late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
-  late ShareMunroState shareMunroState;
+  late ShareState shareMunroState;
 
   setUp(() {
     mockShareLinkRepository = MockShareLinkRepository();
@@ -27,7 +27,7 @@ void main() {
 
     when(mockAnalytics.track(any, props: anyNamed('props'))).thenAnswer((_) async {});
 
-    shareMunroState = ShareMunroState(
+    shareMunroState = ShareState(
       mockShareLinkRepository,
       mockAnalytics,
       mockLogger,
@@ -36,27 +36,27 @@ void main() {
     shareMunroState.reset();
   });
 
-  group('ShareMunroState', () {
+  group('ShareState', () {
     group('Initial State', () {
       test('should have correct initial values', () {
-        expect(shareMunroState.status, ShareMunroStatus.initial);
+        expect(shareMunroState.status, ShareStatus.initial);
         expect(shareMunroState.error, isA<Error>());
         expect(shareMunroState.error.code, isEmpty);
         expect(shareMunroState.error.message, isEmpty);
       });
     });
 
-    group('createShareLink', () {
+    group('createMunroLink', () {
       test('should track analytics with munro props and return link on success', () async {
         // Arrange
         when(mockShareLinkRepository.createMunroLink(any)).thenAnswer((_) async => 'https://ex.am/ple');
 
         // Act
-        final link = await shareMunroState.createShareLink(munroId: 42, munroName: 'Ben Test');
+        final link = await shareMunroState.createMunroLink(munroId: 42, munroName: 'Ben Test');
 
         // Assert
         expect(link, 'https://ex.am/ple');
-        expect(shareMunroState.status, ShareMunroStatus.initial);
+        expect(shareMunroState.status, ShareStatus.initial);
 
         verify(mockAnalytics.track(
           AnalyticsEvent.munroShared,
@@ -76,7 +76,7 @@ void main() {
         when(mockShareLinkRepository.createMunroLink(any)).thenThrow(exception);
 
         // Act
-        final link = await shareMunroState.createShareLink(munroId: 1, munroName: 'Ben Error');
+        final link = await shareMunroState.createMunroLink(munroId: 1, munroName: 'Ben Error');
 
         // Assert
         expect(link, isNull);
@@ -103,7 +103,7 @@ void main() {
         when(mockAnalytics.track(any, props: anyNamed('props'))).thenThrow(exception);
 
         // Act
-        final link = await shareMunroState.createShareLink(munroId: 99, munroName: 'Ben TrackFail');
+        final link = await shareMunroState.createMunroLink(munroId: 99, munroName: 'Ben TrackFail');
 
         // Assert
         expect(link, isNull);
@@ -123,10 +123,10 @@ void main() {
         shareMunroState.addListener(() => notifications++);
 
         // Act
-        shareMunroState.setStatus = ShareMunroStatus.loaded;
+        shareMunroState.setStatus = ShareStatus.loaded;
 
         // Assert
-        expect(shareMunroState.status, ShareMunroStatus.loaded);
+        expect(shareMunroState.status, ShareStatus.loaded);
         expect(notifications, 1);
       });
 
@@ -140,7 +140,7 @@ void main() {
         shareMunroState.setError = error;
 
         // Assert
-        expect(shareMunroState.status, ShareMunroStatus.error);
+        expect(shareMunroState.status, ShareStatus.error);
         expect(shareMunroState.error.message, 'No link for you');
         verify(mockLogger.error('No link for you')).called(1);
         expect(notifications, 1);
@@ -167,7 +167,7 @@ void main() {
     group('reset', () {
       test('should reset status + error and notify listeners', () {
         // Arrange
-        shareMunroState.setStatus = ShareMunroStatus.loaded;
+        shareMunroState.setStatus = ShareStatus.loaded;
         shareMunroState.setError = Error(code: 'x', message: 'y');
 
         var notifications = 0;
@@ -177,7 +177,7 @@ void main() {
         shareMunroState.reset();
 
         // Assert
-        expect(shareMunroState.status, ShareMunroStatus.initial);
+        expect(shareMunroState.status, ShareStatus.initial);
         expect(shareMunroState.error.code, isEmpty);
         expect(shareMunroState.error.message, isEmpty);
         expect(notifications, 1);

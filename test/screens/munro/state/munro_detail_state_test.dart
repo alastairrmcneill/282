@@ -11,18 +11,40 @@ import 'munro_detail_state_test.mocks.dart';
 // Generate mocks
 @GenerateMocks([
   MunroPicturesRepository,
+  ReviewsRepository,
   UserState,
   Logger,
 ])
 void main() {
   late MockMunroPicturesRepository mockMunroPicturesRepository;
+  late MockReviewsRepository mockReviewsRepository;
   late MockUserState mockUserState;
   late MockLogger mockLogger;
   late MunroDetailState munroDetailState;
 
+  late Munro sampleMunro;
   late List<MunroPicture> sampleMunroPictures;
 
   setUp(() {
+    sampleMunro = Munro(
+      id: 1,
+      name: 'Ben Nevis',
+      extra: null,
+      area: 'Fort William',
+      meters: 1345,
+      section: '1',
+      region: 'Lochaber',
+      feet: 4411,
+      lat: 56.79685,
+      lng: -5.00360,
+      link: '',
+      description: '',
+      pictureURL: '',
+      startingPointURL: '',
+      commonlyClimbedWith: [],
+      totalSummitCount: 0,
+    );
+
     // Sample munro picture data for testing
     sampleMunroPictures = [
       MunroPicture(
@@ -55,28 +77,38 @@ void main() {
     ];
 
     mockMunroPicturesRepository = MockMunroPicturesRepository();
+    mockReviewsRepository = MockReviewsRepository();
     mockUserState = MockUserState();
     mockLogger = MockLogger();
     munroDetailState = MunroDetailState(
       mockMunroPicturesRepository,
+      mockReviewsRepository,
       mockUserState,
       mockLogger,
     );
 
     // Default mock behavior for UserState
     when(mockUserState.blockedUsers).thenReturn([]);
+
+    // Default mock behavior for ReviewsRepository so picture-focused tests
+    // don't need to stub it individually.
+    when(mockReviewsRepository.readReviewsFromMunro(
+      munroId: anyNamed('munroId'),
+      excludedAuthorIds: anyNamed('excludedAuthorIds'),
+      offset: anyNamed('offset'),
+    )).thenAnswer((_) async => []);
   });
 
   group('MunroDetailState', () {
     group('Initial State', () {
       test('should have correct initial values', () {
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.initial);
+        expect(munroDetailState.status, MunroDetailStatus.initial);
         expect(munroDetailState.error, isA<Error>());
         expect(munroDetailState.munroPictures, isEmpty);
       });
     });
 
-    group('loadMunroPictures', () {
+    group('init', () {
       test('should load munro pictures successfully', () async {
         // Arrange
         when(mockMunroPicturesRepository.readMunroPictures(
@@ -87,42 +119,22 @@ void main() {
         )).thenAnswer((_) async => sampleMunroPictures);
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        // Wait for the underlying Future.wait chain to complete.
+        await Future.delayed(Duration.zero);
 
         // Assert
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loaded);
+        expect(munroDetailState.status, MunroDetailStatus.loaded);
+        expect(munroDetailState.selectedMunro, sampleMunro);
         expect(munroDetailState.munroPictures, sampleMunroPictures);
         expect(munroDetailState.munroPictures.length, 3);
         verify(mockMunroPicturesRepository.readMunroPictures(
           munroId: 1,
           excludedAuthorIds: [],
           offset: 0,
-          count: 18,
+          count: 4,
         )).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
-      });
-
-      test('should load munro pictures with custom count', () async {
-        // Arrange
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenAnswer((_) async => sampleMunroPictures);
-
-        // Act
-        await munroDetailState.loadMunroPictures(munroId: 1, count: 24);
-
-        // Assert
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loaded);
-        expect(munroDetailState.munroPictures, sampleMunroPictures);
-        verify(mockMunroPicturesRepository.readMunroPictures(
-          munroId: 1,
-          excludedAuthorIds: [],
-          offset: 0,
-          count: 24,
-        )).called(1);
       });
 
       test('should exclude blocked users when loading', () async {
@@ -137,14 +149,20 @@ void main() {
         )).thenAnswer((_) async => sampleMunroPictures);
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
         verify(mockMunroPicturesRepository.readMunroPictures(
           munroId: 1,
           excludedAuthorIds: blockedUsers,
           offset: 0,
-          count: 18,
+          count: 4,
+        )).called(1);
+        verify(mockReviewsRepository.readReviewsFromMunro(
+          munroId: 1,
+          excludedAuthorIds: blockedUsers,
+          offset: 0,
         )).called(1);
       });
 
@@ -155,14 +173,15 @@ void main() {
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
           offset: anyNamed('offset'),
           count: anyNamed('count'),
-        )).thenThrow(Exception('Network error'));
+        )).thenAnswer((_) async => throw Exception('Network error'));
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.error);
-        expect(munroDetailState.error.message, 'There was an issue loading pictures for this munro. Please try again.');
+        expect(munroDetailState.status, MunroDetailStatus.error);
+        expect(munroDetailState.error.message, 'There was an issue loading data for this munro. Please try again.');
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
@@ -179,229 +198,20 @@ void main() {
         });
 
         // Act
-        final future = munroDetailState.loadMunroPictures(munroId: 1);
+        final future = munroDetailState.init(sampleMunro);
 
         // Assert intermediate state
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loading);
+        expect(munroDetailState.status, MunroDetailStatus.loading);
 
         // Wait for completion
         await future;
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loaded);
-      });
-    });
-
-    group('paginateMunroPictures', () {
-      test('should paginate munro pictures successfully', () async {
-        // Set initial munro pictures - use a copy to avoid mutating sampleMunroPictures
-        munroDetailState.setMunroPictures = List.from(sampleMunroPictures);
-        // Arrange
-        final additionalPictures = [
-          MunroPicture(
-            uid: 'pic4',
-            munroId: 1,
-            authorId: 'user4',
-            imageUrl: 'https://example.com/pic4.jpg',
-            dateTime: DateTime(2024, 1, 4),
-            postId: 'post4',
-            privacy: Privacy.public,
-          ),
-        ];
-
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenAnswer((_) async => additionalPictures);
-
-        // Act
-        final result = await munroDetailState.paginateMunroPictures(munroId: 1);
-
-        // Assert
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loaded);
-        expect(munroDetailState.munroPictures.length, 4);
-        expect(munroDetailState.munroPictures.last.uid, 'pic4');
-        expect(result, munroDetailState.munroPictures);
-        verify(mockMunroPicturesRepository.readMunroPictures(
-          munroId: 1,
-          excludedAuthorIds: [],
-          offset: 3,
-          count: 18,
-        )).called(1);
-        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
-      });
-
-      test('should paginate with custom count', () async {
-        // Arrange
-        munroDetailState.setMunroPictures = List.from(sampleMunroPictures);
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenAnswer((_) async => []);
-
-        // Act
-        await munroDetailState.paginateMunroPictures(munroId: 1, count: 24);
-
-        // Assert
-        verify(mockMunroPicturesRepository.readMunroPictures(
-          munroId: 1,
-          excludedAuthorIds: [],
-          offset: 3,
-          count: 24,
-        )).called(1);
-      });
-
-      test('should exclude blocked users when paginating', () async {
-        // Arrange
-        munroDetailState.setMunroPictures = List.from(sampleMunroPictures);
-        final blockedUsers = ['blockedUser1'];
-        when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenAnswer((_) async => []);
-
-        // Act
-        await munroDetailState.paginateMunroPictures(munroId: 1);
-
-        // Assert
-        verify(mockMunroPicturesRepository.readMunroPictures(
-          munroId: 1,
-          excludedAuthorIds: blockedUsers,
-          offset: 3,
-          count: 18,
-        )).called(1);
-      });
-
-      test('should handle error during pagination', () async {
-        // Arrange
-        munroDetailState.setMunroPictures = List.from(sampleMunroPictures);
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenThrow(Exception('Pagination error'));
-
-        // Store initial picture count
-        final initialCount = munroDetailState.munroPictures.length;
-
-        // Act
-        final result = await munroDetailState.paginateMunroPictures(munroId: 1);
-
-        // Assert
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.error);
-        expect(munroDetailState.error.message, 'There was an issue loading pictures for this munro. Please try again.');
-        // Original pictures should remain unchanged
-        expect(munroDetailState.munroPictures.length, initialCount);
-        expect(result, isEmpty);
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
-      });
-
-      test('should set status to paginating during async operation', () async {
-        // Arrange
-        munroDetailState.setMunroPictures = List.from(sampleMunroPictures);
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenAnswer((_) async {
-          await Future.delayed(Duration(milliseconds: 100));
-          return [];
-        });
-
-        // Act
-        final future = munroDetailState.paginateMunroPictures(munroId: 1);
-
-        // Assert intermediate state
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.paginating);
-
-        // Wait for completion
-        await future;
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loaded);
-      });
-
-      test('should return empty list on error', () async {
-        // Arrange
-        munroDetailState.setMunroPictures = List.from(sampleMunroPictures);
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenThrow(Exception('Error'));
-
-        // Act
-        final result = await munroDetailState.paginateMunroPictures(munroId: 1);
-
-        // Assert
-        expect(result, isEmpty);
-      });
-    });
-
-    group('Setters', () {
-      test('setGalleryStatus should update status', () {
-        munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loading);
-      });
-
-      test('setError should update error and status', () {
-        final error = Error(code: 'test', message: 'test error');
-        munroDetailState.setError = error;
-
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.error);
-        expect(munroDetailState.error, error);
-      });
-
-      test('setMunroPictures should update munro pictures list', () {
-        munroDetailState.setMunroPictures = sampleMunroPictures;
-
-        expect(munroDetailState.munroPictures, sampleMunroPictures);
-        expect(munroDetailState.munroPictures.length, 3);
-      });
-
-      test('addMunroPictures should append to existing munro pictures', () {
-        munroDetailState.setMunroPictures = [sampleMunroPictures.first];
-
-        munroDetailState.addMunroPictures = [sampleMunroPictures[1], sampleMunroPictures[2]];
-
-        expect(munroDetailState.munroPictures.length, 3);
-        expect(munroDetailState.munroPictures[0], sampleMunroPictures[0]);
-        expect(munroDetailState.munroPictures[1], sampleMunroPictures[1]);
-        expect(munroDetailState.munroPictures[2], sampleMunroPictures[2]);
+        await Future.delayed(Duration(milliseconds: 150));
+        expect(munroDetailState.status, MunroDetailStatus.loaded);
       });
     });
 
     group('Edge Cases', () {
-      test('should handle empty pictures list on pagination', () async {
-        // Arrange - start with empty list
-        expect(munroDetailState.munroPictures, isEmpty);
-        when(mockMunroPicturesRepository.readMunroPictures(
-          munroId: anyNamed('munroId'),
-          excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
-          count: anyNamed('count'),
-        )).thenAnswer((_) async => sampleMunroPictures);
-
-        // Act
-        await munroDetailState.paginateMunroPictures(munroId: 1);
-
-        // Assert
-        expect(munroDetailState.munroPictures, sampleMunroPictures);
-        verify(mockMunroPicturesRepository.readMunroPictures(
-          munroId: 1,
-          excludedAuthorIds: [],
-          offset: 0,
-          count: 18,
-        )).called(1);
-      });
-
-      test('should handle null dateTime in pictures', () {
+      test('should handle null dateTime in pictures', () async {
         // Arrange
         final pictureWithNullDateTime = MunroPicture(
           uid: 'pic5',
@@ -412,9 +222,16 @@ void main() {
           postId: 'post5',
           privacy: Privacy.public,
         );
+        when(mockMunroPicturesRepository.readMunroPictures(
+          munroId: anyNamed('munroId'),
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+          offset: anyNamed('offset'),
+          count: anyNamed('count'),
+        )).thenAnswer((_) async => [pictureWithNullDateTime]);
 
         // Act
-        munroDetailState.setMunroPictures = [pictureWithNullDateTime];
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
         expect(munroDetailState.munroPictures.first.dateTime, isNull);
@@ -430,10 +247,11 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
-        expect(munroDetailState.galleryStatus, MunroDetailStatus.loaded);
+        expect(munroDetailState.status, MunroDetailStatus.loaded);
         expect(munroDetailState.munroPictures, isEmpty);
       });
 
@@ -449,19 +267,21 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
         verify(mockMunroPicturesRepository.readMunroPictures(
           munroId: 1,
           excludedAuthorIds: blockedUsers,
           offset: 0,
-          count: 18,
+          count: 4,
         )).called(1);
       });
 
       test('should handle different munro IDs', () async {
         // Arrange
+        final otherMunro = sampleMunro.copy(id: 999);
         when(mockMunroPicturesRepository.readMunroPictures(
           munroId: anyNamed('munroId'),
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
@@ -470,18 +290,19 @@ void main() {
         )).thenAnswer((_) async => []);
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 999);
+        await munroDetailState.init(otherMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
         verify(mockMunroPicturesRepository.readMunroPictures(
           munroId: 999,
           excludedAuthorIds: [],
           offset: 0,
-          count: 18,
+          count: 4,
         )).called(1);
       });
 
-      test('should handle different privacy settings', () {
+      test('should handle different privacy settings', () async {
         // Arrange
         final mixedPrivacyPictures = [
           MunroPicture(
@@ -512,9 +333,16 @@ void main() {
             privacy: Privacy.private,
           ),
         ];
+        when(mockMunroPicturesRepository.readMunroPictures(
+          munroId: anyNamed('munroId'),
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+          offset: anyNamed('offset'),
+          count: anyNamed('count'),
+        )).thenAnswer((_) async => mixedPrivacyPictures);
 
         // Act
-        munroDetailState.setMunroPictures = mixedPrivacyPictures;
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
         expect(munroDetailState.munroPictures[0].privacy, Privacy.public);
@@ -537,67 +365,30 @@ void main() {
         munroDetailState.addListener(() => notified = true);
 
         // Act
-        await munroDetailState.loadMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
         expect(notified, true);
       });
 
-      test('should notify listeners when paginating munro pictures', () async {
+      test('should notify listeners when error occurs during loading', () async {
         // Arrange
-        munroDetailState.setMunroPictures = sampleMunroPictures;
         when(mockMunroPicturesRepository.readMunroPictures(
           munroId: anyNamed('munroId'),
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
           offset: anyNamed('offset'),
           count: anyNamed('count'),
-        )).thenAnswer((_) async => []);
+        )).thenAnswer((_) async => throw Exception('Network error'));
 
         bool notified = false;
         munroDetailState.addListener(() => notified = true);
 
         // Act
-        await munroDetailState.paginateMunroPictures(munroId: 1);
+        await munroDetailState.init(sampleMunro);
+        await Future.delayed(Duration.zero);
 
         // Assert
-        expect(notified, true);
-      });
-
-      test('should notify listeners when setting munro pictures', () {
-        bool notified = false;
-        munroDetailState.addListener(() => notified = true);
-
-        munroDetailState.setMunroPictures = sampleMunroPictures;
-
-        expect(notified, true);
-      });
-
-      test('should notify listeners when adding munro pictures', () {
-        munroDetailState.setMunroPictures = [sampleMunroPictures.first];
-
-        bool notified = false;
-        munroDetailState.addListener(() => notified = true);
-
-        munroDetailState.addMunroPictures = [sampleMunroPictures[1]];
-
-        expect(notified, true);
-      });
-
-      test('should notify listeners when gallery status changes', () {
-        bool notified = false;
-        munroDetailState.addListener(() => notified = true);
-
-        munroDetailState.setGalleryStatus = MunroDetailStatus.loading;
-
-        expect(notified, true);
-      });
-
-      test('should notify listeners when error occurs', () {
-        bool notified = false;
-        munroDetailState.addListener(() => notified = true);
-
-        munroDetailState.setError = Error(message: 'test error');
-
         expect(notified, true);
       });
     });

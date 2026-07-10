@@ -27,6 +27,7 @@ void main() {
       metricHeight: false,
       metricTemperature: true,
       defaultPostVisibility: Privacy.public,
+      themeMode: ThemeModeOption.system,
     );
 
     mockSettingsRepository = MockSettingsRepository();
@@ -71,6 +72,7 @@ void main() {
           metricHeight: true,
           metricTemperature: false,
           defaultPostVisibility: Privacy.private,
+          themeMode: ThemeModeOption.system,
         );
         when(mockSettingsRepository.load()).thenReturn(customSettings);
 
@@ -138,6 +140,7 @@ void main() {
           metricHeight: true,
           metricTemperature: false,
           defaultPostVisibility: Privacy.friends,
+          themeMode: ThemeModeOption.system,
         );
         when(mockSettingsRepository.save(any)).thenAnswer((_) async => Future.value());
 

@@ -87,6 +87,7 @@ void main() {
       pictureURL: 'https://example.com/ben-nevis.jpg',
       startingPointURL: 'https://example.com/start.jpg',
       commonlyClimbedWith: [],
+      totalSummitCount: 0,
     );
 
     mockWeatherRepository = MockWeartherRepository();
@@ -225,6 +226,7 @@ void main() {
           pictureURL: 'https://example.com/ben-lomond.jpg',
           startingPointURL: 'https://example.com/start.jpg',
           commonlyClimbedWith: [],
+          totalSummitCount: 0,
         );
         when(mockWeatherRepository.fetchWeather(
           lat: anyNamed('lat'),
@@ -272,21 +274,6 @@ void main() {
         // Assert
         expect(weatherState.forecast.length, 1);
         expect(weatherState.forecast, newForecast);
-      });
-    });
-
-    group('Setters', () {
-      test('setStatus should update status', () {
-        weatherState.setStatus = WeatherStatus.loading;
-        expect(weatherState.status, WeatherStatus.loading);
-      });
-
-      test('setError should update error and status', () {
-        final error = Error(code: 'test_code', message: 'test error');
-        weatherState.setError = error;
-
-        expect(weatherState.status, WeatherStatus.error);
-        expect(weatherState.error, error);
       });
     });
 
@@ -398,24 +385,6 @@ void main() {
         await weatherState.getWeather(sampleMunro);
 
         // Assert
-        expect(notified, true);
-      });
-
-      test('should notify listeners when status changes', () {
-        bool notified = false;
-        weatherState.addListener(() => notified = true);
-
-        weatherState.setStatus = WeatherStatus.loading;
-
-        expect(notified, true);
-      });
-
-      test('should notify listeners when error occurs', () {
-        bool notified = false;
-        weatherState.addListener(() => notified = true);
-
-        weatherState.setError = Error(message: 'test error');
-
         expect(notified, true);
       });
 

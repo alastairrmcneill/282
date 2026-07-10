@@ -122,99 +122,6 @@ void main() {
       });
     });
 
-    group('getInitialFriends', () {
-      test('should load friends successfully', () async {
-        // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenAnswer((_) async => sampleFriends);
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        expect(groupFilterState.status, GroupFilterStatus.loaded);
-        expect(groupFilterState.friends, sampleFriends);
-        verify(mockFollowersRepository.getFollowingFromUid(
-          sourceId: 'currentUserId',
-          excludedUserIds: [],
-        )).called(1);
-        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
-      });
-
-      test('should exclude blocked users when loading', () async {
-        // Arrange
-        final blockedUsers = ['blockedUser1', 'blockedUser2'];
-        when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenAnswer((_) async => sampleFriends);
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        verify(mockFollowersRepository.getFollowingFromUid(
-          sourceId: 'currentUserId',
-          excludedUserIds: blockedUsers,
-        )).called(1);
-      });
-
-      test('should handle error during loading friends', () async {
-        // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenThrow(Exception('Network error'));
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        expect(groupFilterState.status, GroupFilterStatus.error);
-        expect(groupFilterState.error.message, 'There was an issue. Please try again.');
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
-      });
-
-      test('should not load if current user is null', () async {
-        // Arrange
-        when(mockUserState.currentUser).thenReturn(null);
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        verifyNever(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        ));
-        expect(groupFilterState.status, GroupFilterStatus.initial);
-      });
-
-      test('should set status to loading during async operation', () async {
-        // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenAnswer((_) async {
-          await Future.delayed(Duration(milliseconds: 100));
-          return sampleFriends;
-        });
-
-        // Act
-        final future = groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert intermediate state
-        expect(groupFilterState.status, GroupFilterStatus.loading);
-
-        // Wait for completion
-        await future;
-        expect(groupFilterState.status, GroupFilterStatus.loaded);
-      });
-    });
-
     group('search', () {
       test('should search friends successfully', () async {
         // Arrange
@@ -438,7 +345,7 @@ void main() {
     group('addSelectedFriend', () {
       test('should add friend uid to selection', () {
         // Act
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         // Assert
         expect(groupFilterState.selectedFriendsUids, contains('friend1'));
@@ -447,9 +354,9 @@ void main() {
 
       test('should add multiple friends to selection', () {
         // Act
-        groupFilterState.addSelectedFriend(uid: 'friend1');
-        groupFilterState.addSelectedFriend(uid: 'friend2');
-        groupFilterState.addSelectedFriend(uid: 'friend3');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
+        groupFilterState.addSelectedFriend(friend: sampleFriends[1]);
+        groupFilterState.addSelectedFriend(friend: sampleFriends[2]);
 
         // Assert
         expect(groupFilterState.selectedFriendsUids, ['friend1', 'friend2', 'friend3']);
@@ -460,8 +367,8 @@ void main() {
     group('removeSelectedFriend', () {
       test('should remove friend uid from selection', () {
         // Arrange
-        groupFilterState.addSelectedFriend(uid: 'friend1');
-        groupFilterState.addSelectedFriend(uid: 'friend2');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
+        groupFilterState.addSelectedFriend(friend: sampleFriends[1]);
 
         // Act
         groupFilterState.removeSelectedFriend(uid: 'friend1');
@@ -473,7 +380,7 @@ void main() {
 
       test('should handle removing uid that is not in selection', () {
         // Arrange
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         // Act
         groupFilterState.removeSelectedFriend(uid: 'friend2');
@@ -495,8 +402,8 @@ void main() {
     group('clearSelection', () {
       test('should clear selected friends and munro filter', () {
         // Arrange
-        groupFilterState.addSelectedFriend(uid: 'friend1');
-        groupFilterState.addSelectedFriend(uid: 'friend2');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
+        groupFilterState.addSelectedFriend(friend: sampleFriends[1]);
 
         // Act
         groupFilterState.clearSelection();
@@ -510,8 +417,8 @@ void main() {
     group('filterMunrosBySelection', () {
       test('should filter munros by selected friends successfully', () async {
         // Arrange
-        groupFilterState.addSelectedFriend(uid: 'friend1');
-        groupFilterState.addSelectedFriend(uid: 'friend2');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
+        groupFilterState.addSelectedFriend(friend: sampleFriends[1]);
 
         when(mockMunroCompletionsRepository.getMunroCompletionsFromUserList(
           userIds: anyNamed('userIds'),
@@ -530,7 +437,7 @@ void main() {
 
       test('should include current user in filter query', () async {
         // Arrange
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         when(mockMunroCompletionsRepository.getMunroCompletionsFromUserList(
           userIds: anyNamed('userIds'),
@@ -550,7 +457,7 @@ void main() {
 
       test('should handle duplicate munro IDs', () async {
         // Arrange
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         final duplicateMunroCompletions = [
           MunroCompletion(
@@ -612,8 +519,8 @@ void main() {
         // Arrange
         groupFilterState.setFriends = sampleFriends;
         groupFilterState.setStatus = GroupFilterStatus.loaded;
-        groupFilterState.addSelectedFriend(uid: 'friend1');
-        groupFilterState.addSelectedFriend(uid: 'friend2');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
+        groupFilterState.addSelectedFriend(friend: sampleFriends[1]);
 
         // Act
         groupFilterState.reset();
@@ -701,40 +608,6 @@ void main() {
         expect(groupFilterState.friends.first.sourceProfilePictureURL, isNull);
       });
 
-      test('should handle repository returning empty lists', () async {
-        // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenAnswer((_) async => []);
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        expect(groupFilterState.status, GroupFilterStatus.loaded);
-        expect(groupFilterState.friends, isEmpty);
-      });
-
-      test('should handle multiple blocked users', () async {
-        // Arrange
-        final blockedUsers = ['blocked1', 'blocked2', 'blocked3', 'blocked4'];
-        when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenAnswer((_) async => []);
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        verify(mockFollowersRepository.getFollowingFromUid(
-          sourceId: 'currentUserId',
-          excludedUserIds: blockedUsers,
-        )).called(1);
-      });
-
       test('should handle search with empty query', () async {
         // Arrange
         when(mockFollowersRepository.searchFollowing(
@@ -771,23 +644,6 @@ void main() {
     });
 
     group('ChangeNotifier', () {
-      test('should notify listeners when loading friends', () async {
-        // Arrange
-        when(mockFollowersRepository.getFollowingFromUid(
-          sourceId: anyNamed('sourceId'),
-          excludedUserIds: anyNamed('excludedUserIds'),
-        )).thenAnswer((_) async => sampleFriends);
-
-        bool notified = false;
-        groupFilterState.addListener(() => notified = true);
-
-        // Act
-        await groupFilterState.getInitialFriends(userId: 'currentUserId');
-
-        // Assert
-        expect(notified, true);
-      });
-
       test('should notify listeners when searching', () async {
         // Arrange
         when(mockFollowersRepository.searchFollowing(
@@ -866,13 +722,13 @@ void main() {
         bool notified = false;
         groupFilterState.addListener(() => notified = true);
 
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         expect(notified, true);
       });
 
       test('should notify listeners when removing selected friend', () {
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         bool notified = false;
         groupFilterState.addListener(() => notified = true);
@@ -883,7 +739,7 @@ void main() {
       });
 
       test('should notify listeners when clearing selection', () {
-        groupFilterState.addSelectedFriend(uid: 'friend1');
+        groupFilterState.addSelectedFriend(friend: sampleFriends[0]);
 
         bool notified = false;
         groupFilterState.addListener(() => notified = true);

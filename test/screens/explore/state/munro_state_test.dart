@@ -41,6 +41,7 @@ void main() {
       averageRating: 4.5,
       reviewCount: 150,
       commonlyClimbedWith: [],
+      totalSummitCount: 0,
     ),
     Munro(
       id: 2,
@@ -67,6 +68,7 @@ void main() {
           togetherCount: 10,
         ),
       ],
+      totalSummitCount: 0,
     ),
     Munro(
       id: 3,
@@ -93,6 +95,7 @@ void main() {
           togetherCount: 10,
         ),
       ],
+      totalSummitCount: 0,
     ),
   ];
 
@@ -519,6 +522,7 @@ void main() {
           startingPointURL: 'https://maps.google.com',
           saved: false,
           commonlyClimbedWith: [],
+          totalSummitCount: 0,
         );
 
         munroState.setMunroList = [munroWithNullExtra];
@@ -547,6 +551,7 @@ void main() {
           averageRating: null,
           reviewCount: null,
           commonlyClimbedWith: [],
+          totalSummitCount: 0,
         );
 
         munroState.setMunroList = [munroWithNulls, sampleMunros.first];

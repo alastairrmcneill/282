@@ -19,7 +19,6 @@ import 'create_post_state_test.mocks.dart';
   StorageRepository,
   UserState,
   MunroCompletionState,
-  RemoteConfigState,
   Analytics,
   Logger,
 ])
@@ -29,7 +28,6 @@ void main() {
   late MockStorageRepository mockStorageRepository;
   late MockUserState mockUserState;
   late MockMunroCompletionState mockMunroCompletionState;
-  late MockRemoteConfigState mockRemoteConfigState;
   late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late CreatePostState createPostState;
@@ -70,7 +68,6 @@ void main() {
     mockStorageRepository = MockStorageRepository();
     mockUserState = MockUserState();
     mockMunroCompletionState = MockMunroCompletionState();
-    mockRemoteConfigState = MockRemoteConfigState();
     mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
 
@@ -80,7 +77,6 @@ void main() {
       mockStorageRepository,
       mockUserState,
       mockMunroCompletionState,
-      mockRemoteConfigState,
       mockAnalytics,
       mockLogger,
     );
@@ -462,11 +458,7 @@ void main() {
     });
 
     group('createPost - dateTimeCompleted population', () {
-      late RemoteConfig mockConfig;
-
       setUp(() {
-        mockConfig = RemoteConfig.defaultConfig;
-        when(mockRemoteConfigState.config).thenReturn(mockConfig);
         when(mockPostsRepository.create(post: anyNamed('post'))).thenAnswer((_) async => 'post123');
         when(mockMunroPicturesRepository.createMunroPictures(munroPictures: anyNamed('munroPictures')))
             .thenAnswer((_) async {});

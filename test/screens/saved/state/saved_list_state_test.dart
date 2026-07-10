@@ -241,8 +241,9 @@ void main() {
         await savedListState.updateSavedListName(savedList: updatedList);
 
         // Assert
-        // Note: updateSavedListName doesn't set status to loaded after success
-        expect(savedListState.status, SavedListStatus.loading);
+        // Note: updateSavedListName never touches status (rename UX moved to a per-tile
+        // local editing state), so status stays at whatever it already was — initial here.
+        expect(savedListState.status, SavedListStatus.initial);
         expect(savedListState.savedLists.first.name, 'Updated Name');
         verify(mockSavedListRepository.update(savedList: updatedList)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
@@ -279,26 +280,9 @@ void main() {
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
-      test('should set status to loading during async operation', () async {
-        // Arrange
-        savedListState.setSavedLists = List.from(sampleSavedLists);
-        final updatedList = sampleSavedLists.first.copy(name: 'Updated Name');
-
-        when(mockSavedListRepository.update(savedList: anyNamed('savedList'))).thenAnswer((_) async {
-          await Future.delayed(Duration(milliseconds: 100));
-        });
-
-        // Act
-        final future = savedListState.updateSavedListName(savedList: updatedList);
-
-        // Assert intermediate state
-        expect(savedListState.status, SavedListStatus.loading);
-
-        // Wait for completion
-        await future;
-        // Note: updateSavedListName doesn't set status to loaded after success
-        expect(savedListState.status, SavedListStatus.loading);
-      });
+      // Removed 'should set status to loading during async operation': updateSavedListName
+      // no longer touches status at all (rename UX moved to a per-tile local editing state,
+      // see commit 421f704), so there's no intermediate loading state left to observe.
     });
 
     group('deleteSavedList', () {
@@ -907,8 +891,9 @@ void main() {
         await savedListState.deleteSavedList(savedList: list2);
         expect(savedListState.savedLists.length, 1);
 
-        // Assert final state - update leaves status as loading
-        expect(savedListState.status, SavedListStatus.loading);
+        // Assert final state - neither updateSavedListName nor deleteSavedList touch status,
+        // so it's left at whatever the last create call set it to: loaded.
+        expect(savedListState.status, SavedListStatus.loaded);
         expect(savedListState.savedLists.first.name, 'Updated List 1');
       });
 

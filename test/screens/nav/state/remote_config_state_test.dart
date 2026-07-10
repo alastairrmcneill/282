@@ -40,9 +40,7 @@ void main() {
         expect(remoteConfigState.config.latestAppVersion, defaultConfig.latestAppVersion);
         expect(remoteConfigState.config.hardUpdateBuildNumber, defaultConfig.hardUpdateBuildNumber);
         expect(remoteConfigState.config.whatsNew, defaultConfig.whatsNew);
-        expect(remoteConfigState.config.showPrivacyOption, defaultConfig.showPrivacyOption);
         expect(remoteConfigState.config.groupFilterNewIcon, defaultConfig.groupFilterNewIcon);
-        expect(remoteConfigState.config.mapboxMapScreen, defaultConfig.mapboxMapScreen);
       });
     });
 
@@ -52,17 +50,13 @@ void main() {
         required String latestAppVersion,
         required int hardUpdateBuildNumber,
         required String whatsNew,
-        required bool showPrivacyOption,
         required bool groupFilterNewIcon,
-        required bool mapboxMapScreen,
       }) {
         when(mockRemoteConfigRespository.getInt(RCFields.feedbackSurveyNumber)).thenReturn(feedbackSurveyNumber);
         when(mockRemoteConfigRespository.getString(RCFields.latestAppVersion)).thenReturn(latestAppVersion);
         when(mockRemoteConfigRespository.getInt(RCFields.hardUpdateBuildNumber)).thenReturn(hardUpdateBuildNumber);
         when(mockRemoteConfigRespository.getString(RCFields.whatsNew)).thenReturn(whatsNew);
-        when(mockRemoteConfigRespository.getBool(RCFields.showPrivacyOption)).thenReturn(showPrivacyOption);
         when(mockRemoteConfigRespository.getBool(RCFields.groupFilterNewIcon)).thenReturn(groupFilterNewIcon);
-        when(mockRemoteConfigRespository.getBool(RCFields.mapboxMapScreen)).thenReturn(mapboxMapScreen);
       }
 
       test('should set loading then loaded and read snapshot on success', () async {
@@ -73,9 +67,7 @@ void main() {
           latestAppVersion: '2.0.0',
           hardUpdateBuildNumber: 42,
           whatsNew: 'New stuff',
-          showPrivacyOption: false,
           groupFilterNewIcon: true,
-          mapboxMapScreen: true,
         );
 
         final statuses = <RemoteConfigStatus>[];
@@ -93,9 +85,7 @@ void main() {
         expect(remoteConfigState.config.latestAppVersion, '2.0.0');
         expect(remoteConfigState.config.hardUpdateBuildNumber, 42);
         expect(remoteConfigState.config.whatsNew, 'New stuff');
-        expect(remoteConfigState.config.showPrivacyOption, false);
         expect(remoteConfigState.config.groupFilterNewIcon, true);
-        expect(remoteConfigState.config.mapboxMapScreen, true);
 
         verifyInOrder([
           mockRemoteConfigRespository.init(),
@@ -103,9 +93,7 @@ void main() {
           mockRemoteConfigRespository.getString(RCFields.latestAppVersion),
           mockRemoteConfigRespository.getInt(RCFields.hardUpdateBuildNumber),
           mockRemoteConfigRespository.getString(RCFields.whatsNew),
-          mockRemoteConfigRespository.getBool(RCFields.showPrivacyOption),
           mockRemoteConfigRespository.getBool(RCFields.groupFilterNewIcon),
-          mockRemoteConfigRespository.getBool(RCFields.mapboxMapScreen),
         ]);
 
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
@@ -120,9 +108,7 @@ void main() {
           latestAppVersion: '1.2.3',
           hardUpdateBuildNumber: 10,
           whatsNew: 'Hello',
-          showPrivacyOption: true,
           groupFilterNewIcon: false,
-          mapboxMapScreen: false,
         );
 
         final statuses = <RemoteConfigStatus>[];
@@ -141,9 +127,7 @@ void main() {
         expect(remoteConfigState.config.latestAppVersion, '1.2.3');
         expect(remoteConfigState.config.hardUpdateBuildNumber, 10);
         expect(remoteConfigState.config.whatsNew, 'Hello');
-        expect(remoteConfigState.config.showPrivacyOption, true);
         expect(remoteConfigState.config.groupFilterNewIcon, false);
-        expect(remoteConfigState.config.mapboxMapScreen, false);
 
         verify(mockLogger.error(
           'Failed to initialize remote config: $exception',
@@ -154,9 +138,7 @@ void main() {
         verify(mockRemoteConfigRespository.getString(RCFields.latestAppVersion)).called(1);
         verify(mockRemoteConfigRespository.getInt(RCFields.hardUpdateBuildNumber)).called(1);
         verify(mockRemoteConfigRespository.getString(RCFields.whatsNew)).called(1);
-        verify(mockRemoteConfigRespository.getBool(RCFields.showPrivacyOption)).called(1);
         verify(mockRemoteConfigRespository.getBool(RCFields.groupFilterNewIcon)).called(1);
-        verify(mockRemoteConfigRespository.getBool(RCFields.mapboxMapScreen)).called(1);
       });
 
       test('should notify listeners exactly twice (loading + final)', () async {
@@ -167,9 +149,7 @@ void main() {
           latestAppVersion: '1.0.0',
           hardUpdateBuildNumber: 0,
           whatsNew: 'x',
-          showPrivacyOption: true,
           groupFilterNewIcon: true,
-          mapboxMapScreen: false,
         );
 
         var notificationCount = 0;

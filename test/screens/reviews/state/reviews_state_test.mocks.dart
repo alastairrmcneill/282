@@ -4,17 +4,18 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
-import 'dart:io' as _i10;
-import 'dart:ui' as _i8;
+import 'dart:io' as _i11;
+import 'dart:ui' as _i9;
 
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i7;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:two_eight_two/analytics/analytics_base.dart' as _i11;
+import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:two_eight_two/analytics/analytics_base.dart' as _i12;
 import 'package:two_eight_two/enums/enums.dart' as _i6;
-import 'package:two_eight_two/logging/logging.dart' as _i12;
-import 'package:two_eight_two/models/models.dart' as _i3;
-import 'package:two_eight_two/repos/repos.dart' as _i2;
-import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i9;
+import 'package:two_eight_two/logging/logging.dart' as _i13;
+import 'package:two_eight_two/models/models.dart' as _i2;
+import 'package:two_eight_two/repos/repos.dart' as _i3;
+import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i10;
 import 'package:two_eight_two/screens/explore/state/munro_state.dart' as _i5;
 
 // ignore_for_file: type=lint
@@ -32,9 +33,9 @@ import 'package:two_eight_two/screens/explore/state/munro_state.dart' as _i5;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeMunroRepository_0 extends _i1.SmartFake
-    implements _i2.MunroRepository {
-  _FakeMunroRepository_0(
+class _FakeMunroRatingsBreakdown_0 extends _i1.SmartFake
+    implements _i2.MunroRatingsBreakdown {
+  _FakeMunroRatingsBreakdown_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -43,8 +44,9 @@ class _FakeMunroRepository_0 extends _i1.SmartFake
         );
 }
 
-class _FakeError_1 extends _i1.SmartFake implements _i3.Error {
-  _FakeError_1(
+class _FakeMunroRepository_1 extends _i1.SmartFake
+    implements _i3.MunroRepository {
+  _FakeMunroRepository_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -53,8 +55,8 @@ class _FakeError_1 extends _i1.SmartFake implements _i3.Error {
         );
 }
 
-class _FakeFilterOptions_2 extends _i1.SmartFake implements _i3.FilterOptions {
-  _FakeFilterOptions_2(
+class _FakeError_2 extends _i1.SmartFake implements _i2.Error {
+  _FakeError_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -63,9 +65,8 @@ class _FakeFilterOptions_2 extends _i1.SmartFake implements _i3.FilterOptions {
         );
 }
 
-class _FakeUserRepository_3 extends _i1.SmartFake
-    implements _i2.UserRepository {
-  _FakeUserRepository_3(
+class _FakeFilterOptions_3 extends _i1.SmartFake implements _i2.FilterOptions {
+  _FakeFilterOptions_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -74,9 +75,9 @@ class _FakeUserRepository_3 extends _i1.SmartFake
         );
 }
 
-class _FakeBlockedUserRepository_4 extends _i1.SmartFake
-    implements _i2.BlockedUserRepository {
-  _FakeBlockedUserRepository_4(
+class _FakeUserRepository_4 extends _i1.SmartFake
+    implements _i3.UserRepository {
+  _FakeUserRepository_4(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -85,9 +86,20 @@ class _FakeBlockedUserRepository_4 extends _i1.SmartFake
         );
 }
 
-class _FakeStorageRepository_5 extends _i1.SmartFake
-    implements _i2.StorageRepository {
-  _FakeStorageRepository_5(
+class _FakeBlockedUserRepository_5 extends _i1.SmartFake
+    implements _i3.BlockedUserRepository {
+  _FakeBlockedUserRepository_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeStorageRepository_6 extends _i1.SmartFake
+    implements _i3.StorageRepository {
+  _FakeStorageRepository_6(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -99,13 +111,13 @@ class _FakeStorageRepository_5 extends _i1.SmartFake
 /// A class which mocks [ReviewsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockReviewsRepository extends _i1.Mock implements _i2.ReviewsRepository {
+class MockReviewsRepository extends _i1.Mock implements _i3.ReviewsRepository {
   MockReviewsRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> create({required _i3.Review? review}) => (super.noSuchMethod(
+  _i4.Future<void> create({required _i2.Review? review}) => (super.noSuchMethod(
         Invocation.method(
           #create,
           [],
@@ -116,7 +128,7 @@ class MockReviewsRepository extends _i1.Mock implements _i2.ReviewsRepository {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<void> update({required _i3.Review? review}) => (super.noSuchMethod(
+  _i4.Future<void> update({required _i2.Review? review}) => (super.noSuchMethod(
         Invocation.method(
           #update,
           [],
@@ -127,7 +139,7 @@ class MockReviewsRepository extends _i1.Mock implements _i2.ReviewsRepository {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<List<_i3.Review>> readReviewsFromMunro({
+  _i4.Future<List<_i2.Review>> readReviewsFromMunro({
     required int? munroId,
     required List<String>? excludedAuthorIds,
     int? offset = 0,
@@ -142,8 +154,28 @@ class MockReviewsRepository extends _i1.Mock implements _i2.ReviewsRepository {
             #offset: offset,
           },
         ),
-        returnValue: _i4.Future<List<_i3.Review>>.value(<_i3.Review>[]),
-      ) as _i4.Future<List<_i3.Review>>);
+        returnValue: _i4.Future<List<_i2.Review>>.value(<_i2.Review>[]),
+      ) as _i4.Future<List<_i2.Review>>);
+
+  @override
+  _i4.Future<_i2.MunroRatingsBreakdown> readRatingsBreakdownFromMunro(
+          {required int? munroId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #readRatingsBreakdownFromMunro,
+          [],
+          {#munroId: munroId},
+        ),
+        returnValue: _i4.Future<_i2.MunroRatingsBreakdown>.value(
+            _FakeMunroRatingsBreakdown_0(
+          this,
+          Invocation.method(
+            #readRatingsBreakdownFromMunro,
+            [],
+            {#munroId: munroId},
+          ),
+        )),
+      ) as _i4.Future<_i2.MunroRatingsBreakdown>);
 
   @override
   _i4.Future<void> delete({required String? uid}) => (super.noSuchMethod(
@@ -166,13 +198,13 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
   }
 
   @override
-  _i2.MunroRepository get munroRepository => (super.noSuchMethod(
+  _i3.MunroRepository get munroRepository => (super.noSuchMethod(
         Invocation.getter(#munroRepository),
-        returnValue: _FakeMunroRepository_0(
+        returnValue: _FakeMunroRepository_1(
           this,
           Invocation.getter(#munroRepository),
         ),
-      ) as _i2.MunroRepository);
+      ) as _i3.MunroRepository);
 
   @override
   _i5.MunroStatus get status => (super.noSuchMethod(
@@ -181,25 +213,25 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       ) as _i5.MunroStatus);
 
   @override
-  _i3.Error get error => (super.noSuchMethod(
+  _i2.Error get error => (super.noSuchMethod(
         Invocation.getter(#error),
-        returnValue: _FakeError_1(
+        returnValue: _FakeError_2(
           this,
           Invocation.getter(#error),
         ),
-      ) as _i3.Error);
+      ) as _i2.Error);
 
   @override
-  List<_i3.Munro> get munroList => (super.noSuchMethod(
+  List<_i2.Munro> get munroList => (super.noSuchMethod(
         Invocation.getter(#munroList),
-        returnValue: <_i3.Munro>[],
-      ) as List<_i3.Munro>);
+        returnValue: <_i2.Munro>[],
+      ) as List<_i2.Munro>);
 
   @override
-  List<_i3.Munro> get filteredMunroList => (super.noSuchMethod(
+  List<_i2.Munro> get filteredMunroList => (super.noSuchMethod(
         Invocation.getter(#filteredMunroList),
-        returnValue: <_i3.Munro>[],
-      ) as List<_i3.Munro>);
+        returnValue: <_i2.Munro>[],
+      ) as List<_i2.Munro>);
 
   @override
   _i6.SortOrder get sortOrder => (super.noSuchMethod(
@@ -208,13 +240,13 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       ) as _i6.SortOrder);
 
   @override
-  _i3.FilterOptions get filterOptions => (super.noSuchMethod(
+  _i2.FilterOptions get filterOptions => (super.noSuchMethod(
         Invocation.getter(#filterOptions),
-        returnValue: _FakeFilterOptions_2(
+        returnValue: _FakeFilterOptions_3(
           this,
           Invocation.getter(#filterOptions),
         ),
-      ) as _i3.FilterOptions);
+      ) as _i2.FilterOptions);
 
   @override
   bool get isFilterOptionsSet => (super.noSuchMethod(
@@ -223,16 +255,31 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       ) as bool);
 
   @override
-  List<_i3.Munro> get createPostFilteredMunroList => (super.noSuchMethod(
-        Invocation.getter(#createPostFilteredMunroList),
-        returnValue: <_i3.Munro>[],
-      ) as List<_i3.Munro>);
+  bool get isSearchActive => (super.noSuchMethod(
+        Invocation.getter(#isSearchActive),
+        returnValue: false,
+      ) as bool);
 
   @override
-  List<_i3.Munro> get bulkMunroUpdateList => (super.noSuchMethod(
+  String get filterString => (super.noSuchMethod(
+        Invocation.getter(#filterString),
+        returnValue: _i7.dummyValue<String>(
+          this,
+          Invocation.getter(#filterString),
+        ),
+      ) as String);
+
+  @override
+  List<_i2.Munro> get createPostFilteredMunroList => (super.noSuchMethod(
+        Invocation.getter(#createPostFilteredMunroList),
+        returnValue: <_i2.Munro>[],
+      ) as List<_i2.Munro>);
+
+  @override
+  List<_i2.Munro> get bulkMunroUpdateList => (super.noSuchMethod(
         Invocation.getter(#bulkMunroUpdateList),
-        returnValue: <_i3.Munro>[],
-      ) as List<_i3.Munro>);
+        returnValue: <_i2.Munro>[],
+      ) as List<_i2.Munro>);
 
   @override
   set setStatus(_i5.MunroStatus? searchStatus) => super.noSuchMethod(
@@ -244,7 +291,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  set setError(_i3.Error? error) => super.noSuchMethod(
+  set setError(_i2.Error? error) => super.noSuchMethod(
         Invocation.setter(
           #setError,
           error,
@@ -253,7 +300,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  set setMunroList(List<_i3.Munro>? munroList) => super.noSuchMethod(
+  set setMunroList(List<_i2.Munro>? munroList) => super.noSuchMethod(
         Invocation.setter(
           #setMunroList,
           munroList,
@@ -280,7 +327,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i7.LatLngBounds? bounds) => super.noSuchMethod(
+  set setLatLngBounds(_i8.LatLngBounds? bounds) => super.noSuchMethod(
         Invocation.setter(
           #setLatLngBounds,
           bounds,
@@ -298,7 +345,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  set setFilterOptions(_i3.FilterOptions? filterOptions) => super.noSuchMethod(
+  set setFilterOptions(_i2.FilterOptions? filterOptions) => super.noSuchMethod(
         Invocation.setter(
           #setFilterOptions,
           filterOptions,
@@ -370,7 +417,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -379,7 +426,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -409,52 +456,52 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
 /// A class which mocks [UserState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserState extends _i1.Mock implements _i9.UserState {
+class MockUserState extends _i1.Mock implements _i10.UserState {
   MockUserState() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.UserRepository get userRepository => (super.noSuchMethod(
+  _i3.UserRepository get userRepository => (super.noSuchMethod(
         Invocation.getter(#userRepository),
-        returnValue: _FakeUserRepository_3(
+        returnValue: _FakeUserRepository_4(
           this,
           Invocation.getter(#userRepository),
         ),
-      ) as _i2.UserRepository);
+      ) as _i3.UserRepository);
 
   @override
-  _i2.BlockedUserRepository get blockedUserRepository => (super.noSuchMethod(
+  _i3.BlockedUserRepository get blockedUserRepository => (super.noSuchMethod(
         Invocation.getter(#blockedUserRepository),
-        returnValue: _FakeBlockedUserRepository_4(
+        returnValue: _FakeBlockedUserRepository_5(
           this,
           Invocation.getter(#blockedUserRepository),
         ),
-      ) as _i2.BlockedUserRepository);
+      ) as _i3.BlockedUserRepository);
 
   @override
-  _i2.StorageRepository get storageRepository => (super.noSuchMethod(
+  _i3.StorageRepository get storageRepository => (super.noSuchMethod(
         Invocation.getter(#storageRepository),
-        returnValue: _FakeStorageRepository_5(
+        returnValue: _FakeStorageRepository_6(
           this,
           Invocation.getter(#storageRepository),
         ),
-      ) as _i2.StorageRepository);
+      ) as _i3.StorageRepository);
 
   @override
-  _i9.UserStatus get status => (super.noSuchMethod(
+  _i10.UserStatus get status => (super.noSuchMethod(
         Invocation.getter(#status),
-        returnValue: _i9.UserStatus.initial,
-      ) as _i9.UserStatus);
+        returnValue: _i10.UserStatus.initial,
+      ) as _i10.UserStatus);
 
   @override
-  _i3.Error get error => (super.noSuchMethod(
+  _i2.Error get error => (super.noSuchMethod(
         Invocation.getter(#error),
-        returnValue: _FakeError_1(
+        returnValue: _FakeError_2(
           this,
           Invocation.getter(#error),
         ),
-      ) as _i3.Error);
+      ) as _i2.Error);
 
   @override
   List<String> get blockedUsers => (super.noSuchMethod(
@@ -463,7 +510,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
       ) as List<String>);
 
   @override
-  set setCurrentUser(_i3.AppUser? appUser) => super.noSuchMethod(
+  set setCurrentUser(_i2.AppUser? appUser) => super.noSuchMethod(
         Invocation.setter(
           #setCurrentUser,
           appUser,
@@ -487,7 +534,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
       ) as bool);
 
   @override
-  _i4.Future<void> createUser({required _i3.AppUser? appUser}) =>
+  _i4.Future<void> createUser({required _i2.AppUser? appUser}) =>
       (super.noSuchMethod(
         Invocation.method(
           #createUser,
@@ -499,7 +546,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<void> updateUser({required _i3.AppUser? appUser}) =>
+  _i4.Future<void> updateUser({required _i2.AppUser? appUser}) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateUser,
@@ -522,7 +569,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<void> deleteUser({required _i3.AppUser? appUser}) =>
+  _i4.Future<void> deleteUser({required _i2.AppUser? appUser}) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteUser,
@@ -567,8 +614,8 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
 
   @override
   _i4.Future<dynamic> updateProfile({
-    required _i3.AppUser? appUser,
-    _i10.File? profilePicture,
+    required _i2.AppUser? appUser,
+    _i11.File? profilePicture,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -592,7 +639,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
       );
 
   @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -601,7 +648,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
       );
 
   @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -631,7 +678,7 @@ class MockUserState extends _i1.Mock implements _i9.UserState {
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i11.Analytics {
+class MockAnalytics extends _i1.Mock implements _i12.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -675,7 +722,7 @@ class MockAnalytics extends _i1.Mock implements _i11.Analytics {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i12.Logger {
+class MockLogger extends _i1.Mock implements _i13.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

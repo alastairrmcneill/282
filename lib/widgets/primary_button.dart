@@ -29,7 +29,7 @@ class PrimaryButton extends StatelessWidget {
       width: width,
       height: height,
       child: FilledButton(
-        onPressed: disabled == true
+        onPressed: disabled == true || onPressed == null
             ? null
             : () {
                 onPressed!();
