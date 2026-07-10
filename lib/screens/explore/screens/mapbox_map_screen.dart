@@ -1,11 +1,10 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -51,9 +50,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     zoom: 6.15,
   );
 
-  Uint8List? incompleteIcon;
-  Uint8List? completeIcon;
-  Uint8List? selectedIcon;
+  MunroMarkerIcons? markerIcons;
 
   String _activeStyleUri(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
@@ -77,9 +74,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   void loadData() async {
-    incompleteIcon = await _loadMarker('assets/munro_incomplete.png');
-    completeIcon = await _loadMarker('assets/munro_complete.png');
-    selectedIcon = await _loadMarker('assets/munro_selected.png');
+    markerIcons = await MunroMarkerIcons.load();
     if (mounted) setState(() => loading = false);
   }
 
@@ -102,8 +97,9 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   Future<void> _addMunroSymbols(
       {required MunroState munroState, required List<MunroCompletion> completedMunros}) async {
     final List<Munro> munros = munroState.filteredMunroList;
+    final icons = markerIcons;
 
-    if (incompleteIcon == null || completeIcon == null || selectedIcon == null) {
+    if (icons == null) {
       return;
     }
 
@@ -113,17 +109,18 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
     for (var munro in munros) {
       final summited = completedMunros.any((element) => element.munroId == munro.id);
-      final icon = munroState.selectedMunroId == munro.id
-          ? selectedIcon!
+      final selected = munroState.selectedMunroId == munro.id;
+      final icon = selected
+          ? icons.selectedFor(munro.area)
           : summited
-              ? completeIcon!
-              : incompleteIcon!;
+              ? icons.completedFor(munro.area)
+              : icons.uncompleted;
 
       pointAnnotationOptions.add(
         PointAnnotationOptions(
           geometry: Point(coordinates: Position(munro.lng, munro.lat)),
           image: icon,
-          iconSize: 0.6,
+          iconSize: selected ? 0.9 : 0.8,
         ),
       );
     }
@@ -136,7 +133,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> _refreshAnnotations(MunroState munroState, MunroCompletionState munroCompletionState) async {
-    if (incompleteIcon == null || completeIcon == null || selectedIcon == null) return;
+    final icons = markerIcons;
+    if (icons == null) return;
 
     await _annotationManager.deleteAll();
     allAnnotations.clear();
@@ -151,8 +149,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       final summited = munroCompletionState.munroCompletions.any((e) => e.munroId == munro.id);
       options.add(PointAnnotationOptions(
         geometry: Point(coordinates: Position(munro.lng, munro.lat)),
-        image: summited ? completeIcon! : incompleteIcon!,
-        iconSize: 0.6,
+        image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+        iconSize: 0.8,
       ));
     }
 
@@ -160,13 +158,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     for (var i = 0; i < annotations.length; i++) {
       allAnnotations[munros[i].id] = annotations[i];
     }
-  }
-
-  Future<Uint8List> _loadMarker(String assetPath) async {
-    ByteData data = await rootBundle.load(assetPath);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
   void handleMapTap(
@@ -206,7 +197,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
     if (selectedAnnotation != null && munroState.selectedMunroId != null) {
-      if (completeIcon == null || incompleteIcon == null) return;
+      final icons = markerIcons;
+      if (icons == null) return;
 
       final Munro munro = munroState.munroList.firstWhere(
         (munro) => munro.id == munroState.selectedMunroId,
@@ -215,8 +207,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
       final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
         geometry: selectedAnnotation!.geometry,
-        image: summited ? completeIcon! : incompleteIcon!,
-        iconSize: 0.6,
+        image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+        iconSize: 0.8,
       );
       await _annotationManager.delete(selectedAnnotation!);
       var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
@@ -228,13 +220,18 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
-    if (selectedIcon == null) return;
+    final icons = markerIcons;
+    if (icons == null) return;
 
     final munroState = context.read<MunroState>();
+    final Munro munro = munroState.munroList.firstWhere(
+      (munro) => munro.id == munroId,
+      orElse: () => Munro.empty,
+    );
     final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
-      image: selectedIcon!,
-      iconSize: 0.7,
+      image: icons.selectedFor(munro.area),
+      iconSize: 0.9,
     );
 
     await _annotationManager.delete(tappedAnnotation);
