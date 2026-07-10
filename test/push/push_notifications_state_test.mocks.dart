@@ -145,6 +145,23 @@ class MockPushNotificationRepository extends _i1.Mock
       ) as _i6.Future<_i2.NotificationSettings>);
 
   @override
+  _i6.Future<_i2.NotificationSettings> getNotificationSettings() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getNotificationSettings,
+          [],
+        ),
+        returnValue: _i6.Future<_i2.NotificationSettings>.value(
+            _FakeNotificationSettings_0(
+          this,
+          Invocation.method(
+            #getNotificationSettings,
+            [],
+          ),
+        )),
+      ) as _i6.Future<_i2.NotificationSettings>);
+
+  @override
   _i6.Future<String?> getToken() => (super.noSuchMethod(
         Invocation.method(
           #getToken,
@@ -375,6 +392,15 @@ class MockSettingsState extends _i1.Mock implements _i7.SettingsState {
       ) as String);
 
   @override
+  String get themeModeSetting => (super.noSuchMethod(
+        Invocation.getter(#themeModeSetting),
+        returnValue: _i8.dummyValue<String>(
+          this,
+          Invocation.getter(#themeModeSetting),
+        ),
+      ) as String);
+
+  @override
   set setError(_i3.Error? error) => super.noSuchMethod(
         Invocation.setter(
           #setError,
@@ -444,6 +470,16 @@ class MockSettingsState extends _i1.Mock implements _i7.SettingsState {
   _i6.Future<void> setDefaultPostVisibility(String? v) => (super.noSuchMethod(
         Invocation.method(
           #setDefaultPostVisibility,
+          [v],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setThemeMode(String? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setThemeMode,
           [v],
         ),
         returnValue: _i6.Future<void>.value(),
