@@ -116,12 +116,15 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
                       children: [
                         Text(
                           weather.date.dayOfWeekShort(),
-                          style: Theme.of(context).textTheme.labelSmall!,
+                          style: Theme.of(context).textTheme.labelLarge!,
                         ),
                         const SizedBox(height: 5),
                         Text(
                           weather.date.day.toString(),
-                          style: Theme.of(context).textTheme.labelLarge!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall!
+                              .copyWith(color: context.colors.textMuted),
                         ),
                         const SizedBox(height: 5),
                         SizedBox(

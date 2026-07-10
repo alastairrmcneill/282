@@ -49,7 +49,11 @@ class MunroSummaryTile extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12),
                   ),
-                  child: AppCachedImage(imageUrl: munro.pictureURL),
+                  child: SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: AppCachedImage(imageUrl: munro.pictureURL),
+                  ),
                 ),
                 Expanded(
                   flex: 1,

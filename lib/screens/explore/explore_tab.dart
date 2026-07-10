@@ -101,7 +101,7 @@ class _ExploreTabState extends State<ExploreTab> {
             ),
           ),
           Positioned(
-            top: topPadding + headerHeight + 8,
+            top: topPadding + headerHeight,
             left: 0,
             right: 0,
             child: const Center(child: GroupFilterActiveChip()),

@@ -1,14 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
-class MunroMapWidget extends StatelessWidget {
+class MunroMapWidget extends StatefulWidget {
   final Munro munro;
   final bool showExpandButton;
   const MunroMapWidget({super.key, required this.munro, this.showExpandButton = false});
+
+  @override
+  State<MunroMapWidget> createState() => _MunroMapWidgetState();
+}
+
+class _MunroMapWidgetState extends State<MunroMapWidget> {
+  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmrery5gw002e01sc228mf3ca";
+  static const String _darkStyleUri = "mapbox://styles/alastairm94/cmresimnz003h01qwddir1nnh";
+
+  MapboxMap? _mapboxMap;
+  Brightness? _lastBrightness;
+
+  String _activeStyleUri(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final brightness = Theme.of(context).brightness;
+    if (_lastBrightness != null && _lastBrightness != brightness) {
+      _mapboxMap?.loadStyleURI(brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri);
+    }
+    _lastBrightness = brightness;
+  }
+
+  void _openFullMap() {
+    Navigator.pushNamed(
+      context,
+      MunroMapScreen.route,
+      arguments: MunroMapScreenArgs(munro: widget.munro),
+    );
+  }
+
+  Future<void> _onMapCreated(MapboxMap mapboxMap) async {
+    _mapboxMap = mapboxMap;
+    await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
+    await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
+    await mapboxMap.gestures.updateSettings(
+      GesturesSettings(rotateEnabled: false, pitchEnabled: false),
+    );
+    await mapboxMap.setBounds(
+      CameraBoundsOptions(
+        bounds: CoordinateBounds(
+          southwest: Point(coordinates: Position(widget.munro.lng - 0.5, widget.munro.lat - 0.5)),
+          northeast: Point(coordinates: Position(widget.munro.lng + 0.5, widget.munro.lat + 0.5)),
+          infiniteBounds: false,
+        ),
+        minZoom: 7,
+        maxZoom: 12,
+      ),
+    );
+
+    final icon = await loadSvgMarker(
+      'assets/munro-icons-svg/selected-${munroAreaSlug(widget.munro.area)}.svg',
+    );
+    final annotationManager = await mapboxMap.annotations.createPointAnnotationManager();
+    await annotationManager.create(
+      PointAnnotationOptions(
+        geometry: Point(coordinates: Position(widget.munro.lng, widget.munro.lat)),
+        image: icon,
+        iconSize: 0.9,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,81 +85,28 @@ class MunroMapWidget extends StatelessWidget {
           child: SizedBox(
             height: 150,
             width: double.infinity,
-            child: GestureDetector(
-              onTap: () {
-                if (!showExpandButton) {
-                  Navigator.pushNamed(
-                    context,
-                    MunroMapScreen.route,
-                    arguments: MunroMapScreenArgs(munro: munro),
-                  );
-                }
-              },
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(munro.lat, munro.lng),
-                  zoom: 7,
-                ),
-                cameraTargetBounds: CameraTargetBounds(
-                  LatLngBounds(
-                    northeast: LatLng(munro.lat + 0.5, munro.lng + 0.5),
-                    southwest: LatLng(munro.lat - 0.5, munro.lng - 0.5),
-                  ),
-                ),
-                minMaxZoomPreference: const MinMaxZoomPreference(7, 12),
-                buildingsEnabled: false,
-                trafficEnabled: false,
-                liteModeEnabled: false,
-                indoorViewEnabled: false,
-                tiltGesturesEnabled: false,
-                mapToolbarEnabled: false,
-                compassEnabled: true,
-                zoomControlsEnabled: false,
-                mapType: MapType.terrain,
-                padding: const EdgeInsets.all(200),
-                onTap: (argument) {
-                  Navigator.pushNamed(
-                    context,
-                    MunroMapScreen.route,
-                    arguments: MunroMapScreenArgs(munro: munro),
-                  );
-                },
-                markers: {
-                  Marker(
-                    markerId: MarkerId(
-                      munro.id.toString(),
-                    ),
-                    position: LatLng(munro.lat, munro.lng),
-                    visible: true,
-                    consumeTapEvents: true,
-                    draggable: false,
-                    onTap: () => Navigator.pushNamed(
-                      context,
-                      MunroMapScreen.route,
-                      arguments: MunroMapScreenArgs(munro: munro),
-                    ),
-                  ),
-                },
-                myLocationButtonEnabled: false,
-                myLocationEnabled: false,
+            child: MapWidget(
+              key: const ValueKey("munroMapWidget"),
+              styleUri: _activeStyleUri(context),
+              cameraOptions: CameraOptions(
+                center: Point(coordinates: Position(widget.munro.lng, widget.munro.lat)),
+                zoom: 9,
               ),
+              onMapCreated: _onMapCreated,
+              onTapListener: (_) => _openFullMap(),
             ),
           ),
         ),
-        if (showExpandButton)
+        if (widget.showExpandButton)
           Positioned(
             top: 10,
             right: 10,
             child: InkWell(
-              onTap: () => Navigator.pushNamed(
-                context,
-                MunroMapScreen.route,
-                arguments: MunroMapScreenArgs(munro: munro),
-              ),
+              onTap: _openFullMap,
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

@@ -10,8 +10,11 @@ class RootGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onboarding = context.watch<OnboardingState>();
+    final auth = context.watch<AuthState>();
 
-    return onboarding.hasCompletedOnboarding
+    final skipOnboarding = onboarding.hasCompletedOnboarding || auth.currentUserId != null;
+
+    return skipOnboarding
         ? HomeScreen(key: homeScreenKey, startingIndex: 0)
         : const OnboardingScreen();
   }
