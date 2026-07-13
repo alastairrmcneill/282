@@ -1,7 +1,7 @@
 import 'package:url_launcher/url_launcher.dart';
 
-const _termsUrl = 'https://282.crd.co/#terms';
-const _privacyUrl = 'https://282.crd.co/#privacy';
+const _termsUrl = 'https://282app.uk/terms';
+const _privacyUrl = 'https://282app.uk/privacy';
 
 Future<void> openTermsUrl() => launchUrl(
       Uri.parse(_termsUrl),
