@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Image: v2.jpg</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1200px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    .content {
+      padding: 40px;
+    }
+    .image-container {
+      text-align: center;
+      margin-bottom: 30px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .metadata {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .metadata h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .metadata-item {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .metadata-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .metadata-label {
+      font-weight: 600;
+      color: #667eea;
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metadata-value {
+      color: #555;
+      line-height: 1.6;
+    }
+    .prompt-box {
+      background: #fff;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 10px;
+      position: relative;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      word-wrap: break-word;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .copy-btn:hover {
+      background: #5568d3;
+    }
+    .copy-btn:active {
+      background: #4a5bc4;
+    }
+    .copy-btn.copied {
+      background: #10b981;
+    }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+      font-size: 12px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #5568d3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Gemini Generated Image</h1>
+      <p>Created with Google Gemini AI (Nano Banana Pro)</p>
+    </div>
+
+    <div class="content">
+      <div class="image-container">
+        <img src="/Users/alastair/Documents/Development/Flutter/TwoEightTwo/screenshots/03-reviews-every-munro/v2.jpg" alt="Generated image">
+      </div>
+
+      <div class="metadata">
+        <h2>Generation Details</h2>
+
+        <div class="metadata-item">
+          <span class="metadata-label">Prompt</span>
+          <div class="prompt-box" id="promptBox">
+            <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+            [EDIT] You are creating the next screenshot in an App Store screenshot SET. It must look like it belongs to the same series as the style reference.
+
+TWO REFERENCE IMAGES:
+- FIRST image: The SCAFFOLD — use this as the definitive guide for layout: headline text wording/position, device frame placement, and the app screenshot on screen. This defines WHAT this screenshot shows.
+- SECOND image: The STYLE TEMPLATE — this is an already-approved screenshot from the same set. Match its visual style EXACTLY: same device frame rendering (this is critical — the phone must look identical), same text treatment, same background style/accents, same level of polish, same overall aesthetic. This defines HOW this screenshot should look. When in doubt, copy the style template more closely rather than less.
+
+CRITICAL — OUTPUT ORIENTATION: The output image MUST be tall PORTRAIT orientation, matching the scaffold's aspect ratio exactly (1290 wide × 2796 tall — a narrow, tall phone-screenshot shape). Do NOT output a landscape or square image under any circumstances.
+
+REQUIREMENTS:
+- CRITICAL: The device frame MUST match the style template EXACTLY — same photorealistic iPhone rendering, same size, same position, same shadows, same reflections, same edge treatment. Do NOT reinvent or reimagine the device frame. Reproduce it as closely as possible from the style template, only changing the screen contents.
+- Match the style template's text rendering style (same font treatment, same crispness, same visual weight)
+- Match the style template's background — clean, solid brand colour. No glows, gradients, radial patterns, or light effects.
+- Use the scaffold's layout for positioning (text, device, screenshot placement)
+- CRITICAL — TEXT SAFE ZONE: Keep the headline text within the centre 70% of the canvas width, with at least 15% blank margin on both the left and right edges. This image will later be cropped narrower along the sides during post-processing.
+- CRITICAL — EXACTLY FIVE REVIEWS, EACH ONCE: The underlying review list behind the breakout panel must show EXACTLY these five reviewers, each appearing EXACTLY ONCE, in this exact order, top to bottom: (1) Ryan Buchanan, 5 stars, "Easy and good fun", 27w ago. (2) Joseph Becman, 3 stars, "Cloud Inversion", 28w ago. (3) matty burnett, 5 stars, "Cold wet and windy", 29w ago. (4) Aiden Thomson, 5 stars, "Beautiful Mountain with stunning views all around", 32w ago. (5) Siobhan Mcgeary, 5 stars, "Easy one mostly pathed up till you meet the fence you follow to the summit", 33w ago. Do NOT repeat any reviewer's name, avatar, or comment a second time anywhere in the image — check carefully before finishing that no name or comment text appears twice.
+- CRITICAL — SINGLE BREAKOUT ONLY: On top of that list, add exactly ONE breakout panel — a separate floating copy of the "Aiden Thomson" review card (avatar, name, "32w ago", 5-star rating, "Beautiful Mountain with stunning views all around"), popping out and floating in front of the device, extending beyond both left and right edges of the device frame, expanding to nearly the full screenshot width, scaled up larger than its on-screen size, with a soft drop shadow beneath it, positioned over where Aiden Thomson's row sits in the underlying list (so it reads as that one row popping forward, not as a 6th review). It is not rotated. This floating copy is the ONLY duplication allowed — the row it covers must not additionally repeat elsewhere in the underlying list.
+- At the very bottom of the phone screen, keep the real app's green "Log Another Climb" button plus the two small circular icon buttons next to it, exactly as in the scaffold — do not replace this with a navigation tab bar, and show it only once.
+- Do not add any secondary decorative elements — the review list and breakout panel already carry the message.
+
+The result must look like it was designed alongside the style template as part of the same professional set. When placed side-by-side in the App Store, they should be visually cohesive — same quality, same aesthetic, same design language, just different content.
+
+No watermarks, no extra text, no app store UI chrome.
+          </div>
+        </div>
+
+        
+
+        <div class="metadata-item">
+          <span class="metadata-label">Generated</span>
+          <div class="metadata-value">7/13/2026, 3:38:09 PM</div>
+        </div>
+
+        <div class="metadata-item">
+          <span class="metadata-label">File</span>
+          <div class="metadata-value">v2.jpg</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a href="/Users/alastair/Documents/Development/Flutter/TwoEightTwo/screenshots/03-reviews-every-munro/v2.jpg" download class="btn">Download Image</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      Generated by Gemini MCP Server &middot; @houtini/gemini-mcp
+    </div>
+  </div>
+
+  <script>
+    function copyPrompt() {
+      const promptText = document.getElementById('promptBox').innerText.replace('Copy', '').trim();
+      navigator.clipboard.writeText(promptText).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
