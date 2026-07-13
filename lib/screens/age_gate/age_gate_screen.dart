@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/age_gate/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 /// Wraps [child] (the main app shell) behind a one-time age check, per
 /// App Store Connect's "Social Media Disabled for Users Under 13"
@@ -33,7 +34,7 @@ class _AgeGateScreenState extends State<AgeGateScreen> {
       AgeGateStatus.allowed => widget.child,
       AgeGateStatus.restricted => const Scaffold(body: AgeRestrictedView()),
       AgeGateStatus.needsBirthdate => const Scaffold(body: BirthdatePromptView()),
-      AgeGateStatus.checking => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      AgeGateStatus.checking => const Scaffold(body: LoadingWidget(text: null)),
     };
   }
 }

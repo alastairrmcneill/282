@@ -79,6 +79,9 @@ class AnalyticsEvent {
   static const reportSubmitted = 'report_submitted';
   static const achievementTapped = 'achievement_tapped';
   static const munroChallengeGoalSet = 'munro_challenge_goal_set';
+
+  static const ageGateResolved = 'age_gate_resolved';
+  static const ageGateBirthdatePromptShown = 'age_gate_birthdate_prompt_shown';
 }
 
 class AnalyticsProp {

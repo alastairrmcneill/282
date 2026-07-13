@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/repos/repos.dart';
 
@@ -11,11 +12,13 @@ class AgeGateState extends ChangeNotifier {
 
   final AgeGateRepository _ageGateRepository;
   final LocalStorageRepository _localStorageRepository;
+  final Analytics _analytics;
   final Logger _logger;
 
   AgeGateState(
     this._ageGateRepository,
     this._localStorageRepository,
+    this._analytics,
     this._logger,
   );
 
@@ -24,7 +27,7 @@ class AgeGateState extends ChangeNotifier {
 
   Future<void> checkAgeGate() async {
     // Apple-only requirement - Android has no equivalent obligation, so skip
-    // the check entirely rather than asking users for age with no reason.
+    // the check (and the analytics noise of tracking every launch) entirely.
     if (!Platform.isIOS) {
       _setStatus(AgeGateStatus.allowed);
       return;
@@ -33,6 +36,7 @@ class AgeGateState extends ChangeNotifier {
     final cachedAllowed = _localStorageRepository.getAgeGateAllowed();
     if (cachedAllowed != null) {
       _setStatus(cachedAllowed ? AgeGateStatus.allowed : AgeGateStatus.restricted);
+      _trackResolved(method: 'cached', allowed: cachedAllowed);
       return;
     }
 
@@ -41,7 +45,7 @@ class AgeGateState extends ChangeNotifier {
     try {
       final declaredAge = await _ageGateRepository.requestDeclaredAgeRange();
       if (declaredAge != null) {
-        await _resolve(declaredAge >= _minimumAge);
+        await _resolve(declaredAge >= _minimumAge, method: 'native');
         return;
       }
     } catch (error, stackTrace) {
@@ -50,15 +54,27 @@ class AgeGateState extends ChangeNotifier {
 
     // Native age range unavailable or declined - ask the user directly.
     _setStatus(AgeGateStatus.needsBirthdate);
+    _analytics.track(AnalyticsEvent.ageGateBirthdatePromptShown);
   }
 
   Future<void> submitBirthdate(DateTime birthdate) async {
-    await _resolve(_ageFromBirthdate(birthdate) >= _minimumAge);
+    await _resolve(_ageFromBirthdate(birthdate) >= _minimumAge, method: 'birthdate');
   }
 
-  Future<void> _resolve(bool allowed) async {
+  Future<void> _resolve(bool allowed, {required String method}) async {
     await _localStorageRepository.setAgeGateAllowed(allowed);
     _setStatus(allowed ? AgeGateStatus.allowed : AgeGateStatus.restricted);
+    _trackResolved(method: method, allowed: allowed);
+  }
+
+  void _trackResolved({required String method, required bool allowed}) {
+    _analytics.track(
+      AnalyticsEvent.ageGateResolved,
+      props: {
+        AnalyticsProp.method: method,
+        AnalyticsProp.status: allowed ? 'allowed' : 'restricted',
+      },
+    );
   }
 
   int _ageFromBirthdate(DateTime birthdate) {

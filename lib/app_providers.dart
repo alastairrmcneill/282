@@ -179,6 +179,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => AgeGateState(
           ctx.read<AgeGateRepository>(),
           ctx.read<LocalStorageRepository>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
