@@ -44,7 +44,7 @@ class _BirthdatePromptViewState extends State<BirthdatePromptView> {
           Text('Confirm your date of birth', style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Text(
-            "282's feed shares photos and posts from other users, so Apple requires us to confirm you're old enough before we show it to you. "
+            "282's feed shares photos and posts from other users, so the law requires us to confirm you're old enough before we show it to you. "
             "We couldn't verify this automatically on your device, so please pop in your date of birth - we only use it for this check.",
             style: theme.textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,

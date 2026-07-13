@@ -92,4 +92,5 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("com.google.firebase:firebase-messaging:23.0.0")
     implementation("io.branch.sdk.android:library:5.+")
+    implementation("com.google.android.play:age-signals:0.0.3")
 }

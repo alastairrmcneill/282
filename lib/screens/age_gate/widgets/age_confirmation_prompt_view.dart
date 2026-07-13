@@ -33,7 +33,7 @@ class AgeConfirmationPromptView extends StatelessWidget {
           Text('Quick age check', style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Text(
-            "282's feed shares photos and posts from other users, so Apple requires us to confirm you're 13 or over before we show it to you. "
+            "282's feed shares photos and posts from other users, so the law requires us to confirm you're 13 or over before we show it to you. "
             "Tap below and your device will confirm this for us - we don't see or store your age.",
             style: theme.textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,

@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -26,13 +24,6 @@ class AgeGateState extends ChangeNotifier {
   AgeGateStatus get status => _status;
 
   Future<void> checkAgeGate() async {
-    // Apple-only requirement - Android has no equivalent obligation, so skip
-    // the check (and the analytics noise of tracking every launch) entirely.
-    if (!Platform.isIOS) {
-      _setStatus(AgeGateStatus.allowed);
-      return;
-    }
-
     final cachedAllowed = _localStorageRepository.getAgeGateAllowed();
     if (cachedAllowed != null) {
       _setStatus(cachedAllowed ? AgeGateStatus.allowed : AgeGateStatus.restricted);
