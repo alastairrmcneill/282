@@ -168,6 +168,7 @@ Documentation improvements are always welcome:
 - [Setup Guide](SETUP.md) - Environment setup
 - [Developer Workflow Guide](DEVELOPER_WORKFLOW.md) - Architecture and patterns
 - README.md - Project overview
+- [website/README.md](website/README.md) - Marketing/SEO site (separate Astro project)
 
 ## Security
 

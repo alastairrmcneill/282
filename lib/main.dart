@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -24,12 +25,16 @@ main() async {
   SentryWidgetsFlutterBinding.ensureInitialized();
 
   final config = AppConfig.fromEnvironment();
-  print("🚀 ~ main ~ config: ${config.toString()}");
   await Firebase.initializeApp();
   final prefs = await SharedPreferences.getInstance();
   final mixpanel = await Mixpanel.init(config.mixpanelToken, trackAutomaticEvents: true);
+  mixpanel.setServerURL("https://api-eu.mixpanel.com");
 
   MapboxOptions.setAccessToken(config.mapboxToken);
+  if (kDebugMode) {
+    // Styles are being iterated on in Mapbox Studio; never render a stale cached copy in dev.
+    await MapboxMapsOptions.clearData();
+  }
   await Supabase.initialize(
     url: config.supabaseUrl,
     anonKey: config.supabaseAnonKey,
@@ -79,7 +84,7 @@ main() async {
     )),
   );
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: MyColors.backgroundColor,
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: MyLightColors().background,
   ));
 }

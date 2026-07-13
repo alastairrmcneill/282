@@ -22,13 +22,14 @@ class MunroListScreen extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          child: ListView.builder(
+          child: ListView.separated(
             controller: scrollController,
-            padding: const EdgeInsets.only(top: 40, bottom: 50),
+            padding: const EdgeInsets.only(top: 40, bottom: 50, left: 15, right: 15),
             itemCount: munroState.filteredMunroList.length,
             itemBuilder: (context, index) {
               return MunroCard(munro: munroState.filteredMunroList[index]);
             },
+            separatorBuilder: (context, index) => const SizedBox(height: 24),
           ),
         ),
         Align(
@@ -36,7 +37,7 @@ class MunroListScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: SizedBox(
-              width: 100,
+              width: 110,
               child: ElevatedButton(
                 onPressed: () {
                   panelController.close();

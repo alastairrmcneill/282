@@ -44,7 +44,7 @@ class CommentInputField extends StatelessWidget {
                     controller: _scrollController,
                     child: Form(
                       key: _formKey,
-                      child: TextFormFieldBase(
+                      child: AppTextFormField(
                         scrollController: _scrollController,
                         initialValue: commentsState.commentText,
                         hintText: "Add a comment...",

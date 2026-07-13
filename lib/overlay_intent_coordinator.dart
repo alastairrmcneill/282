@@ -66,6 +66,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
         return;
 
       case WhatsNewDialogIntent():
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.whatsNewDialogShown,
+          props: {AnalyticsProp.version: intent.version},
+        );
+
         await showDialog(
           context: navCtx,
           builder: (BuildContext context) {
@@ -77,6 +82,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
         return;
 
       case FeedbackSurveyIntent():
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.surveyShown,
+          props: {AnalyticsProp.surveyNumber: intent.surveyNumber},
+        );
+
         await showDialog(
           context: navCtx,
           builder: (BuildContext context) {
@@ -90,6 +100,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
       case AchievementCompleteIntent():
         await Future.delayed(Duration(seconds: 1));
 
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.achievementUnlockedDialogShown,
+          props: {AnalyticsProp.achievementCount: intent.achievements.length},
+        );
+
         await showDialog(
           context: navCtx,
           barrierDismissible: false,
@@ -102,14 +117,23 @@ class OverlayIntentCoordinator extends StatelessWidget {
       case BulkMunroUpdateDialogIntent():
         navCtx.read<Analytics>().track(AnalyticsEvent.bulkMunroUpdateDidalogShown);
 
-        await showDialog(
+        final wantsBulk = await showDialog<bool>(
           context: navCtx,
           builder: (BuildContext context) {
-            return BulkMunroUpdateDialog();
+            return const BulkMunroUpdateDialog();
           },
-        ).then(
-          (_) => navCtx.read<AppFlagsRepository>().setShowBulkMunroDialog(false),
         );
+
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.bulkMunroUpdateDialogResponse,
+          props: {AnalyticsProp.response: wantsBulk == true ? 'go' : 'dismiss'},
+        );
+
+        await navCtx.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
+
+        if (wantsBulk == true) {
+          Navigator.of(navCtx).pushNamed(BulkMunroUpdateScreen.route);
+        }
 
         return;
 
@@ -123,13 +147,20 @@ class OverlayIntentCoordinator extends StatelessWidget {
           },
         );
 
+        await navCtx.read<AppFlagsRepository>().setShownAnnualChallengeDialog(
+              '${intent.achievement.userId}-${intent.achievement.achievementId}',
+            );
+
         if (go == true) {
           navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogConfirmed);
           navCtx.read<AchievementsState>()
             ..reset()
             ..setCurrentAchievement = intent.achievement;
           Navigator.of(navCtx).pushNamed(MunroChallengeDetailScreen.route);
+        } else {
+          navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogDismissed);
         }
+        return;
     }
   }
 }

@@ -86,8 +86,6 @@ class SavedListState extends ChangeNotifier {
     // Update a saved list
 
     try {
-      setStatus = SavedListStatus.loading;
-
       if (_userState.currentUser == null) {
         setError = Error(
           message: "You must be signed in to create a list",

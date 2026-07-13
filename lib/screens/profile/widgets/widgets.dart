@@ -1,10 +1,10 @@
 export 'follow_button.dart';
-export 'profile_header.dart';
+export 'munro_completed_tile.dart';
 export 'loading_sliver_header.dart';
-export 'profile_munro_stats.dart';
-export 'clickable_stat_box.dart';
-export 'profile_munro_challenge_widget.dart';
-export 'profile_munros_completed_widget.dart';
+export 'profile_achievements_card.dart';
+export 'profile_challenge_card.dart';
+export 'profile_header_section.dart';
+export 'profile_log_past_card.dart';
+export 'profile_munro_progress_card.dart';
 export 'profile_photos_widget.dart';
-export 'profile_stat.dart';
 export 'user_trailing_button.dart';

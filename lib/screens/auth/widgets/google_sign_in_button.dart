@@ -5,20 +5,21 @@ import 'package:two_eight_two/screens/screens.dart';
 
 // Custom button for google sign in with shape and method
 class GoogleSignInButton extends StatelessWidget {
-  const GoogleSignInButton({Key? key}) : super(key: key);
+  final void Function(String)? onError;
+  const GoogleSignInButton({Key? key, this.onError}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 44,
-      child: ElevatedButton(
+      height: 48,
+      child: FilledButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(80, 124, 241, 1)),
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(100),
             ),
           ),
         ),
@@ -38,6 +39,8 @@ class GoogleSignInButton extends StatelessWidget {
               HomeScreen.route,
               (route) => false,
             );
+          } else if (!authResult.canceled) {
+            onError?.call('Sign in failed. Please try again.');
           }
         },
         child: Row(

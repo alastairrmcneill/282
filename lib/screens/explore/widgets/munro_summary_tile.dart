@@ -1,26 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/munro/helpers/log_climb_navigation.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/app_cached_image.dart';
 
 class MunroSummaryTile extends StatelessWidget {
   final int? munroId;
   const MunroSummaryTile({super.key, required this.munroId});
-
-  bool _isValidUrl(String url) {
-    if (url.isEmpty) return false;
-    try {
-      final uri = Uri.parse(url);
-      return uri.hasScheme && uri.host.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +21,6 @@ class MunroSummaryTile extends StatelessWidget {
     final userId = context.read<AuthState>().currentUserId;
     final munroState = context.watch<MunroState>();
     Munro munro = munroState.munroList.where((m) => m.id == munroId!).first;
-    final createPostState = context.watch<CreatePostState>();
     final settingsState = context.watch<SettingsState>();
     final savedListState = context.watch<SavedListState>();
     final munroCompletionState = context.watch<MunroCompletionState>();
@@ -45,7 +35,6 @@ class MunroSummaryTile extends StatelessWidget {
         height: 100,
         child: InkWell(
           onTap: () {
-            context.read<ReviewsState>().getMunroReviews(munro.id);
             Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
           },
           child: Card(
@@ -60,34 +49,11 @@ class MunroSummaryTile extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12),
                   ),
-                  child: _isValidUrl(munro.pictureURL)
-                      ? CachedNetworkImage(
-                          imageUrl: munro.pictureURL,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Image.asset(
-                            'assets/images/post_image_placeholder.png',
-                            fit: BoxFit.cover,
-                            width: 100,
-                            height: 100,
-                          ),
-                          fadeInDuration: Duration.zero,
-                          errorWidget: (context, url, error) {
-                            return Image.asset(
-                              'assets/images/post_image_placeholder.png',
-                              fit: BoxFit.cover,
-                              width: 100,
-                              height: 100,
-                            );
-                          },
-                        )
-                      : Image.asset(
-                          'assets/images/post_image_placeholder.png',
-                          fit: BoxFit.cover,
-                          width: 100,
-                          height: 100,
-                        ),
+                  child: SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: AppCachedImage(imageUrl: munro.pictureURL),
+                  ),
                 ),
                 Expanded(
                   flex: 1,
@@ -162,7 +128,7 @@ class MunroSummaryTile extends StatelessWidget {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
                           } else {
                             munroState.setSelectedMunroId = munro.id;
-                            showSaveMunroDialog(context);
+                            await SaveMunroBottomSheet.show(context, munroId: munro.id);
                           }
                         },
                         child: Icon(munroSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded),
@@ -171,17 +137,14 @@ class MunroSummaryTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
                           if (userId == null) {
                             Navigator.pushNamed(context, AuthHomeScreen.route);
-                          } else {
-                            if (munroSummited) return;
-                            munroState.setSelectedMunroId = munro.id; // TODO is this needed
-                            createPostState.reset();
-                            createPostState.addMunro(munro.id);
-                            createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-                            Navigator.of(context).pushNamed(CreatePostScreen.route);
+                            return;
                           }
+                          if (munroSummited) return;
+                          munroState.setSelectedMunroId = munro.id;
+                          await navigateToLogClimb(context: context, munro: munro);
                         },
                         child: Icon(munroSummited ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded),
                       ),

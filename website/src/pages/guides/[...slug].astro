@@ -1,0 +1,72 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AppCTA from '../../components/AppCTA.astro';
+import { appBranchLink } from '../../lib/branch';
+import { articleJsonLd, faqJsonLd, mobileAppJsonLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => ({ params: { slug: guide.id }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+const path = `/guides/${guide.id}`;
+
+const jsonLd: object[] = [
+  articleJsonLd({
+    title: guide.data.title,
+    description: guide.data.description,
+    path,
+    publishDate: guide.data.publishDate,
+  }),
+  mobileAppJsonLd(),
+];
+if (guide.data.faq.length > 0) {
+  jsonLd.push(faqJsonLd(guide.data.faq));
+}
+---
+
+<Base
+  title={`${guide.data.title} | 282`}
+  description={guide.data.description}
+  path={path}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+    <Breadcrumbs
+      crumbs={[
+        { name: 'Home', path: '/' },
+        { name: 'Guides', path: '/guides' },
+        { name: guide.data.title },
+      ]}
+    />
+    <article class="prose prose-gray mt-6 prose-headings:tracking-tight prose-a:text-brand-600">
+      <h1>{guide.data.title}</h1>
+      <Content />
+    </article>
+
+    {
+      guide.data.faq.length > 0 && (
+        <section class="mt-10">
+          <h2 class="text-2xl font-bold">Frequently asked questions</h2>
+          <dl class="mt-4 space-y-4">
+            {guide.data.faq.map((f) => (
+              <div class="rounded-2xl border border-gray-200 bg-white p-5">
+                <dt class="font-semibold text-gray-900">{f.question}</dt>
+                <dd class="mt-2 text-gray-600">{f.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+
+    <div class="mt-10">
+      <AppCTA branchLink={appBranchLink('guide')} />
+    </div>
+  </div>
+</Base>

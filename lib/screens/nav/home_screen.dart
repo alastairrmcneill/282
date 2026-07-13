@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -24,9 +24,12 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const ExploreTab(),
     const FeedTab(),
+    const GroupFilterTab(),
     const SavedTab(),
     const ProfileTab(),
   ];
+
+  void switchTab(int index) => setState(() => _currentIndex = index);
 
   @override
   void initState() {
@@ -36,18 +39,23 @@ class HomeScreenState extends State<HomeScreen> {
       final layoutState = context.read<LayoutState>();
 
       _loadData();
-      final RenderBox renderBox = _bottomNavigationKey.currentContext!.findRenderObject() as RenderBox;
-      setState(() {
-        layoutState.setBottomNavBarHeight = renderBox.size.height;
-      });
+      final renderBox = _bottomNavigationKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        setState(() {
+          layoutState.setBottomNavBarHeight = renderBox.size.height;
+        });
+      }
     });
   }
 
   Future _loadData() async {
-    await context.read<AchievementsState>().getUserAchievements();
-    await context.read<CurrentUserFollowerState>().loadInitial();
+    final achievementsState = context.read<AchievementsState>();
+    final currentUserFollowerState = context.read<CurrentUserFollowerState>();
+    final globalCompletionState = context.read<GlobalCompletionState>();
 
-    await context.read<GlobalCompletionState>().fetchGlobalCompletionCount();
+    await achievementsState.getUserAchievements();
+    await currentUserFollowerState.loadInitial();
+    await globalCompletionState.fetchGlobalCompletionCount();
   }
 
   @override
@@ -88,8 +96,10 @@ class HomeScreenState extends State<HomeScreen> {
       case 1:
         return FeedTab.route;
       case 2:
-        return SavedTab.route;
+        return GroupFilterTab.route;
       case 3:
+        return SavedTab.route;
+      case 4:
         return ProfileTab.route;
       default:
         return HomeScreen.route;
@@ -104,7 +114,7 @@ class HomeScreenState extends State<HomeScreen> {
         onTap: (value) {
           final userId = context.read<AuthRepository>().currentUserId;
 
-          if (value == 1 || value == 2 || value == 3) {
+          if (value != 0) {
             if (userId == null) {
               Navigator.of(context).pushNamed(AuthHomeScreen.route);
               return;
@@ -123,7 +133,7 @@ class HomeScreenState extends State<HomeScreen> {
             notificationsState.getUserNotifications();
           }
 
-          if (value == 2) {
+          if (value == 3) {
             context.read<SavedListState>().readUserSavedLists();
           }
 
@@ -135,21 +145,19 @@ class HomeScreenState extends State<HomeScreen> {
           setState(() => _currentIndex = value);
 
           if (userId != null) {
-            bool showBulkMunroDialog = context.read<AppFlagsRepository>().showBulkMunroDialog;
-            if (showBulkMunroDialog) {
-              context.read<OverlayIntentState>().enqueue(BulkMunroUpdateDialogIntent());
-            }
-
             final thisYearMunroChallenge = context.read<AchievementsState>().achievements.where((achievement) =>
                 achievement.type == AchievementTypes.annualGoal &&
                 achievement.criteriaValue == DateTime.now().year.toString());
 
             if (thisYearMunroChallenge.isEmpty) return;
 
-            if (thisYearMunroChallenge.first.annualTarget == null || thisYearMunroChallenge.first.annualTarget == 0) {
-              context
-                  .read<OverlayIntentState>()
-                  .enqueue(AnnualMunroChallengeDialogIntent(achievement: thisYearMunroChallenge.first));
+            final achievement = thisYearMunroChallenge.first;
+            if (achievement.annualTarget == null || achievement.annualTarget == 0) {
+              final appFlags = context.read<AppFlagsRepository>();
+              final key = '${achievement.userId}-${achievement.achievementId}';
+              if (!appFlags.hasShownAnnualChallengeDialog(key)) {
+                context.read<OverlayIntentState>().enqueue(AnnualMunroChallengeDialogIntent(achievement: achievement));
+              }
             }
           }
         },
@@ -159,23 +167,28 @@ class HomeScreenState extends State<HomeScreen> {
         unselectedFontSize: 13,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.map),
-            activeIcon: Icon(CupertinoIcons.map_fill),
+            icon: Icon(PhosphorIconsRegular.mountains),
+            activeIcon: Icon(PhosphorIconsFill.mountains),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.news),
-            activeIcon: Icon(CupertinoIcons.news_solid),
+            icon: Icon(PhosphorIconsRegular.newspaperClipping),
+            activeIcon: Icon(PhosphorIconsFill.newspaperClipping),
             label: 'Feed',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.bookmark),
-            activeIcon: Icon(CupertinoIcons.bookmark_fill),
+            icon: Icon(PhosphorIconsRegular.usersThree),
+            activeIcon: Icon(PhosphorIconsFill.usersThree),
+            label: 'Groups',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(PhosphorIconsRegular.bookmarkSimple),
+            activeIcon: Icon(PhosphorIconsFill.bookmarkSimple),
             label: 'Saved',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person),
-            activeIcon: Icon(CupertinoIcons.person_fill),
+            icon: Icon(PhosphorIconsRegular.user),
+            activeIcon: Icon(PhosphorIconsFill.user),
             label: 'Profile',
           ),
         ],

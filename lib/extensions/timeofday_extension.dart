@@ -7,6 +7,12 @@ extension TimeOfDayExtension on TimeOfDay {
     return '$hour:$minute';
   }
 
+  String format12Hour() {
+    final String hour = this.hour.toString();
+    final String minute = this.minute.toString().padLeft(2, '0');
+    return '$hour:$minute ${period == DayPeriod.am ? 'AM' : 'PM'}';
+  }
+
   static TimeOfDay from24Hour(String src) {
     return TimeOfDay(
       hour: int.parse(src.split(":")[0]),

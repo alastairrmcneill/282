@@ -8,14 +8,13 @@ import 'dart:io' as _i6;
 import 'dart:ui' as _i7;
 
 import 'package:flutter/material.dart' as _i8;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i10;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i11;
-import 'package:two_eight_two/analytics/analytics.dart' as _i13;
+import 'package:mockito/src/dummies.dart' as _i10;
+import 'package:two_eight_two/analytics/analytics.dart' as _i12;
 import 'package:two_eight_two/enums/enums.dart' as _i9;
-import 'package:two_eight_two/logging/logging.dart' as _i14;
+import 'package:two_eight_two/logging/logging.dart' as _i13;
 import 'package:two_eight_two/models/models.dart' as _i3;
-import 'package:two_eight_two/push/push_notifications_state.dart' as _i12;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/notifiers.dart' as _i4;
 
@@ -526,6 +525,15 @@ class MockMunroCompletionState extends _i1.Mock
       );
 
   @override
+  bool isBagged(_i3.Munro? munro) => (super.noSuchMethod(
+        Invocation.method(
+          #isBagged,
+          [munro],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
   void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
@@ -670,188 +678,17 @@ class MockBulkMunroUpdateState extends _i1.Mock
       );
 
   @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [AchievementsState].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockAchievementsState extends _i1.Mock implements _i4.AchievementsState {
-  MockAchievementsState() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i4.AchievementsStatus get status => (super.noSuchMethod(
-        Invocation.getter(#status),
-        returnValue: _i4.AchievementsStatus.initial,
-      ) as _i4.AchievementsStatus);
-
-  @override
-  _i3.Error get error => (super.noSuchMethod(
-        Invocation.getter(#error),
-        returnValue: _FakeError_3(
-          this,
-          Invocation.getter(#error),
-        ),
-      ) as _i3.Error);
-
-  @override
-  List<_i3.Achievement> get achievements => (super.noSuchMethod(
-        Invocation.getter(#achievements),
-        returnValue: <_i3.Achievement>[],
-      ) as List<_i3.Achievement>);
-
-  @override
-  int get achievementFormCount => (super.noSuchMethod(
-        Invocation.getter(#achievementFormCount),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  set setStatus(_i4.AchievementsStatus? searchStatus) => super.noSuchMethod(
-        Invocation.setter(
-          #setStatus,
-          searchStatus,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set setError(_i3.Error? error) => super.noSuchMethod(
-        Invocation.setter(
-          #setError,
-          error,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set setAchievements(List<_i3.Achievement>? achievements) =>
+  void removeMunroCompletionForDate(
+    int? munroId,
+    DateTime? date,
+  ) =>
       super.noSuchMethod(
-        Invocation.setter(
-          #setAchievements,
-          achievements,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set setCurrentAchievement(_i3.Achievement? achievement) => super.noSuchMethod(
-        Invocation.setter(
-          #setCurrentAchievement,
-          achievement,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set setAchievementFormCount(int? achievementFormCount) => super.noSuchMethod(
-        Invocation.setter(
-          #setAchievementFormCount,
-          achievementFormCount,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i5.Future<dynamic> getUserAchievements() => (super.noSuchMethod(
         Invocation.method(
-          #getUserAchievements,
-          [],
-        ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
-
-  @override
-  _i5.Future<void> acknowledgeAchievement(
-          {required _i3.Achievement? achievement}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #acknowledgeAchievement,
-          [],
-          {#achievement: achievement},
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> unacknowledgeAchievement(
-          {required _i3.Achievement? achievement}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #unacknowledgeAchievement,
-          [],
-          {#achievement: achievement},
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setMunroChallenge() => (super.noSuchMethod(
-        Invocation.method(
-          #setMunroChallenge,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  void reset() => super.noSuchMethod(
-        Invocation.method(
-          #reset,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void resetAll() => super.noSuchMethod(
-        Invocation.method(
-          #resetAll,
-          [],
+          #removeMunroCompletionForDate,
+          [
+            munroId,
+            date,
+          ],
         ),
         returnValueForMissingStub: null,
       );
@@ -891,54 +728,6 @@ class MockAchievementsState extends _i1.Mock implements _i4.AchievementsState {
         ),
         returnValueForMissingStub: null,
       );
-}
-
-/// A class which mocks [UserAchievementsRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockUserAchievementsRepository extends _i1.Mock
-    implements _i2.UserAchievementsRepository {
-  MockUserAchievementsRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i5.Future<List<_i3.Achievement>> getUserAchievements(
-          {required String? userId}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getUserAchievements,
-          [],
-          {#userId: userId},
-        ),
-        returnValue:
-            _i5.Future<List<_i3.Achievement>>.value(<_i3.Achievement>[]),
-      ) as _i5.Future<List<_i3.Achievement>>);
-
-  @override
-  _i5.Future<_i3.Achievement?> getLatestMunroChallengeAchievement(
-          {required String? userId}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getLatestMunroChallengeAchievement,
-          [],
-          {#userId: userId},
-        ),
-        returnValue: _i5.Future<_i3.Achievement?>.value(),
-      ) as _i5.Future<_i3.Achievement?>);
-
-  @override
-  _i5.Future<void> updateUserAchievement(
-          {required _i3.Achievement? achievement}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #updateUserAchievement,
-          [],
-          {#achievement: achievement},
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [MunroState].
@@ -1007,6 +796,21 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       ) as bool);
 
   @override
+  bool get isSearchActive => (super.noSuchMethod(
+        Invocation.getter(#isSearchActive),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  String get filterString => (super.noSuchMethod(
+        Invocation.getter(#filterString),
+        returnValue: _i10.dummyValue<String>(
+          this,
+          Invocation.getter(#filterString),
+        ),
+      ) as String);
+
+  @override
   List<_i3.Munro> get createPostFilteredMunroList => (super.noSuchMethod(
         Invocation.getter(#createPostFilteredMunroList),
         returnValue: <_i3.Munro>[],
@@ -1064,7 +868,7 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i10.LatLngBounds? bounds) => super.noSuchMethod(
+  set setLatLngBounds(_i11.LatLngBounds? bounds) => super.noSuchMethod(
         Invocation.setter(
           #setLatLngBounds,
           bounds,
@@ -1190,434 +994,10 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       );
 }
 
-/// A class which mocks [AppFlagsRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockAppFlagsRepository extends _i1.Mock
-    implements _i2.AppFlagsRepository {
-  MockAppFlagsRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  bool get mapTerrain => (super.noSuchMethod(
-        Invocation.getter(#mapTerrain),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showBulkMunroDialog => (super.noSuchMethod(
-        Invocation.getter(#showBulkMunroDialog),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  int get lastFeedbackSurveyNumber => (super.noSuchMethod(
-        Invocation.getter(#lastFeedbackSurveyNumber),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  String get lastAppUpdateDialogDate => (super.noSuchMethod(
-        Invocation.getter(#lastAppUpdateDialogDate),
-        returnValue: _i11.dummyValue<String>(
-          this,
-          Invocation.getter(#lastAppUpdateDialogDate),
-        ),
-      ) as String);
-
-  @override
-  int get openCount => (super.noSuchMethod(
-        Invocation.getter(#openCount),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  _i5.Future<void> setMapTerrain(bool? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setMapTerrain,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setShowBulkMunroDialog(bool? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setShowBulkMunroDialog,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setLastFeedbackSurveyNumber(int? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setLastFeedbackSurveyNumber,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setLastAppUpdateDialogDate(String? isoDate) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #setLastAppUpdateDialogDate,
-          [isoDate],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  bool showWhatsNewDialog(String? version) => (super.noSuchMethod(
-        Invocation.method(
-          #showWhatsNewDialog,
-          [version],
-        ),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i5.Future<void> setShownWhatsNewDialog(String? version) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #setShownWhatsNewDialog,
-          [version],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setFirstAppVersion(String? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setFirstAppVersion,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  bool showInAppOnboarding(String? userId) => (super.noSuchMethod(
-        Invocation.method(
-          #showInAppOnboarding,
-          [userId],
-        ),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i5.Future<void> setShowInAppOnboarding(
-    String? userId,
-    bool? v,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #setShowInAppOnboarding,
-          [
-            userId,
-            v,
-          ],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setOpenCount(int? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setOpenCount,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> incrementOpenCount() => (super.noSuchMethod(
-        Invocation.method(
-          #incrementOpenCount,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-}
-
-/// A class which mocks [SettingsState].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockSettingsState extends _i1.Mock implements _i4.SettingsState {
-  MockSettingsState() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i4.SettingsStatus get status => (super.noSuchMethod(
-        Invocation.getter(#status),
-        returnValue: _i4.SettingsStatus.initial,
-      ) as _i4.SettingsStatus);
-
-  @override
-  _i3.Error get error => (super.noSuchMethod(
-        Invocation.getter(#error),
-        returnValue: _FakeError_3(
-          this,
-          Invocation.getter(#error),
-        ),
-      ) as _i3.Error);
-
-  @override
-  bool get enablePushNotifications => (super.noSuchMethod(
-        Invocation.getter(#enablePushNotifications),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get metricHeight => (super.noSuchMethod(
-        Invocation.getter(#metricHeight),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get metricTemperature => (super.noSuchMethod(
-        Invocation.getter(#metricTemperature),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  String get defaultPostVisibility => (super.noSuchMethod(
-        Invocation.getter(#defaultPostVisibility),
-        returnValue: _i11.dummyValue<String>(
-          this,
-          Invocation.getter(#defaultPostVisibility),
-        ),
-      ) as String);
-
-  @override
-  set setError(_i3.Error? error) => super.noSuchMethod(
-        Invocation.setter(
-          #setError,
-          error,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i5.Future<void> load() => (super.noSuchMethod(
-        Invocation.method(
-          #load,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> update(_i3.AppSettings? newAppSettings) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [newAppSettings],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setEnablePushNotifications(bool? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setEnablePushNotifications,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setMetricHeight(bool? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setMetricHeight,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setMetricTemperature(bool? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setMetricTemperature,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setDefaultPostVisibility(String? v) => (super.noSuchMethod(
-        Invocation.method(
-          #setDefaultPostVisibility,
-          [v],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [PushNotificationState].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockPushNotificationState extends _i1.Mock
-    implements _i12.PushNotificationState {
-  MockPushNotificationState() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i5.Future<void> init() => (super.noSuchMethod(
-        Invocation.method(
-          #init,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<bool> onPushSettingChanged() => (super.noSuchMethod(
-        Invocation.method(
-          #onPushSettingChanged,
-          [],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<bool> enablePush() => (super.noSuchMethod(
-        Invocation.method(
-          #enablePush,
-          [],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<bool> disablePush() => (super.noSuchMethod(
-        Invocation.method(
-          #disablePush,
-          [],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<void> syncTokenIfNeeded({bool? force = false}) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #syncTokenIfNeeded,
-          [],
-          {#force: force},
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-}
-
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i13.Analytics {
+class MockAnalytics extends _i1.Mock implements _i12.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -1661,7 +1041,7 @@ class MockAnalytics extends _i1.Mock implements _i13.Analytics {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i14.Logger {
+class MockLogger extends _i1.Mock implements _i13.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

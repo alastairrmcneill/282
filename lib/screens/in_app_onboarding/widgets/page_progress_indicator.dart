@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class PageProgressIndicator extends StatelessWidget {
   final int currentPageIndex;
@@ -21,7 +21,7 @@ class PageProgressIndicator extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 10.0),
                 height: 4.0,
                 decoration: BoxDecoration(
-                  color: index <= currentPageIndex ? MyColors.accentColor : Colors.grey[300],
+                  color: index <= currentPageIndex ? context.colors.accent : Colors.grey[300],
                   borderRadius: BorderRadius.circular(2.0),
                 ),
               ),

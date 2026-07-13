@@ -23,38 +23,41 @@ class UserTrailingButton extends StatelessWidget {
 
     final isFollowing = currentUserFollowerState.isFollowing(profileUserId);
 
-    return isFollowing
-        ? SizedBox(
-            width: 100,
-            child: OutlinedButton(
-              onPressed: () async {
-                // Check if logged in or not
-                if (userState.currentUser == null) {
-                  Navigator.of(context).pushNamed(AuthHomeScreen.route);
-                } else {
-                  currentUserFollowerState.unfollowUser(
-                    targetUserId: profileUserId,
-                  );
-                }
-              },
-              child: const Text("Unfollow"),
-            ),
-          )
-        : SizedBox(
-            width: 100,
-            child: ElevatedButton(
-              onPressed: () async {
-                // Check if logged in or not
-                if (userState.currentUser == null) {
-                  Navigator.of(context).pushNamed(AuthHomeScreen.route);
-                } else {
-                  currentUserFollowerState.followUser(
-                    targetUserId: profileUserId,
-                  );
-                }
-              },
+    void onPressed() {
+      if (userState.currentUser == null) {
+        Navigator.of(context).pushNamed(AuthHomeScreen.route);
+      } else if (isFollowing) {
+        currentUserFollowerState.unfollowUser(targetUserId: profileUserId);
+      } else {
+        currentUserFollowerState.followUser(targetUserId: profileUserId);
+      }
+    }
+
+    final compactStyle = ButtonStyle(
+      padding: WidgetStateProperty.all(
+        const EdgeInsets.symmetric(horizontal: 14),
+      ),
+      minimumSize: WidgetStateProperty.all(Size.zero),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      textStyle: WidgetStateProperty.all(
+        Theme.of(context).textTheme.labelMedium,
+      ),
+    );
+
+    return SizedBox(
+      width: 96,
+      height: 32,
+      child: isFollowing
+          ? OutlinedButton(
+              style: compactStyle,
+              onPressed: onPressed,
+              child: const Text("Following"),
+            )
+          : FilledButton(
+              style: compactStyle,
+              onPressed: onPressed,
               child: const Text("Follow"),
             ),
-          );
+    );
   }
 }

@@ -3,18 +3,22 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class EmailFormField extends StatelessWidget {
   final TextEditingController textEditingController;
-  const EmailFormField({Key? key, required this.textEditingController}) : super(key: key);
+  final void Function(String)? onChanged;
+  const EmailFormField({Key? key, required this.textEditingController, this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
 
-    return TextFormFieldBase(
-      labelText: "Email",
+    return AppTextFormField(
+      hintText: "Email",
       textInputAction: TextInputAction.next,
       maxLines: 1,
       autocorrect: false,
+      enableSuggestions: false,
       keyboardType: TextInputType.emailAddress,
+      textCapitalization: TextCapitalization.none,
+      onChanged: onChanged,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Required';

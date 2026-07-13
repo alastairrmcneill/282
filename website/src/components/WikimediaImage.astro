@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import attributions from '../data/attributions.json';
+import { heroImage } from '../data/heroes';
+import type { Munro } from '../data/munros';
+
+interface Props {
+  munro: Munro;
+  class?: string;
+}
+
+interface Attribution {
+  artist?: string;
+  license?: string;
+  licenseUrl?: string;
+  filePage?: string;
+}
+
+const { munro, class: className } = Astro.props;
+
+const attribution = (attributions as Record<string, Attribution>)[String(munro.id)];
+
+// Derive the Commons file page from the thumb URL as a fallback:
+// .../commons/thumb/0/0d/<FILE>.jpg/1280px-<FILE>.jpg -> File:<FILE>.jpg
+function commonsFilePage(url: string): string | undefined {
+  const match = url.match(/\/commons\/thumb\/[^/]+\/[^/]+\/([^/]+)\//);
+  if (!match) return undefined;
+  return `https://commons.wikimedia.org/wiki/File:${match[1]}`;
+}
+
+const filePage = attribution?.filePage ?? commonsFilePage(munro.heroImageUrl);
+const src = heroImage(munro.slug) ?? munro.heroImageUrl;
+const credit = attribution?.artist
+  ? `Photo: ${attribution.artist}`
+  : 'Photo via Wikimedia Commons';
+const license = attribution?.license ?? 'see file page for licence';
+---
+
+<figure class={className}>
+  <Image
+    src={src}
+    alt={`View of ${munro.displayName} (${munro.meters}m), ${munro.area}, Scotland`}
+    width={1280}
+    height={854}
+    widths={[480, 800, 1280]}
+    sizes="(max-width: 768px) 100vw, 1024px"
+    loading="eager"
+    fetchpriority="high"
+    class="h-full w-full object-cover"
+  />
+  <figcaption class="bg-gray-900/60 px-3 py-1 text-right text-[11px] text-gray-200">
+    {credit}
+    {
+      filePage && (
+        <a href={filePage} rel="noopener" class="underline">
+          ({license})
+        </a>
+      )
+    }
+  </figcaption>
+</figure>

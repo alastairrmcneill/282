@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import type { Munro } from '../data/munros';
+
+interface Props {
+  munro: Munro;
+}
+
+const { munro } = Astro.props;
+---
+
+<a
+  href={`/munros/${munro.slug}`}
+  class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+>
+  <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+    <Image
+      src={munro.pictureUrl}
+      alt={`${munro.displayName}, ${munro.meters}m Munro in ${munro.area}`}
+      width={400}
+      height={300}
+      loading="lazy"
+      class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+    />
+  </div>
+  <div class="p-4">
+    <h3 class="font-semibold text-gray-900 group-hover:text-brand-600">{munro.displayName}</h3>
+    <p class="mt-1 text-sm text-gray-500">
+      {munro.meters}m · {munro.area}
+    </p>
+  </div>
+</a>

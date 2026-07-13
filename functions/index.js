@@ -6,3 +6,4 @@ if (admin.apps.length === 0) {
 
 exports.beforecreated = require("./authTriggers").beforecreated;
 exports.beforesignedin = require("./authTriggers").beforesignedin;
+exports.imageProxy = require("./imageProxy").imageProxy;

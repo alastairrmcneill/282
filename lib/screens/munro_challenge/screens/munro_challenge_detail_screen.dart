@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/munro_challenge/screens/create_munro_challenge_screen.dart';
+import 'package:two_eight_two/screens/munro_challenge/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -9,96 +11,89 @@ class MunroChallengeDetailScreen extends StatelessWidget {
   const MunroChallengeDetailScreen({super.key});
   static const String route = '/munro_challenge/detail';
 
-  Widget _buildMessage(BuildContext context, Achievement achievement) {
-    if (achievement.completed) {
-      return Column(
-        children: [
-          const SizedBox(height: 20),
-          const Text('🎉', style: TextStyle(fontSize: 60)),
-          Text(
-            'Congratulations!',
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'You have achieved your goal for the year!.',
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.w300,
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-    } else {
-      if (achievement.annualTarget == 0 || achievement.annualTarget == null) {
-        return Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text('🏔️', style: TextStyle(fontSize: 60)),
-            Text(
-              'You haven\'t set a goal for the year yet.',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontWeight: FontWeight.w300,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
-      } else {
-        return Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text('🏔️', style: TextStyle(fontSize: 60)),
-            Text(
-              'You still have a few to go before you reach your goal for the year.',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontWeight: FontWeight.w300,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final achievementsState = context.watch<AchievementsState>();
-
-    Achievement achievement = achievementsState.currentAchievement!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(achievement.name),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildMessage(context, achievement),
-            const PaddedDivider(),
+            Icon(PhosphorIconsRegular.trophy, size: 64, color: context.colors.textMuted),
+            const SizedBox(height: 24),
             Text(
-              achievement.description,
-              style: Theme.of(context).textTheme.bodyLarge,
+              'No challenge set for ${DateTime.now().year}',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
             ),
-            achievement.type == AchievementTypes.multiMunroDay
-                ? const SizedBox()
-                : Text("Progress: ${achievement.progress}/${achievement.annualTarget ?? 0}"),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CreateMunroChallengeScreen.route);
-                },
-                child: const Text('Update Challenge'),
-              ),
-            )
+            const SizedBox(height: 12),
+            Text(
+              'Set a target and track how many Munros you can bag this year.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            PrimaryButton(
+              onPressed: () => Navigator.of(context).pushNamed(CreateMunroChallengeScreen.route),
+              child: const Text('Set My Target'),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+@override
+  Widget build(BuildContext context) {
+    final achievementsState = context.watch<AchievementsState>();
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final munroState = context.watch<MunroState>();
+
+    final achievement = achievementsState.currentAchievement!;
+    final goal = achievement.annualTarget ?? 0;
+
+    final yearCompletions = munroCompletionState.munroCompletions
+        .where((mc) => mc.dateTimeCompleted.year == DateTime.now().year)
+        .toList()
+      ..sort((a, b) => b.dateTimeCompleted.compareTo(a.dateTimeCompleted));
+
+    final completedCount = yearCompletions.length;
+
+    final completedMunros = munroState.munroList.where((m) => yearCompletions.any((mc) => mc.munroId == m.id)).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${DateTime.now().year} Annual Challenge'),
+            Text(
+              goal == 0 ? 'No goal set' : '$completedCount of $goal munros',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: context.colors.textMuted,
+                  ),
+            ),
+          ],
+        ),
+        centerTitle: false,
+        leading: IconButton(
+          icon: Icon(PhosphorIconsRegular.caretLeft),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: goal == 0
+          ? _buildEmptyState(context)
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                ChallengeDetailHeroCard(completed: completedCount, goal: goal),
+                const SizedBox(height: 24),
+                CompletedThisYearSection(
+                  completions: yearCompletions,
+                  munros: completedMunros,
+                  completedCount: completedCount,
+                ),
+              ],
+            ),
     );
   }
 }

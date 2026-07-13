@@ -3,29 +3,30 @@ import 'package:flutter/material.dart';
 // Divider with text in the middle
 class TextDivider extends StatelessWidget {
   final String text;
-  const TextDivider({Key? key, required this.text}) : super(key: key);
+  final Color? color;
+  const TextDivider({Key? key, required this.text, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Divider(
-            thickness: 1.5,
-            color: Colors.white,
+            thickness: 0.5,
+            color: color ?? Theme.of(context).dividerColor,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, height: 1.1),
+            style: TextStyle(color: color ?? Theme.of(context).dividerColor, fontWeight: FontWeight.w400, height: 1),
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Divider(
-            thickness: 1.5,
-            color: Colors.white,
+            thickness: 0.5,
+            color: color ?? Theme.of(context).dividerColor,
           ),
         ),
       ],

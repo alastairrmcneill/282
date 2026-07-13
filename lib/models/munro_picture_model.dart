@@ -1,3 +1,4 @@
+import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class MunroPicture {
@@ -19,15 +20,26 @@ class MunroPicture {
     required this.privacy,
   });
 
-  factory MunroPicture.fromJSON(Map<String, dynamic> data) => MunroPicture(
-        uid: data[MunroPictureFields.uid] as String,
-        munroId: data[MunroPictureFields.munroId] as int,
-        authorId: data[MunroPictureFields.authorId] as String? ?? '',
-        imageUrl: data[MunroPictureFields.imageUrl] as String,
-        dateTime: DateTime.parse(data[MunroPictureFields.dateTime] as String),
-        postId: data[MunroPictureFields.postId] as String,
-        privacy: data[MunroPictureFields.privacy] as String? ?? Privacy.public,
-      );
+  static MunroPicture fromJSON(Map<String, dynamic> data) {
+    final config = AppConfig.fromEnvironment();
+
+    var imageUrl = data[MunroPictureFields.imageUrl] as String;
+    if (config.imageProxyBaseUrl.isNotEmpty) {
+      final uri = Uri.parse(imageUrl);
+      final imagePath = uri.pathSegments.skip(4).join('/');
+      imageUrl = '${config.imageProxyBaseUrl}/$imagePath';
+    }
+
+    return MunroPicture(
+      uid: data[MunroPictureFields.uid] as String,
+      munroId: data[MunroPictureFields.munroId] as int,
+      authorId: data[MunroPictureFields.authorId] as String? ?? '',
+      imageUrl: imageUrl,
+      dateTime: DateTime.parse(data[MunroPictureFields.dateTime] as String),
+      postId: data[MunroPictureFields.postId] as String,
+      privacy: data[MunroPictureFields.privacy] as String? ?? Privacy.public,
+    );
+  }
 
   Map<String, dynamic> toJSON() => {
         MunroPictureFields.munroId: munroId,

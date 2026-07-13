@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 
 class PostImagesCarousel extends StatefulWidget {
   final Post post;
@@ -18,19 +19,8 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
-    List<String> imageUrls = widget.post.imageUrlsMap.values.expand((element) => element).toList();
-
-    if (imageUrls.isEmpty) {
-      imageUrls = widget.post.includedMunroIds
-          .map((munroId) => munroState.munroList
-              .firstWhere(
-                (m) => m.id == munroId,
-                orElse: () => Munro.empty,
-              )
-              .pictureURL)
-          .toList();
-    }
+    final List<String> imageUrls = widget.post.imageUrlsMap.values.expand((urls) => urls).toList();
+    if (imageUrls.isEmpty) return const SizedBox();
 
     return Stack(
       children: [
@@ -63,20 +53,16 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                       ),
                       fadeInDuration: Duration.zero,
                       errorWidget: (context, url, error) {
+                        context.read<Logger>().error(
+                              'Failed to load photo',
+                              error: error,
+                              context: {'imageUrl': url},
+                            );
                         return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.error),
-                              Text(
-                                error
-                                        .toString()
-                                        .contains('ClientException with SocketException: Connection reset by peer')
-                                    ? "Error loading image. Please check your internet connection and try again."
-                                    : error.toString(),
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
+                          child: Icon(
+                            PhosphorIconsRegular.warning,
+                            size: 40,
+                            color: Colors.grey[400],
                           ),
                         );
                       },
@@ -86,27 +72,26 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
               )
               .toList(),
         ),
-        imageUrls.length < 2
-            ? const SizedBox()
-            : SizedBox(
-                height: 300,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: AnimatedSmoothIndicator(
-                      activeIndex: _selectedIndex,
-                      count: imageUrls.length,
-                      effect: const WormEffect(
-                        dotWidth: 8,
-                        dotHeight: 8,
-                        activeDotColor: Colors.white,
-                        dotColor: Color.fromARGB(255, 154, 171, 147),
-                      ),
-                    ),
+        if (imageUrls.length > 1)
+          SizedBox(
+            height: 300,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: AnimatedSmoothIndicator(
+                  activeIndex: _selectedIndex,
+                  count: imageUrls.length,
+                  effect: const ExpandingDotsEffect(
+                    dotWidth: 8,
+                    dotHeight: 8,
+                    activeDotColor: Colors.white,
+                    dotColor: Color.fromARGB(255, 154, 171, 147),
                   ),
                 ),
               ),
+            ),
+          ),
       ],
     );
   }

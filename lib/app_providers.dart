@@ -48,6 +48,7 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => SavedListMunroRepository(client)),
       Provider(create: (_) => UserAchievementsRepository(client)),
       Provider(create: (_) => GlobalCompletionCountRepository(client)),
+      Provider(create: (_) => OnboardingRepository(client)),
       Provider(create: (_) => SettingsRepository(sharedPreferences)),
       Provider(create: (_) => AppFlagsRepository(sharedPreferences)),
       Provider(create: (_) => LocalStorageRepository(sharedPreferences)),
@@ -160,7 +161,6 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<StorageRepository>(),
           ctx.read<UserState>(),
           ctx.read<MunroCompletionState>(),
-          ctx.read<RemoteConfigState>(),
           ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
@@ -187,12 +187,14 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => NotificationsState(
           ctx.read<NotificationsRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider<SettingsState>(
         create: (ctx) => SettingsState(
           ctx.read<SettingsRepository>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -229,6 +231,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<UserAchievementsRepository>(),
           ctx.read<UserState>(),
           ctx.read<OverlayIntentState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -254,6 +257,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => ReportState(
           ctx.read<ReportRepository>(),
           ctx.read<UserState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -269,8 +273,8 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Logger>(),
         ),
       ),
-      ChangeNotifierProvider<ShareMunroState>(
-        create: (ctx) => ShareMunroState(
+      ChangeNotifierProvider<ShareState>(
+        create: (ctx) => ShareState(
           ctx.read<ShareLinkRepository>(),
           ctx.read<Analytics>(),
           ctx.read<Logger>(),
@@ -280,6 +284,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         create: (ctx) => DeepLinkState(
           ctx.read<DeepLinkRepository>(),
           ctx.read<NavigationIntentState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
@@ -326,5 +331,13 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<FlavorState>(),
           ctx.read<Logger>(),
         ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => OnboardingState(
+          ctx.read<OnboardingRepository>(),
+          ctx.read<AppFlagsRepository>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
+        ), //..init(),
       ),
     ];

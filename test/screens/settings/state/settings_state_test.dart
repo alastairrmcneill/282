@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -11,10 +12,12 @@ import 'settings_state_test.mocks.dart';
 // Generate mocks
 @GenerateMocks([
   SettingsRepository,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockSettingsRepository mockSettingsRepository;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late SettingsState settingsState;
 
@@ -27,11 +30,13 @@ void main() {
       metricHeight: false,
       metricTemperature: true,
       defaultPostVisibility: Privacy.public,
+      themeMode: ThemeModeOption.system,
     );
 
     mockSettingsRepository = MockSettingsRepository();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
-    settingsState = SettingsState(mockSettingsRepository, mockLogger);
+    settingsState = SettingsState(mockSettingsRepository, mockAnalytics, mockLogger);
   });
 
   group('SettingsState', () {
@@ -71,6 +76,7 @@ void main() {
           metricHeight: true,
           metricTemperature: false,
           defaultPostVisibility: Privacy.private,
+          themeMode: ThemeModeOption.system,
         );
         when(mockSettingsRepository.load()).thenReturn(customSettings);
 
@@ -138,6 +144,7 @@ void main() {
           metricHeight: true,
           metricTemperature: false,
           defaultPostVisibility: Privacy.friends,
+          themeMode: ThemeModeOption.system,
         );
         when(mockSettingsRepository.save(any)).thenAnswer((_) async => Future.value());
 

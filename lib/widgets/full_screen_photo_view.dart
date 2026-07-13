@@ -2,7 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/widgets/loading_widget.dart';
 
 class FullScreenPhotoViewerArgs {
   final List<MunroPicture> initialPictures;
@@ -77,6 +80,17 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
                 initialScale: PhotoViewComputedScale.contained,
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 2,
+                errorBuilder: (context, error, stackTrace) {
+                  context.read<Logger>().error(
+                        'Failed to load photo',
+                        error: error,
+                        stackTrace: stackTrace,
+                        context: {'imageUrl': photos[index].imageUrl},
+                      );
+                  return const Center(
+                    child: Icon(Icons.error, color: Colors.white),
+                  );
+                },
               );
             },
             scrollPhysics: const BouncingScrollPhysics(),
@@ -93,8 +107,9 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
             ),
           ),
           if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
+            LoadingWidget(
+              text: "Loading more photos...",
+              size: 32,
             ),
         ],
       ),

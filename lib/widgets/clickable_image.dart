@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -42,6 +44,11 @@ class ClickableImage extends StatelessWidget {
         imageUrl: image.imageUrl,
         fit: BoxFit.cover,
         errorWidget: (context, url, error) {
+          context.read<Logger>().error(
+                'Failed to load photo',
+                error: error,
+                context: {'imageUrl': url},
+              );
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

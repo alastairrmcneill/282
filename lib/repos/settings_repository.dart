@@ -12,6 +12,7 @@ class SettingsRepository {
       metricHeight: _prefs.getBool(SettingsFields.metricHeight) ?? false,
       metricTemperature: _prefs.getBool(SettingsFields.metricTemperature) ?? true,
       defaultPostVisibility: _prefs.getString(SettingsFields.defaultPostVisibility) ?? Privacy.public,
+      themeMode: _prefs.getString(SettingsFields.themeMode) ?? ThemeModeOption.system,
     );
   }
 
@@ -20,5 +21,6 @@ class SettingsRepository {
     await _prefs.setBool(SettingsFields.metricHeight, s.metricHeight);
     await _prefs.setBool(SettingsFields.metricTemperature, s.metricTemperature);
     await _prefs.setString(SettingsFields.defaultPostVisibility, s.defaultPostVisibility);
+    await _prefs.setString(SettingsFields.themeMode, s.themeMode);
   }
 }

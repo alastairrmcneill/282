@@ -1,0 +1,25 @@
+---
+import { APP_STORE_URL } from '../lib/branch';
+---
+
+<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur">
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <a href="/" class="flex items-center gap-2" aria-label="282 home">
+      <img src="/icon-192.png" alt="" width="32" height="32" class="h-8 w-8 rounded-lg" />
+      <span class="text-xl font-bold tracking-tight">282</span>
+    </a>
+    <nav aria-label="Main">
+      <ul class="flex items-center gap-5 text-sm font-medium text-gray-700 sm:gap-7">
+        <li><a href="/munros" class="hover:text-brand-600">Munros</a></li>
+        <li><a href="/guides" class="hover:text-brand-600">Guides</a></li>
+        <li class="hidden sm:block">
+          <a
+            href={APP_STORE_URL}
+            class="rounded-full bg-brand-500 px-4 py-2 font-semibold text-white transition hover:bg-brand-600"
+            >Get the app</a
+          >
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

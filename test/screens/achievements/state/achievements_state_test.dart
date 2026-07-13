@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -13,12 +14,14 @@ import 'achievements_state_test.mocks.dart';
   UserAchievementsRepository,
   UserState,
   OverlayIntentState,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockUserAchievementsRepository mockUserAchievementsRepository;
   late MockUserState mockUserState;
   late MockOverlayIntentState mockOverlayIntentState;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late AchievementsState achievementsState;
 
@@ -87,12 +90,14 @@ void main() {
     mockUserAchievementsRepository = MockUserAchievementsRepository();
     mockUserState = MockUserState();
     mockOverlayIntentState = MockOverlayIntentState();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
 
     achievementsState = AchievementsState(
       mockUserAchievementsRepository,
       mockUserState,
       mockOverlayIntentState,
+      mockAnalytics,
       mockLogger,
     );
 

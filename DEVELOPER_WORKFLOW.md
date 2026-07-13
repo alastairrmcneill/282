@@ -224,6 +224,10 @@ lib/
     └── popup_widgets/                # Dialogs and overlays
 ```
 
+### Website (separate project)
+
+`website/` is a standalone Astro project — the marketing & SEO site (282app.uk). It is not part of the Flutter app's dependency graph and has its own dependencies, dev server and deploy process. See [website/README.md](website/README.md).
+
 ### Screen Structure Pattern
 
 Most feature screens follow this structure:

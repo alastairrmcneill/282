@@ -20,8 +20,10 @@ class _PasswordFormFieldState extends State<ConfirmPasswordFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormFieldBase(
-      labelText: 'Confirm Password',
+    return AppTextFormField(
+      hintText: 'Confirm Password',
+      textInputAction: TextInputAction.done,
+      textCapitalization: TextCapitalization.none,
       suffixIcon: IconButton(
         onPressed: () {
           setState(() {
@@ -31,6 +33,8 @@ class _PasswordFormFieldState extends State<ConfirmPasswordFormField> {
         icon: _obscureText ? const Icon(Icons.visibility_off_rounded) : const Icon(Icons.visibility_rounded),
       ),
       keyboardType: TextInputType.visiblePassword,
+      autocorrect: false,
+      enableSuggestions: false,
       obscureText: _obscureText,
       onChanged: (value) {
         widget.confirmPassword_TextEditingController.text = value;

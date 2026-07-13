@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -84,21 +85,58 @@ class _MunroSelectorState extends State<MunroSelector> {
                 orElse: () => Munro.empty,
               );
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      munro.name,
-                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              size: 22,
+                              color: context.colors.textMuted,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                munro.name,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                createPostState.removeMunro(munro.id);
+                                setState(() {});
+                                formState.didChange(createPostState.selectedMunroIds);
+                              },
+                              child: Icon(
+                                Icons.close,
+                                size: 20,
+                                color: context.colors.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Text(
+                            '${munro.meters}m • ${munro.area}',
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Photos (optional)',
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted),
+                        ),
+                        const SizedBox(height: 8),
+                        CreatePostImagePicker(munroId: munro.id),
+                      ],
                     ),
-                    Text(
-                      "${munro.extra == null || munro.extra!.isEmpty ? '' : '${munro.extra} - '}${munro.area}",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 5),
-                    CreatePostImagePicker(munroId: munro.id),
-                  ],
+                  ),
                 ),
               );
             }),
@@ -107,29 +145,20 @@ class _MunroSelectorState extends State<MunroSelector> {
                 'Select at least one munro',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             SizedBox(
-              height: 44,
-              child: ElevatedButton(
+              width: double.infinity,
+              height: 48,
+              child: OutlinedButton.icon(
                 onPressed: () {
                   munroState.setCreatePostFilterString = "";
                   _showModalSheet(munroState, createPostState, formState);
                 },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.add),
-                      Text(
-                        "Add another munro",
-                      ),
-                    ],
-                  ),
-                ),
+                icon: const Icon(Icons.add),
+                label: const Text('Add another munro'),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
           ],
         );
       },

@@ -1,0 +1,107 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/inter';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { SITE_URL, SITE_NAME } from '../lib/seo';
+import { APP_STORE_ID } from '../lib/branch';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path beginning with "/", used for the canonical URL. */
+  path: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  /** JSON-LD objects to embed. */
+  jsonLd?: object[];
+  /** Optional Branch link passed to the iOS Smart App Banner. */
+  appArgument?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogImage,
+  ogType = 'website',
+  jsonLd = [],
+  appArgument,
+} = Astro.props;
+
+const canonical = path === '/' ? SITE_URL : `${SITE_URL}${path}`;
+const ogImageAbsolute = ogImage
+  ? ogImage.startsWith('http')
+    ? ogImage
+    : `${SITE_URL}${ogImage}`
+  : `${SITE_URL}/og-default.jpg`;
+const gaId = import.meta.env.PUBLIC_GA_ID;
+const smartBanner = appArgument
+  ? `app-id=${APP_STORE_ID}, app-argument=${appArgument}`
+  : `app-id=${APP_STORE_ID}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="apple-itunes-app" content={smartBanner} />
+
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbsolute} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbsolute} />
+
+    {jsonLd.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+
+    {
+      gaId && (
+        <Fragment>
+          <script
+            is:inline
+            define:vars={{ gaId }}
+          >
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            window.gtag = gtag;
+            gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+            if (localStorage.getItem('cookie-consent') === 'granted') {
+              gtag('consent', 'update', { analytics_storage: 'granted' });
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
+          </script>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+        </Fragment>
+      )
+    }
+  </head>
+  <body class="bg-gray-50 font-sans text-gray-900 antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    {gaId && <CookieConsent />}
+  </body>
+</html>

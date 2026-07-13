@@ -13,6 +13,10 @@ Are you bagging all 282 munros in Scotland? Are you wanting to see what mountain
 
 Email alastair.r.mcneill@gmail.com for support on this app.
 
+## Website
+
+The marketing & SEO site ([282app.uk](https://282app.uk)) lives in [`website/`](website/README.md) — a separate Astro project, deployed independently of the Flutter app.
+
 ## How to contribute
 
 Contributions to this project are welcome!

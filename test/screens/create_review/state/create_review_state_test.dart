@@ -56,6 +56,7 @@ void main() {
         startingPointURL: 'https://example.com/ben-nevis-start',
         saved: false,
         commonlyClimbedWith: [],
+        totalSummitCount: 0,
       ),
       Munro(
         id: 2,
@@ -74,6 +75,7 @@ void main() {
         startingPointURL: 'https://example.com/ben-macdui-start',
         saved: false,
         commonlyClimbedWith: [],
+        totalSummitCount: 0,
       ),
     ];
 

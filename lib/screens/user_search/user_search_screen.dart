@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/screens/profile/screens/profile_screen.dart';
 import 'package:two_eight_two/models/app_user.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/user_search/widgets/widgets.dart';
+import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class UserSearchScreen extends StatefulWidget {
@@ -58,6 +61,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             focusNode: _focusNode,
             hintText: "Find friends",
             onClear: () {
+              context.read<Analytics>().track(AnalyticsEvent.userSearchClearTapped);
               _searchController.clear();
               userSearchState.clearSearch();
             },
@@ -77,7 +81,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                 builder: (context, userSearchState, child) {
                   switch (userSearchState.status) {
                     case SearchStatus.initial:
-                      return const CenterText(text: "Search for fellow 282 users");
+                      return const EmptyUserSearch();
                     case SearchStatus.loading:
                       return _buildLoadingScreen();
                     case SearchStatus.error:
@@ -101,10 +105,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
 
   Widget _buildLoadingScreen() {
     return ListView.builder(
-      itemCount: 30,
+      itemCount: 20,
       controller: _scrollController,
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => ShimmerListTile(),
+      itemBuilder: (context, index) => const ShimmerListTile(),
     );
   }
 
@@ -115,38 +119,82 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
     required String currentUserId,
   }) {
     if (userSearchState.users.isEmpty) {
-      return const CenterText(text: "No users found");
+      return const NoResultsUserSearch();
     }
 
     return ListView.builder(
       controller: scrollController,
-      itemCount: userSearchState.users.length,
+      itemCount: userSearchState.users.length + 1,
       itemBuilder: (context, index) {
-        final AppUser user = userSearchState.users[index];
+        if (index == userSearchState.users.length) {
+          return userSearchState.status == SearchStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
+        }
 
-        if (user.uid != currentUserId) {
-          return ListTile(
-            leading: CircularProfilePicture(
-              radius: 20,
+        final AppUser user = userSearchState.users[index];
+        if (user.uid == currentUserId) return const SizedBox.shrink();
+
+        return _UserSearchTile(user: user);
+      },
+    );
+  }
+}
+
+class _UserSearchTile extends StatelessWidget {
+  final AppUser user;
+
+  const _UserSearchTile({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).brightness == Brightness.dark ? AppColors.dark : AppColors.light;
+    final textTheme = Theme.of(context).textTheme;
+
+    return InkWell(
+      onTap: () {
+        context.read<Analytics>().track(AnalyticsEvent.userSearchResultTapped);
+        Navigator.of(context).pushNamed(
+          ProfileScreen.route,
+          arguments: ProfileScreenArgs(userId: user.uid!),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            CircularProfilePicture(
+              radius: 22,
               profilePictureURL: user.profilePictureURL,
+              profileUid: user.uid,
             ),
-            title: Text(user.displayName ?? ""),
-            trailing: UserTrailingButton(
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    user.displayName ?? "",
+                    style: textTheme.titleSmall?.copyWith(color: colors.textPrimary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "${user.munrosCompleted ?? 0} Munros",
+                    style: textTheme.bodySmall?.copyWith(color: colors.textMuted),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            UserTrailingButton(
               profileUserId: user.uid!,
               profileUserDisplayName: user.displayName ?? "",
               profileUserPictureURL: user.profilePictureURL ?? "",
             ),
-            onTap: () {
-              Navigator.of(context).pushNamed(
-                ProfileScreen.route,
-                arguments: ProfileScreenArgs(userId: user.uid!),
-              );
-            },
-          );
-        } else {
-          return const SizedBox();
-        }
-      },
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -13,9 +14,10 @@ class DeepLinkIntent {
 class DeepLinkState extends ChangeNotifier {
   final DeepLinkRepository _repo;
   final NavigationIntentState _intents;
+  final Analytics _analytics;
   final Logger _logger;
 
-  DeepLinkState(this._repo, this._intents, this._logger);
+  DeepLinkState(this._repo, this._intents, this._analytics, this._logger);
 
   StreamSubscription<NavigationIntent>? _sub;
   bool _started = false;
@@ -26,7 +28,13 @@ class DeepLinkState extends ChangeNotifier {
 
     try {
       await _repo.init(enableLogging: enableLogging);
-      _sub = _repo.events.listen(_intents.enqueue);
+      _sub = _repo.events.listen((intent) {
+        _analytics.track(
+          AnalyticsEvent.branchLinkClicked,
+          props: {AnalyticsProp.source: intent.runtimeType.toString()},
+        );
+        _intents.enqueue(intent);
+      });
     } catch (error, stackstrace) {
       _logger.error('DeepLink init failed', error: error, stackTrace: stackstrace);
     }

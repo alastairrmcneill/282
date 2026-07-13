@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -12,42 +12,38 @@ class CommentTile extends StatelessWidget {
   final Comment comment;
   const CommentTile({super.key, required this.comment});
 
-  Widget _buildPopUpMenu(
-    BuildContext context, {
-    required Comment comment,
-    required UserState userState,
-  }) {
+  void _showActionsDialog(BuildContext context) {
+    final userState = context.read<UserState>();
     final commentsState = context.read<CommentsState>();
-    List<MenuItem> menuItems = [];
-    if (comment.authorId == userState.currentUser?.uid) {
-      menuItems = [
-        MenuItem(
-          text: 'Delete',
-          onTap: () {
-            commentsState.deleteComment(comment: comment);
-          },
-        ),
-      ];
-    } else {
-      final reportState = context.read<ReportState>();
-      menuItems = [
-        MenuItem(
-          text: 'Report',
-          onTap: () {
-            reportState.setContentId = '${comment.postId}/${comment.uid ?? ""}';
-            reportState.setType = "comment";
-            Navigator.of(context).pushNamed(ReportScreen.route);
-          },
-        ),
-      ];
-    }
-    return PopupMenuBase(items: menuItems);
+
+    final isOwner = comment.authorId == userState.currentUser?.uid;
+
+    final items = isOwner
+        ? [
+            ActionMenuItems(
+              title: 'Delete',
+              isDestructive: true,
+              onPressed: () async {
+                await commentsState.deleteComment(comment: comment);
+              },
+            ),
+          ]
+        : [
+            ActionMenuItems(
+              title: 'Report',
+              onPressed: () {
+                final reportState = context.read<ReportState>();
+                reportState.setContentId = '${comment.postId}/${comment.uid ?? ""}';
+                reportState.setType = "comment";
+                Navigator.of(context).pushNamed(ReportScreen.route);
+              },
+            ),
+          ];
+    showActionSheet(context, items);
   }
 
   @override
   Widget build(BuildContext context) {
-    UserState userState = context.watch<UserState>();
-
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 10, bottom: 15),
       child: Row(
@@ -83,7 +79,18 @@ class CommentTile extends StatelessWidget {
               ],
             ),
           ),
-          _buildPopUpMenu(context, comment: comment, userState: userState)
+          SizedBox(
+            width: 32,
+            height: 32,
+            child: IconButton(
+              padding: EdgeInsets.all(0),
+              icon: Icon(
+                PhosphorIconsBold.dotsThreeVertical,
+                color: context.colors.textMuted,
+              ),
+              onPressed: () => _showActionsDialog(context),
+            ),
+          )
         ],
       ),
     );

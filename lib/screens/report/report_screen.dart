@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/report/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ReportScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class ReportScreen extends StatelessWidget {
       builder: (context, reportState, child) {
         switch (reportState.status) {
           case ReportStatus.loading:
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(body: LoadingWidget());
           case ReportStatus.error:
             return Scaffold(
               appBar: AppBar(),
@@ -23,7 +24,7 @@ class ReportScreen extends StatelessWidget {
           case ReportStatus.loaded:
             return Scaffold(
               appBar: AppBar(),
-              body: const CenterText(text: "Report sent successfully"),
+              body: const ReportSuccessView(),
             );
           default:
             return _buildScreen(context, reportState);
@@ -52,7 +53,7 @@ class ReportScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 15),
-                    TextFormFieldBase(
+                    AppTextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter a comment";

@@ -24,80 +24,87 @@ class SoftUpdateDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> updates = whatsNew.split(';');
+    final updates = whatsNew.split(';').where((s) => s.trim().isNotEmpty).toList();
+
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.6,
-        height: MediaQuery.of(context).size.height * 0.5,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 1,
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Column(
+            Center(
+              child: Text(
+                'Update Available',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                'Version $latestVersion is ready to download.',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            if (updates.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              Text(
+                "What's new",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    ?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...updates.map(
+                (update) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Align(
-                        alignment: Alignment.center,
+                      const Text('• '),
+                      Expanded(
                         child: Text(
-                          "Update app?",
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                          update.trim(),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'A new version 282 is available! Version $latestVersion is now available for download. (You have version $currentVersion)',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 13, height: 1.8),
-                      ),
-                      const SizedBox(height: 15),
-                      Text(
-                        "What's new in $latestVersion:",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(fontSize: 13, fontWeight: FontWeight.bold, height: 1.8),
-                      ),
-                      const SizedBox(height: 5),
-                      ...updates.map(
-                        (update) => Text(
-                          "• $update",
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 13, height: 1.8),
-                        ),
-                      )
                     ],
                   ),
                 ),
               ),
+            ],
+            const SizedBox(height: 24),
+            PrimaryButton(
+              analyticsEvent: AnalyticsEvent.appUpdateDialogUpdateNow,
+              onPressed: () async {
+                final url = Platform.isIOS
+                    ? 'https://apps.apple.com/us/app/282/id6474512889'
+                    : 'https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo';
+                final logger = context.read<Logger>();
+                final navigator = Navigator.of(context);
+                try {
+                  await launchUrl(Uri.parse(url));
+                } on Exception catch (error, stackTrace) {
+                  logger.error(error.toString(), stackTrace: stackTrace);
+                  Clipboard.setData(ClipboardData(text: url));
+                  if (context.mounted) showSnackBar(context, 'Copied link. Go to browser to open.');
+                }
+                navigator.pop();
+              },
+              child: const Text('Update Now'),
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  context.read<Analytics>().track(AnalyticsEvent.appUpdateDialogUpdateNow);
-                  String url = Platform.isIOS
-                      ? "https://apps.apple.com/us/app/282/id6474512889"
-                      : "https://play.google.com/store/apps/details?id=com.alastairrmcneill.TwoEightTwo";
-                  try {
-                    await launchUrl(
-                      Uri.parse(url),
-                    );
-                  } on Exception catch (error, stackTrace) {
-                    context.read<Logger>().error(error.toString(), stackTrace: stackTrace);
-                    Clipboard.setData(ClipboardData(text: url));
-                    showSnackBar(context, 'Copied link. Go to browser to open.');
-                  }
-
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Update Now'),
-              ),
+            const SizedBox(height: 8),
+            SecondaryButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Not Now'),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -18,32 +19,42 @@ class AppRouter {
     switch (settings.name) {
       case HomeScreen.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 0),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
           settings: settings,
         );
       case ExploreTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 0),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
           settings: settings,
         );
       case FeedTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 1),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 1),
+          settings: settings,
+        );
+      case GroupFilterTab.route:
+        return MaterialPageRoute(
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 2),
           settings: settings,
         );
       case SavedTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 2),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 3),
           settings: settings,
         );
       case ProfileTab.route:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 3),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 4),
           settings: settings,
         );
       case AuthHomeScreen.route:
         return MaterialPageRoute(
           builder: (_) => const AuthHomeScreen(),
+          settings: settings,
+        );
+      case OnboardingScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingScreen(),
           settings: settings,
         );
 
@@ -58,22 +69,10 @@ class AppRouter {
           builder: (_) => const AchievementListScreen(),
           settings: settings,
         );
-      case DocumentScreen.route:
-        final args = settings.arguments as DocumentScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => DocumentScreen(
-            args: args,
-          ),
-          settings: settings,
-        );
-      case WeatherScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => WeatherScreen(),
-          settings: settings,
-        );
       case LoginScreen.route:
+        final args = settings.arguments as LoginScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => LoginScreen(),
+          builder: (_) => LoginScreen(fromOnboarding: args?.fromOnboarding ?? false),
           settings: settings,
         );
       case EditReviewScreen.route:
@@ -88,14 +87,32 @@ class AppRouter {
         );
       case MunroScreen.route:
         final args = settings.arguments as MunroScreenArgs;
-
         return MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider<MunroDetailState>(
-            create: (ctx) => MunroDetailState(
-              ctx.read<MunroPicturesRepository>(),
-              ctx.read<UserState>(),
-              ctx.read<Logger>(),
-            )..init(args.munro),
+          builder: (context) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider<MunroDetailState>(
+                create: (ctx) => MunroDetailState(
+                  ctx.read<MunroPicturesRepository>(),
+                  ctx.read<ReviewsRepository>(),
+                  ctx.read<UserState>(),
+                  ctx.read<Logger>(),
+                )..init(args.munro),
+              ),
+              ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
+                create: (ctx) => PhotoGalleryState<MunroPicture>(
+                  ctx.read<UserState>(),
+                  ctx.read<Logger>(),
+                  ({required offset, required count, required excludedAuthorIds}) {
+                    return ctx.read<MunroPicturesRepository>().readMunroPictures(
+                          munroId: args.munro.id,
+                          excludedAuthorIds: excludedAuthorIds,
+                          offset: offset,
+                          count: count,
+                        );
+                  },
+                )..loadInitital(),
+              ),
+            ],
             child: MunroScreen(),
           ),
           settings: settings,
@@ -148,19 +165,35 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) {
-            return ChangeNotifierProvider<ProfileState>(
-              create: (ctx) => ProfileState(
-                ctx.read<ProfileRepository>(),
-                ctx.read<MunroPicturesRepository>(),
-                ctx.read<PostsRepository>(),
-                ctx.read<UserState>(),
-                ctx.read<UserLikeState>(),
-                ctx.read<MunroCompletionsRepository>(),
-                ctx.read<Logger>(),
-              )..loadProfileFromUserId(userId: args.userId),
-              child: ProfileScreen(
-                userId: args.userId,
-              ),
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider<ProfileState>(
+                  create: (ctx) => ProfileState(
+                    ctx.read<ProfileRepository>(),
+                    ctx.read<MunroPicturesRepository>(),
+                    ctx.read<PostsRepository>(),
+                    ctx.read<UserState>(),
+                    ctx.read<UserLikeState>(),
+                    ctx.read<MunroCompletionsRepository>(),
+                    ctx.read<Logger>(),
+                  )..loadProfileFromUserId(userId: args.userId),
+                ),
+                ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
+                  create: (ctx) => PhotoGalleryState<MunroPicture>(
+                    ctx.read<UserState>(),
+                    ctx.read<Logger>(),
+                    ({required offset, required count, required excludedAuthorIds}) {
+                      return ctx.read<MunroPicturesRepository>().readProfilePictures(
+                            profileId: args.userId,
+                            excludedAuthorIds: excludedAuthorIds,
+                            offset: offset,
+                            count: count,
+                          );
+                    },
+                  )..loadInitital(),
+                ),
+              ],
+              child: ProfileScreen(userId: args.userId),
             );
           },
           settings: settings,
@@ -209,6 +242,7 @@ class AppRouter {
               create: (ctx) => UserSearchState(
                 ctx.read<UserRepository>(),
                 ctx.read<UserState>(),
+                ctx.read<Analytics>(),
                 ctx.read<Logger>(),
               )..clearSearch(),
               child: const UserSearchScreen(),
@@ -227,12 +261,7 @@ class AppRouter {
                 ctx.read<UserState>(),
                 ctx.read<MunroCompletionState>(),
                 ctx.read<BulkMunroUpdateState>(),
-                ctx.read<AchievementsState>(),
-                ctx.read<UserAchievementsRepository>(),
                 ctx.read<MunroState>(),
-                ctx.read<AppFlagsRepository>(),
-                ctx.read<SettingsState>(),
-                ctx.read<PushNotificationState>(),
                 ctx.read<Analytics>(),
                 ctx.read<Logger>(),
               ),
@@ -247,19 +276,9 @@ class AppRouter {
           builder: (_) => const CommentsScreen(),
           settings: settings,
         );
-      case ReviewsScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const ReviewsScreen(),
-          settings: settings,
-        );
       case NotificationsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const NotificationsScreen(),
-          settings: settings,
-        );
-      case GroupFilterScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const GroupFilterScreen(),
           settings: settings,
         );
       case ForgotPasswordScreen.route:
@@ -267,26 +286,33 @@ class AppRouter {
           builder: (_) => ForgotPasswordScreen(),
           settings: settings,
         );
-      case RegistrationEmailScreen.route:
+      case SignUpScreen.route:
+        final args = settings.arguments as SignUpScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => RegistrationEmailScreen(),
-          settings: settings,
-        );
-      case RegistrationNamesScreen.route:
-        final args = settings.arguments as RegistrationNamesScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => RegistrationNamesScreen(args: args),
-          settings: settings,
-        );
-      case RegistrationPasswordScreen.route:
-        final args = settings.arguments as RegistrationPasswordScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => RegistrationPasswordScreen(args: args),
+          builder: (_) => SignUpScreen(fromOnboarding: args?.fromOnboarding ?? false),
           settings: settings,
         );
       case BulkMunroUpdateScreen.route:
         return MaterialPageRoute(
           builder: (_) => const BulkMunroUpdateScreen(),
+          settings: settings,
+        );
+      case OnboardingBulkLogScreen.route:
+        final bulkLogArgs = settings.arguments as OnboardingBulkLogScreenArgs?;
+        return MaterialPageRoute(
+          builder: (_) => OnboardingBulkLogScreen(alreadyAuthenticated: bulkLogArgs?.alreadyAuthenticated ?? false),
+          settings: settings,
+        );
+      case OnboardingSignInPromptScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingSignInPromptScreen(),
+          settings: settings,
+        );
+      case OnboardingNotificationsScreen.route:
+        final notificationsArgs = settings.arguments as OnboardingNotificationsScreenArgs?;
+        return MaterialPageRoute(
+          builder: (_) =>
+              OnboardingNotificationsScreen(fromInAppOnboarding: notificationsArgs?.fromInAppOnboarding ?? false),
           settings: settings,
         );
 
@@ -311,22 +337,10 @@ class AppRouter {
           builder: (_) => const FilterScreen(),
           settings: settings,
         );
-      case InAppOnboardingMunroChallenge.route:
-        final args = settings.arguments as InAppOnboardingMunroChallengeArgs;
+      case MunroMapScreen.route:
+        final args = settings.arguments as MunroMapScreenArgs;
         return MaterialPageRoute(
-          builder: (_) => InAppOnboardingMunroChallenge(args: args),
-          settings: settings,
-        );
-      case InAppOnboardingWelcome.route:
-        return MaterialPageRoute(
-          builder: (_) => const InAppOnboardingWelcome(),
-          settings: settings,
-        );
-
-      case MunroAreaScreen.route:
-        final args = settings.arguments as MunroAreaScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => MunroAreaScreen(args: args),
+          builder: (_) => MunroMapScreen(munro: args.munro),
           settings: settings,
         );
       case MunroSummitsScreen.route:
@@ -366,16 +380,7 @@ class AppRouter {
           builder: (_) => const SettingsScreen(),
           settings: settings,
         );
-      case AboutScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const AboutScreen(),
-          settings: settings,
-        );
-      case LegalScreen.route:
-        return MaterialPageRoute(
-          builder: (_) => const LegalScreen(),
-          settings: settings,
-        );
+
       case NotificationSettingsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const NotificationSettingsScreen(),
@@ -389,6 +394,11 @@ class AppRouter {
       case UnitsSettingsScreen.route:
         return MaterialPageRoute(
           builder: (_) => const UnitsSettingsScreen(),
+          settings: settings,
+        );
+      case AppearanceSettingsScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const AppearanceSettingsScreen(),
           settings: settings,
         );
       case SplashScreen.route:
@@ -407,10 +417,16 @@ class AppRouter {
           builder: (_) => FullScreenPhotoViewer(args: args),
           settings: settings,
         );
+      case SelectMunrosScreen.route:
+        final args = settings.arguments as SelectMunrosScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => SelectMunrosScreen(mainMunro: args.mainMunro),
+          settings: settings,
+        );
 
       default:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(startingIndex: 0),
+          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
           settings: settings,
         );
     }

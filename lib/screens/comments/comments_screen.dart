@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/comments/screens/likes_screen.dart';
 import 'package:two_eight_two/screens/comments/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class CommentsScreen extends StatefulWidget {
@@ -100,30 +100,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         : SizedBox(
                             height: 150,
                             width: double.infinity,
-                            child: CachedNetworkImage(
+                            child: AppCachedImage(
                               imageUrl: commentsState.post.imageUrlsMap.values.expand((element) => element).toList()[0],
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Image.asset(
-                                'assets/images/post_image_placeholder.png',
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width,
-                                height: 300,
-                              ),
-                              fadeInDuration: Duration.zero,
-                              errorWidget: (context, url, error) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.error),
-                                      Text(
-                                        error.toString(),
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
                             ),
                           ),
                     Padding(
@@ -166,6 +144,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         comment: comment,
                       ),
                     ),
+                    if (commentsState.status == CommentsStatus.paginating) const PaginationLoader(),
                   ],
                 ),
               ),

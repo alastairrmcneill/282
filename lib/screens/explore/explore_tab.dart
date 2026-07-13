@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/explore/screens/screens.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
-import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-
-import 'screens/munro_search_screen.dart';
 
 class ExploreTab extends StatefulWidget {
   const ExploreTab({super.key});
@@ -22,10 +20,8 @@ class _ExploreTabState extends State<ExploreTab> {
   final PanelController panelController = PanelController();
   final FocusNode _searchFocusNode = FocusNode();
 
-  bool _isSearchVisible = false;
   bool _isMunroListViewVisible = false;
   bool _hasLoggedPanelOpen = false;
-  bool _hasLoggedSearchOpen = false;
 
   BorderRadius borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
 
@@ -64,14 +60,14 @@ class _ExploreTabState extends State<ExploreTab> {
     final double topPadding = MediaQuery.of(context).padding.top;
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
     final double bottomNavBarHeight = layoutState.bottomNavBarHeight;
-    const double headerHeight = 90;
+    final double headerHeight = _isMunroListViewVisible ? 64 : 100;
 
     return Scaffold(
       body: Stack(
         children: [
           SlidingUpPanel(
             controller: panelController,
-            color: MyColors.backgroundColor,
+            color: context.colors.background,
             minHeight: munroState.selectedMunroId == null ? 60 : 0,
             maxHeight: screenHeight - bottomNavBarHeight - headerHeight - topPadding + 20,
             header: const SlidingPanelHeader(),
@@ -88,6 +84,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
                 borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
+                _searchFocusNode.unfocus();
               }
             }),
             panelBuilder: (sc) {
@@ -100,47 +97,25 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: EdgeInsets.only(
                 bottom: bottomNavBarHeight + bottomPadding,
               ),
-              child: context.read<RemoteConfigState>().config.mapboxMapScreen
-                  ? MapboxMapScreen(searchFocusNode: _searchFocusNode)
-                  : GoogleMapScreen(searchFocusNode: _searchFocusNode),
+              child: MapboxMapScreen(searchFocusNode: _searchFocusNode),
             ),
           ),
-          _buildSearchOverlay(),
+          Positioned(
+            top: topPadding + headerHeight,
+            left: 0,
+            right: 0,
+            child: const Center(child: GroupFilterActiveChip()),
+          ),
           ExploreTabHeader(
             headerHeight: headerHeight,
             searchFocusNode: _searchFocusNode,
-            isSearchVisible: _isSearchVisible,
             isMunroListViewVisible: _isMunroListViewVisible,
-            onBackTap: () {
-              setState(() {
-                _isSearchVisible = false;
-                _searchFocusNode.unfocus();
-                _hasLoggedSearchOpen = false;
-                context.read<AppRouteObserver>().updateCurrentScreen(ExploreTab.route);
-              });
-            },
             onSearchTap: () {
-              setState(() {
-                _isSearchVisible = true;
-                if (!_hasLoggedSearchOpen) {
-                  _hasLoggedSearchOpen = true;
-                  context.read<AppRouteObserver>().updateCurrentScreen(MunroSearchScreen.route);
-                }
-              });
+              panelController.open();
+              _searchFocusNode.requestFocus();
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSearchOverlay() {
-    return AnimatedOpacity(
-      opacity: _isSearchVisible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 500),
-      child: Visibility(
-        visible: _isSearchVisible,
-        child: const MunroSearchScreen(),
       ),
     );
   }

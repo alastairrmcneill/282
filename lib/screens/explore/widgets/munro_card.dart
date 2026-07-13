@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
-import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/app_cached_image.dart';
 
 class MunroCard extends StatelessWidget {
   final Munro munro;
@@ -11,24 +10,43 @@ class MunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width - 60;
-
-    return Padding(
-      padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15, top: 15),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
       child: GestureDetector(
         onTap: () {
-          context.read<ReviewsState>().getMunroReviews(munro.id);
           Navigator.of(context).pushNamed(MunroScreen.route, arguments: MunroScreenArgs(munro: munro));
         },
-        child: Column(
-          children: [
-            MunroCardPicture(munro: munro, width: width),
-            const SizedBox(height: 10),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [MunroCardTitleText(munro: munro), MunroRatingText(munro: munro, showReviewCount: true)],
-            ),
-          ],
+        child: SizedBox(
+          width: double.infinity,
+          height: 250,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              AppCachedImage(imageUrl: munro.pictureURL),
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0.6, 0.7, 1.0],
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.1),
+                        Colors.black.withValues(alpha: 0.6),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 16,
+                bottom: 16,
+                right: 16,
+                child: MunroCardTitleText(munro: munro),
+              ),
+            ],
+          ),
         ),
       ),
     );

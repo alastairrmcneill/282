@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/support/theme.dart';
 
 class MunroSaveButton extends StatelessWidget {
   final Munro munro;
@@ -14,7 +14,6 @@ class MunroSaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.read<AuthState>().currentUserId;
-    final munroState = context.watch<MunroState>();
 
     final savedListState = context.watch<SavedListState>();
     bool munroSaved = savedListState.savedLists.any((list) => list.munroIds.contains(munro.id));
@@ -37,13 +36,12 @@ class MunroSaveButton extends StatelessWidget {
           if (userId == null) {
             Navigator.pushNamed(context, AuthHomeScreen.route);
           } else {
-            munroState.setSelectedMunroId = munro.id;
-            showSaveMunroDialog(context);
+            await SaveMunroBottomSheet.show(context, munroId: munro.id);
           }
         },
         child: Icon(
           munroSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
-          color: MyColors.accentColor,
+          color: context.colors.accent,
           size: 20,
         ),
       ),

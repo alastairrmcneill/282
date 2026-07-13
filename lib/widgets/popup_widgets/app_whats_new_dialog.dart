@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class WhatsNewDialog extends StatelessWidget {
   final String version;
@@ -7,61 +8,58 @@ class WhatsNewDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        height: MediaQuery.of(context).size.height * 0.5,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 1,
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // TODO: Update when the new version is released.
-                      Text(
-                        "🎉 New Group Planning view! 🎉",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(fontSize: 13, fontWeight: FontWeight.bold, height: 1.8),
-                      ),
-                      const SizedBox(height: 20),
-
-                      Text("Struggling to decide which munro to do with your friends?"),
-                      const SizedBox(height: 15),
-                      Text(
-                          "Well now you can simply select them in the Group Planning screen and browse all the munros that none of you have done yet!"),
-                      const SizedBox(height: 15),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Image.asset(
-                            "assets/images/whats_new_group_filter.png",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            Center(
+              child: Text(
+                "What's New",
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Done'),
+            const SizedBox(height: 4),
+            Center(
+              child: Text(
+                'Version $version',
+                style: Theme.of(context).textTheme.bodySmall,
               ),
+            ),
+            const SizedBox(height: 20),
+            // TODO: Update content each release
+            Text(
+              'New Group Planning view',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Struggling to decide which munro to do with your friends? Select them in the Group Planning screen and browse all the munros that none of you have done yet.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                'assets/images/whats_new_group_filter.png',
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Got it'),
             ),
           ],
         ),

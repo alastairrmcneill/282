@@ -8,10 +8,11 @@ import 'dart:io' as _i7;
 import 'dart:ui' as _i8;
 
 import 'package:flutter/src/material/time.dart' as _i5;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i11;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i11;
 import 'package:two_eight_two/enums/enums.dart' as _i10;
-import 'package:two_eight_two/logging/logging.dart' as _i12;
+import 'package:two_eight_two/logging/logging.dart' as _i13;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i6;
@@ -621,6 +622,21 @@ class MockMunroState extends _i1.Mock implements _i9.MunroState {
       ) as bool);
 
   @override
+  bool get isSearchActive => (super.noSuchMethod(
+        Invocation.getter(#isSearchActive),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  String get filterString => (super.noSuchMethod(
+        Invocation.getter(#filterString),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.getter(#filterString),
+        ),
+      ) as String);
+
+  @override
   List<_i3.Munro> get createPostFilteredMunroList => (super.noSuchMethod(
         Invocation.getter(#createPostFilteredMunroList),
         returnValue: <_i3.Munro>[],
@@ -678,7 +694,7 @@ class MockMunroState extends _i1.Mock implements _i9.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i11.LatLngBounds? bounds) => super.noSuchMethod(
+  set setLatLngBounds(_i12.LatLngBounds? bounds) => super.noSuchMethod(
         Invocation.setter(
           #setLatLngBounds,
           bounds,
@@ -807,7 +823,7 @@ class MockMunroState extends _i1.Mock implements _i9.MunroState {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i12.Logger {
+class MockLogger extends _i1.Mock implements _i13.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

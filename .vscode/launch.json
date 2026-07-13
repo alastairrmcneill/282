@@ -2,23 +2,32 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Development",
+      "name": "Launch Development - Simulator",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
       "args": ["--flavor", "development", "--dart-define-from-file=config/dev.json"]
     },
     {
-      "name": "Launch Production - Device",
+      "name": "Launch Development - Device",
       "request": "launch",
       "type": "dart",
+      "flutterMode": "profile",
       "program": "lib/main.dart",
-      "args": ["--flavor", "production", "--profile", "--dart-define-from-file=config/prod.json"]
+      "args": ["--flavor", "development", "--dart-define-from-file=config/dev.json"]
     },
     {
       "name": "Launch Production - Simulator",
       "request": "launch",
       "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--flavor", "production", "--dart-define-from-file=config/prod.json"]
+    },
+    {
+      "name": "Launch Production - Device",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
       "program": "lib/main.dart",
       "args": ["--flavor", "production", "--dart-define-from-file=config/prod.json"]
     }

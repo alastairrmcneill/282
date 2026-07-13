@@ -16,8 +16,10 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
   @override
   Widget build(BuildContext context) {
     final RegExp passwordRegex = RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z\d\s])[A-Za-z\d\W]{8,}$");
-    return TextFormFieldBase(
-      labelText: 'Password',
+    return AppTextFormField(
+      hintText: 'Password',
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.none,
       suffixIcon: IconButton(
         onPressed: () {
           setState(() {
@@ -27,6 +29,8 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
         icon: _obscureText ? const Icon(Icons.visibility_off_rounded) : const Icon(Icons.visibility_rounded),
       ),
       keyboardType: TextInputType.visiblePassword,
+      autocorrect: false,
+      enableSuggestions: false,
       obscureText: _obscureText,
       onChanged: (value) {
         widget.textEditingController.text = value;

@@ -41,6 +41,8 @@
 		<string>$(GIDClientID)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>NSCameraUsageDescription</key>
 		<string>$(PRODUCT_NAME) would like access to your camera so you can add stunning photos of your Munro bagging adventures to your posts.</string>
 		<key>NSPhotoLibraryUsageDescription</key>

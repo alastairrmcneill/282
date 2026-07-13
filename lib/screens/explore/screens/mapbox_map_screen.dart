@@ -1,10 +1,10 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -19,15 +19,17 @@ class MapboxMapScreen extends StatefulWidget {
 }
 
 class _MapboxMapScreenState extends State<MapboxMapScreen> {
-  bool loading = true;
-  late MapboxMap _mapboxMap;
-  Map<int, PointAnnotation?> allAnnotations = {};
-  String scotlandRegionId = "scotland-tile-region";
-  String styleUri = "mapbox://styles/alastairm94/cmap1d7ho01le01s30cz9gt8v";
+  static const String _lightStyleUri = "mapbox://styles/alastairm94/cmrery5gw002e01sc228mf3ca";
+  static const String _darkStyleUri = "mapbox://styles/alastairm94/cmresimnz003h01qwddir1nnh";
 
+  bool loading = true;
+  bool _mapInitialized = false;
+  late MapboxMap _mapboxMap;
+  Brightness? _lastBrightness;
+  Map<int, PointAnnotation?> allAnnotations = {};
   PointAnnotation? selectedAnnotation;
-  int? selectedMunroId;
   late PointAnnotationManager _annotationManager;
+  List<int> _lastFilteredIds = [];
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
     bounds: CoordinateBounds(
       southwest: Point(
@@ -48,125 +50,58 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     zoom: 6.15,
   );
 
-  late Uint8List incompleteIcon;
-  late Uint8List completeIcon;
-  late Uint8List selectedIcon;
-  String mapAreaId = "full_map_area";
+  MunroMarkerIcons? markerIcons;
+
+  String _activeStyleUri(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
+  }
 
   @override
   void initState() {
     super.initState();
-    checkAndDownloadMap();
     loadData();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final brightness = Theme.of(context).brightness;
+    if (_lastBrightness != null && _lastBrightness != brightness) {
+      final uri = brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
+      _mapboxMap.loadStyleURI(uri);
+    }
+    _lastBrightness = brightness;
+  }
+
   void loadData() async {
-    MunroState munroState = context.read<MunroState>();
-    incompleteIcon = await _loadMarker('assets/munro_incomplete.png');
-    completeIcon = await _loadMarker('assets/munro_complete.png');
-    selectedIcon = await _loadMarker('assets/munro_selected.png');
-
-    if (mounted) {
-      await munroState.loadMunros().then(
-            (value) => setState(() => loading = false),
-          );
-    }
-  }
-
-  Future<void> checkAndDownloadMap() async {
-    final OfflineManager offlineManager = await OfflineManager.create();
-    final TileStore tileStore = await TileStore.createDefault();
-
-    if (await _isRegionAlreadyDownloaded(tileStore)) {
-      await _handleExistingRegion(offlineManager, tileStore);
-    } else {
-      await _downloadRegion(offlineManager, tileStore);
-    }
-  }
-
-  Future<bool> _isRegionAlreadyDownloaded(TileStore tileStore) async {
-    final List<TileRegion> regions = await tileStore.allTileRegions();
-    return regions.any((region) => region.id == scotlandRegionId);
-  }
-
-  Future<void> _handleExistingRegion(OfflineManager offlineManager, TileStore tileStore) async {
-    final List<TileRegion> regions = await tileStore.allTileRegions();
-    final TileRegion region = regions.firstWhere((region) => region.id == scotlandRegionId);
-
-    print("🚀 ~ region.completedResourceCount: ${region.completedResourceCount}");
-    print("🚀 ~ region.requiredResourceCount: ${region.requiredResourceCount}");
-
-    if (region.completedResourceCount < region.requiredResourceCount) {
-      print("🚀 ~ removing region and starting again");
-      await tileStore.removeRegion(scotlandRegionId);
-      await _downloadRegion(offlineManager, tileStore);
-    }
-  }
-
-  Future<void> _downloadRegion(OfflineManager offlineManager, TileStore tileStore) async {
-    const double west = -6.3, south = 56, east = -2.9, north = 58.5;
-
-    final scotlandPolygon = Polygon(coordinates: [
-      [
-        Position(west, south),
-        Position(east, south),
-        Position(east, north),
-        Position(west, north),
-        Position(west, south), // Close the ring
-      ]
-    ]);
-
-    final regionGeometry = scotlandPolygon.toJson();
-    final stylePackLoadOptions = StylePackLoadOptions(
-      glyphsRasterizationMode: GlyphsRasterizationMode.IDEOGRAPHS_RASTERIZED_LOCALLY,
-      metadata: {"tag": "scotland"},
-      acceptExpired: false,
-    );
-
-    await offlineManager.loadStylePack(
-      styleUri,
-      stylePackLoadOptions,
-      (progress) {},
-    );
-
-    final tileRegionLoadOptions = TileRegionLoadOptions(
-      geometry: regionGeometry,
-      descriptorsOptions: [
-        TilesetDescriptorOptions(
-          styleURI: styleUri,
-          minZoom: 6,
-          maxZoom: 7,
-        ),
-      ],
-      metadata: {"tag": "scotland"},
-      acceptExpired: true,
-      networkRestriction: NetworkRestriction.NONE,
-    );
-
-    await tileStore.loadTileRegion(
-      scotlandRegionId,
-      tileRegionLoadOptions,
-      (progress) {
-        print("🚀 ~ progress.completedResourceCount: ${progress.completedResourceCount}");
-        print("🚀 ~ progress.requiredResourceCount: ${progress.requiredResourceCount}");
-      },
-    );
+    markerIcons = await MunroMarkerIcons.load();
+    if (mounted) setState(() => loading = false);
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
+    await mapboxMap.gestures.updateSettings(
+      GesturesSettings(rotateEnabled: false, pitchEnabled: false),
+    );
     _mapboxMap.setBounds(cameraBounds);
-    _addMunroSymbols(
+    await _addMunroSymbols(
       munroState: munroState,
       completedMunros: munroCompletionState.munroCompletions,
     );
+    _lastFilteredIds = munroState.filteredMunroList.map((m) => m.id).toList();
+    _mapInitialized = true;
   }
 
   Future<void> _addMunroSymbols(
       {required MunroState munroState, required List<MunroCompletion> completedMunros}) async {
     final List<Munro> munros = munroState.filteredMunroList;
+    final icons = markerIcons;
+
+    if (icons == null) {
+      return;
+    }
 
     _annotationManager = await _mapboxMap.annotations.createPointAnnotationManager();
 
@@ -174,17 +109,18 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
     for (var munro in munros) {
       final summited = completedMunros.any((element) => element.munroId == munro.id);
-      final icon = selectedMunroId == munro.id
-          ? selectedIcon
+      final selected = munroState.selectedMunroId == munro.id;
+      final icon = selected
+          ? icons.selectedFor(munro.area)
           : summited
-              ? completeIcon
-              : incompleteIcon;
+              ? icons.completedFor(munro.area)
+              : icons.uncompleted;
 
       pointAnnotationOptions.add(
         PointAnnotationOptions(
           geometry: Point(coordinates: Position(munro.lng, munro.lat)),
           image: icon,
-          iconSize: 0.6,
+          iconSize: selected ? 0.9 : 0.8,
         ),
       );
     }
@@ -196,11 +132,32 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     }
   }
 
-  Future<Uint8List> _loadMarker(String assetPath) async {
-    ByteData data = await rootBundle.load(assetPath);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  Future<void> _refreshAnnotations(MunroState munroState, MunroCompletionState munroCompletionState) async {
+    final icons = markerIcons;
+    if (icons == null) return;
+
+    await _annotationManager.deleteAll();
+    allAnnotations.clear();
+    selectedAnnotation = null;
+    munroState.setSelectedMunroId = null;
+
+    final munros = munroState.filteredMunroList;
+    if (munros.isEmpty) return;
+
+    List<PointAnnotationOptions> options = [];
+    for (var munro in munros) {
+      final summited = munroCompletionState.munroCompletions.any((e) => e.munroId == munro.id);
+      options.add(PointAnnotationOptions(
+        geometry: Point(coordinates: Position(munro.lng, munro.lat)),
+        image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+        iconSize: 0.8,
+      ));
+    }
+
+    var annotations = await _annotationManager.createMulti(options);
+    for (var i = 0; i < annotations.length; i++) {
+      allAnnotations[munros[i].id] = annotations[i];
+    }
   }
 
   void handleMapTap(
@@ -239,35 +196,42 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
-    if (selectedAnnotation != null && selectedMunroId != null) {
+    if (selectedAnnotation != null && munroState.selectedMunroId != null) {
+      final icons = markerIcons;
+      if (icons == null) return;
+
       final Munro munro = munroState.munroList.firstWhere(
-        (munro) => munro.id == selectedMunroId,
+        (munro) => munro.id == munroState.selectedMunroId,
         orElse: () => Munro.empty,
       );
       final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
       final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
         geometry: selectedAnnotation!.geometry,
-        image: summited ? completeIcon : incompleteIcon,
-        iconSize: 0.6,
+        image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+        iconSize: 0.8,
       );
       await _annotationManager.delete(selectedAnnotation!);
       var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
-      allAnnotations[selectedMunroId!] = oldAnnotation;
+      allAnnotations[munroState.selectedMunroId!] = oldAnnotation;
 
       selectedAnnotation = null;
       munroState.setSelectedMunroId = null;
-      setState(() {
-        selectedMunroId = null;
-      });
     }
   }
 
   Future<void> selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
+    final icons = markerIcons;
+    if (icons == null) return;
+
     final munroState = context.read<MunroState>();
+    final Munro munro = munroState.munroList.firstWhere(
+      (munro) => munro.id == munroId,
+      orElse: () => Munro.empty,
+    );
     final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
-      image: selectedIcon,
-      iconSize: 0.7,
+      image: icons.selectedFor(munro.area),
+      iconSize: 0.9,
     );
 
     await _annotationManager.delete(tappedAnnotation);
@@ -276,9 +240,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     allAnnotations[munroId] = newAnnotation;
     selectedAnnotation = newAnnotation;
     munroState.setSelectedMunroId = munroId;
-    setState(() {
-      selectedMunroId = munroId;
-    });
 
     await _mapboxMap.flyTo(
       CameraOptions(center: tappedAnnotation.geometry),
@@ -288,8 +249,19 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final munroState = context.read<MunroState>();
+    final munroState = context.watch<MunroState>();
     final munroCompletionState = context.read<MunroCompletionState>();
+
+    if (_mapInitialized) {
+      final currentIds = munroState.filteredMunroList.map((m) => m.id).toList();
+      if (!listEquals(currentIds, _lastFilteredIds)) {
+        _lastFilteredIds = currentIds;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _refreshAnnotations(munroState, munroCompletionState);
+        });
+      }
+    }
+
     return Scaffold(
       body: loading
           ? MapShimmerLoader()
@@ -308,7 +280,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
                         munroState,
                         munroCompletionState,
                       ),
-                      styleUri: styleUri,
+                      styleUri: _activeStyleUri(context),
                       cameraOptions: startingCamera,
                       onTapListener: (context) {
                         widget.searchFocusNode.unfocus();
@@ -321,7 +293,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: MunroSummaryTile(munroId: selectedMunroId),
+                      child: MunroSummaryTile(munroId: munroState.selectedMunroId),
                     ),
                   ],
                 );

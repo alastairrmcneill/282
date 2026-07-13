@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,7 @@ import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class AuthHomeScreen extends StatefulWidget {
@@ -83,12 +84,12 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                       ), // Not centered
                     ),
                     const SizedBox(height: 30),
-                    const AppleSignInButton(),
-                    const SizedBox(height: 10),
+                    const AppleSignInButton(style: SignInWithAppleButtonStyle.white),
+                    const SizedBox(height: 20),
                     const GoogleSignInButton(),
-                    const SizedBox(height: 10),
-                    const TextDivider(text: "or"),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
+                    const TextDivider(text: "or", color: Colors.white),
+                    const SizedBox(height: 15),
                     const CreateFreeAccountButton(),
                     const SizedBox(height: 15),
                     RichText(
@@ -126,13 +127,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).pushNamed(
-                                  DocumentScreen.route,
-                                  arguments: DocumentScreenArgs(
-                                    title: "Terms & Conditions",
-                                    mdFileName: "assets/documents/terms_and_conditions.md",
-                                  ),
-                                );
+                                openTermsUrl();
                               },
                           ),
                           const TextSpan(text: " and "),
@@ -144,13 +139,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).pushNamed(
-                                  DocumentScreen.route,
-                                  arguments: DocumentScreenArgs(
-                                    title: "Privacy Policy",
-                                    mdFileName: "assets/documents/privacy_policy.md",
-                                  ),
-                                );
+                                openPrivacyPolicyUrl();
                               },
                           ),
                           const TextSpan(text: "."),

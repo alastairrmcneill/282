@@ -1,0 +1,24 @@
+{
+  "name": "282-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "generate:maps": "node scripts/generate-maps.mjs",
+    "download:heroes": "node scripts/download-heroes.mjs",
+    "generate:attributions": "node scripts/generate-attributions.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.4.0",
+    "@fontsource-variable/inter": "^5.2.5",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/vite": "^4.1.10",
+    "astro": "^5.10.0",
+    "csv-parse": "^5.6.0",
+    "sharp": "^0.34.2",
+    "tailwindcss": "^4.1.10"
+  }
+}

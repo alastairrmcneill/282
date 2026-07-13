@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -8,11 +9,13 @@ class AchievementsState extends ChangeNotifier {
   final UserAchievementsRepository _userAchievementsRepository;
   final UserState _userState;
   final OverlayIntentState _overlayIntentState;
+  final Analytics _analytics;
   final Logger _logger;
   AchievementsState(
     this._userAchievementsRepository,
     this._userState,
     this._overlayIntentState,
+    this._analytics,
     this._logger,
   );
 
@@ -87,6 +90,11 @@ class AchievementsState extends ChangeNotifier {
       achievement.annualTarget = _achievementFormCount;
 
       await _userAchievementsRepository.updateUserAchievement(achievement: achievement);
+
+      _analytics.track(
+        AnalyticsEvent.munroChallengeGoalSet,
+        props: {AnalyticsProp.munroChallengeCount: _achievementFormCount},
+      );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(

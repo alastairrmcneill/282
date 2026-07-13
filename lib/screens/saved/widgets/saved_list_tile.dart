@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/saved/widgets/saved_list_header.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
 
 class SavedListTile extends StatelessWidget {
@@ -9,25 +11,38 @@ class SavedListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
+    final munroState = context.read<MunroState>();
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 12),
+        child: Column(
           children: [
-            const SizedBox(width: 15),
-            Expanded(
-              flex: 1,
-              child: Text(
-                '${savedList.name} (${savedList.munroIds.length})',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-            ),
-            SavedListPopupMenu(savedList: savedList),
+            SavedListHeader(savedList: savedList),
+            const SizedBox(height: 10),
+            savedList.munroIds.isEmpty
+                ? SavedListEmptyMunroList()
+                : ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: savedList.munroIds.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final munroId = savedList.munroIds[index];
+                      final Munro munro = munroState.munroList.where((m) => m.id == munroId).first;
+                      return SavedListMunroTile(
+                        munro: munro,
+                        onDelete: () async {
+                          await context
+                              .read<SavedListState>()
+                              .removeMunroFromSavedList(savedList: savedList, munroId: munroId);
+                        },
+                      );
+                    },
+                  )
           ],
         ),
-        ...savedList.munroIds.map((munroId) {
-          return MunroSummaryTile(munroId: munroId);
-        }),
-      ],
+      ),
     );
   }
 }

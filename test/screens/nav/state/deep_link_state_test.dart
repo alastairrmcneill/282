@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -13,11 +14,13 @@ import 'deep_link_state_test.mocks.dart';
 @GenerateMocks([
   DeepLinkRepository,
   NavigationIntentState,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockDeepLinkRepository mockDeepLinkRepository;
   late MockNavigationIntentState mockNavigationIntentState;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late DeepLinkState deepLinkState;
 
@@ -26,10 +29,12 @@ void main() {
   setUp(() {
     mockDeepLinkRepository = MockDeepLinkRepository();
     mockNavigationIntentState = MockNavigationIntentState();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
     deepLinkState = DeepLinkState(
       mockDeepLinkRepository,
       mockNavigationIntentState,
+      mockAnalytics,
       mockLogger,
     );
 

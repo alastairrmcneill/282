@@ -70,7 +70,8 @@ class PushNotificationState extends ChangeNotifier {
   Future<bool> enablePush() async {
     try {
       final settings = await _repo.requestPermission();
-      if (settings.authorizationStatus != AuthorizationStatus.authorized) return false;
+      if (settings.authorizationStatus != AuthorizationStatus.authorized)
+        return false;
 
       await syncTokenIfNeeded(force: true);
       return true;
@@ -107,7 +108,7 @@ class PushNotificationState extends ChangeNotifier {
     if (user == null || user.uid == null) return;
 
     try {
-      final perm = await _repo.requestPermission();
+      final perm = await _repo.getNotificationSettings();
       if (perm.authorizationStatus != AuthorizationStatus.authorized) return;
 
       final token = await _repo.getToken();

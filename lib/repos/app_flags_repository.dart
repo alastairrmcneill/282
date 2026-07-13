@@ -11,6 +11,13 @@ class AppFlagsRepository {
   static const _kFirstAppVersion = 'firstAppVersion';
   static const _kShowInAppOnboarding = 'showInAppOnboarding';
   static const _kOpenCount = 'open_count';
+  static const _kOnboardingCompletedKey = 'onboarding_completed';
+
+  bool get onboardingCompleted => _prefs.getBool(_kOnboardingCompletedKey) ?? false;
+  Future<void> setOnboardingCompleted(bool v) async {
+    final ok = await _prefs.setBool(_kOnboardingCompletedKey, v);
+    if (!ok) throw Exception('Failed to persist $_kOnboardingCompletedKey');
+  }
 
   bool get mapTerrain => _prefs.getBool(_kMapTerrain) ?? true;
   Future<void> setMapTerrain(bool v) async {
@@ -53,6 +60,12 @@ class AppFlagsRepository {
   Future<void> setShowInAppOnboarding(String userId, bool v) async {
     final ok = await _prefs.setBool("$_kShowInAppOnboarding-$userId", v);
     if (!ok) throw Exception('Failed to persist $_kShowInAppOnboarding');
+  }
+
+  bool hasShownAnnualChallengeDialog(String key) => _prefs.getBool('shownAnnualChallengeDialog-$key') ?? false;
+  Future<void> setShownAnnualChallengeDialog(String key) async {
+    final ok = await _prefs.setBool('shownAnnualChallengeDialog-$key', true);
+    if (!ok) throw Exception('Failed to persist shownAnnualChallengeDialog-$key');
   }
 
   int get openCount => _prefs.getInt(_kOpenCount) ?? 0;

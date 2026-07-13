@@ -6,6 +6,7 @@ class Notif {
   final String sourceDisplayName;
   final String? sourceProfilePictureURL;
   final String type;
+  final String detail;
   final DateTime dateTime;
   bool read;
 
@@ -17,6 +18,7 @@ class Notif {
     required this.sourceDisplayName,
     required this.sourceProfilePictureURL,
     required this.type,
+    required this.detail,
     required this.dateTime,
     required this.read,
   });
@@ -29,6 +31,7 @@ class Notif {
       NotifFields.targetId: targetId,
       NotifFields.sourceId: sourceId,
       NotifFields.type: type,
+      NotifFields.detail: detail,
       NotifFields.dateTime: dateTime.toIso8601String(),
       NotifFields.read: read,
     };
@@ -44,6 +47,7 @@ class Notif {
       sourceDisplayName: json[NotifFields.sourceDisplayName] as String,
       sourceProfilePictureURL: json[NotifFields.sourceProfilePictureURL] as String?,
       type: json[NotifFields.type] as String,
+      detail: json[NotifFields.detail] as String,
       dateTime: DateTime.parse(json[NotifFields.dateTime] as String),
       read: json[NotifFields.read] as bool? ?? false,
     );
@@ -58,6 +62,7 @@ class Notif {
     String? sourceDisplayName,
     String? sourceProfilePictureURL,
     String? type,
+    String? detail,
     DateTime? dateTime,
     bool? read,
   }) {
@@ -69,6 +74,7 @@ class Notif {
         sourceDisplayName: sourceDisplayName ?? this.sourceDisplayName,
         sourceProfilePictureURL: sourceProfilePictureURL ?? this.sourceProfilePictureURL,
         type: type ?? this.type,
+        detail: detail ?? this.detail,
         dateTime: dateTime ?? this.dateTime,
         read: read ?? this.read);
   }
@@ -82,6 +88,7 @@ class NotifFields {
   static String sourceProfilePictureURL = "source_profile_picture_url";
   static String postId = "post_id";
   static String type = "type";
+  static String detail = "detail";
   static String dateTime = "date_time_created";
   static String read = "read";
 }

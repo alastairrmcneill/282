@@ -130,6 +130,7 @@ void main() {
     when(mockPushNotificationRepository.onNotificationOpened).thenAnswer((_) => onNotificationOpenedController.stream);
     when(mockPushNotificationRepository.onTokenRefresh).thenAnswer((_) => onTokenRefreshController.stream);
     when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+    when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
     when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'default_token');
     when(mockSettingsState.enablePushNotifications).thenReturn(true);
     when(mockUserState.currentUser).thenReturn(sampleUser);
@@ -227,7 +228,7 @@ void main() {
       test('should subscribe to token refresh stream and sync token', () async {
         // Arrange
         when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => null);
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'new_token_456');
 
         // Act
@@ -240,7 +241,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 50));
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(greaterThan(0));
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(greaterThan(0));
         verify(mockPushNotificationRepository.getToken()).called(greaterThan(0));
       });
 
@@ -271,14 +272,14 @@ void main() {
       test('should sync token if push is enabled on init', () async {
         // Arrange
         when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => null);
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'token_789');
 
         // Act
         await pushNotificationState.init();
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
       });
     });
@@ -468,14 +469,14 @@ void main() {
     group('syncTokenIfNeeded', () {
       test('should sync token when all conditions are met', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'new_token_999');
 
         // Act
         await pushNotificationState.syncTokenIfNeeded();
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
         verify(mockFcmTokenRepository.upsertToken(
           userId: anyNamed('userId'),
@@ -515,13 +516,13 @@ void main() {
 
       test('should not sync when permission is denied', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createDeniedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createDeniedSettings());
 
         // Act
         await pushNotificationState.syncTokenIfNeeded();
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(1);
         verifyNever(mockPushNotificationRepository.getToken());
         verifyNever(mockFcmTokenRepository.upsertToken(
           userId: anyNamed('userId'),
@@ -536,14 +537,14 @@ void main() {
 
       test('should not sync when token is null', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => null);
 
         // Act
         await pushNotificationState.syncTokenIfNeeded();
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
         verifyNever(mockFcmTokenRepository.upsertToken(
           userId: anyNamed('userId'),
@@ -558,14 +559,14 @@ void main() {
 
       test('should not sync when token is empty', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => '');
 
         // Act
         await pushNotificationState.syncTokenIfNeeded();
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
         verifyNever(mockFcmTokenRepository.upsertToken(
           userId: anyNamed('userId'),
@@ -580,7 +581,7 @@ void main() {
 
       test('should always sync token (no longer skips matching tokens)', () async {
         // Arrange - now we always upsert since we're using the new FCM tokens table
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'existing_token_123');
 
         // Act
@@ -600,14 +601,14 @@ void main() {
 
       test('should sync when force is true', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'existing_token_123');
 
         // Act
         await pushNotificationState.syncTokenIfNeeded(force: true);
 
         // Assert
-        verify(mockPushNotificationRepository.requestPermission()).called(1);
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(1);
         verify(mockPushNotificationRepository.getToken()).called(1);
         verify(mockFcmTokenRepository.upsertToken(
           userId: anyNamed('userId'),
@@ -622,7 +623,7 @@ void main() {
 
       test('should upsert token with correct parameters', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'brand_new_token_999');
 
         // Act
@@ -642,7 +643,7 @@ void main() {
 
       test('should handle errors during token sync gracefully', () async {
         // Arrange
-        when(mockPushNotificationRepository.requestPermission()).thenThrow(Exception('Sync error'));
+        when(mockPushNotificationRepository.getNotificationSettings()).thenThrow(Exception('Sync error'));
 
         // Act
         await pushNotificationState.syncTokenIfNeeded();
@@ -691,7 +692,7 @@ void main() {
       test('should handle multiple rapid token refreshes', () async {
         // Arrange
         when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => null);
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async => 'token');
 
         await pushNotificationState.init();
@@ -705,7 +706,7 @@ void main() {
         await Future.delayed(Duration(milliseconds: 100));
 
         // Assert - should handle all refreshes without crashing
-        verify(mockPushNotificationRepository.requestPermission()).called(greaterThan(0));
+        verify(mockPushNotificationRepository.getNotificationSettings()).called(greaterThan(0));
       });
 
       test('should handle notification opened while app is initializing', () async {
@@ -733,11 +734,14 @@ void main() {
         final user1 = AppUser(uid: 'user1');
         final user2 = AppUser(uid: 'user2');
 
-        when(mockUserState.currentUser).thenReturn(user1);
-        when(mockPushNotificationRepository.requestPermission()).thenAnswer((_) async => createAuthorizedSettings());
+        // Use a mutable variable behind a single stub registration (rather than calling
+        // `when` again inside a `thenAnswer`, which Mockito doesn't support mid-stub).
+        AppUser currentUser = user1;
+        when(mockUserState.currentUser).thenAnswer((_) => currentUser);
+        when(mockPushNotificationRepository.getNotificationSettings()).thenAnswer((_) async => createAuthorizedSettings());
         when(mockPushNotificationRepository.getToken()).thenAnswer((_) async {
           // Simulate user changing during async operation
-          when(mockUserState.currentUser).thenReturn(user2);
+          currentUser = user2;
           return 'new_token';
         });
 

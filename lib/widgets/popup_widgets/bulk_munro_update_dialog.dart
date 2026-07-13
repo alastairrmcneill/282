@@ -1,47 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class BulkMunroUpdateDialog extends StatelessWidget {
   const BulkMunroUpdateDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: Container(
-        width: 200.0,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              "Have you already completed a Munro?",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 5),
-            const Text("You can bulk update your Munros to save marking them individually."),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  final bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
-                  final munroCompletionState = context.read<MunroCompletionState>();
-                  final munroState = context.read<MunroState>();
-
-                  bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
-                  munroState.setBulkMunroUpdateFilterString = "";
-
-                  Navigator.of(context).pushNamed(BulkMunroUpdateScreen.route);
-                },
-                child: Text('Go'),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
               ),
+              child: Icon(
+                PhosphorIconsRegular.mountains,
+                size: 36,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Bagged a few already?',
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "If you've climbed Munros before joining, log all your past summits in one go — no need to add them one by one.",
+              style: textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(
+              onPressed: () {
+                final bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
+                final munroCompletionState = context.read<MunroCompletionState>();
+                final munroState = context.read<MunroState>();
+                bulkMunroUpdateState.setStartingBulkMunroUpdateList = munroCompletionState.munroCompletions;
+                munroState.setBulkMunroUpdateFilterString = '';
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Yes, log past summits'),
+            ),
+            const SizedBox(height: 10),
+            SecondaryButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('No, just this one'),
             ),
           ],
         ),

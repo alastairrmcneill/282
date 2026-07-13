@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/widgets.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+
+enum MunroListViewMode { list, map }
 
 class BulkMunroUpdateScreen extends StatefulWidget {
   static const String route = '/bulk_munro_update';
@@ -16,6 +20,8 @@ class BulkMunroUpdateScreen extends StatefulWidget {
 
 class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
   final FocusNode searchFocusNode = FocusNode();
+  MunroListViewMode _viewMode = MunroListViewMode.list;
+
   @override
   void initState() {
     super.initState();
@@ -28,38 +34,137 @@ class _BulkMunroUpdateScreenState extends State<BulkMunroUpdateScreen> {
     final munroCompletionState = context.watch<MunroCompletionState>();
     final bulkMunroUpdateState = context.watch<BulkMunroUpdateState>();
 
+    final Widget segmentedButton = UnconstrainedBox(
+      child: SizedBox(
+        width: 88,
+        height: 44,
+        child: SegmentedButton<MunroListViewMode>(
+          showSelectedIcon: false,
+          style: ButtonStyle(
+            padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) return null;
+              return Theme.of(context).scaffoldBackgroundColor;
+            }),
+          ),
+          segments: const [
+            ButtonSegment(
+              value: MunroListViewMode.list,
+              label: SizedBox.square(
+                dimension: 44,
+                child: Center(child: Icon(PhosphorIconsRegular.listBullets, size: 20)),
+              ),
+            ),
+            ButtonSegment(
+              value: MunroListViewMode.map,
+              label: SizedBox.square(
+                dimension: 44,
+                child: Center(child: Icon(PhosphorIconsRegular.mapTrifold, size: 20)),
+              ),
+            ),
+          ],
+          selected: {_viewMode},
+          onSelectionChanged: (newValue) => setState(() => _viewMode = newValue.first),
+        ),
+      ),
+    );
+
+    final listItems = <Widget>[
+      const SizedBox(height: 5),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            "Select munros you've already completed. Dates will default to today unless you specify otherwise.",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+          ),
+        ),
+      ),
+      ...munroState.bulkMunroUpdateList.map((Munro munro) => BulkMunroUpdateListTile(munro: munro)),
+      const SizedBox(height: 10),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bulk Munro Update'),
+        title: const Text('Log Past Summits'),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: SizedBox(
+              height: 36,
+              child: FilledButton(
+                style: ButtonStyle(
+                  minimumSize: WidgetStateProperty.all(const Size(80, 40)),
+                  padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
+                  backgroundColor: WidgetStateProperty.all(context.colors.accent),
+                  foregroundColor: WidgetStateProperty.all(Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
 
-              munroCompletionState.addBulkCompletions(
-                munroCompletions: bulkMunroUpdateState.addedMunroCompletions,
-              );
-            },
-            child: const Text("Save"),
+                  munroCompletionState.addBulkCompletions(
+                    munroCompletions: bulkMunroUpdateState.addedMunroCompletions,
+                  );
+                },
+                child: Text("Add (${bulkMunroUpdateState.addedMunroCompletions.length})"),
+              ),
+            ),
           ),
         ],
       ),
-      body: ListView(children: [
-        AppSearchBar(
-          focusNode: searchFocusNode,
-          hintText: "Search Munros",
-          onSearchTap: () {},
-          onChanged: (value) {
-            munroState.setBulkMunroUpdateFilterString = value;
-          },
-          onClear: () {
-            munroState.setBulkMunroUpdateFilterString = '';
-          },
-        ),
-        ...munroState.bulkMunroUpdateList.map((Munro munro) {
-          return BulkMunroUpdateListTile(munro: munro);
-        }),
-      ]),
+      body: _viewMode == MunroListViewMode.list
+          ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: AppSearchBar(
+                          focusNode: searchFocusNode,
+                          icon: PhosphorIconsRegular.magnifyingGlass,
+                          hintText: "Search munros...",
+                          onSearchTap: () {},
+                          onChanged: (value) {
+                            munroState.setBulkMunroUpdateFilterString = value;
+                          },
+                          onClear: () {
+                            munroState.setBulkMunroUpdateFilterString = '';
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      segmentedButton,
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: ListView.separated(
+                      itemCount: listItems.length,
+                      itemBuilder: (context, index) => listItems[index],
+                      separatorBuilder: (context, index) => const SizedBox(height: 10),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Stack(
+              children: [
+                const BulkMunroMapScreen(),
+                Positioned(
+                  top: 8,
+                  right: 15,
+                  child: segmentedButton,
+                ),
+              ],
+            ),
     );
   }
 }

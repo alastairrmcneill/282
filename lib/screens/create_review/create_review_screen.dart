@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_review/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class CreateReviewsScreen extends StatelessWidget {
-  CreateReviewsScreen({super.key});
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class CreateReviewsScreen extends StatefulWidget {
+  const CreateReviewsScreen({super.key});
   static const String route = '/review/create';
+
+  @override
+  State<CreateReviewsScreen> createState() => _CreateReviewsScreenState();
+}
+
+class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final Map<int, int> _ratings = {};
+  bool _hasHandledLoaded = false;
+
+  void _goHome(BuildContext context) {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      HomeScreen.route,
+      (Route<dynamic> route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,27 +38,21 @@ class CreateReviewsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   CenterText(text: createReviewState.error.message),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        HomeScreen.route, // The name of the route you want to navigate to
-                        (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-                      );
-                    },
+                  CtaButton(
+                    onPressed: () => _goHome(context),
                     child: const Text("Exit"),
                   ),
                 ],
               ),
             );
           case CreateReviewStatus.loaded:
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomeScreen.route, // The name of the route you want to navigate to
-                (Route<dynamic> route) => false, // This predicate ensures all routes are removed
-              );
-            });
+            if (!_hasHandledLoaded) {
+              _hasHandledLoaded = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                _goHome(context);
+              });
+            }
             return const SizedBox();
           default:
             return _buildScreen(context, createReviewState);
@@ -50,78 +61,132 @@ class CreateReviewsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildScreen(BuildContext context, CreateReviewState createReviewState) {
+  Widget _buildScreen(
+      BuildContext context, CreateReviewState createReviewState) {
+    final textTheme = Theme.of(context).textTheme;
+    final colors = context.colors;
+    final munros = createReviewState.munrosToReview;
+    final allRated = munros.isNotEmpty &&
+        munros.every((munro) => (_ratings[munro.id] ?? 0) > 0);
+    final isSubmitting = createReviewState.status == CreateReviewStatus.loading;
+
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) => createReviewState.setStatus = CreateReviewStatus.loaded,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("How was your hike?"),
-        ),
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...createReviewState.munrosToReview.map((Munro munro) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            munro.name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 5),
-                          StarRatingFormField(
-                            initialValue: createReviewState.reviews[munro.id]!["rating"],
-                            validator: (rating) {
-                              if (rating == null || rating < 1) {
-                                return 'Please select at least one star';
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) => createReviewState.setMunroRating(munro.id, newValue!),
-                          ),
-                          const SizedBox(height: 5),
-                          TextFormFieldBase(
-                            initialValue: createReviewState.reviews[munro.id]!["review"],
-                            onSaved: (value) {
-                              createReviewState.setMunroReview(munro.id, value?.trim() ?? "");
-                            },
-                            maxLines: 5,
-                            hintText: "Comment",
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 44,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        }
-                        _formKey.currentState!.save();
-
-                        createReviewState.createReview();
-                      },
-                      child: const Text("Submit"),
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              leading: BackButton(onPressed: () => _goHome(context)),
+              title: Text('Rate Your Climb', style: textTheme.headlineSmall),
+              centerTitle: false,
+            ),
+            body: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tips & Conditions',
+                      style: textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
+                    const SizedBox(height: 12),
+                    AppTextFormField(
+                      hintText:
+                          'e.g. Path conditions, difficulty, weather, advice for future climbers...',
+                      maxLines: 5,
+                      onSaved: (value) {
+                        final text = value?.trim() ?? '';
+                        for (final munro in munros) {
+                          createReviewState.setMunroReview(munro.id, text);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Rate Each Munro',
+                      style: textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 12),
+                    ...munros.map((Munro munro) {
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                munro.name,
+                                style: textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${munro.meters}m • ${munro.area}',
+                                style: textTheme.bodyMedium
+                                    ?.copyWith(color: colors.textSubtitle),
+                              ),
+                              const SizedBox(height: 12),
+                              StarRatingFormField(
+                                initialValue: createReviewState
+                                    .reviews[munro.id]!["rating"],
+                                itemSize: 32,
+                                spacing: 8,
+                                activeColor: colors.starColor,
+                                inactiveColor: colors.divider,
+                                validator: (rating) {
+                                  if (rating == null || rating < 1) {
+                                    return 'Please select at least one star';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) =>
+                                    setState(() => _ratings[munro.id] = value),
+                                onSaved: (newValue) => createReviewState
+                                    .setMunroRating(munro.id, newValue!),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ),
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: colors.background,
+                border: Border(top: BorderSide(color: colors.divider)),
+              ),
+              child: BottomButtonBar(
+                child: CtaButton(
+                  disabled: isSubmitting || !allRated,
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) {
+                      return;
+                    }
+                    _formKey.currentState!.save();
+                    createReviewState.createReview();
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.check, size: 20),
+                      SizedBox(width: 8),
+                      Text('Complete'),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          if (isSubmitting) const BlockingLoadingOverlay(text: 'Submitting...'),
+        ],
       ),
     );
   }

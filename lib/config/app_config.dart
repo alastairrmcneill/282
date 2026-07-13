@@ -10,6 +10,7 @@ class AppConfig {
   final String mixpanelToken;
   final String weatherApiKey;
   final String googleWebClientId;
+  final String imageProxyBaseUrl;
 
   const AppConfig({
     required this.env,
@@ -20,6 +21,7 @@ class AppConfig {
     required this.mixpanelToken,
     required this.weatherApiKey,
     required this.googleWebClientId,
+    required this.imageProxyBaseUrl,
   });
 
   static AppConfig fromEnvironment() {
@@ -32,6 +34,7 @@ class AppConfig {
     const mixpanelToken = String.fromEnvironment('MIXPANEL_TOKEN');
     const weatherApiKey = String.fromEnvironment('WEATHER_API_KEY', defaultValue: '');
     const googleWebClientId = String.fromEnvironment('GOOGLE_WEB_CLIENT_ID', defaultValue: '');
+    const imageProxyBaseUrl = String.fromEnvironment('IMAGE_PROXY_BASE_URL', defaultValue: '');
 
     return AppConfig(
       env: env,
@@ -42,6 +45,7 @@ class AppConfig {
       mixpanelToken: mixpanelToken,
       weatherApiKey: weatherApiKey,
       googleWebClientId: googleWebClientId,
+      imageProxyBaseUrl: imageProxyBaseUrl,
     );
   }
 
@@ -54,6 +58,7 @@ class AppConfig {
                         sentryDsn: $sentryDsn, 
                         mixpanelToken: $mixpanelToken, 
                         weatherApiKey: $weatherApiKey, 
-                        googleWebClientId: $googleWebClientId)''';
+                        googleWebClientId: $googleWebClientId, 
+                        imageProxyBaseUrl: $imageProxyBaseUrl)''';
   }
 }

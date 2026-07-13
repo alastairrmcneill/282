@@ -8,11 +8,12 @@ class NameFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormFieldBase(
+    return AppTextFormField(
       controller: textEditingController,
       hintText: hintText ?? "Name",
       textCapitalization: TextCapitalization.words,
-      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.text,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Required';
