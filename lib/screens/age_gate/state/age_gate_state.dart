@@ -5,7 +5,7 @@ import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/repos/repos.dart';
 
-enum AgeGateStatus { checking, allowed, restricted, needsBirthdate }
+enum AgeGateStatus { checking, allowed, restricted, needsConfirmation, needsBirthdate }
 
 class AgeGateState extends ChangeNotifier {
   static const int _minimumAge = 13;
@@ -40,6 +40,14 @@ class AgeGateState extends ChangeNotifier {
       return;
     }
 
+    // Explain why we're asking before the native dialog interrupts them -
+    // firing the system prompt with zero context tanks opt-in rates.
+    _setStatus(AgeGateStatus.needsConfirmation);
+    _analytics.track(AnalyticsEvent.ageGateConfirmationShown);
+  }
+
+  Future<void> confirmAge() async {
+    _analytics.track(AnalyticsEvent.ageGateConfirmTapped);
     _setStatus(AgeGateStatus.checking);
 
     try {

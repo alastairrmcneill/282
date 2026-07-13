@@ -81,6 +81,8 @@ class AnalyticsEvent {
   static const munroChallengeGoalSet = 'munro_challenge_goal_set';
 
   static const ageGateResolved = 'age_gate_resolved';
+  static const ageGateConfirmationShown = 'age_gate_confirmation_shown';
+  static const ageGateConfirmTapped = 'age_gate_confirm_tapped';
   static const ageGateBirthdatePromptShown = 'age_gate_birthdate_prompt_shown';
 }
 

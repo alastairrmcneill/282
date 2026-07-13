@@ -6,9 +6,10 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 /// Wraps [child] (the main app shell) behind a one-time age check, per
 /// App Store Connect's "Social Media Disabled for Users Under 13"
-/// requirement. Runs silently via Apple's Declared Age Range API where
-/// possible; only surfaces UI when that's unavailable and a self-declared
-/// birthdate is needed. No-op on Android, where this isn't required.
+/// requirement. Shows a primer screen explaining why before triggering
+/// Apple's Declared Age Range API dialog, then falls back to a
+/// self-declared birthdate prompt if that's unavailable or declined.
+/// No-op on Android, where this isn't required.
 class AgeGateScreen extends StatefulWidget {
   final Widget child;
   const AgeGateScreen({super.key, required this.child});
@@ -33,6 +34,7 @@ class _AgeGateScreenState extends State<AgeGateScreen> {
     return switch (status) {
       AgeGateStatus.allowed => widget.child,
       AgeGateStatus.restricted => const Scaffold(body: AgeRestrictedView()),
+      AgeGateStatus.needsConfirmation => const Scaffold(body: AgeConfirmationPromptView()),
       AgeGateStatus.needsBirthdate => const Scaffold(body: BirthdatePromptView()),
       AgeGateStatus.checking => const Scaffold(body: LoadingWidget(text: null)),
     };
