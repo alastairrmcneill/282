@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rate_my_app/rate_my_app.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/feed/screens/feed_list_view.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
+import 'package:two_eight_two/support/review_prompt.dart';
 
 class FeedTab extends StatefulWidget {
   const FeedTab({super.key});
@@ -30,20 +30,7 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _logTabAnalytics(_tabController.index);
 
-      // RateMyApp logic
-      RateMyApp rateMyApp = RateMyApp(
-        preferencesPrefix: 'rateMyApp_',
-        minDays: 2,
-        minLaunches: 2,
-        remindDays: 5,
-        remindLaunches: 5,
-      );
-
-      rateMyApp.init().then((_) {
-        if (mounted && rateMyApp.shouldOpenDialog) {
-          rateMyApp.showRateDialog(context);
-        }
-      });
+      maybeShowReviewPrompt(context);
     });
 
     // Listen for tab changes

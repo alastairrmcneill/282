@@ -7,6 +7,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/review_prompt.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class OverlayIntentCoordinator extends StatelessWidget {
@@ -111,7 +112,7 @@ class OverlayIntentCoordinator extends StatelessWidget {
           builder: (context) {
             return AchievementsCompletedDialog(recentlyCompletedAchievements: intent.achievements);
           },
-        );
+        ).then((_) => maybeShowReviewPrompt(navCtx));
         return;
 
       case BulkMunroUpdateDialogIntent():
@@ -160,6 +161,10 @@ class OverlayIntentCoordinator extends StatelessWidget {
         } else {
           navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogDismissed);
         }
+        return;
+
+      case ReviewPromptIntent():
+        await maybeShowReviewPrompt(navCtx);
         return;
     }
   }

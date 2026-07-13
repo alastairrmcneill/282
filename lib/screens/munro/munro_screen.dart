@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/munro/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/review_prompt.dart';
 
 class MunroScreenArgs {
   final Munro munro;
@@ -28,7 +30,7 @@ class _MunroScreenState extends State<MunroScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final munroDetailState = context.read<MunroDetailState>();
       context.read<ReviewsState>().getMunroReviewsAndRatings(munroDetailState.selectedMunro!.id);
 
@@ -39,6 +41,12 @@ class _MunroScreenState extends State<MunroScreen> {
           AnalyticsProp.munroName: munroDetailState.selectedMunro?.name ?? "",
         },
       );
+
+      final appFlags = context.read<AppFlagsRepository>();
+      await appFlags.incrementMunroDetailOpenCount();
+      if (context.mounted && appFlags.munroDetailOpenCount == 10) {
+        await maybeShowReviewPrompt(context);
+      }
     });
   }
 

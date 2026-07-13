@@ -48,6 +48,7 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
           case CreateReviewStatus.loaded:
             if (!_hasHandledLoaded) {
               _hasHandledLoaded = true;
+              context.read<OverlayIntentState>().enqueue(const ReviewPromptIntent());
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!mounted) return;
                 _goHome(context);
