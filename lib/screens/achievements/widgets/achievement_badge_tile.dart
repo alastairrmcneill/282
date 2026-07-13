@@ -21,24 +21,14 @@ class AchievementBadgeTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isCompleted
-              ? colors.accent.withValues(alpha: 0.08)
-              : colors.divider.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isCompleted
-                ? colors.accent.withValues(alpha: 0.2)
-                : colors.border,
-            width: 0.65,
-          ),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AchievementBadgeIcon(achievement: achievement),
-            const SizedBox(height: 8),
+            isCompleted
+                ? AchievementBadgeIcon(achievement: achievement, containerSize: 64)
+                : Image.asset('assets/badges/lock.png', width: 64, height: 64, fit: BoxFit.contain),
+            const SizedBox(height: 6),
             Text(
               achievement.name,
               textAlign: TextAlign.center,

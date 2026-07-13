@@ -90,10 +90,7 @@ class _AchievementsCompletedDialogState extends State<AchievementsCompletedDialo
                   children: [
                     Text(
                       'You nailed it!',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 6),
@@ -101,10 +98,7 @@ class _AchievementsCompletedDialogState extends State<AchievementsCompletedDialo
                       _multiple
                           ? 'New badges have been added to your profile.'
                           : 'A new badge has been added to your profile.',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: context.colors.textMuted),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
@@ -132,8 +126,7 @@ class _AchievementsCompletedDialogState extends State<AchievementsCompletedDialo
                         style: FilledButton.styleFrom(
                           backgroundColor: context.colors.accent,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         onPressed: _acknowledgeAndPop,
                         child: const Text('Woohoo! 🎉', style: TextStyle(fontSize: 16)),
@@ -187,25 +180,18 @@ class _AchievementsCompletedDialogState extends State<AchievementsCompletedDialo
               achievement: achievement,
               containerSize: 120,
               iconSize: 60,
-              containerRadius: 24,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             achievement.name,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 6),
           Text(
             achievement.description,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: context.colors.textMuted),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

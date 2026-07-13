@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/achievements/widgets/achievement_badge_icon.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 class ProfileAchievementsCard extends StatelessWidget {
   const ProfileAchievementsCard({super.key});
 
+  List<Achievement> _selectPreview(List<Achievement> achievements) {
+    final completed = achievements.where((a) => a.completed).toList();
+    if (completed.length >= 8) return completed.take(8).toList();
+
+    final incomplete = achievements.where((a) => !a.completed).toList()..shuffle();
+    return [...completed, ...incomplete.take(8 - completed.length)];
+  }
+
   @override
   Widget build(BuildContext context) {
     final achievementsState = context.watch<AchievementsState>();
-    final achievements = achievementsState.achievements;
+    final achievements = achievementsState.achievements.where((a) => a.type != AchievementTypes.annualGoal).toList();
     final completedCount = achievements.where((a) => a.completed).length;
-    final preview = achievements.take(8).toList();
+    final preview = _selectPreview(achievements);
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -64,7 +74,10 @@ class _AchievementsHeader extends StatelessWidget {
             children: [
               Text(
                 'Achievements',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
               ),
               Text(
                 '$completedCount / $total earned',
@@ -107,17 +120,29 @@ class _AchievementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unlocked = achievement.completed;
-    return Container(
-      decoration: BoxDecoration(
-        color: unlocked ? context.colors.accent.withValues(alpha: 0.1) : context.colors.border.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Icon(
-        PhosphorIconsRegular.trophy,
-        size: 20,
-        color: unlocked ? context.colors.accent : context.colors.textMuted.withValues(alpha: 0.4),
-      ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () {
+        context.read<Analytics>().track(
+          AnalyticsEvent.achievementTapped,
+          props: {
+            AnalyticsProp.achievementId: achievement.achievementId,
+            AnalyticsProp.achievementName: achievement.name,
+            AnalyticsProp.status: achievement.completed ? 'unlocked' : 'locked',
+          },
+        );
+        Navigator.of(context).pushNamed(
+          AchievementDetailScreen.route,
+          arguments: AchievementDetailsScreenArgs(achievement: achievement),
+        );
+      },
+      child: achievement.completed
+          ? AchievementBadgeIcon(
+              achievement: achievement,
+              containerSize: 48,
+              iconSize: 20,
+            )
+          : Image.asset('assets/badges/lock.png', width: 48, height: 48, fit: BoxFit.contain),
     );
   }
 }

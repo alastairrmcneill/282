@@ -32,7 +32,6 @@ class AchievementDetailScreen extends StatelessWidget {
               achievement: achievement,
               containerSize: 128,
               iconSize: 64,
-              containerRadius: 24,
             ),
             const SizedBox(height: 20),
             _StatusPill(isCompleted: isCompleted),
@@ -69,9 +68,7 @@ class _StatusPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: isCompleted
-            ? colors.accent.withValues(alpha: 0.12)
-            : colors.border.withValues(alpha: 0.5),
+        color: isCompleted ? colors.accent.withValues(alpha: 0.12) : colors.border.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(

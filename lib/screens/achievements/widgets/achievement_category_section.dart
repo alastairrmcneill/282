@@ -53,8 +53,8 @@ class AchievementCategorySection extends StatelessWidget {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.68,
+            mainAxisSpacing: 2,
+            childAspectRatio: 0.85,
           ),
           itemCount: achievements.length,
           itemBuilder: (context, index) {
