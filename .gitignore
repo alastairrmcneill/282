@@ -62,4 +62,5 @@ functions/firebase-admin.txt
 config/prod.json
 config/dev.json
 scripts/mapbox_style/.secret_token
+.firebase
 assets/branch-config.json

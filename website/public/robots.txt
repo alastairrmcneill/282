@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://282app.uk/sitemap-index.xml

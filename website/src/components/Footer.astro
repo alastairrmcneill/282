@@ -1,0 +1,70 @@
+---
+import { APP_STORE_URL, PLAY_STORE_URL } from '../lib/branch';
+import { areas } from '../data/munros';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-gray-200 bg-white">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <img src="/icon-192.png" alt="" width="28" height="28" class="h-7 w-7 rounded-lg" />
+          <span class="text-lg font-bold">282</span>
+        </div>
+        <p class="mt-3 text-sm text-gray-600">
+          The Munro bagging app. Track, discover and share all 282 Scottish Munros.
+        </p>
+        <div class="mt-4 flex flex-col gap-2 text-sm">
+          <a href={APP_STORE_URL} class="font-medium text-brand-600 hover:underline"
+            >Download on the App Store</a
+          >
+          <a href={PLAY_STORE_URL} class="font-medium text-brand-600 hover:underline"
+            >Get it on Google Play</a
+          >
+        </div>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold tracking-wide text-gray-900 uppercase">Explore</h2>
+        <ul class="mt-3 space-y-2 text-sm text-gray-600">
+          <li><a href="/munros" class="hover:text-brand-600">All 282 Munros</a></li>
+          <li><a href="/guides" class="hover:text-brand-600">Guides</a></li>
+          <li><a href="/guides/munro-map" class="hover:text-brand-600">Munro map</a></li>
+          <li>
+            <a href="/guides/easiest-munros" class="hover:text-brand-600">Easiest Munros</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold tracking-wide text-gray-900 uppercase">Regions</h2>
+        <ul class="mt-3 space-y-2 text-sm text-gray-600">
+          {
+            areas.slice(0, 6).map((a) => (
+              <li>
+                <a href={`/regions/${a.slug}`} class="hover:text-brand-600">
+                  {a.name}
+                </a>
+              </li>
+            ))
+          }
+          <li><a href="/munros" class="font-medium hover:text-brand-600">All regions →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold tracking-wide text-gray-900 uppercase">Legal</h2>
+        <ul class="mt-3 space-y-2 text-sm text-gray-600">
+          <li><a href="/terms" class="hover:text-brand-600">Terms &amp; Conditions</a></li>
+          <li><a href="/privacy" class="hover:text-brand-600">Privacy Policy</a></li>
+          <li>
+            <a href="mailto:alastair.r.mcneill@gmail.com" class="hover:text-brand-600">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="mt-10 text-xs text-gray-500">
+      © {year} 282. Mountain photographs via Wikimedia Commons — credits on each page. Always
+      check weather and conditions before heading into the hills.
+    </p>
+  </div>
+</footer>

@@ -396,6 +396,10 @@ If you want to use Apple Sign-In in the development app, you'll need to do the f
 - Sign in with Apple only works on iOS 13.0+ and macOS 10.15+
 - Testing requires a physical device or iOS Simulator (not Android)
 
+## Marketing Website
+
+The `website/` folder is a separate Astro project (the 282app.uk marketing & SEO site) and isn't required to run the Flutter app. See [website/README.md](website/README.md) for its own setup and dev server instructions.
+
 # Running the App
 
 ### Development flavor

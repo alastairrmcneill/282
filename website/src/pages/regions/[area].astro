@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import MunroCard from '../../components/MunroCard.astro';
+import AppCTA from '../../components/AppCTA.astro';
+import { areas } from '../../data/munros';
+import { appBranchLink } from '../../lib/branch';
+import { mobileAppJsonLd } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return areas.map((area) => ({ params: { area: area.slug }, props: { area } }));
+}
+
+const { area } = Astro.props;
+const highest = [...area.munros].sort((a, b) => b.meters - a.meters)[0];
+const count = area.munros.length;
+const path = `/regions/${area.slug}`;
+---
+
+<Base
+  title={`Munros in ${area.name} — All ${count} Peaks Listed | 282`}
+  description={`There are ${count} Munros in the ${area.name} area of Scotland, the highest being ${highest.displayName} at ${highest.meters}m. Full list with heights, maps and route links.`}
+  path={path}
+  jsonLd={[mobileAppJsonLd()]}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumbs
+      crumbs={[{ name: 'Home', path: '/' }, { name: 'Munros', path: '/munros' }, { name: area.name }]}
+    />
+
+    <h1 class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Munros in {area.name}</h1>
+    <p class="mt-3 max-w-3xl text-gray-600">
+      The {area.name} area has <strong>{count} Munro{count === 1 ? '' : 's'}</strong>, the highest
+      being <a href={`/munros/${highest.slug}`} class="text-brand-600 underline">{highest.displayName}</a>
+      at {highest.meters}m ({highest.feet.toLocaleString()}ft). Tap any Munro for its map, photo,
+      route links and to track it in the 282 app.
+    </p>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {area.munros.map((m) => <MunroCard munro={m} />)}
+    </div>
+
+    <div class="mt-10">
+      <AppCTA
+        heading={`Bag all ${count} Munros in ${area.name}`}
+        branchLink={appBranchLink('region_page')}
+      />
+    </div>
+  </div>
+</Base>

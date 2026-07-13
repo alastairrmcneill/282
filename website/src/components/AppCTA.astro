@@ -1,0 +1,38 @@
+---
+import { APP_STORE_URL, PLAY_STORE_URL } from '../lib/branch';
+
+interface Props {
+  /** Heading, e.g. "Track Ben Nevis in the 282 app". */
+  heading?: string;
+  /** Branch deep link for the primary button; falls back to the App Store. */
+  branchLink?: string;
+}
+
+const { heading = 'Track your Munros with the 282 app', branchLink } = Astro.props;
+---
+
+<section class="rounded-3xl bg-gray-900 px-6 py-10 text-center sm:px-10">
+  <h2 class="text-2xl font-bold text-white sm:text-3xl">{heading}</h2>
+  <p class="mx-auto mt-3 max-w-xl text-gray-300">
+    Log your summits, see them all on the map, earn badges and share photos with fellow baggers.
+    Free on iOS and Android.
+  </p>
+  {
+    branchLink && (
+      <a
+        href={branchLink}
+        class="mt-6 inline-block rounded-full bg-brand-500 px-8 py-3 font-semibold text-white transition hover:bg-brand-400"
+      >
+        Open in the app
+      </a>
+    )
+  }
+  <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
+    <a href={APP_STORE_URL} aria-label="Download 282 on the App Store">
+      <img src="/badges/app-store.svg" alt="Download on the App Store" width="135" height="40" loading="lazy" />
+    </a>
+    <a href={PLAY_STORE_URL} aria-label="Get 282 on Google Play">
+      <img src="/badges/google-play.svg" alt="Get it on Google Play" width="135" height="40" loading="lazy" />
+    </a>
+  </div>
+</section>

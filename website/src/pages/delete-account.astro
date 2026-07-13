@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+---
+
+<Base
+  title="Delete Your Account | 282 Munro Bagging App"
+  description="How to permanently delete your 282 account and all associated data from within the app."
+  path="/delete-account"
+>
+  <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+    <Breadcrumbs crumbs={[{ name: 'Home', path: '/' }, { name: 'Delete Your Account' }]} />
+    <article class="prose prose-gray mt-6">
+      <h1>How to Delete Your 282 Account</h1>
+      <p>
+        This guide provides step-by-step instructions on how to delete your 282 account. Please
+        read through each step carefully to understand the implications of deleting your account.
+      </p>
+      <ul>
+        <li>
+          <strong>Data loss:</strong> deleting your 282 account will permanently delete all the
+          data associated with it, including your completions, posts, photos, and any other data
+          stored in 282 services.
+        </li>
+        <li><strong>Recovery:</strong> once deleted, your account cannot be recovered.</li>
+        <li><strong>Account check:</strong> ensure you are deleting the correct account.</li>
+      </ul>
+      <h2>Steps to delete your account</h2>
+      <ol>
+        <li>
+          <strong>Sign in:</strong> open 282 and tap the Profile tab, then sign in with the account
+          you wish to delete.
+        </li>
+        <li>
+          <strong>Open settings:</strong> tap the settings icon on the right-hand side.
+        </li>
+        <li>
+          <strong>Delete your account:</strong> tap <em>Delete Account</em>, then confirm by
+          tapping <em>Delete</em> in the pop-up to permanently delete your account.
+        </li>
+      </ol>
+      <h2>Contact</h2>
+      <p>
+        For further assistance, email
+        <a href="mailto:alastair.r.mcneill@gmail.com">alastair.r.mcneill@gmail.com</a>.
+      </p>
+    </article>
+  </div>
+</Base>
