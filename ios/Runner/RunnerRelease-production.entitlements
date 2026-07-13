@@ -13,5 +13,7 @@
 	  <string>applinks:282.app.link</string>
 	  <string>applinks:282-alternate.app.link</string>
 	</array>
+	<key>com.apple.developer.declared-age-range</key>
+	<true/>
 </dict>
 </plist>

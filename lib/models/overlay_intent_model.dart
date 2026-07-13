@@ -67,3 +67,10 @@ final class AnnualMunroChallengeDialogIntent extends OverlayIntent {
   @override
   String get dedupeKey => 'annual_munro_challenge_dialog';
 }
+
+final class ReviewPromptIntent extends OverlayIntent {
+  const ReviewPromptIntent();
+
+  @override
+  String get dedupeKey => 'review_prompt';
+}

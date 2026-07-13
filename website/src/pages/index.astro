@@ -98,12 +98,12 @@ const guideLinks = [
         <dd class="text-3xl font-extrabold text-brand-600">282</dd>
       </div>
       <div>
-        <dt class="text-sm text-gray-500">Regions to explore</dt>
-        <dd class="text-3xl font-extrabold text-brand-600">{areas.length}</dd>
+        <dt class="text-sm text-gray-500">Users</dt>
+        <dd class="text-3xl font-extrabold text-brand-600">2,000+</dd>
       </div>
       <div>
-        <dt class="text-sm text-gray-500">Highest summit</dt>
-        <dd class="text-3xl font-extrabold text-brand-600">1,345m</dd>
+        <dt class="text-sm text-gray-500">Munros bagged</dt>
+        <dd class="text-3xl font-extrabold text-brand-600">27,000+</dd>
       </div>
     </dl>
   </section>
@@ -128,17 +128,25 @@ const guideLinks = [
     </div>
   </section>
 
-  <!-- Screenshots (placeholders until real screenshots are provided) -->
+  <!-- Screenshots -->
   <section class="bg-gray-900 py-16">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <h2 class="text-center text-3xl font-bold text-white">See it in action</h2>
       <div class="mt-10 flex flex-wrap items-start justify-center gap-8">
         {
-          ['Explore the map', 'Log a summit', 'Share the moment'].map((label) => (
+          [
+            { label: 'Explore the map', file: 'explore-map.PNG' },
+            { label: 'Read reviews', file: 'read-reviews.PNG' },
+            { label: 'Share the moment', file: 'share-moment.PNG' },
+          ].map(({ label, file }) => (
             <figure class="w-56">
-              <div class="flex aspect-[9/19.5] items-center justify-center rounded-[2rem] border-4 border-gray-700 bg-gray-800">
-                {/* TODO: replace with real app screenshots (drop into public/screenshots/ and swap this div for an <img>) */}
-                <span class="px-6 text-center text-sm text-gray-500">Screenshot coming soon</span>
+              <div class="aspect-[9/19.5] overflow-hidden rounded-[2rem] border-4 border-gray-700 bg-gray-800">
+                <img
+                  src={`/screenshots/${file}`}
+                  alt={label}
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                />
               </div>
               <figcaption class="mt-3 text-center text-sm text-gray-300">{label}</figcaption>
             </figure>

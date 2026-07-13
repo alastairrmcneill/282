@@ -12,6 +12,7 @@ class AppFlagsRepository {
   static const _kShowInAppOnboarding = 'showInAppOnboarding';
   static const _kOpenCount = 'open_count';
   static const _kOnboardingCompletedKey = 'onboarding_completed';
+  static const _kMunroDetailOpenCount = 'munro_detail_open_count';
 
   bool get onboardingCompleted => _prefs.getBool(_kOnboardingCompletedKey) ?? false;
   Future<void> setOnboardingCompleted(bool v) async {
@@ -75,4 +76,12 @@ class AppFlagsRepository {
   }
 
   Future<void> incrementOpenCount() => setOpenCount(openCount + 1);
+
+  int get munroDetailOpenCount => _prefs.getInt(_kMunroDetailOpenCount) ?? 0;
+  Future<void> setMunroDetailOpenCount(int v) async {
+    final ok = await _prefs.setInt(_kMunroDetailOpenCount, v);
+    if (!ok) throw Exception('Failed to persist $_kMunroDetailOpenCount');
+  }
+
+  Future<void> incrementMunroDetailOpenCount() => setMunroDetailOpenCount(munroDetailOpenCount + 1);
 }
