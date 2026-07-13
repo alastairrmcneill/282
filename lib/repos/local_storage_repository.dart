@@ -12,8 +12,17 @@ class LocalStorageRepository {
   int? getGlobalCompletionCount() {
     return _prefs.getInt(LocalStorageFields.globalCompletionCount);
   }
+
+  Future<void> setAgeGateAllowed(bool allowed) async {
+    await _prefs.setBool(LocalStorageFields.ageGateAllowed, allowed);
+  }
+
+  bool? getAgeGateAllowed() {
+    return _prefs.getBool(LocalStorageFields.ageGateAllowed);
+  }
 }
 
 class LocalStorageFields {
   static const String globalCompletionCount = 'global_completion_count';
+  static const String ageGateAllowed = 'age_gate_allowed';
 }

@@ -1,4 +1,5 @@
 export 'achievements/state/achievements_state.dart';
+export 'age_gate/state/age_gate_state.dart';
 export 'auth/state/user_state.dart';
 export 'auth/state/auth_state.dart';
 export 'bulk_munro_updates/state/bulk_munro_update_state.dart';

@@ -52,6 +52,7 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => SettingsRepository(sharedPreferences)),
       Provider(create: (_) => AppFlagsRepository(sharedPreferences)),
       Provider(create: (_) => LocalStorageRepository(sharedPreferences)),
+      Provider(create: (_) => AgeGateRepository()),
       Provider(create: (_) => WeartherRepository()),
       Provider(create: (_) => ShareLinkRepository()),
       Provider<Analytics>(
@@ -171,6 +172,13 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<UserState>(),
           ctx.read<UserLikeState>(),
           ctx.read<Analytics>(),
+          ctx.read<Logger>(),
+        ),
+      ),
+      ChangeNotifierProvider<AgeGateState>(
+        create: (ctx) => AgeGateState(
+          ctx.read<AgeGateRepository>(),
+          ctx.read<LocalStorageRepository>(),
           ctx.read<Logger>(),
         ),
       ),
