@@ -135,8 +135,7 @@ void main() {
     group('getFriendsFeed', () {
       test('should load friends feed successfully', () async {
         // Arrange
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenAnswer((_) async => sampleFriendsPosts);
 
@@ -147,8 +146,7 @@ void main() {
         expect(feedState.status, FeedStatus.loaded);
         expect(feedState.friendsPosts, sampleFriendsPosts);
         expect(feedState.friendsPosts.length, 3);
-        verify(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: 'currentUser',
+        verify(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: [],
         )).called(1);
         verify(mockUserLikeState.reset()).called(1);
@@ -160,8 +158,7 @@ void main() {
         // Arrange
         final blockedUsers = ['blockedUser1', 'blockedUser2'];
         when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenAnswer((_) async => sampleFriendsPosts);
 
@@ -169,8 +166,7 @@ void main() {
         await feedState.getFriendsFeed();
 
         // Assert
-        verify(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: 'currentUser',
+        verify(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: blockedUsers,
         )).called(1);
       });
@@ -185,16 +181,14 @@ void main() {
         // Assert
         expect(feedState.status, FeedStatus.error);
         expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
-        verifyNever(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        verifyNever(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         ));
       });
 
       test('should handle error during loading', () async {
         // Arrange
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenThrow(Exception('Network error'));
 
@@ -209,8 +203,7 @@ void main() {
 
       test('should set status to loading during async operation', () async {
         // Arrange
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenAnswer((_) async {
           await Future.delayed(Duration(milliseconds: 100));
@@ -249,10 +242,9 @@ void main() {
           ),
         ];
 
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => additionalPosts);
 
         // Act
@@ -262,10 +254,9 @@ void main() {
         expect(feedState.status, FeedStatus.loaded);
         expect(feedState.friendsPosts.length, 4);
         expect(feedState.friendsPosts.last.title, 'New Post');
-        verify(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: 'currentUser',
+        verify(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: [],
-          offset: 3,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
         verify(mockUserLikeState.getLikedPostIds(posts: additionalPosts)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
@@ -276,20 +267,18 @@ void main() {
         feedState.setFriendsPosts = List.from(sampleFriendsPosts);
         final blockedUsers = ['blockedUser1'];
         when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => []);
 
         // Act
         await feedState.paginateFriendsFeed();
 
         // Assert
-        verify(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: 'currentUser',
+        verify(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: blockedUsers,
-          offset: 3,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
       });
 
@@ -303,20 +292,18 @@ void main() {
         // Assert
         expect(feedState.status, FeedStatus.error);
         expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
-        verifyNever(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        verifyNever(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         ));
       });
 
       test('should handle error during pagination', () async {
         // Arrange
         feedState.setFriendsPosts = List.from(sampleFriendsPosts);
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenThrow(Exception('Pagination error'));
 
         // Store initial post count
@@ -336,10 +323,9 @@ void main() {
       test('should set status to paginating during async operation', () async {
         // Arrange
         feedState.setFriendsPosts = List.from(sampleFriendsPosts);
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async {
           await Future.delayed(Duration(milliseconds: 100));
           return [];
@@ -469,7 +455,7 @@ void main() {
 
         when(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => additionalPosts);
 
         // Act
@@ -481,7 +467,7 @@ void main() {
         expect(feedState.globalPosts.last.title, 'Global Post 3');
         verify(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: [],
-          offset: 2,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
         verify(mockUserLikeState.getLikedPostIds(posts: additionalPosts)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
@@ -494,7 +480,7 @@ void main() {
         when(mockUserState.blockedUsers).thenReturn(blockedUsers);
         when(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => []);
 
         // Act
@@ -503,7 +489,7 @@ void main() {
         // Assert
         verify(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: blockedUsers,
-          offset: 2,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
       });
 
@@ -519,7 +505,7 @@ void main() {
         expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
         verifyNever(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         ));
       });
 
@@ -528,7 +514,7 @@ void main() {
         feedState.setGlobalPosts = List.from(sampleGlobalPosts);
         when(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenThrow(Exception('Pagination error'));
 
         // Store initial post count
@@ -550,7 +536,7 @@ void main() {
         feedState.setGlobalPosts = List.from(sampleGlobalPosts);
         when(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async {
           await Future.delayed(Duration(milliseconds: 100));
           return [];
@@ -796,10 +782,9 @@ void main() {
       test('should handle empty friends posts list on pagination', () async {
         // Arrange - start with empty list
         expect(feedState.friendsPosts, isEmpty);
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => sampleFriendsPosts);
 
         // Act
@@ -807,10 +792,9 @@ void main() {
 
         // Assert
         expect(feedState.friendsPosts, sampleFriendsPosts);
-        verify(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: 'currentUser',
+        verify(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: [],
-          offset: 0,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
       });
 
@@ -819,7 +803,7 @@ void main() {
         expect(feedState.globalPosts, isEmpty);
         when(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => sampleGlobalPosts);
 
         // Act
@@ -829,7 +813,7 @@ void main() {
         expect(feedState.globalPosts, sampleGlobalPosts);
         verify(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: [],
-          offset: 0,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
       });
 
@@ -855,8 +839,7 @@ void main() {
 
       test('should handle repository returning empty lists', () async {
         // Arrange
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenAnswer((_) async => []);
         when(mockPostsRepository.getGlobalFeed(
@@ -877,8 +860,7 @@ void main() {
         // Arrange
         final blockedUsers = ['blocked1', 'blocked2', 'blocked3', 'blocked4'];
         when(mockUserState.blockedUsers).thenReturn(blockedUsers);
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenAnswer((_) async => []);
         when(mockPostsRepository.getGlobalFeed(
@@ -889,8 +871,7 @@ void main() {
         await feedState.getFriendsFeed();
 
         // Assert
-        verify(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: 'currentUser',
+        verify(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: blockedUsers,
         )).called(1);
       });
@@ -935,8 +916,7 @@ void main() {
     group('ChangeNotifier', () {
       test('should notify listeners when loading friends feed', () async {
         // Arrange
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         )).thenAnswer((_) async => sampleFriendsPosts);
 
@@ -953,10 +933,9 @@ void main() {
       test('should notify listeners when paginating friends feed', () async {
         // Arrange
         feedState.setFriendsPosts = sampleFriendsPosts;
-        when(mockPostsRepository.getFriendsFeedFromUserId(
-          userId: anyNamed('userId'),
+        when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => []);
 
         bool notified = false;
@@ -990,7 +969,7 @@ void main() {
         feedState.setGlobalPosts = sampleGlobalPosts;
         when(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-          offset: anyNamed('offset'),
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => []);
 
         bool notified = false;

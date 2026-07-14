@@ -485,7 +485,7 @@ void main() {
 
         when(mockPostsRepository.readPostsFromUserId(
           userId: 'user123',
-          offset: 2,
+          lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => additionalPosts);
 
         // Act
@@ -497,7 +497,7 @@ void main() {
         expect(profileState.posts.last.uid, 'post3');
         verify(mockPostsRepository.readPostsFromUserId(
           userId: 'user123',
-          offset: 2,
+          lastPost: anyNamed('lastPost'),
         )).called(1);
         verify(mockUserLikeState.getLikedPostIds(posts: additionalPosts)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
@@ -507,7 +507,7 @@ void main() {
         // Arrange
         when(mockPostsRepository.readPostsFromUserId(
           userId: 'user123',
-          offset: 2,
+          lastPost: anyNamed('lastPost'),
         )).thenThrow(Exception('Network error'));
 
         // Act

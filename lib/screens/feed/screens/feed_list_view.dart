@@ -4,11 +4,12 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class FeedListView extends StatefulWidget {
   final List<Post> posts;
+  final FeedStatus status;
+  final Error error;
   final VoidCallback paginate;
   final VoidCallback refreshPosts;
   final Widget? headerWidget;
@@ -16,6 +17,8 @@ class FeedListView extends StatefulWidget {
   const FeedListView({
     super.key,
     required this.posts,
+    required this.status,
+    required this.error,
     required this.paginate,
     required this.refreshPosts,
     this.headerWidget,
@@ -35,22 +38,18 @@ class _FeedListViewState extends State<FeedListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FeedState>(
-      builder: (context, feedState, child) {
-        switch (feedState.status) {
-          case FeedStatus.loading:
-            return _buildLoadingScreen(context, feedState);
+    switch (widget.status) {
+      case FeedStatus.loading:
+        return _buildLoadingScreen(context);
 
-          case FeedStatus.error:
-            return CenterText(text: feedState.error.message);
-          default:
-            return _buildScreen(context, feedState);
-        }
-      },
-    );
+      case FeedStatus.error:
+        return CenterText(text: widget.error.message);
+      default:
+        return _buildScreen(context);
+    }
   }
 
-  Widget _buildLoadingScreen(BuildContext context, FeedState feedState) {
+  Widget _buildLoadingScreen(BuildContext context) {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 3,
@@ -58,8 +57,9 @@ class _FeedListViewState extends State<FeedListView> {
     );
   }
 
-  Widget _buildScreen(BuildContext context, FeedState feedState) {
+  Widget _buildScreen(BuildContext context) {
     UserLikeState userLikeState = context.read<UserLikeState>();
+    FeedState feedState = context.read<FeedState>();
     const postsFromEndToPaginate = 2;
 
     if (widget.posts.isEmpty) {
@@ -88,7 +88,7 @@ class _FeedListViewState extends State<FeedListView> {
 
           // Loading indicator at the bottom
           if (index == widget.posts.length + 1) {
-            return feedState.status == FeedStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
+            return widget.status == FeedStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
           }
 
           // Post items
@@ -96,7 +96,7 @@ class _FeedListViewState extends State<FeedListView> {
           final post = widget.posts[postIndex];
 
           // Trigger pagination when reaching 2 posts from the end
-          if (postIndex >= widget.posts.length - postsFromEndToPaginate && feedState.status != FeedStatus.paginating) {
+          if (postIndex >= widget.posts.length - postsFromEndToPaginate && widget.status != FeedStatus.paginating) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               widget.paginate();
             });
