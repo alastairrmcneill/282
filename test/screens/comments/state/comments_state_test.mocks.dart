@@ -408,7 +408,7 @@ class MockPostsRepository extends _i1.Mock implements _i2.PostsRepository {
   @override
   _i4.Future<List<_i3.Post>> readPostsFromUserId({
     required String? userId,
-    int? offset = 0,
+    _i3.Post? lastPost,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -416,26 +416,24 @@ class MockPostsRepository extends _i1.Mock implements _i2.PostsRepository {
           [],
           {
             #userId: userId,
-            #offset: offset,
+            #lastPost: lastPost,
           },
         ),
         returnValue: _i4.Future<List<_i3.Post>>.value(<_i3.Post>[]),
       ) as _i4.Future<List<_i3.Post>>);
 
   @override
-  _i4.Future<List<_i3.Post>> getFriendsFeedFromUserId({
-    required String? userId,
+  _i4.Future<List<_i3.Post>> getFriendsFeed({
     required List<String>? excludedAuthorIds,
-    int? offset = 0,
+    _i3.Post? lastPost,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
-          #getFriendsFeedFromUserId,
+          #getFriendsFeed,
           [],
           {
-            #userId: userId,
             #excludedAuthorIds: excludedAuthorIds,
-            #offset: offset,
+            #lastPost: lastPost,
           },
         ),
         returnValue: _i4.Future<List<_i3.Post>>.value(<_i3.Post>[]),
@@ -444,7 +442,7 @@ class MockPostsRepository extends _i1.Mock implements _i2.PostsRepository {
   @override
   _i4.Future<List<_i3.Post>> getGlobalFeed({
     required List<String>? excludedAuthorIds,
-    int? offset = 0,
+    _i3.Post? lastPost,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -452,7 +450,7 @@ class MockPostsRepository extends _i1.Mock implements _i2.PostsRepository {
           [],
           {
             #excludedAuthorIds: excludedAuthorIds,
-            #offset: offset,
+            #lastPost: lastPost,
           },
         ),
         returnValue: _i4.Future<List<_i3.Post>>.value(<_i3.Post>[]),

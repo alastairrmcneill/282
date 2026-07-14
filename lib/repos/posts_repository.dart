@@ -7,8 +7,6 @@ class PostsRepository {
 
   SupabaseQueryBuilder get _postsTableRef => _db.from('posts');
   SupabaseQueryBuilder get _postsViewRef => _db.from('vu_posts');
-  SupabaseQueryBuilder get _globalFeedViewRef => _db.from('vu_global_feed');
-  SupabaseQueryBuilder get _friendsFeedViewRef => _db.from('vu_friends_feed');
 
   // Create Post
   Future<String> create({required Post post}) async {
@@ -31,54 +29,59 @@ class PostsRepository {
   }
 
   // Read posts from user id
+  // Keyset pagination: [lastPost] is the final post of the previous page
+  // (null for the first page).
   Future<List<Post>> readPostsFromUserId({
     required String userId,
-    int offset = 0,
+    Post? lastPost,
   }) async {
-    int pageSize = 10;
+    final List<dynamic> response = await _db.rpc(
+      'get_user_posts',
+      params: {
+        'p_user_id': userId,
+        'p_limit': 10,
+        'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
+        'p_before_id': lastPost?.uid,
+      },
+    );
 
-    final response = await _postsViewRef
-        .select()
-        .eq(PostFields.authorId, userId)
-        .order(PostFields.dateTimeCreated, ascending: false)
-        .range(offset, offset + pageSize - 1);
-
-    return response.map((doc) => Post.fromJSON(doc)).toList();
+    return response.map((doc) => Post.fromJSON(doc as Map<String, dynamic>)).toList();
   }
 
-  // Get friends feed
-  Future<List<Post>> getFriendsFeedFromUserId({
-    required String userId,
+  // Get friends feed (caller identity comes from the JWT server-side)
+  Future<List<Post>> getFriendsFeed({
     required List<String> excludedAuthorIds,
-    int offset = 0,
+    Post? lastPost,
   }) async {
-    int pageSize = 10;
+    final List<dynamic> response = await _db.rpc(
+      'get_friends_feed',
+      params: {
+        'p_limit': 10,
+        'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
+        'p_before_id': lastPost?.uid,
+        'p_excluded_author_ids': excludedAuthorIds,
+      },
+    ).timeout(Duration(seconds: 30));
 
-    final response = await _friendsFeedViewRef
-        .select()
-        .not(PostFields.authorId, 'in', excludedAuthorIds)
-        .eq(PostFields.userId, userId)
-        .order(PostFields.dateTimeCreated, ascending: false)
-        .range(offset, offset + pageSize - 1)
-        .timeout(Duration(seconds: 30));
-
-    return response.map((doc) => Post.fromJSON(doc)).toList();
+    return response.map((doc) => Post.fromJSON(doc as Map<String, dynamic>)).toList();
   }
 
   // Get global feed
   Future<List<Post>> getGlobalFeed({
     required List<String> excludedAuthorIds,
-    int offset = 0,
+    Post? lastPost,
   }) async {
-    int pageSize = 10;
+    final List<dynamic> response = await _db.rpc(
+      'get_global_feed',
+      params: {
+        'p_limit': 10,
+        'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
+        'p_before_id': lastPost?.uid,
+        'p_excluded_author_ids': excludedAuthorIds,
+      },
+    ).timeout(Duration(seconds: 30));
 
-    final response = await _globalFeedViewRef
-        .select()
-        .not(PostFields.authorId, 'in', excludedAuthorIds)
-        .order(PostFields.dateTimeCreated, ascending: false)
-        .range(offset, offset + pageSize - 1)
-        .timeout(Duration(seconds: 30));
-    return response.map((doc) => Post.fromJSON(doc)).toList();
+    return response.map((doc) => Post.fromJSON(doc as Map<String, dynamic>)).toList();
   }
 
   // Delete post

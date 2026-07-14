@@ -275,6 +275,12 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as int);
 
   @override
+  int get munroDetailOpenCount => (super.noSuchMethod(
+        Invocation.getter(#munroDetailOpenCount),
+        returnValue: 0,
+      ) as int);
+
+  @override
   _i5.Future<void> setOnboardingCompleted(bool? v) => (super.noSuchMethod(
         Invocation.method(
           #setOnboardingCompleted,
@@ -415,6 +421,26 @@ class MockAppFlagsRepository extends _i1.Mock
   _i5.Future<void> incrementOpenCount() => (super.noSuchMethod(
         Invocation.method(
           #incrementOpenCount,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setMunroDetailOpenCount(int? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setMunroDetailOpenCount,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> incrementMunroDetailOpenCount() => (super.noSuchMethod(
+        Invocation.method(
+          #incrementMunroDetailOpenCount,
           [],
         ),
         returnValue: _i5.Future<void>.value(),

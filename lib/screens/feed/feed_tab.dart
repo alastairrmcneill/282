@@ -116,12 +116,16 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
           children: [
             FeedListView(
               posts: feedState.globalPosts,
+              status: feedState.globalStatus,
+              error: feedState.globalError,
               paginate: () => feedState.paginateGlobalFeed(),
               refreshPosts: () => feedState.getGlobalFeed(),
               headerWidget: const SizedBox(height: 10),
             ),
             FeedListView(
               posts: feedState.friendsPosts,
+              status: feedState.friendsStatus,
+              error: feedState.friendsError,
               paginate: () => feedState.paginateFriendsFeed(),
               refreshPosts: () => feedState.getFriendsFeed(),
               emptyList: const EmptyFriendsFeed(),

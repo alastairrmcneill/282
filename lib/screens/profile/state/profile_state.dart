@@ -127,10 +127,10 @@ class ProfileState extends ChangeNotifier {
     try {
       setStatus = ProfileStatus.paginating;
 
-      // Add posts from database
+      // Add posts from database (keyset cursor = last post currently shown)
       List<Post> newPosts = await _postsRepository.readPostsFromUserId(
         userId: _profile?.id ?? "",
-        offset: _posts.length,
+        lastPost: _posts.isEmpty ? null : _posts.last,
       );
 
       // Check likes

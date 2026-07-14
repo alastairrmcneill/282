@@ -20,30 +20,33 @@ class FeedState extends ChangeNotifier {
     this._logger,
   );
 
-  FeedStatus _status = FeedStatus.initial;
-  Error _error = Error();
+  FeedStatus _globalStatus = FeedStatus.initial;
+  FeedStatus _friendsStatus = FeedStatus.initial;
+  Error _globalError = Error();
+  Error _friendsError = Error();
   List<Post> _friendsPosts = [];
   List<Post> _globalPosts = [];
 
-  FeedStatus get status => _status;
-  Error get error => _error;
+  FeedStatus get globalStatus => _globalStatus;
+  FeedStatus get friendsStatus => _friendsStatus;
+  Error get globalError => _globalError;
+  Error get friendsError => _friendsError;
   List<Post> get friendsPosts => _friendsPosts;
   List<Post> get globalPosts => _globalPosts;
 
   Future getFriendsFeed() async {
     if (_userState.currentUser == null) {
       // Not logged in
-      setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      setFriendsError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
     }
 
     List<String> blockedUsers = _userState.blockedUsers;
 
     try {
-      setStatus = FeedStatus.loading;
+      setFriendsStatus = FeedStatus.loading;
 
-      List<Post> posts = await _postsRepository.getFriendsFeedFromUserId(
-        userId: _userState.currentUser?.uid ?? "",
+      List<Post> posts = await _postsRepository.getFriendsFeed(
         excludedAuthorIds: blockedUsers,
       );
 
@@ -52,10 +55,10 @@ class FeedState extends ChangeNotifier {
       _userLikeState.getLikedPostIds(posts: posts);
 
       _friendsPosts = posts;
-      setStatus = FeedStatus.loaded;
+      setFriendsStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(
+      setFriendsError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your posts. Please try again.",
       );
@@ -63,28 +66,30 @@ class FeedState extends ChangeNotifier {
   }
 
   Future paginateFriendsFeed() async {
+    if (_friendsStatus == FeedStatus.paginating) {
+      return;
+    }
     if (_userState.currentUser == null) {
       // Not logged in
-      setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      setFriendsError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
     }
     try {
-      setStatus = FeedStatus.paginating;
+      setFriendsStatus = FeedStatus.paginating;
 
       List<String> blockedUsers = _userState.blockedUsers;
 
-      // Add posts from database
-      List<Post> newPosts = await _postsRepository.getFriendsFeedFromUserId(
-        userId: _userState.currentUser?.uid ?? "",
+      // Add posts from database (keyset cursor = last post currently shown)
+      List<Post> newPosts = await _postsRepository.getFriendsFeed(
         excludedAuthorIds: blockedUsers,
-        offset: friendsPosts.length,
+        lastPost: friendsPosts.isEmpty ? null : friendsPosts.last,
       );
 
       // Check likes
       _userLikeState.getLikedPostIds(posts: newPosts);
 
       _friendsPosts.addAll(newPosts);
-      setStatus = FeedStatus.loaded;
+      setFriendsStatus = FeedStatus.loaded;
       _analytics.track(
         AnalyticsEvent.paginateFriendsFeed,
         props: {
@@ -93,18 +98,18 @@ class FeedState extends ChangeNotifier {
       );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(message: "There was an issue loading your feed. Please try again.");
+      setFriendsError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }
 
   Future getGlobalFeed() async {
     if (_userState.currentUser == null) {
       // Not logged in
-      setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      setGlobalError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
     }
     try {
-      setStatus = FeedStatus.loading;
+      setGlobalStatus = FeedStatus.loading;
       List<String> blockedUsers = _userState.blockedUsers;
 
       List<Post> posts = await _postsRepository.getGlobalFeed(
@@ -116,10 +121,10 @@ class FeedState extends ChangeNotifier {
       _userLikeState.getLikedPostIds(posts: posts);
 
       _globalPosts = posts;
-      setStatus = FeedStatus.loaded;
+      setGlobalStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(
+      setGlobalError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your posts. Please try again.",
       );
@@ -127,27 +132,30 @@ class FeedState extends ChangeNotifier {
   }
 
   Future paginateGlobalFeed() async {
+    if (_globalStatus == FeedStatus.paginating) {
+      return;
+    }
     if (_userState.currentUser == null) {
       // Not logged in
-      setError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
+      setGlobalError = Error(message: "Log in and follow fellow munro baggers to see their posts.");
       return;
     }
     try {
-      setStatus = FeedStatus.paginating;
+      setGlobalStatus = FeedStatus.paginating;
 
       List<String> blockedUsers = _userState.blockedUsers;
 
-      // Add posts from database
+      // Add posts from database (keyset cursor = last post currently shown)
       List<Post> newPosts = await _postsRepository.getGlobalFeed(
         excludedAuthorIds: blockedUsers,
-        offset: globalPosts.length,
+        lastPost: globalPosts.isEmpty ? null : globalPosts.last,
       );
 
       // Check likes
       _userLikeState.getLikedPostIds(posts: newPosts);
 
       _globalPosts.addAll(newPosts);
-      setStatus = FeedStatus.loaded;
+      setGlobalStatus = FeedStatus.loaded;
       _analytics.track(
         AnalyticsEvent.paginateGlobalFeed,
         props: {
@@ -156,18 +164,29 @@ class FeedState extends ChangeNotifier {
       );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
-      setError = Error(message: "There was an issue loading your feed. Please try again.");
+      setGlobalError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }
 
-  set setStatus(FeedStatus searchStatus) {
-    _status = searchStatus;
+  set setGlobalStatus(FeedStatus searchStatus) {
+    _globalStatus = searchStatus;
     notifyListeners();
   }
 
-  set setError(Error error) {
-    _status = FeedStatus.error;
-    _error = error;
+  set setFriendsStatus(FeedStatus searchStatus) {
+    _friendsStatus = searchStatus;
+    notifyListeners();
+  }
+
+  set setGlobalError(Error error) {
+    _globalStatus = FeedStatus.error;
+    _globalError = error;
+    notifyListeners();
+  }
+
+  set setFriendsError(Error error) {
+    _friendsStatus = FeedStatus.error;
+    _friendsError = error;
     notifyListeners();
   }
 

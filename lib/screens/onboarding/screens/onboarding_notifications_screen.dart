@@ -94,10 +94,12 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
         }
       }
     } catch (e) {
-      setState(() {
-        _isSaving = false;
-        _error = 'Something went wrong. Please try again.';
-      });
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+          _error = 'Something went wrong. Please try again.';
+        });
+      }
     }
   }
 
