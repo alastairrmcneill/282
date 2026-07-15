@@ -52,10 +52,7 @@ class ProfileMunroProgressCard extends StatelessWidget {
                         ),
                         Text(
                           'Progress towards all 282',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: context.colors.textMuted),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                         ),
                       ],
                     ),
@@ -101,6 +98,7 @@ class _CardIcon extends StatelessWidget {
   final IconData icon;
   final Color? color;
 
+  // ignore: unused_element_parameter
   const _CardIcon({required this.icon, this.color});
 
   @override
