@@ -4,18 +4,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
-import 'dart:io' as _i11;
-import 'dart:ui' as _i9;
+import 'dart:io' as _i10;
+import 'dart:ui' as _i8;
 
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:two_eight_two/analytics/analytics_base.dart' as _i12;
+import 'package:two_eight_two/analytics/analytics_base.dart' as _i11;
 import 'package:two_eight_two/enums/enums.dart' as _i6;
-import 'package:two_eight_two/logging/logging.dart' as _i13;
+import 'package:two_eight_two/logging/logging.dart' as _i12;
 import 'package:two_eight_two/models/models.dart' as _i2;
 import 'package:two_eight_two/repos/repos.dart' as _i3;
-import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i10;
+import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i9;
 import 'package:two_eight_two/screens/explore/state/munro_state.dart' as _i5;
 
 // ignore_for_file: type=lint
@@ -327,15 +326,6 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i8.LatLngBounds? bounds) => super.noSuchMethod(
-        Invocation.setter(
-          #setLatLngBounds,
-          bounds,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   set setSortOrder(_i6.SortOrder? sortOrder) => super.noSuchMethod(
         Invocation.setter(
           #setSortOrder,
@@ -417,7 +407,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -426,7 +416,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
       );
 
   @override
-  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -456,7 +446,7 @@ class MockMunroState extends _i1.Mock implements _i5.MunroState {
 /// A class which mocks [UserState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserState extends _i1.Mock implements _i10.UserState {
+class MockUserState extends _i1.Mock implements _i9.UserState {
   MockUserState() {
     _i1.throwOnMissingStub(this);
   }
@@ -489,10 +479,10 @@ class MockUserState extends _i1.Mock implements _i10.UserState {
       ) as _i3.StorageRepository);
 
   @override
-  _i10.UserStatus get status => (super.noSuchMethod(
+  _i9.UserStatus get status => (super.noSuchMethod(
         Invocation.getter(#status),
-        returnValue: _i10.UserStatus.initial,
-      ) as _i10.UserStatus);
+        returnValue: _i9.UserStatus.initial,
+      ) as _i9.UserStatus);
 
   @override
   _i2.Error get error => (super.noSuchMethod(
@@ -615,7 +605,7 @@ class MockUserState extends _i1.Mock implements _i10.UserState {
   @override
   _i4.Future<dynamic> updateProfile({
     required _i2.AppUser? appUser,
-    _i11.File? profilePicture,
+    _i10.File? profilePicture,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -639,7 +629,7 @@ class MockUserState extends _i1.Mock implements _i10.UserState {
       );
 
   @override
-  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -648,7 +638,7 @@ class MockUserState extends _i1.Mock implements _i10.UserState {
       );
 
   @override
-  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -678,7 +668,7 @@ class MockUserState extends _i1.Mock implements _i10.UserState {
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i12.Analytics {
+class MockAnalytics extends _i1.Mock implements _i11.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -722,7 +712,7 @@ class MockAnalytics extends _i1.Mock implements _i12.Analytics {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i13.Logger {
+class MockLogger extends _i1.Mock implements _i12.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

@@ -53,8 +53,6 @@ app.*.map.json
 *googleusercontent.com.json
 
 # # API keys
-/android/app/src/main/AndroidManifest.xml
-/ios/Runner/AppDelegate.swift
 /keys
 .env
 functions/prod-81998-firebase-adminsdk-jx7qx-97f185bbac.json

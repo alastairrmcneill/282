@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:two_eight_two/enums/enums.dart';
@@ -114,7 +113,6 @@ void main() {
         expect(munroState.filteredMunroList, isEmpty);
         expect(munroState.selectedMunroId, isNull);
         expect(munroState.sortOrder, SortOrder.alphabetical);
-        expect(munroState.latLngBounds, isNull);
         expect(munroState.filterOptions, isA<FilterOptions>());
         expect(munroState.isFilterOptionsSet, false);
         expect(munroState.createPostFilteredMunroList, isEmpty);
@@ -238,20 +236,6 @@ void main() {
         expect(munroState.filteredMunroList.first.name, 'Ben Nevis');
       });
 
-      test('setLatLngBounds should update bounds and trigger filtering', () {
-        final bounds = LatLngBounds(
-          southwest: LatLng(56.0, -5.5),
-          northeast: LatLng(57.0, -3.0),
-        );
-        munroState.setMunroList = sampleMunros;
-
-        munroState.setLatLngBounds = bounds;
-
-        expect(munroState.latLngBounds, bounds);
-        // All sample munros should be within these bounds
-        expect(munroState.filteredMunroList, hasLength(2));
-      });
-
       test('setSortOrder should update sort order and trigger filtering', () {
         munroState.setMunroList = sampleMunros;
 
@@ -339,18 +323,6 @@ void main() {
 
         expect(munroState.filteredMunroList, hasLength(2));
         expect(munroState.filteredMunroList.any((m) => m.id == 3), false);
-      });
-
-      test('should filter by lat/lng bounds', () {
-        // Bounds that exclude Ben Lomond (most southern munro)
-        final bounds = LatLngBounds(
-          southwest: LatLng(56.5, -6.0),
-          northeast: LatLng(58.0, -3.0),
-        );
-        munroState.setLatLngBounds = bounds;
-
-        expect(munroState.filteredMunroList, hasLength(2));
-        expect(munroState.filteredMunroList.any((m) => m.name == 'Ben Lomond'), false);
       });
 
       test('should apply multiple filters together', () {
@@ -456,10 +428,6 @@ void main() {
         // Set some filters and sorting
         munroState.setFilterString = 'test';
         munroState.setSortOrder = SortOrder.height;
-        munroState.setLatLngBounds = LatLngBounds(
-          southwest: LatLng(56.0, -5.5),
-          northeast: LatLng(57.0, -3.0),
-        );
         final filterOptions = FilterOptions()..areas = ['Fort William'];
         munroState.setFilterOptions = filterOptions;
       });
@@ -468,7 +436,6 @@ void main() {
         munroState.clearFilterAndSorting();
 
         expect(munroState.sortOrder, SortOrder.alphabetical);
-        expect(munroState.latLngBounds, isNull);
         expect(munroState.filterOptions.areas, isEmpty);
         expect(munroState.filterOptions.completed, isEmpty);
         expect(munroState.isFilterOptionsSet, false);
@@ -563,19 +530,6 @@ void main() {
         // Test sorting by popularity - should handle null values
         munroState.setSortOrder = SortOrder.popular;
         expect(munroState.filteredMunroList, hasLength(2));
-      });
-
-      test('should handle filter bounds that contain no munros', () {
-        munroState.setMunroList = sampleMunros;
-
-        // Set bounds that exclude all munros
-        final bounds = LatLngBounds(
-          southwest: LatLng(60.0, -10.0),
-          northeast: LatLng(61.0, -9.0),
-        );
-        munroState.setLatLngBounds = bounds;
-
-        expect(munroState.filteredMunroList, isEmpty);
       });
 
       test('should handle both completed filter options selected', () {
