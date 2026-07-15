@@ -113,6 +113,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
           isFocused: false,
         ),
         iconSize: 0.8,
+        iconAnchor: IconAnchor.BOTTOM,
       ));
     }
 
@@ -188,6 +189,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
       geometry: selectedAnnotation!.geometry,
       image: icon,
       iconSize: 0.8,
+      iconAnchor: IconAnchor.BOTTOM,
     ));
     allAnnotations[_selectedMunroId!] = restored;
 
@@ -207,6 +209,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
       geometry: tappedAnnotation.geometry,
       image: markerIcons!.selectedFor(munro.area),
       iconSize: 0.9,
+      iconAnchor: IconAnchor.BOTTOM,
     ));
     allAnnotations[munroId] = newAnnotation;
     selectedAnnotation = newAnnotation;
