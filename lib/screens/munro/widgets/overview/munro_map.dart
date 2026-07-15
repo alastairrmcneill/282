@@ -72,6 +72,7 @@ class _MunroMapWidgetState extends State<MunroMapWidget> {
         geometry: Point(coordinates: Position(widget.munro.lng, widget.munro.lat)),
         image: icon,
         iconSize: 0.9,
+        iconAnchor: IconAnchor.BOTTOM,
       ),
     );
   }

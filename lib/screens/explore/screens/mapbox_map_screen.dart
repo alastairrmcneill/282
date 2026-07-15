@@ -121,6 +121,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
           geometry: Point(coordinates: Position(munro.lng, munro.lat)),
           image: icon,
           iconSize: selected ? 0.9 : 0.8,
+          iconAnchor: IconAnchor.BOTTOM,
         ),
       );
     }
@@ -151,6 +152,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
         geometry: Point(coordinates: Position(munro.lng, munro.lat)),
         image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
         iconSize: 0.8,
+        iconAnchor: IconAnchor.BOTTOM,
       ));
     }
 
@@ -209,6 +211,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
         geometry: selectedAnnotation!.geometry,
         image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
         iconSize: 0.8,
+        iconAnchor: IconAnchor.BOTTOM,
       );
       await _annotationManager.delete(selectedAnnotation!);
       var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
@@ -232,6 +235,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       geometry: tappedAnnotation.geometry,
       image: icons.selectedFor(munro.area),
       iconSize: 0.9,
+      iconAnchor: IconAnchor.BOTTOM,
     );
 
     await _annotationManager.delete(tappedAnnotation);
