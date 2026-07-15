@@ -239,45 +239,6 @@ supabase functions deploy
      - Select which edge function to trigger: on-user-created
    - **Repeat for other Edge Functions**
 
-## Configure Google Maps API
-
-#### Get Google Maps API Key
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Select your Firebase project (or create a new one)
-3. Search for `Google Maps SDK` at the top.
-4. Enable Google Maps SDK for Android and iOS
-5. Go to Credentials>Create Credentials>API Key
-6. Store API in the following steps
-
-#### Configure iOS
-
-Copy the template file.
-
-```bash
-cp ios/Runner/AppDelegate.swift.template ios/Runner/AppDelegate.swift
-```
-
-Add your API key to the file as below.
-
-```swift
-GMSServices.provideAPIKey("YOUR_GOOGLE_MAPS_API_KEY_HERE")
-```
-
-#### Configure Android
-
-Copy the template file.
-
-```bash
-cp android/app/src/main/AndroidManifest.xml.template android/app/src/main/AndroidManifest.xml
-```
-
-```xml
-<meta-data
-    android:name="com.google.android.geo.API_KEY"
-    android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE"/>
-```
-
 # Optional Setup
 
 ## Weather API
@@ -301,7 +262,7 @@ This enables tracking of product analytics through the app such as screens visit
 
 ## Mapbox
 
-Optional as the app defaults to google maps
+Required for maps to render, the app has no other map provider.
 
 1. Go to [Mapbox](https://mapbox.com/)
 2. Create an account and get an access token

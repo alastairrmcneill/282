@@ -8,12 +8,11 @@ import 'dart:io' as _i6;
 import 'dart:ui' as _i7;
 
 import 'package:flutter/material.dart' as _i8;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:two_eight_two/analytics/analytics.dart' as _i12;
+import 'package:two_eight_two/analytics/analytics.dart' as _i11;
 import 'package:two_eight_two/enums/enums.dart' as _i9;
-import 'package:two_eight_two/logging/logging.dart' as _i13;
+import 'package:two_eight_two/logging/logging.dart' as _i12;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i2;
 import 'package:two_eight_two/screens/notifiers.dart' as _i4;
@@ -868,15 +867,6 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i11.LatLngBounds? bounds) => super.noSuchMethod(
-        Invocation.setter(
-          #setLatLngBounds,
-          bounds,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   set setSortOrder(_i9.SortOrder? sortOrder) => super.noSuchMethod(
         Invocation.setter(
           #setSortOrder,
@@ -997,7 +987,7 @@ class MockMunroState extends _i1.Mock implements _i4.MunroState {
 /// A class which mocks [Analytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalytics extends _i1.Mock implements _i12.Analytics {
+class MockAnalytics extends _i1.Mock implements _i11.Analytics {
   MockAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -1041,7 +1031,7 @@ class MockAnalytics extends _i1.Mock implements _i12.Analytics {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i13.Logger {
+class MockLogger extends _i1.Mock implements _i12.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

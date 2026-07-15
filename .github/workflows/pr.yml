@@ -31,9 +31,6 @@ jobs:
       - name: Decode google-services.json
         run: echo "${{ secrets.ANDROID_GOOGLE_SERVICES_JSON_BASE_64 }}" | base64 --decode > android/app/google-services.json
 
-      - name: Decode AndroidManifest.xml
-        run: echo "${{ secrets.ANDROID_MANIFEST_BASE_64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
-
       - name: Decode branch-config.json file
         run: echo "${{ secrets.BRANCH_CONFIG_BASE_64 }}" | base64 --decode > assets/branch-config.json
 
@@ -46,10 +43,6 @@ jobs:
       - name: Decode GoogleServices-Info.plist
         run: |
           echo "${{ secrets.IOS_GOOGLE_SERVICES_INFO_BASE64 }}" | base64 --decode > ios/config/production/GoogleService-Info.plist
-
-      - name: Decode App Delegate
-        run: |
-          echo "${{ secrets.IOS_APP_DELEGATE_BASE64 }}" | base64 --decode > ios/Runner/AppDelegate.swift
 
       - name: Get dependencies
         run: flutter pub get

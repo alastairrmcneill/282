@@ -19,7 +19,7 @@ This guide explains the project architecture, code organization, and development
 
 - **Frontend**: Flutter with Provider for state management
 - **Backend**: Firebase (Authentication, Feature Flags & Storage) + Supabase (PostgreSQL database)
-- **Maps**: Google Maps and Mapbox integration
+- **Maps**: Mapbox integration
 - **Analytics**: Mixpanel
 - **Error Tracking**: Sentry
 - **Deep Linking**: Branch.io

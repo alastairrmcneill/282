@@ -7,18 +7,17 @@ import 'dart:async' as _i5;
 import 'dart:io' as _i8;
 import 'dart:ui' as _i6;
 
-import 'package:flutter/material.dart' as _i11;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i10;
+import 'package:flutter/material.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:two_eight_two/config/app_config.dart' as _i14;
+import 'package:two_eight_two/config/app_config.dart' as _i13;
 import 'package:two_eight_two/enums/enums.dart' as _i9;
-import 'package:two_eight_two/logging/logging.dart' as _i15;
+import 'package:two_eight_two/logging/logging.dart' as _i14;
 import 'package:two_eight_two/models/models.dart' as _i2;
-import 'package:two_eight_two/push/push_notifications_state.dart' as _i12;
+import 'package:two_eight_two/push/push_notifications_state.dart' as _i11;
 import 'package:two_eight_two/repos/repos.dart' as _i4;
 import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart'
-    as _i13;
+    as _i12;
 import 'package:two_eight_two/screens/notifiers.dart' as _i3;
 
 // ignore_for_file: type=lint
@@ -1234,15 +1233,6 @@ class MockMunroState extends _i1.Mock implements _i3.MunroState {
       );
 
   @override
-  set setLatLngBounds(_i10.LatLngBounds? bounds) => super.noSuchMethod(
-        Invocation.setter(
-          #setLatLngBounds,
-          bounds,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   set setSortOrder(_i9.SortOrder? sortOrder) => super.noSuchMethod(
         Invocation.setter(
           #setSortOrder,
@@ -1448,7 +1438,7 @@ class MockMunroCompletionState extends _i1.Mock
     required List<int>? munroIds,
     required DateTime? dateTimeCompleted,
     DateTime? completionDate,
-    _i11.TimeOfDay? completionStartTime,
+    _i10.TimeOfDay? completionStartTime,
     Duration? completionDuration,
     String? postId,
   }) =>
@@ -1506,7 +1496,7 @@ class MockMunroCompletionState extends _i1.Mock
     required String? postId,
     required DateTime? dateTimeCompleted,
     DateTime? completionDate,
-    _i11.TimeOfDay? completionStartTime,
+    _i10.TimeOfDay? completionStartTime,
     Duration? completionDuration,
   }) =>
       (super.noSuchMethod(
@@ -1806,7 +1796,7 @@ class MockSavedListState extends _i1.Mock implements _i3.SavedListState {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPushNotificationState extends _i1.Mock
-    implements _i12.PushNotificationState {
+    implements _i11.PushNotificationState {
   MockPushNotificationState() {
     _i1.throwOnMissingStub(this);
   }
@@ -1907,7 +1897,7 @@ class MockPushNotificationState extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockStartupOverlayPolicies extends _i1.Mock
-    implements _i13.StartupOverlayPolicies {
+    implements _i12.StartupOverlayPolicies {
   MockStartupOverlayPolicies() {
     _i1.throwOnMissingStub(this);
   }
@@ -1958,10 +1948,10 @@ class MockFlavorState extends _i1.Mock implements _i3.FlavorState {
   }
 
   @override
-  _i14.AppEnvironment get environment => (super.noSuchMethod(
+  _i13.AppEnvironment get environment => (super.noSuchMethod(
         Invocation.getter(#environment),
-        returnValue: _i14.AppEnvironment.dev,
-      ) as _i14.AppEnvironment);
+        returnValue: _i13.AppEnvironment.dev,
+      ) as _i13.AppEnvironment);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -2009,7 +1999,7 @@ class MockFlavorState extends _i1.Mock implements _i3.FlavorState {
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i15.Logger {
+class MockLogger extends _i1.Mock implements _i14.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

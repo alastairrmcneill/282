@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -16,7 +15,6 @@ class MunroState extends ChangeNotifier {
   int? _selectedMunroId;
   List<Munro> _filteredMunroList = [];
   String _filterString = '';
-  LatLngBounds? _latLngBounds;
   SortOrder _sortOrder = SortOrder.alphabetical;
   FilterOptions _filterOptions = FilterOptions();
   bool _isFilterOptionsSet = false;
@@ -32,7 +30,6 @@ class MunroState extends ChangeNotifier {
   List<Munro> get munroList => _munroList;
   List<Munro> get filteredMunroList => _filteredMunroList;
   SortOrder get sortOrder => _sortOrder;
-  LatLngBounds? get latLngBounds => _latLngBounds;
   FilterOptions get filterOptions => _filterOptions;
   bool get isFilterOptionsSet => _isFilterOptionsSet;
   bool get isSearchActive => _filterString.isNotEmpty;
@@ -97,11 +94,6 @@ class MunroState extends ChangeNotifier {
     _filter();
   }
 
-  set setLatLngBounds(LatLngBounds bounds) {
-    _latLngBounds = bounds;
-    _filter();
-  }
-
   set setSortOrder(SortOrder sortOrder) {
     _sortOrder = sortOrder;
     _filter();
@@ -123,9 +115,6 @@ class MunroState extends ChangeNotifier {
     // Start with all munros
     List<Munro> runningList = _munroList;
     List<Munro> initialList = _filteredMunroList;
-
-    // Filter out lat/long bounds
-    runningList = _filterLatLong(runningList);
 
     // Filter out search string
     runningList = _filterSearchString(runningList);
@@ -150,7 +139,6 @@ class MunroState extends ChangeNotifier {
 
   void clearFilterAndSorting() {
     _filterString = '';
-    _latLngBounds = null;
     _sortOrder = SortOrder.alphabetical;
     _filterOptions = FilterOptions();
     _isFilterOptionsSet = false;
@@ -216,15 +204,6 @@ class MunroState extends ChangeNotifier {
     _filter();
     _createPostFilter();
     _bulkMunroUpdateFilter();
-  }
-
-  List<Munro> _filterLatLong(List<Munro> runningList) {
-    if (_latLngBounds != null) {
-      runningList = runningList.where((munro) {
-        return _latLngBounds!.contains(LatLng(munro.lat, munro.lng));
-      }).toList();
-    }
-    return runningList;
   }
 
   List<Munro> _filterSearchString(List<Munro> runningList) {

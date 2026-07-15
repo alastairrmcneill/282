@@ -1,6 +1,5 @@
 import UIKit
 import Flutter
-import GoogleMaps
 #if canImport(DeclaredAgeRange)
 import DeclaredAgeRange
 #endif
@@ -11,7 +10,6 @@ import DeclaredAgeRange
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GMSServices.provideAPIKey("YOUR API KEY HERE WHICH YOU CAN GET FROM HERE:https://console.cloud.google.com/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-ios-backend&_gl=1*1280p01*_ga*Mjc0ODQ0ODQxOS4xNzA2MTIxODMz*_ga_NRWSTWS78N*MTcwNjEyNDMyNi4xLjEuMTcwNjEyNDMzMS4wLjAuMA..&authuser=1&project=two-eight-two ")
     GeneratedPluginRegistrant.register(with: self)
 
     if let controller = window?.rootViewController as? FlutterViewController {
