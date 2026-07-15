@@ -4,7 +4,6 @@ import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
-import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/comments/screens/screens.dart';
