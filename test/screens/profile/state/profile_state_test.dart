@@ -488,6 +488,11 @@ void main() {
           lastPost: anyNamed('lastPost'),
         )).thenAnswer((_) async => additionalPosts);
 
+        // profileState.posts is the same List instance as samplePosts (the
+        // mock returns it directly), and pagination mutates it in place via
+        // addAll, so capture the pre-pagination last post now.
+        final lastPostBeforePagination = samplePosts.last;
+
         // Act
         await profileState.paginateProfilePosts();
 
@@ -497,7 +502,7 @@ void main() {
         expect(profileState.posts.last.uid, 'post3');
         verify(mockPostsRepository.readPostsFromUserId(
           userId: 'user123',
-          lastPost: anyNamed('lastPost'),
+          lastPost: lastPostBeforePagination,
         )).called(1);
         verify(mockUserLikeState.getLikedPostIds(posts: additionalPosts)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));

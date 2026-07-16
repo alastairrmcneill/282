@@ -121,6 +121,18 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as int);
 
   @override
+  int get feedbackSurveyOpenCount => (super.noSuchMethod(
+        Invocation.getter(#feedbackSurveyOpenCount),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get feedbackSurveyOpenCountVersion => (super.noSuchMethod(
+        Invocation.getter(#feedbackSurveyOpenCountVersion),
+        returnValue: 0,
+      ) as int);
+
+  @override
   String get lastAppUpdateDialogDate => (super.noSuchMethod(
         Invocation.getter(#lastAppUpdateDialogDate),
         returnValue: _i6.dummyValue<String>(
@@ -175,6 +187,27 @@ class MockAppFlagsRepository extends _i1.Mock
   _i4.Future<void> setLastFeedbackSurveyNumber(int? v) => (super.noSuchMethod(
         Invocation.method(
           #setLastFeedbackSurveyNumber,
+          [v],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> setFeedbackSurveyOpenCount(int? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setFeedbackSurveyOpenCount,
+          [v],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> setFeedbackSurveyOpenCountVersion(int? v) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setFeedbackSurveyOpenCountVersion,
           [v],
         ),
         returnValue: _i4.Future<void>.value(),

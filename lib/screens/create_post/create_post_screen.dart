@@ -271,7 +271,6 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                             onSaved: (newValue) {
                               createPostState.setDescription = newValue?.trim();
                             },
-                            fillColor: Colors.white,
                           ),
 
                           const SizedBox(height: 12),
@@ -305,10 +304,9 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: context.colors.surface,
                                   borderRadius: BorderRadius.circular(12),
-                                  border:
-                                      Border.all(color: Colors.grey.shade200),
+                                  border: Border.all(color: context.colors.border),
                                 ),
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -317,7 +315,7 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
                                     Row(
                                       children: [
                                         Icon(Icons.location_on_outlined,
-                                            color: Colors.grey.shade600,
+                                            color: context.colors.textMuted,
                                             size: 24),
                                         const SizedBox(width: 10),
                                         Column(

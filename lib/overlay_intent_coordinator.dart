@@ -93,9 +93,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
           builder: (BuildContext context) {
             return FeedbackSurveyDialog(surveyNumber: intent.surveyNumber);
           },
-        ).then(
-          (_) => navCtx.read<AppFlagsRepository>().setLastFeedbackSurveyNumber(intent.surveyNumber),
-        );
+        ).then((_) {
+          final appFlagsRepository = navCtx.read<AppFlagsRepository>();
+          appFlagsRepository.setLastFeedbackSurveyNumber(intent.surveyNumber);
+          appFlagsRepository.setFeedbackSurveyOpenCount(0);
+        });
         return;
 
       case AchievementCompleteIntent():

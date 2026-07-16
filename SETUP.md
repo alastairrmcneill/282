@@ -237,7 +237,9 @@ supabase functions deploy
      - Table: users
      - Webhook configuration: Supabase Edge Functions
      - Select which edge function to trigger: on-user-created
-   - **Repeat for other Edge Functions**
+   - **Repeat for other Edge Functions** (`on-comment-created`, `on-follower-created`, `on-like-created`, `on-notification-created`)
+
+   **Exception:** `on-report-created` and `on-app-feedback-created` are wired via a SQL trigger + `pg_net` (see `supabase/migrations/20260715120000_report_and_feedback_email_triggers.sql`) instead of a Dashboard webhook, since they need to reach out to Resend rather than fan out within Supabase. Skip the Dashboard webhook step for these two and instead see [Report & Feedback Email Notifications](#report--feedback-email-notifications) below.
 
 # Optional Setup
 
@@ -250,6 +252,29 @@ The app uses a weather API for mountain weather information.
 3. Give it a name and click Generate
 4. Add it to your `config/dev.json` file as `WEATHER_API_KEY`
 5. Go to Billing Plans and subscirbe to One Call API 3.0. This is a free tier up to 1000 calls a day.
+
+## Report & Feedback Email Notifications
+
+Sends an email via [Resend](https://resend.com/) whenever a row is inserted into `reports` or `app_feedbacks` (i.e. when a user submits a content/user report, or answers an in-app feedback survey). Optional — only needed if you want to test these notifications.
+
+Unlike the other edge functions, `on-report-created` and `on-app-feedback-created` are invoked by a Postgres trigger + `pg_net` (see `supabase/migrations/20260715120000_report_and_feedback_email_triggers.sql`), not a Dashboard Database Webhook. That trigger needs two secrets in Supabase Vault (per project — dev and prod each need their own):
+
+1. Run once in your project's SQL editor:
+
+```sql
+select vault.create_secret('<your project's anon/legacy key>', 'edge_function_invoke_key');
+select vault.create_secret('https://<your-project-ref>.supabase.co', 'edge_function_base_url');
+```
+
+2. Sign up for [Resend](https://resend.com/) and get an API key.
+
+3. Set the edge function secrets:
+
+```bash
+supabase secrets set RESEND_API_KEY=your_resend_api_key NOTIFICATION_EMAIL=your_email@example.com --project-ref your-project-ref
+```
+
+`FROM_EMAIL` is optional and defaults to `onboarding@resend.dev` (Resend's test sender, no domain verification needed).
 
 ## Mixpanel Analytics
 

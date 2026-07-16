@@ -21,6 +21,7 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
   bool _hasHandledLoaded = false;
 
   void _goHome(BuildContext context) {
+    context.read<MunroState>().clearFilterAndSorting();
     Navigator.pushNamedAndRemoveUntil(
       context,
       HomeScreen.route,

@@ -7,24 +7,6 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-// Design System Colors
-class SelectMunroColors {
-  // Emerald (Primary)
-  static const emerald50 = Color(0xFFF0FDF4);
-  static const emerald200 = Color(0xFFA7F3D0);
-  static const emerald300 = Color(0xFF6EE7B7);
-  static const emerald600 = Color(0xFF059669);
-  static const emerald700 = Color(0xFF047857);
-
-  // Slate (Neutral)
-  static const slate50 = Color(0xFFF8FAFC);
-  static const slate200 = Color(0xFFE2E8F0);
-  static const slate400 = Color(0xFF94A3B8);
-  static const slate600 = Color(0xFF475569);
-  static const slate700 = Color(0xFF334155);
-  static const slate900 = Color(0xFF0F172A);
-}
-
 // Reusable Munro Card Component
 class TestMunroCard extends StatelessWidget {
   final Munro munro;
@@ -42,13 +24,14 @@ class TestMunroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     Color backgroundColor =
-        isSelected || isMain ? SelectMunroColors.emerald50 : Colors.white;
+        isSelected || isMain ? colors.accent.withValues(alpha: 0.12) : colors.surface;
     Color borderColor = isMain
-        ? SelectMunroColors.emerald200
+        ? colors.accent.withValues(alpha: 0.4)
         : isSelected
-            ? SelectMunroColors.emerald300
-            : SelectMunroColors.slate200;
+            ? colors.accent.withValues(alpha: 0.6)
+            : colors.border;
 
     return InkWell(
       onTap: onTap,
@@ -67,7 +50,7 @@ class TestMunroCard extends StatelessWidget {
               Icon(
                 Icons.check_circle,
                 size: 20,
-                color: SelectMunroColors.emerald600,
+                color: colors.accent,
               )
             else
               Icon(
@@ -75,9 +58,7 @@ class TestMunroCard extends StatelessWidget {
                     ? Icons.check_box_rounded
                     : Icons.check_box_outline_blank_rounded,
                 size: 20,
-                color: isSelected
-                    ? SelectMunroColors.emerald600
-                    : SelectMunroColors.slate400,
+                color: isSelected ? colors.accent : colors.textMuted,
               ),
             const SizedBox(width: 12),
             Expanded(
@@ -87,18 +68,18 @@ class TestMunroCard extends StatelessWidget {
                 children: [
                   Text(
                     munro.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: SelectMunroColors.slate900,
+                      color: colors.textPrimary,
                     ),
                   ),
                   Text(
                     "${munro.area} - ${munro.meters}m",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: SelectMunroColors.slate400,
+                      color: colors.textMuted,
                     ),
                   ),
                 ],
@@ -121,10 +102,10 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: SelectMunroColors.slate900,
+        color: context.colors.textPrimary,
       ),
     );
   }
@@ -237,7 +218,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                         'Hide',
                         style: TextStyle(
                           fontSize: 14,
-                          color: SelectMunroColors.emerald600,
+                          color: context.colors.accent,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -269,27 +250,26 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
                 child: Ink(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    border:
-                        Border.all(color: SelectMunroColors.slate200, width: 1),
+                    color: context.colors.surface,
+                    border: Border.all(color: context.colors.border, width: 1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
                         'Other Munros',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: SelectMunroColors.slate900,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                       Icon(
                         Icons.chevron_right,
                         size: 20,
-                        color: SelectMunroColors.slate400,
+                        color: context.colors.textMuted,
                       ),
                     ],
                   ),
@@ -300,9 +280,9 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.background,
           border: Border(
-            top: BorderSide(color: SelectMunroColors.slate200, width: 1),
+            top: BorderSide(color: context.colors.divider, width: 1),
           ),
         ),
         child: BottomButtonBar(

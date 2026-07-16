@@ -67,17 +67,31 @@ class StartupOverlayPolicies {
     }
   }
 
+  static const int _kFeedbackSurveyMinOpens = 3;
+
   void maybeEnqueueAppSurvey() {
     int currentFeedbackSurveyNumber = _remoteConfig.config.feedbackSurveyNumber;
 
     int lastFeedbackSurveyNumber = _appFlagsRepository.lastFeedbackSurveyNumber;
 
     if (lastFeedbackSurveyNumber == -1) {
-      _appFlagsRepository.setLastFeedbackSurveyNumber(currentFeedbackSurveyNumber);
-      return;
+      // First ever open: baseline one behind current so this survey is immediately
+      // pending, rather than being silently skipped forever.
+      lastFeedbackSurveyNumber = currentFeedbackSurveyNumber - 1;
+      _appFlagsRepository.setLastFeedbackSurveyNumber(lastFeedbackSurveyNumber);
     }
 
-    if (currentFeedbackSurveyNumber > lastFeedbackSurveyNumber) {
+    if (currentFeedbackSurveyNumber <= lastFeedbackSurveyNumber) return;
+
+    int openCount = _appFlagsRepository.feedbackSurveyOpenCountVersion == currentFeedbackSurveyNumber
+        ? _appFlagsRepository.feedbackSurveyOpenCount
+        : 0;
+
+    openCount += 1;
+    _appFlagsRepository.setFeedbackSurveyOpenCountVersion(currentFeedbackSurveyNumber);
+    _appFlagsRepository.setFeedbackSurveyOpenCount(openCount);
+
+    if (openCount >= _kFeedbackSurveyMinOpens) {
       _overlayIntentState.enqueue(FeedbackSurveyIntent(surveyNumber: currentFeedbackSurveyNumber));
     }
   }

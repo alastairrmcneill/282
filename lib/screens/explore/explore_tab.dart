@@ -69,7 +69,7 @@ class _ExploreTabState extends State<ExploreTab> {
             controller: panelController,
             color: context.colors.background,
             minHeight: munroState.selectedMunroId == null ? 60 : 0,
-            maxHeight: screenHeight - bottomNavBarHeight - headerHeight - topPadding + 20,
+            maxHeight: screenHeight - bottomNavBarHeight - headerHeight - topPadding,
             header: const SlidingPanelHeader(),
             borderRadius: borderRadius,
             collapsed: SlidingPanelCollapsed(panelController: panelController),
