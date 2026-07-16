@@ -7,6 +7,8 @@ class AppFlagsRepository {
   static const _kShowBulkMunroDialog = 'showBulkMunroDialog';
   static const _kMapTerrain = 'mapTerrain';
   static const _kLastFeedbackSurveyNumber = 'lastFeedbackSurveyNumber';
+  static const _kFeedbackSurveyOpenCount = 'feedbackSurveyOpenCount';
+  static const _kFeedbackSurveyOpenCountVersion = 'feedbackSurveyOpenCountVersion';
   static const _kLastAppUpdateDialogDate = 'lastAppUpdateDialogDate';
   static const _kFirstAppVersion = 'firstAppVersion';
   static const _kShowInAppOnboarding = 'showInAppOnboarding';
@@ -36,6 +38,18 @@ class AppFlagsRepository {
   Future<void> setLastFeedbackSurveyNumber(int v) async {
     final ok = await _prefs.setInt(_kLastFeedbackSurveyNumber, v);
     if (!ok) throw Exception('Failed to persist $_kLastFeedbackSurveyNumber');
+  }
+
+  int get feedbackSurveyOpenCount => _prefs.getInt(_kFeedbackSurveyOpenCount) ?? 0;
+  Future<void> setFeedbackSurveyOpenCount(int v) async {
+    final ok = await _prefs.setInt(_kFeedbackSurveyOpenCount, v);
+    if (!ok) throw Exception('Failed to persist $_kFeedbackSurveyOpenCount');
+  }
+
+  int get feedbackSurveyOpenCountVersion => _prefs.getInt(_kFeedbackSurveyOpenCountVersion) ?? -1;
+  Future<void> setFeedbackSurveyOpenCountVersion(int v) async {
+    final ok = await _prefs.setInt(_kFeedbackSurveyOpenCountVersion, v);
+    if (!ok) throw Exception('Failed to persist $_kFeedbackSurveyOpenCountVersion');
   }
 
   String get lastAppUpdateDialogDate => _prefs.getString(_kLastAppUpdateDialogDate) ?? '2000-01-01';

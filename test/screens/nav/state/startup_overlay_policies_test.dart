@@ -284,12 +284,16 @@ void main() {
           groupFilterNewIcon: true,
         ));
         when(mockAppFlagsRepository.lastFeedbackSurveyNumber).thenReturn(-1);
+        when(mockAppFlagsRepository.feedbackSurveyOpenCountVersion).thenReturn(-1);
+        when(mockAppFlagsRepository.feedbackSurveyOpenCount).thenReturn(0);
 
         // Act
         policies.maybeEnqueueAppSurvey();
 
         // Assert
-        verify(mockAppFlagsRepository.setLastFeedbackSurveyNumber(5)).called(1);
+        verify(mockAppFlagsRepository.setLastFeedbackSurveyNumber(4)).called(1);
+        // First open at this survey version only counts toward the open-count
+        // threshold (_kFeedbackSurveyMinOpens = 3); it shouldn't enqueue yet.
         verifyNever(mockOverlayIntentState.enqueue(any));
       });
 
@@ -321,6 +325,10 @@ void main() {
           groupFilterNewIcon: true,
         ));
         when(mockAppFlagsRepository.lastFeedbackSurveyNumber).thenReturn(5);
+        // Simulate this being the 3rd app open while survey 6 is pending, so
+        // the open-count threshold (_kFeedbackSurveyMinOpens = 3) is met.
+        when(mockAppFlagsRepository.feedbackSurveyOpenCountVersion).thenReturn(6);
+        when(mockAppFlagsRepository.feedbackSurveyOpenCount).thenReturn(2);
 
         // Act
         policies.maybeEnqueueAppSurvey();

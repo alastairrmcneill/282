@@ -125,8 +125,10 @@ void main() {
   group('FeedState', () {
     group('Initial State', () {
       test('should have correct initial values', () {
-        expect(feedState.status, FeedStatus.initial);
-        expect(feedState.error, isA<Error>());
+        expect(feedState.globalStatus, FeedStatus.initial);
+        expect(feedState.friendsStatus, FeedStatus.initial);
+        expect(feedState.globalError, isA<Error>());
+        expect(feedState.friendsError, isA<Error>());
         expect(feedState.friendsPosts, isEmpty);
         expect(feedState.globalPosts, isEmpty);
       });
@@ -143,7 +145,7 @@ void main() {
         await feedState.getFriendsFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.friendsStatus, FeedStatus.loaded);
         expect(feedState.friendsPosts, sampleFriendsPosts);
         expect(feedState.friendsPosts.length, 3);
         verify(mockPostsRepository.getFriendsFeed(
@@ -179,8 +181,8 @@ void main() {
         await feedState.getFriendsFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
+        expect(feedState.friendsStatus, FeedStatus.error);
+        expect(feedState.friendsError.message, 'Log in and follow fellow munro baggers to see their posts.');
         verifyNever(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         ));
@@ -196,8 +198,8 @@ void main() {
         await feedState.getFriendsFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'There was an issue retreiving your posts. Please try again.');
+        expect(feedState.friendsStatus, FeedStatus.error);
+        expect(feedState.friendsError.message, 'There was an issue retreiving your posts. Please try again.');
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
@@ -214,11 +216,11 @@ void main() {
         final future = feedState.getFriendsFeed();
 
         // Assert intermediate state
-        expect(feedState.status, FeedStatus.loading);
+        expect(feedState.friendsStatus, FeedStatus.loading);
 
         // Wait for completion
         await future;
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.friendsStatus, FeedStatus.loaded);
       });
     });
 
@@ -251,7 +253,7 @@ void main() {
         await feedState.paginateFriendsFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.friendsStatus, FeedStatus.loaded);
         expect(feedState.friendsPosts.length, 4);
         expect(feedState.friendsPosts.last.title, 'New Post');
         verify(mockPostsRepository.getFriendsFeed(
@@ -290,8 +292,8 @@ void main() {
         await feedState.paginateFriendsFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
+        expect(feedState.friendsStatus, FeedStatus.error);
+        expect(feedState.friendsError.message, 'Log in and follow fellow munro baggers to see their posts.');
         verifyNever(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
           lastPost: anyNamed('lastPost'),
@@ -313,8 +315,8 @@ void main() {
         await feedState.paginateFriendsFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'There was an issue loading your feed. Please try again.');
+        expect(feedState.friendsStatus, FeedStatus.error);
+        expect(feedState.friendsError.message, 'There was an issue loading your feed. Please try again.');
         // Original posts should remain unchanged
         expect(feedState.friendsPosts.length, initialCount);
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
@@ -335,11 +337,11 @@ void main() {
         final future = feedState.paginateFriendsFeed();
 
         // Assert intermediate state
-        expect(feedState.status, FeedStatus.paginating);
+        expect(feedState.friendsStatus, FeedStatus.paginating);
 
         // Wait for completion
         await future;
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.friendsStatus, FeedStatus.loaded);
       });
     });
 
@@ -354,7 +356,7 @@ void main() {
         await feedState.getGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.globalStatus, FeedStatus.loaded);
         expect(feedState.globalPosts, sampleGlobalPosts);
         expect(feedState.globalPosts.length, 2);
         verify(mockPostsRepository.getGlobalFeed(
@@ -390,8 +392,8 @@ void main() {
         await feedState.getGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
+        expect(feedState.globalStatus, FeedStatus.error);
+        expect(feedState.globalError.message, 'Log in and follow fellow munro baggers to see their posts.');
         verifyNever(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
         ));
@@ -407,8 +409,8 @@ void main() {
         await feedState.getGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'There was an issue retreiving your posts. Please try again.');
+        expect(feedState.globalStatus, FeedStatus.error);
+        expect(feedState.globalError.message, 'There was an issue retreiving your posts. Please try again.');
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
@@ -425,11 +427,11 @@ void main() {
         final future = feedState.getGlobalFeed();
 
         // Assert intermediate state
-        expect(feedState.status, FeedStatus.loading);
+        expect(feedState.globalStatus, FeedStatus.loading);
 
         // Wait for completion
         await future;
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.globalStatus, FeedStatus.loaded);
       });
     });
 
@@ -462,7 +464,7 @@ void main() {
         await feedState.paginateGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.globalStatus, FeedStatus.loaded);
         expect(feedState.globalPosts.length, 3);
         expect(feedState.globalPosts.last.title, 'Global Post 3');
         verify(mockPostsRepository.getGlobalFeed(
@@ -501,8 +503,8 @@ void main() {
         await feedState.paginateGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'Log in and follow fellow munro baggers to see their posts.');
+        expect(feedState.globalStatus, FeedStatus.error);
+        expect(feedState.globalError.message, 'Log in and follow fellow munro baggers to see their posts.');
         verifyNever(mockPostsRepository.getGlobalFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
           lastPost: anyNamed('lastPost'),
@@ -524,8 +526,8 @@ void main() {
         await feedState.paginateGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error.message, 'There was an issue loading your feed. Please try again.');
+        expect(feedState.globalStatus, FeedStatus.error);
+        expect(feedState.globalError.message, 'There was an issue loading your feed. Please try again.');
         // Original posts should remain unchanged
         expect(feedState.globalPosts.length, initialCount);
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
@@ -546,26 +548,39 @@ void main() {
         final future = feedState.paginateGlobalFeed();
 
         // Assert intermediate state
-        expect(feedState.status, FeedStatus.paginating);
+        expect(feedState.globalStatus, FeedStatus.paginating);
 
         // Wait for completion
         await future;
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.globalStatus, FeedStatus.loaded);
       });
     });
 
     group('Setters', () {
-      test('setStatus should update status', () {
-        feedState.setStatus = FeedStatus.loading;
-        expect(feedState.status, FeedStatus.loading);
+      test('setFriendsStatus should update friends status', () {
+        feedState.setFriendsStatus = FeedStatus.loading;
+        expect(feedState.friendsStatus, FeedStatus.loading);
       });
 
-      test('setError should update error and status', () {
-        final error = Error(code: 'test', message: 'test error');
-        feedState.setError = error;
+      test('setGlobalStatus should update global status', () {
+        feedState.setGlobalStatus = FeedStatus.loading;
+        expect(feedState.globalStatus, FeedStatus.loading);
+      });
 
-        expect(feedState.status, FeedStatus.error);
-        expect(feedState.error, error);
+      test('setFriendsError should update friends error and status', () {
+        final error = Error(code: 'test', message: 'test error');
+        feedState.setFriendsError = error;
+
+        expect(feedState.friendsStatus, FeedStatus.error);
+        expect(feedState.friendsError, error);
+      });
+
+      test('setGlobalError should update global error and status', () {
+        final error = Error(code: 'test', message: 'test error');
+        feedState.setGlobalError = error;
+
+        expect(feedState.globalStatus, FeedStatus.error);
+        expect(feedState.globalError, error);
       });
 
       test('setFriendsPosts should update friends posts list', () {
@@ -851,7 +866,8 @@ void main() {
         await feedState.getGlobalFeed();
 
         // Assert
-        expect(feedState.status, FeedStatus.loaded);
+        expect(feedState.friendsStatus, FeedStatus.loaded);
+        expect(feedState.globalStatus, FeedStatus.loaded);
         expect(feedState.friendsPosts, isEmpty);
         expect(feedState.globalPosts, isEmpty);
       });
@@ -1022,20 +1038,38 @@ void main() {
         expect(notified, true);
       });
 
-      test('should notify listeners when status changes', () {
+      test('should notify listeners when friends status changes', () {
         bool notified = false;
         feedState.addListener(() => notified = true);
 
-        feedState.setStatus = FeedStatus.loading;
+        feedState.setFriendsStatus = FeedStatus.loading;
 
         expect(notified, true);
       });
 
-      test('should notify listeners when error occurs', () {
+      test('should notify listeners when global status changes', () {
         bool notified = false;
         feedState.addListener(() => notified = true);
 
-        feedState.setError = Error(message: 'test error');
+        feedState.setGlobalStatus = FeedStatus.loading;
+
+        expect(notified, true);
+      });
+
+      test('should notify listeners when friends error occurs', () {
+        bool notified = false;
+        feedState.addListener(() => notified = true);
+
+        feedState.setFriendsError = Error(message: 'test error');
+
+        expect(notified, true);
+      });
+
+      test('should notify listeners when global error occurs', () {
+        bool notified = false;
+        feedState.addListener(() => notified = true);
+
+        feedState.setGlobalError = Error(message: 'test error');
 
         expect(notified, true);
       });
