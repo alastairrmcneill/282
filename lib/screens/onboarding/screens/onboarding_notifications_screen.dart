@@ -31,6 +31,20 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
   bool _isSaving = false;
   String? _error;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<Analytics>().track(
+        AnalyticsEvent.onboardingScreenViewed,
+        props: {
+          AnalyticsProp.screenIndex: widget.fromInAppOnboarding ? 2 : 6,
+          AnalyticsProp.source: widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+        },
+      );
+    });
+  }
+
   Future<void> _complete({required bool enableNotifications}) async {
     context.read<Analytics>().track(
       AnalyticsEvent.onboardingNotificationsResponse,
@@ -117,7 +131,19 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: _isSaving ? null : () => Navigator.pop(context),
+                        onPressed: _isSaving
+                            ? null
+                            : () {
+                                context.read<Analytics>().track(
+                                  AnalyticsEvent.onboardingBackTapped,
+                                  props: {
+                                    AnalyticsProp.screenIndex: widget.fromInAppOnboarding ? 2 : 6,
+                                    AnalyticsProp.source:
+                                        widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+                                  },
+                                );
+                                Navigator.pop(context);
+                              },
                         icon: Icon(LucideIcons.chevron_left, color: Colors.grey[700]),
                       ),
                     ],

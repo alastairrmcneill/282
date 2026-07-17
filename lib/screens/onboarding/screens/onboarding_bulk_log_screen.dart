@@ -42,6 +42,13 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<BulkMunroUpdateState>().setStartingBulkMunroUpdateList = [];
       context.read<MunroState>().setBulkMunroUpdateFilterString = '';
+      context.read<Analytics>().track(
+        AnalyticsEvent.onboardingScreenViewed,
+        props: {
+          AnalyticsProp.screenIndex: widget.alreadyAuthenticated ? 1 : 5,
+          AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+        },
+      );
     });
   }
 
@@ -83,7 +90,16 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
             ),
           ],
           selected: {_viewMode},
-          onSelectionChanged: (value) => setState(() => _viewMode = value.first),
+          onSelectionChanged: (value) {
+            setState(() => _viewMode = value.first);
+            context.read<Analytics>().track(
+              AnalyticsEvent.bulkLogViewToggled,
+              props: {
+                AnalyticsProp.viewMode: value.first.name,
+                AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+              },
+            );
+          },
         ),
       ),
     );
@@ -127,7 +143,15 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
               hintText: 'Search Munros...',
               onSearchTap: () {},
               onChanged: (value) => munroState.setBulkMunroUpdateFilterString = value,
-              onClear: () => munroState.setBulkMunroUpdateFilterString = '',
+              onClear: () {
+                munroState.setBulkMunroUpdateFilterString = '';
+                context.read<Analytics>().track(
+                  AnalyticsEvent.bulkLogSearchCleared,
+                  props: {
+                    AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+                  },
+                );
+              },
             ),
           ),
           const SizedBox(width: 10),
@@ -160,7 +184,16 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       child: OnboardingNavigationButtons(
-        onBack: () => Navigator.pop(context),
+        onBack: () {
+          context.read<Analytics>().track(
+            AnalyticsEvent.onboardingBackTapped,
+            props: {
+              AnalyticsProp.screenIndex: widget.alreadyAuthenticated ? 1 : 5,
+              AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+            },
+          );
+          Navigator.pop(context);
+        },
         onNext: () => _onContinue(context, count),
         nextText: count > 0 ? 'Continue ($count)' : 'Continue',
       ),

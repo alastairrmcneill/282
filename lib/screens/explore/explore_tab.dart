@@ -34,6 +34,7 @@ class _ExploreTabState extends State<ExploreTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Consumer<MunroState>(
         builder: (context, munroState, child) {
           switch (munroState.status) {
@@ -63,6 +64,7 @@ class _ExploreTabState extends State<ExploreTab> {
     final double headerHeight = _isMunroListViewVisible ? 64 : 100;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           SlidingUpPanel(

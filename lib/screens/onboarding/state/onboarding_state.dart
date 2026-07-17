@@ -72,26 +72,29 @@ class OnboardingState extends ChangeNotifier {
 
   void nextPage() {
     if (_currentPage < totalPages - 1) {
-      _currentPage++;
-      notifyListeners();
-      _analytics.track(
-        AnalyticsEvent.onboardingScreenViewed,
-        props: {AnalyticsProp.screenIndex: _currentPage, AnalyticsProp.source: 'first_run_onboarding'},
-      );
+      goToPage(_currentPage + 1);
     }
   }
 
   void previousPage() {
     if (_currentPage > 0) {
-      _currentPage--;
-      notifyListeners();
+      goToPage(_currentPage - 1);
     }
   }
 
+  // The real PageView (onboarding_screen.dart) drives navigation entirely
+  // through PageController.next/previousPage(), which fires onPageChanged ->
+  // goToPage() - nextPage()/previousPage() above are never hit in production,
+  // only by tests. Tracking lives here so every screen change is captured
+  // regardless of swipe direction or entry point.
   void goToPage(int page) {
     if (page >= 0 && page < totalPages) {
       _currentPage = page;
       notifyListeners();
+      _analytics.track(
+        AnalyticsEvent.onboardingScreenViewed,
+        props: {AnalyticsProp.screenIndex: _currentPage, AnalyticsProp.source: 'first_run_onboarding'},
+      );
     }
   }
 }
