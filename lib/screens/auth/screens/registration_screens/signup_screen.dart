@@ -66,9 +66,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ..displayName =
           '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}';
 
-    final authResult = await context
-        .read<AuthState>()
-        .registerWithEmail(registrationData: data);
+    final authResult = await context.read<AuthState>().registerWithEmail(
+          registrationData: data,
+          source: widget.fromOnboarding ? 'first_run_onboarding' : null,
+        );
 
     if (!mounted) return;
     if (authResult.success && widget.fromOnboarding) {

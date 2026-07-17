@@ -88,7 +88,7 @@ class PostHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Completed ${post.includedMunroIds.length == 1 ? "a munro" : "${post.includedMunroIds.length} munros"} • ${post.dateTimeCreated.timeAgoShort()}',
+                  'Climbed ${post.includedMunroIds.length == 1 ? "a munro" : "${post.includedMunroIds.length} munros"} • ${post.dateTimeCreated.timeAgoShort()}',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(color: context.colors.textMuted),
                 ),
                 const SizedBox(height: 4),

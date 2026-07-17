@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/screens/onboarding_notifications_screen.dart';
@@ -20,6 +21,17 @@ class OnboardingSignInPromptScreen extends StatefulWidget {
 
 class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScreen> {
   String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<Analytics>().track(
+        AnalyticsEvent.onboardingScreenViewed,
+        props: {AnalyticsProp.screenIndex: 4, AnalyticsProp.source: 'first_run_onboarding'},
+      );
+    });
+  }
 
   Future<void> _handleAuthResult(AuthResult result) async {
     if (!mounted) return;
@@ -86,7 +98,18 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                             child: IconButton(
                               constraints: const BoxConstraints(),
                               padding: const EdgeInsets.all(6),
-                              onPressed: isLoading ? null : () => Navigator.pop(context),
+                              onPressed: isLoading
+                                  ? null
+                                  : () {
+                                      context.read<Analytics>().track(
+                                        AnalyticsEvent.onboardingBackTapped,
+                                        props: {
+                                          AnalyticsProp.screenIndex: 4,
+                                          AnalyticsProp.source: 'first_run_onboarding',
+                                        },
+                                      );
+                                      Navigator.pop(context);
+                                    },
                               icon: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
                             ),
                           ),
@@ -147,7 +170,9 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                         borderRadius: BorderRadius.circular(100),
                         onPressed: () async {
                           setState(() => _errorMessage = null);
-                          final result = await context.read<AuthState>().signInWithApple();
+                          final result = await context
+                              .read<AuthState>()
+                              .signInWithApple(source: 'first_run_onboarding');
                           if (mounted) await _handleAuthResult(result);
                         },
                       ),
@@ -167,11 +192,17 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                     CtaButton(
                       height: 52,
                       disabled: isLoading,
-                      onPressed: () => Navigator.pushNamed(
-                        context,
-                        SignUpScreen.route,
-                        arguments: const SignUpScreenArgs(fromOnboarding: true),
-                      ),
+                      onPressed: () {
+                        context.read<Analytics>().track(
+                          AnalyticsEvent.onboardingAuthCtaTapped,
+                          props: {AnalyticsProp.ctaType: 'create_account', AnalyticsProp.source: 'first_run_onboarding'},
+                        );
+                        Navigator.pushNamed(
+                          context,
+                          SignUpScreen.route,
+                          arguments: const SignUpScreenArgs(fromOnboarding: true),
+                        );
+                      },
                       child: const Text(
                         'Create a free account',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -193,11 +224,17 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               color: Colors.white,
                             ),
                             recognizer: TapGestureRecognizer()
-                              ..onTap = () => Navigator.pushNamed(
-                                    context,
-                                    LoginScreen.route,
-                                    arguments: const LoginScreenArgs(fromOnboarding: true),
-                                  ),
+                              ..onTap = () {
+                                context.read<Analytics>().track(
+                                  AnalyticsEvent.onboardingAuthCtaTapped,
+                                  props: {AnalyticsProp.ctaType: 'log_in', AnalyticsProp.source: 'first_run_onboarding'},
+                                );
+                                Navigator.pushNamed(
+                                  context,
+                                  LoginScreen.route,
+                                  arguments: const LoginScreenArgs(fromOnboarding: true),
+                                );
+                              },
                           ),
                         ],
                       ),
@@ -217,7 +254,14 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               decoration: TextDecoration.underline,
                               color: Colors.white,
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = openTermsUrl,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                context.read<Analytics>().track(
+                                  AnalyticsEvent.onboardingLegalLinkTapped,
+                                  props: {AnalyticsProp.linkType: 'terms', AnalyticsProp.source: 'first_run_onboarding'},
+                                );
+                                openTermsUrl();
+                              },
                           ),
                           const TextSpan(text: ' and ', style: TextStyle(color: Colors.white70)),
                           TextSpan(
@@ -227,7 +271,14 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               decoration: TextDecoration.underline,
                               color: Colors.white,
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = openPrivacyPolicyUrl,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                context.read<Analytics>().track(
+                                  AnalyticsEvent.onboardingLegalLinkTapped,
+                                  props: {AnalyticsProp.linkType: 'privacy', AnalyticsProp.source: 'first_run_onboarding'},
+                                );
+                                openPrivacyPolicyUrl();
+                              },
                           ),
                           const TextSpan(text: '.', style: TextStyle(color: Colors.white70)),
                         ],
@@ -261,7 +312,7 @@ class _OnboardingGoogleButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         ),
         onPressed: () async {
-          final result = await context.read<AuthState>().signInWithGoogle();
+          final result = await context.read<AuthState>().signInWithGoogle(source: 'first_run_onboarding');
           await onResult(result);
         },
         child: Row(

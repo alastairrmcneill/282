@@ -338,7 +338,7 @@ void main() {
         expect(notified, false);
       });
 
-      test('should not track analytics when going back', () {
+      test('should track analytics when going back', () {
         // Arrange
         onboardingState.nextPage(); // Move to page 1
         reset(mockAnalytics);
@@ -346,8 +346,12 @@ void main() {
         // Act
         onboardingState.previousPage();
 
-        // Assert
-        verifyNever(mockAnalytics.track(any, props: anyNamed('props')));
+        // Assert - previousPage delegates to goToPage, so the screen
+        // becoming visible again is tracked like any other page change.
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingScreenViewed,
+          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
+        )).called(1);
       });
     });
 
@@ -423,14 +427,18 @@ void main() {
         expect(notified, false);
       });
 
-      test('should not track analytics when using goToPage', () {
+      test('should track analytics when using goToPage', () {
         reset(mockAnalytics);
 
         // Act
         onboardingState.goToPage(2);
 
-        // Assert
-        verifyNever(mockAnalytics.track(any, props: anyNamed('props')));
+        // Assert - this is the path the real PageView.onPageChanged uses,
+        // so it must track like nextPage/previousPage do.
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingScreenViewed,
+          props: {AnalyticsProp.screenIndex: 2, AnalyticsProp.source: 'first_run_onboarding'},
+        )).called(1);
       });
     });
 
@@ -707,21 +715,27 @@ void main() {
         )).called(1);
       });
 
-      test('should not track analytics for previousPage', () {
+      test('should track analytics for previousPage', () {
         onboardingState.nextPage();
         reset(mockAnalytics);
 
         onboardingState.previousPage();
 
-        verifyNever(mockAnalytics.track(any, props: anyNamed('props')));
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingScreenViewed,
+          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
+        )).called(1);
       });
 
-      test('should not track analytics for goToPage', () {
+      test('should track analytics for goToPage', () {
         reset(mockAnalytics);
 
         onboardingState.goToPage(2);
 
-        verifyNever(mockAnalytics.track(any, props: anyNamed('props')));
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingScreenViewed,
+          props: {AnalyticsProp.screenIndex: 2, AnalyticsProp.source: 'first_run_onboarding'},
+        )).called(1);
       });
 
       test('should track onboarding started and first screen on init', () async {

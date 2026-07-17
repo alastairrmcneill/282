@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 
 class UnreadNotificatiosWidget extends StatelessWidget {
   final int count;
@@ -10,11 +11,11 @@ class UnreadNotificatiosWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Container(
-      color: Colors.grey[200],
+      color: context.colors.divider,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       child: Text(
         '$count unread notification${count == 1 ? '' : 's'}',
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: const Color.fromARGB(178, 0, 0, 0)),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textPrimary),
       ),
     );
   }

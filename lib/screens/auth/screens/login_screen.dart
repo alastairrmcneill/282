@@ -52,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final result = await context.read<AuthState>().signInWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
+          source: widget.fromOnboarding ? 'first_run_onboarding' : null,
         );
 
     if (!mounted) return;

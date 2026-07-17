@@ -42,7 +42,7 @@ class NotificationTile extends StatelessWidget {
         }
       },
       child: Container(
-        color: notification.read ? Colors.transparent : Colors.white,
+        color: notification.read ? Colors.transparent : context.colors.surface,
         child: Padding(
           padding: const EdgeInsets.only(right: 10, top: 10, bottom: 10),
           child: Row(

@@ -108,6 +108,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget _buildScreen(BuildContext context, UserState userState) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         key: _bottomNavigationKey,

@@ -84,6 +84,12 @@ class AnalyticsEvent {
   static const ageGateConfirmationShown = 'age_gate_confirmation_shown';
   static const ageGateConfirmTapped = 'age_gate_confirm_tapped';
   static const ageGateBirthdatePromptShown = 'age_gate_birthdate_prompt_shown';
+
+  static const onboardingBackTapped = 'onboarding_back_tapped';
+  static const onboardingLegalLinkTapped = 'onboarding_legal_link_tapped';
+  static const onboardingAuthCtaTapped = 'onboarding_auth_cta_tapped';
+  static const bulkLogViewToggled = 'bulk_log_view_toggled';
+  static const bulkLogSearchCleared = 'bulk_log_search_cleared';
 }
 
 class AnalyticsProp {
@@ -130,4 +136,8 @@ class AnalyticsProp {
   static const reportType = "report_type";
   static const achievementId = "achievement_id";
   static const achievementName = "achievement_name";
+
+  static const linkType = "link_type";
+  static const viewMode = "view_mode";
+  static const ctaType = "cta_type";
 }
