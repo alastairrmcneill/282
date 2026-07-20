@@ -6,7 +6,8 @@ import 'package:two_eight_two/screens/screens.dart';
 // Custom button for google sign in with shape and method
 class GoogleSignInButton extends StatelessWidget {
   final void Function(String)? onError;
-  const GoogleSignInButton({Key? key, this.onError}) : super(key: key);
+  final String? gateSource;
+  const GoogleSignInButton({Key? key, this.onError, this.gateSource}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +25,14 @@ class GoogleSignInButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          final authResult = await context.read<AuthState>().signInWithGoogle();
+          final authResult = await context
+              .read<AuthState>()
+              .signInWithGoogle(source: gateSource != null ? 'in_app_onboarding' : null, gateSource: gateSource);
           if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
             Navigator.pushNamed(
               context,
               InAppOnboardingScreen.route,
-              arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
+              arguments: InAppOnboardingScreenArgs(userId: authResult.userId!, gateSource: gateSource),
             );
           } else if (authResult.success) {
             // Load munro completions before navigating to home

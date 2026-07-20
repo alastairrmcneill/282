@@ -149,7 +149,8 @@ void main() {
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
           props: {
-            AnalyticsProp.screenIndex: 0,
+            AnalyticsProp.stepNumber: 1,
+            AnalyticsProp.stepName: 'munro_question',
             AnalyticsProp.source: 'in_app_onboarding',
           },
         )).called(1);
@@ -276,7 +277,8 @@ void main() {
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
           props: {
-            AnalyticsProp.screenIndex: 0,
+            AnalyticsProp.stepNumber: 1,
+            AnalyticsProp.stepName: 'munro_question',
             AnalyticsProp.source: 'in_app_onboarding',
           },
         )).called(3);

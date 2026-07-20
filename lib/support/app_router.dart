@@ -47,8 +47,9 @@ class AppRouter {
           settings: settings,
         );
       case AuthHomeScreen.route:
+        final args = settings.arguments as AuthHomeScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => const AuthHomeScreen(),
+          builder: (_) => AuthHomeScreen(gateSource: args?.gateSource),
           settings: settings,
         );
       case OnboardingScreen.route:
@@ -71,7 +72,10 @@ class AppRouter {
       case LoginScreen.route:
         final args = settings.arguments as LoginScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => LoginScreen(fromOnboarding: args?.fromOnboarding ?? false),
+          builder: (_) => LoginScreen(
+            fromOnboarding: args?.fromOnboarding ?? false,
+            gateSource: args?.gateSource,
+          ),
           settings: settings,
         );
       case EditReviewScreen.route:
@@ -288,7 +292,10 @@ class AppRouter {
       case SignUpScreen.route:
         final args = settings.arguments as SignUpScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) => SignUpScreen(fromOnboarding: args?.fromOnboarding ?? false),
+          builder: (_) => SignUpScreen(
+            fromOnboarding: args?.fromOnboarding ?? false,
+            gateSource: args?.gateSource,
+          ),
           settings: settings,
         );
       case BulkMunroUpdateScreen.route:
@@ -310,8 +317,10 @@ class AppRouter {
       case OnboardingNotificationsScreen.route:
         final notificationsArgs = settings.arguments as OnboardingNotificationsScreenArgs?;
         return MaterialPageRoute(
-          builder: (_) =>
-              OnboardingNotificationsScreen(fromInAppOnboarding: notificationsArgs?.fromInAppOnboarding ?? false),
+          builder: (_) => OnboardingNotificationsScreen(
+            fromInAppOnboarding: notificationsArgs?.fromInAppOnboarding ?? false,
+            branch: notificationsArgs?.branch ?? 'yes',
+          ),
           settings: settings,
         );
 

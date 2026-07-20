@@ -823,6 +823,23 @@ class MockAnalytics extends _i1.Mock implements _i10.Analytics {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> registerSuperProperty(
+    String? key,
+    Object? value,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #registerSuperProperty,
+          [
+            key,
+            value,
+          ],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [Logger].

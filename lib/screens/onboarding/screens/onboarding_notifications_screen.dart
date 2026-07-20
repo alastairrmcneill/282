@@ -12,16 +12,23 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class OnboardingNotificationsScreenArgs {
   final bool fromInAppOnboarding;
-  const OnboardingNotificationsScreenArgs({this.fromInAppOnboarding = false});
+  /// Which munro-question branch led here. Always 'yes' for the first-run
+  /// flow (the 'no' branch short-circuits before reaching this screen); for
+  /// in-app onboarding both branches reach here, so callers must pass it.
+  final String branch;
+  const OnboardingNotificationsScreenArgs({this.fromInAppOnboarding = false, this.branch = 'yes'});
 }
 
 class OnboardingNotificationsScreen extends StatefulWidget {
   static const String route = '/onboarding/notifications';
-  const OnboardingNotificationsScreen({super.key, this.fromInAppOnboarding = false});
+  const OnboardingNotificationsScreen({super.key, this.fromInAppOnboarding = false, this.branch = 'yes'});
 
   /// True when reached from the in-app onboarding flow rather than the
   /// first-run onboarding flow - skips marking first-run onboarding complete.
   final bool fromInAppOnboarding;
+
+  /// Which munro-question branch led here ('yes' or 'no').
+  final String branch;
 
   @override
   State<OnboardingNotificationsScreen> createState() => _OnboardingNotificationsScreenState();
@@ -38,8 +45,10 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
       context.read<Analytics>().track(
         AnalyticsEvent.onboardingScreenViewed,
         props: {
-          AnalyticsProp.screenIndex: widget.fromInAppOnboarding ? 2 : 6,
+          AnalyticsProp.stepNumber: widget.fromInAppOnboarding ? (widget.branch == 'yes' ? 3 : 2) : 7,
+          AnalyticsProp.stepName: 'notifications',
           AnalyticsProp.source: widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+          AnalyticsProp.branch: widget.branch,
         },
       );
     });
@@ -51,6 +60,7 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
       props: {
         AnalyticsProp.response: enableNotifications ? 'enable' : 'skip',
         AnalyticsProp.source: widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+        AnalyticsProp.branch: widget.branch,
       },
     );
     setState(() {
@@ -98,10 +108,10 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
         if (widget.fromInAppOnboarding) {
           context.read<Analytics>().track(
             AnalyticsEvent.inAppOnboardingProgress,
-            props: {AnalyticsProp.status: 'completed'},
+            props: {AnalyticsProp.status: 'completed', AnalyticsProp.branch: widget.branch},
           );
         } else {
-          await context.read<OnboardingState>().markOnboardingCompleted();
+          await context.read<OnboardingState>().markOnboardingCompleted(branch: 'yes');
         }
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (_) => false);
@@ -137,9 +147,12 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
                                 context.read<Analytics>().track(
                                   AnalyticsEvent.onboardingBackTapped,
                                   props: {
-                                    AnalyticsProp.screenIndex: widget.fromInAppOnboarding ? 2 : 6,
+                                    AnalyticsProp.stepNumber:
+                                        widget.fromInAppOnboarding ? (widget.branch == 'yes' ? 3 : 2) : 7,
+                                    AnalyticsProp.stepName: 'notifications',
                                     AnalyticsProp.source:
                                         widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+                                    AnalyticsProp.branch: widget.branch,
                                   },
                                 );
                                 Navigator.pop(context);

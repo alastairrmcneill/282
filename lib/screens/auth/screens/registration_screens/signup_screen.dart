@@ -11,14 +11,16 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class SignUpScreenArgs {
   final bool fromOnboarding;
-  const SignUpScreenArgs({this.fromOnboarding = false});
+  final String? gateSource;
+  const SignUpScreenArgs({this.fromOnboarding = false, this.gateSource});
 }
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key, this.fromOnboarding = false});
+  const SignUpScreen({super.key, this.fromOnboarding = false, this.gateSource});
   static const String route = '${AuthHomeScreen.authRoute}/signup';
 
   final bool fromOnboarding;
+  final String? gateSource;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -68,7 +70,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     final authResult = await context.read<AuthState>().registerWithEmail(
           registrationData: data,
-          source: widget.fromOnboarding ? 'first_run_onboarding' : null,
+          source: widget.fromOnboarding ? 'first_run_onboarding' : 'in_app_onboarding',
+          gateSource: widget.gateSource,
         );
 
     if (!mounted) return;
@@ -83,7 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
-        arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
+        arguments: InAppOnboardingScreenArgs(userId: authResult.userId!, gateSource: widget.gateSource),
       );
     } else if (authResult.success) {
       await context.read<MunroCompletionState>().loadUserMunroCompletions();
@@ -113,9 +116,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   if (!widget.fromOnboarding) ...[
                     const SizedBox(height: 10),
-                    const AppleSignInButton(),
+                    AppleSignInButton(gateSource: widget.gateSource),
                     const SizedBox(height: 10),
-                    const GoogleSignInButton(),
+                    GoogleSignInButton(gateSource: widget.gateSource),
                     const SizedBox(height: 20),
                     const TextDivider(text: "or"),
                     const SizedBox(height: 20),

@@ -45,8 +45,10 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
       context.read<Analytics>().track(
         AnalyticsEvent.onboardingScreenViewed,
         props: {
-          AnalyticsProp.screenIndex: widget.alreadyAuthenticated ? 1 : 5,
+          AnalyticsProp.stepNumber: widget.alreadyAuthenticated ? 2 : 5,
+          AnalyticsProp.stepName: 'bulk_log',
           AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+          AnalyticsProp.branch: 'yes',
         },
       );
     });
@@ -173,7 +175,7 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
       Navigator.pushNamed(
         context,
         OnboardingNotificationsScreen.route,
-        arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true),
+        arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true, branch: 'yes'),
       );
     } else {
       Navigator.pushNamed(context, OnboardingSignInPromptScreen.route);
@@ -188,8 +190,10 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
           context.read<Analytics>().track(
             AnalyticsEvent.onboardingBackTapped,
             props: {
-              AnalyticsProp.screenIndex: widget.alreadyAuthenticated ? 1 : 5,
+              AnalyticsProp.stepNumber: widget.alreadyAuthenticated ? 2 : 5,
+              AnalyticsProp.stepName: 'bulk_log',
               AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+              AnalyticsProp.branch: 'yes',
             },
           );
           Navigator.pop(context);

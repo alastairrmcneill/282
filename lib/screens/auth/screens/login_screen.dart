@@ -9,14 +9,16 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class LoginScreenArgs {
   final bool fromOnboarding;
-  const LoginScreenArgs({this.fromOnboarding = false});
+  final String? gateSource;
+  const LoginScreenArgs({this.fromOnboarding = false, this.gateSource});
 }
 
 class LoginScreen extends StatefulWidget {
   static const String route = '${AuthHomeScreen.authRoute}/login';
-  const LoginScreen({super.key, this.fromOnboarding = false});
+  const LoginScreen({super.key, this.fromOnboarding = false, this.gateSource});
 
   final bool fromOnboarding;
+  final String? gateSource;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -52,7 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final result = await context.read<AuthState>().signInWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
-          source: widget.fromOnboarding ? 'first_run_onboarding' : null,
+          source: widget.fromOnboarding ? 'first_run_onboarding' : 'in_app_onboarding',
+          gateSource: widget.gateSource,
         );
 
     if (!mounted) return;
@@ -66,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
-        arguments: InAppOnboardingScreenArgs(userId: result.userId!),
+        arguments: InAppOnboardingScreenArgs(userId: result.userId!, gateSource: widget.gateSource),
       );
     } else if (result.success) {
       await context.read<MunroCompletionState>().loadUserMunroCompletions();
@@ -143,9 +146,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         const ForgotPasswordButton(),
                         if (!widget.fromOnboarding) ...[
                           const SizedBox(height: 20),
-                          AppleSignInButton(onError: (msg) => setState(() => _error = msg)),
+                          AppleSignInButton(
+                            onError: (msg) => setState(() => _error = msg),
+                            gateSource: widget.gateSource,
+                          ),
                           const SizedBox(height: 10),
-                          GoogleSignInButton(onError: (msg) => setState(() => _error = msg)),
+                          GoogleSignInButton(
+                            onError: (msg) => setState(() => _error = msg),
+                            gateSource: widget.gateSource,
+                          ),
                         ],
                       ],
                     ),

@@ -8,7 +8,8 @@ import 'package:two_eight_two/screens/screens.dart';
 class AppleSignInButton extends StatelessWidget {
   final SignInWithAppleButtonStyle? style;
   final void Function(String)? onError;
-  const AppleSignInButton({super.key, this.style, this.onError});
+  final String? gateSource;
+  const AppleSignInButton({super.key, this.style, this.onError, this.gateSource});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +18,14 @@ class AppleSignInButton extends StatelessWidget {
       return SignInWithAppleButton(
         style: style ?? (isDark ? SignInWithAppleButtonStyle.white : SignInWithAppleButtonStyle.black),
         onPressed: () async {
-          final authResult = await context.read<AuthState>().signInWithApple();
+          final authResult = await context
+              .read<AuthState>()
+              .signInWithApple(source: gateSource != null ? 'in_app_onboarding' : null, gateSource: gateSource);
           if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
             Navigator.pushNamed(
               context,
               InAppOnboardingScreen.route,
-              arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
+              arguments: InAppOnboardingScreenArgs(userId: authResult.userId!, gateSource: gateSource),
             );
           } else if (authResult.success) {
             // Load munro completions before navigating to home

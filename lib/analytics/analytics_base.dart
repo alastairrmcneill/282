@@ -2,6 +2,7 @@ abstract class Analytics {
   Future<void> track(String name, {Map<String, Object?>? props});
   Future<void> identify(String userId);
   Future<void> reset();
+  Future<void> registerSuperProperty(String key, Object? value);
 }
 
 class AnalyticsEvent {
@@ -86,6 +87,10 @@ class AnalyticsEvent {
   static const ageGateBirthdatePromptShown = 'age_gate_birthdate_prompt_shown';
 
   static const onboardingBackTapped = 'onboarding_back_tapped';
+  static const onboardingWelcomeViewed = 'onboarding_welcome_viewed';
+  static const onboardingProgressViewed = 'onboarding_progress_viewed';
+  static const onboardingAchievementViewed = 'onboarding_achievement_viewed';
+  static const onboardingMunroQuestionViewed = 'onboarding_munro_question_viewed';
   static const onboardingLegalLinkTapped = 'onboarding_legal_link_tapped';
   static const onboardingAuthCtaTapped = 'onboarding_auth_cta_tapped';
   static const bulkLogViewToggled = 'bulk_log_view_toggled';
@@ -99,7 +104,9 @@ class AnalyticsProp {
   static const privacy = 'privacy';
   static const method = 'method';
   static const platform = 'platform';
-  static const screenIndex = 'screen_index';
+  static const stepNumber = 'step_number';
+  static const stepName = 'step_name';
+  static const branch = 'branch';
   static const status = 'status';
   static const munroId = 'munro_id';
   static const munroName = 'munro_name';
@@ -107,6 +114,7 @@ class AnalyticsProp {
   static const q2 = 'q2';
   static const response = 'response';
   static const source = 'source';
+  static const gateSource = 'gate_source';
   static const munroCompletionsAdded = "munro_completions_added";
   static const munroChallengeCount = "munro_challenge_count";
   static const imagesAdded = "images_added";

@@ -757,6 +757,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
   _i5.Future<_i3.AuthResult> registerWithEmail({
     required _i2.RegistrationData? registrationData,
     String? source,
+    String? gateSource,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -765,6 +766,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
           {
             #registrationData: registrationData,
             #source: source,
+            #gateSource: gateSource,
           },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
@@ -775,6 +777,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
             {
               #registrationData: registrationData,
               #source: source,
+              #gateSource: gateSource,
             },
           ),
         )),
@@ -785,6 +788,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
     required String? email,
     required String? password,
     String? source,
+    String? gateSource,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -794,6 +798,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
             #email: email,
             #password: password,
             #source: source,
+            #gateSource: gateSource,
           },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
@@ -805,43 +810,62 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
               #email: email,
               #password: password,
               #source: source,
+              #gateSource: gateSource,
             },
           ),
         )),
       ) as _i5.Future<_i3.AuthResult>);
 
   @override
-  _i5.Future<_i3.AuthResult> signInWithApple({String? source}) =>
+  _i5.Future<_i3.AuthResult> signInWithApple({
+    String? source,
+    String? gateSource,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #signInWithApple,
           [],
-          {#source: source},
+          {
+            #source: source,
+            #gateSource: gateSource,
+          },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
           this,
           Invocation.method(
             #signInWithApple,
             [],
-            {#source: source},
+            {
+              #source: source,
+              #gateSource: gateSource,
+            },
           ),
         )),
       ) as _i5.Future<_i3.AuthResult>);
 
   @override
-  _i5.Future<_i3.AuthResult> signInWithGoogle({String? source}) =>
+  _i5.Future<_i3.AuthResult> signInWithGoogle({
+    String? source,
+    String? gateSource,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #signInWithGoogle,
           [],
-          {#source: source},
+          {
+            #source: source,
+            #gateSource: gateSource,
+          },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
           this,
           Invocation.method(
             #signInWithGoogle,
             [],
-            {#source: source},
+            {
+              #source: source,
+              #gateSource: gateSource,
+            },
           ),
         )),
       ) as _i5.Future<_i3.AuthResult>);

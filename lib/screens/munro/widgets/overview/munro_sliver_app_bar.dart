@@ -118,7 +118,11 @@ class _MunroSliverAppBarState extends State<MunroSliverAppBar> {
               analyticsEvent: AnalyticsEvent.munroSaveButtonClicked,
               onPressed: () async {
                 if (userId == null) {
-                  Navigator.pushNamed(context, AuthHomeScreen.route);
+                  Navigator.pushNamed(
+                    context,
+                    AuthHomeScreen.route,
+                    arguments: const AuthHomeScreenArgs(gateSource: 'munro_complete_flow'),
+                  );
                 } else {
                   await SaveMunroBottomSheet.show(context, munroId: widget.munro.id);
                 }

@@ -37,4 +37,13 @@ class MixpanelAnalytics implements Analytics {
       _logger.error('Analytics.reset failed: error=$e', stackTrace: st);
     }
   }
+
+  @override
+  Future<void> registerSuperProperty(String key, Object? value) async {
+    try {
+      await _mixpanel.registerSuperProperties({key: value});
+    } catch (e, st) {
+      _logger.error('Analytics.registerSuperProperty failed: key=$key, error=$e', stackTrace: st);
+    }
+  }
 }
