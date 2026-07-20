@@ -65,8 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ..password = _passwordController.text.trim()
       ..firstName = _firstNameController.text.trim()
       ..lastName = _lastNameController.text.trim()
-      ..displayName =
-          '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}';
+      ..displayName = '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}';
 
     final authResult = await context.read<AuthState>().registerWithEmail(
           registrationData: data,
@@ -80,9 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (mounted) {
         Navigator.pushNamed(context, OnboardingNotificationsScreen.route);
       }
-    } else if (authResult.success &&
-        authResult.showOnboarding &&
-        authResult.userId != null) {
+    } else if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
@@ -90,8 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } else if (authResult.success) {
       await context.read<MunroCompletionState>().loadUserMunroCompletions();
-      Navigator.pushNamedAndRemoveUntil(
-          context, HomeScreen.route, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (route) => false);
     } else {
       setState(() => _error = mapAuthErrorMessage(authResult.errorMessage));
     }
@@ -153,8 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   PasswordFormField(textEditingController: _passwordController),
                   const SizedBox(height: 12),
                   ConfirmPasswordFormField(
-                    confirmPassword_TextEditingController:
-                        _confirmPasswordController,
+                    confirmPassword_TextEditingController: _confirmPasswordController,
                     password_TextEditingController: _passwordController,
                   ),
                   if (password.isNotEmpty) ...[
@@ -170,6 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           bottomNavigationBar: BottomButtonBar(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 CtaButton(
