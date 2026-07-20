@@ -54,16 +54,22 @@ class OnboardingPrimaryButton extends StatelessWidget {
 
 class OnboardingBackButton extends StatelessWidget {
   final VoidCallback onPressed;
-  final bool backButtonLight;
+
+  /// Forces light (true) or dark (false) icon/border, overriding the app
+  /// theme. Use this for screens with a fixed photo background where the
+  /// button must stay readable regardless of light/dark mode. Leave null to
+  /// follow the current theme brightness.
+  final bool? backButtonLight;
 
   const OnboardingBackButton({
     super.key,
     required this.onPressed,
-    this.backButtonLight = false,
+    this.backButtonLight,
   });
 
   @override
   Widget build(BuildContext context) {
+    final light = backButtonLight ?? Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
       width: 70,
       height: 50,
@@ -76,7 +82,7 @@ class OnboardingBackButton extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               backgroundColor: Colors.transparent,
               side: BorderSide(
-                  color: backButtonLight ? Colors.white.withAlpha(100) : Colors.black.withAlpha(100),
+                  color: light ? Colors.white.withAlpha(100) : Colors.black.withAlpha(100),
                   width: 0.5), // Border color and width
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
@@ -85,7 +91,7 @@ class OnboardingBackButton extends StatelessWidget {
             child: Center(
               child: Icon(
                 LucideIcons.chevron_left,
-                color: backButtonLight ? Colors.white.withAlpha(200) : Colors.black.withAlpha(200),
+                color: light ? Colors.white.withAlpha(200) : Colors.black.withAlpha(200),
                 size: 20,
               ),
             ),
@@ -102,7 +108,7 @@ class OnboardingNavigationButtons extends StatelessWidget {
   final String nextText;
   final bool isLastPage;
   final double height;
-  final bool backButtonLight;
+  final bool? backButtonLight;
 
   const OnboardingNavigationButtons({
     super.key,
@@ -111,7 +117,7 @@ class OnboardingNavigationButtons extends StatelessWidget {
     this.nextText = 'Continue',
     this.isLastPage = false,
     this.height = 50,
-    this.backButtonLight = false,
+    this.backButtonLight,
   });
 
   @override

@@ -79,7 +79,7 @@ class AlreadySummitedMunroListTile extends StatelessWidget {
                   Divider(
                     height: 20,
                     thickness: 0.5,
-                    color: Colors.grey[300],
+                    color: context.colors.divider,
                   ),
                   Row(
                     children: [

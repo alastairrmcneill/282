@@ -62,7 +62,7 @@ class BulkMunroUpdateListTile extends StatelessWidget {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: summited ? context.colors.accent : Colors.grey[300]!,
+            color: summited ? context.colors.accent : context.colors.border,
             width: 0.5,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -109,7 +109,7 @@ class BulkMunroUpdateListTile extends StatelessWidget {
                           Divider(
                             height: 20,
                             thickness: 0.5,
-                            color: Colors.grey[300],
+                            color: context.colors.divider,
                           ),
                           InkWell(
                             onTap: () async {
