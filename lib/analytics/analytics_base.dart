@@ -36,6 +36,8 @@ class AnalyticsEvent {
   static const bulkMunroCompletionsAdded = 'bulk_munro_completions_added';
   static const whatsNewDialogShown = 'whats_new_dialog_shown';
   static const achievementUnlockedDialogShown = 'achievement_unlocked_dialog_shown';
+  static const reviewPromptShown = 'review_prompt_shown';
+  static const reviewPromptResponse = 'review_prompt_response';
   static const editPost = "edit_post";
   static const deletePost = "delete_post";
   static const createComment = "create_comment";

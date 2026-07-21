@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rate_my_app/rate_my_app.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 
 Future<void> maybeShowReviewPrompt(BuildContext context) async {
   final rateMyApp = RateMyApp(
@@ -13,6 +15,17 @@ Future<void> maybeShowReviewPrompt(BuildContext context) async {
   await rateMyApp.init();
 
   if (context.mounted && rateMyApp.shouldOpenDialog) {
-    await rateMyApp.showRateDialog(context);
+    context.read<Analytics>().track(AnalyticsEvent.reviewPromptShown);
+
+    await rateMyApp.showRateDialog(
+      context,
+      listener: (button) {
+        context.read<Analytics>().track(
+          AnalyticsEvent.reviewPromptResponse,
+          props: {AnalyticsProp.response: button.name},
+        );
+        return true;
+      },
+    );
   }
 }
