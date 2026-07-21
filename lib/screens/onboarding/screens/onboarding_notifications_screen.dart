@@ -12,6 +12,7 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class OnboardingNotificationsScreenArgs {
   final bool fromInAppOnboarding;
+
   /// Which munro-question branch led here. Always 'yes' for the first-run
   /// flow (the 'no' branch short-circuits before reaching this screen); for
   /// in-app onboarding both branches reach here, so callers must pass it.
