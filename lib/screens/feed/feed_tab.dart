@@ -6,7 +6,6 @@ import 'package:two_eight_two/screens/feed/screens/feed_list_view.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/support/app_route_observer.dart';
-import 'package:two_eight_two/support/review_prompt.dart';
 
 class FeedTab extends StatefulWidget {
   const FeedTab({super.key});
@@ -29,8 +28,6 @@ class _FeedTabState extends State<FeedTab> with SingleTickerProviderStateMixin {
     // Log the first tab on launch
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _logTabAnalytics(_tabController.index);
-
-      maybeShowReviewPrompt(context);
     });
 
     // Listen for tab changes
