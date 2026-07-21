@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
@@ -30,6 +31,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   PointAnnotation? selectedAnnotation;
   late PointAnnotationManager _annotationManager;
   List<int> _lastFilteredIds = [];
+  bool _isHandlingTap = false;
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
     bounds: CoordinateBounds(
       southwest: Point(
@@ -164,36 +166,42 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
 
   void handleMapTap(
       ScreenCoordinate tapScreenPoint, MunroState munroState, MunroCompletionState munroCompletionState) async {
-    const double threshold = 40.0;
+    if (_isHandlingTap) return;
+    _isHandlingTap = true;
+    try {
+      const double threshold = 40.0;
 
-    int? closestMunroId;
-    PointAnnotation? closestAnnotation;
-    double minDist = double.infinity;
+      int? closestMunroId;
+      PointAnnotation? closestAnnotation;
+      double minDist = double.infinity;
 
-    for (final entry in allAnnotations.entries) {
-      final int munroId = entry.key;
-      final PointAnnotation? annotation = entry.value;
+      for (final entry in allAnnotations.entries) {
+        final int munroId = entry.key;
+        final PointAnnotation? annotation = entry.value;
 
-      if (annotation == null) continue;
+        if (annotation == null) continue;
 
-      final geoCoord = annotation.geometry;
+        final geoCoord = annotation.geometry;
 
-      final screen = await _mapboxMap.pixelForCoordinate(geoCoord);
+        final screen = await _mapboxMap.pixelForCoordinate(geoCoord);
 
-      final dx = screen.x - tapScreenPoint.x;
-      final dy = screen.y - tapScreenPoint.y;
-      final dist = sqrt(dx * dx + dy * dy);
+        final dx = screen.x - tapScreenPoint.x;
+        final dy = screen.y - tapScreenPoint.y;
+        final dist = sqrt(dx * dx + dy * dy);
 
-      if (dist < threshold && dist < minDist) {
-        minDist = dist;
-        closestMunroId = munroId;
-        closestAnnotation = annotation;
+        if (dist < threshold && dist < minDist) {
+          minDist = dist;
+          closestMunroId = munroId;
+          closestAnnotation = annotation;
+        }
       }
-    }
 
-    await deselectAnnotation(munroState, munroCompletionState.munroCompletions);
-    if (closestAnnotation != null && closestMunroId != null) {
-      await selectAnnotation(closestMunroId, closestAnnotation);
+      await deselectAnnotation(munroState, munroCompletionState.munroCompletions);
+      if (closestAnnotation != null && closestMunroId != null) {
+        await selectAnnotation(closestMunroId, closestAnnotation);
+      }
+    } finally {
+      _isHandlingTap = false;
     }
   }
 
@@ -213,7 +221,11 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
         iconSize: 0.8,
         iconAnchor: IconAnchor.BOTTOM,
       );
-      await _annotationManager.delete(selectedAnnotation!);
+      try {
+        await _annotationManager.delete(selectedAnnotation!);
+      } on PlatformException {
+        // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+      }
       var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
       allAnnotations[munroState.selectedMunroId!] = oldAnnotation;
 
@@ -238,7 +250,11 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       iconAnchor: IconAnchor.BOTTOM,
     );
 
-    await _annotationManager.delete(tappedAnnotation);
+    try {
+      await _annotationManager.delete(tappedAnnotation);
+    } on PlatformException {
+      // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+    }
 
     var newAnnotation = await _annotationManager.create(newAnnotationOptions);
     allAnnotations[munroId] = newAnnotation;
