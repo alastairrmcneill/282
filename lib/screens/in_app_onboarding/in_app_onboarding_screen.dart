@@ -7,8 +7,9 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class InAppOnboardingScreenArgs {
   final String userId;
+  final String? gateSource;
 
-  InAppOnboardingScreenArgs({required this.userId});
+  InAppOnboardingScreenArgs({required this.userId, this.gateSource});
 }
 
 class InAppOnboardingScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
   void _onMunroQuestionNo() {
     Navigator.of(context).pushNamed(
       OnboardingNotificationsScreen.route,
-      arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true),
+      arguments: const OnboardingNotificationsScreenArgs(fromInAppOnboarding: true, branch: 'no'),
     );
   }
 

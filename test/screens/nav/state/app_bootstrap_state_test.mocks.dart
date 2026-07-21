@@ -16,8 +16,7 @@ import 'package:two_eight_two/logging/logging.dart' as _i14;
 import 'package:two_eight_two/models/models.dart' as _i2;
 import 'package:two_eight_two/push/push_notifications_state.dart' as _i11;
 import 'package:two_eight_two/repos/repos.dart' as _i4;
-import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart'
-    as _i12;
+import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart' as _i12;
 import 'package:two_eight_two/screens/notifiers.dart' as _i3;
 
 // ignore_for_file: type=lint
@@ -65,8 +64,7 @@ class _FakeAuthResult_2 extends _i1.SmartFake implements _i3.AuthResult {
         );
 }
 
-class _FakeUserRepository_3 extends _i1.SmartFake
-    implements _i4.UserRepository {
+class _FakeUserRepository_3 extends _i1.SmartFake implements _i4.UserRepository {
   _FakeUserRepository_3(
     Object parent,
     Invocation parentInvocation,
@@ -76,8 +74,7 @@ class _FakeUserRepository_3 extends _i1.SmartFake
         );
 }
 
-class _FakeBlockedUserRepository_4 extends _i1.SmartFake
-    implements _i4.BlockedUserRepository {
+class _FakeBlockedUserRepository_4 extends _i1.SmartFake implements _i4.BlockedUserRepository {
   _FakeBlockedUserRepository_4(
     Object parent,
     Invocation parentInvocation,
@@ -87,8 +84,7 @@ class _FakeBlockedUserRepository_4 extends _i1.SmartFake
         );
 }
 
-class _FakeStorageRepository_5 extends _i1.SmartFake
-    implements _i4.StorageRepository {
+class _FakeStorageRepository_5 extends _i1.SmartFake implements _i4.StorageRepository {
   _FakeStorageRepository_5(
     Object parent,
     Invocation parentInvocation,
@@ -98,8 +94,7 @@ class _FakeStorageRepository_5 extends _i1.SmartFake
         );
 }
 
-class _FakeMunroRepository_6 extends _i1.SmartFake
-    implements _i4.MunroRepository {
+class _FakeMunroRepository_6 extends _i1.SmartFake implements _i4.MunroRepository {
   _FakeMunroRepository_6(
     Object parent,
     Invocation parentInvocation,
@@ -119,8 +114,7 @@ class _FakeFilterOptions_7 extends _i1.SmartFake implements _i2.FilterOptions {
         );
 }
 
-class _FakeMunroCompletionsRepository_8 extends _i1.SmartFake
-    implements _i4.MunroCompletionsRepository {
+class _FakeMunroCompletionsRepository_8 extends _i1.SmartFake implements _i4.MunroCompletionsRepository {
   _FakeMunroCompletionsRepository_8(
     Object parent,
     Invocation parentInvocation,
@@ -228,8 +222,7 @@ class MockRemoteConfigState extends _i1.Mock implements _i3.RemoteConfigState {
 /// A class which mocks [AppFlagsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAppFlagsRepository extends _i1.Mock
-    implements _i4.AppFlagsRepository {
+class MockAppFlagsRepository extends _i1.Mock implements _i4.AppFlagsRepository {
   MockAppFlagsRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -342,8 +335,7 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> setFeedbackSurveyOpenCountVersion(int? v) =>
-      (super.noSuchMethod(
+  _i5.Future<void> setFeedbackSurveyOpenCountVersion(int? v) => (super.noSuchMethod(
         Invocation.method(
           #setFeedbackSurveyOpenCountVersion,
           [v],
@@ -353,8 +345,7 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> setLastAppUpdateDialogDate(String? isoDate) =>
-      (super.noSuchMethod(
+  _i5.Future<void> setLastAppUpdateDialogDate(String? isoDate) => (super.noSuchMethod(
         Invocation.method(
           #setLastAppUpdateDialogDate,
           [isoDate],
@@ -373,8 +364,7 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as bool);
 
   @override
-  _i5.Future<void> setShownWhatsNewDialog(String? version) =>
-      (super.noSuchMethod(
+  _i5.Future<void> setShownWhatsNewDialog(String? version) => (super.noSuchMethod(
         Invocation.method(
           #setShownWhatsNewDialog,
           [version],
@@ -429,8 +419,7 @@ class MockAppFlagsRepository extends _i1.Mock
       ) as bool);
 
   @override
-  _i5.Future<void> setShownAnnualChallengeDialog(String? key) =>
-      (super.noSuchMethod(
+  _i5.Future<void> setShownAnnualChallengeDialog(String? key) => (super.noSuchMethod(
         Invocation.method(
           #setShownAnnualChallengeDialog,
           [key],
@@ -627,8 +616,7 @@ class MockSettingsState extends _i1.Mock implements _i3.SettingsState {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> update(_i2.AppSettings? newAppSettings) =>
-      (super.noSuchMethod(
+  _i5.Future<void> update(_i2.AppSettings? newAppSettings) => (super.noSuchMethod(
         Invocation.method(
           #update,
           [newAppSettings],
@@ -757,6 +745,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
   _i5.Future<_i3.AuthResult> registerWithEmail({
     required _i2.RegistrationData? registrationData,
     String? source,
+    String? gateSource,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -765,6 +754,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
           {
             #registrationData: registrationData,
             #source: source,
+            #gateSource: gateSource,
           },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
@@ -775,6 +765,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
             {
               #registrationData: registrationData,
               #source: source,
+              #gateSource: gateSource,
             },
           ),
         )),
@@ -785,6 +776,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
     required String? email,
     required String? password,
     String? source,
+    String? gateSource,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -794,6 +786,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
             #email: email,
             #password: password,
             #source: source,
+            #gateSource: gateSource,
           },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
@@ -805,50 +798,68 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
               #email: email,
               #password: password,
               #source: source,
+              #gateSource: gateSource,
             },
           ),
         )),
       ) as _i5.Future<_i3.AuthResult>);
 
   @override
-  _i5.Future<_i3.AuthResult> signInWithApple({String? source}) =>
+  _i5.Future<_i3.AuthResult> signInWithApple({
+    String? source,
+    String? gateSource,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #signInWithApple,
           [],
-          {#source: source},
+          {
+            #source: source,
+            #gateSource: gateSource,
+          },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
           this,
           Invocation.method(
             #signInWithApple,
             [],
-            {#source: source},
+            {
+              #source: source,
+              #gateSource: gateSource,
+            },
           ),
         )),
       ) as _i5.Future<_i3.AuthResult>);
 
   @override
-  _i5.Future<_i3.AuthResult> signInWithGoogle({String? source}) =>
+  _i5.Future<_i3.AuthResult> signInWithGoogle({
+    String? source,
+    String? gateSource,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #signInWithGoogle,
           [],
-          {#source: source},
+          {
+            #source: source,
+            #gateSource: gateSource,
+          },
         ),
         returnValue: _i5.Future<_i3.AuthResult>.value(_FakeAuthResult_2(
           this,
           Invocation.method(
             #signInWithGoogle,
             [],
-            {#source: source},
+            {
+              #source: source,
+              #gateSource: gateSource,
+            },
           ),
         )),
       ) as _i5.Future<_i3.AuthResult>);
 
   @override
-  _i5.Future<_i3.AuthResult> forgotPassword({required String? email}) =>
-      (super.noSuchMethod(
+  _i5.Future<_i3.AuthResult> forgotPassword({required String? email}) => (super.noSuchMethod(
         Invocation.method(
           #forgotPassword,
           [],
@@ -880,8 +891,7 @@ class MockAuthState extends _i1.Mock implements _i3.AuthState {
       ) as _i5.Future<_i3.AuthResult>);
 
   @override
-  _i5.Future<_i3.AuthResult> deleteUser(_i2.AppUser? appUser) =>
-      (super.noSuchMethod(
+  _i5.Future<_i3.AuthResult> deleteUser(_i2.AppUser? appUser) => (super.noSuchMethod(
         Invocation.method(
           #deleteUser,
           [appUser],
@@ -1004,8 +1014,7 @@ class MockUserState extends _i1.Mock implements _i3.UserState {
       ) as bool);
 
   @override
-  _i5.Future<void> createUser({required _i2.AppUser? appUser}) =>
-      (super.noSuchMethod(
+  _i5.Future<void> createUser({required _i2.AppUser? appUser}) => (super.noSuchMethod(
         Invocation.method(
           #createUser,
           [],
@@ -1016,8 +1025,7 @@ class MockUserState extends _i1.Mock implements _i3.UserState {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> updateUser({required _i2.AppUser? appUser}) =>
-      (super.noSuchMethod(
+  _i5.Future<void> updateUser({required _i2.AppUser? appUser}) => (super.noSuchMethod(
         Invocation.method(
           #updateUser,
           [],
@@ -1039,8 +1047,7 @@ class MockUserState extends _i1.Mock implements _i3.UserState {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> deleteUser({required _i2.AppUser? appUser}) =>
-      (super.noSuchMethod(
+  _i5.Future<void> deleteUser({required _i2.AppUser? appUser}) => (super.noSuchMethod(
         Invocation.method(
           #deleteUser,
           [],
@@ -1072,8 +1079,7 @@ class MockUserState extends _i1.Mock implements _i3.UserState {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> updateProfileVisibility(String? newValue) =>
-      (super.noSuchMethod(
+  _i5.Future<void> updateProfileVisibility(String? newValue) => (super.noSuchMethod(
         Invocation.method(
           #updateProfileVisibility,
           [newValue],
@@ -1301,8 +1307,7 @@ class MockMunroState extends _i1.Mock implements _i3.MunroState {
       );
 
   @override
-  set setGroupFilterMunroIds(List<int>? groupFilterMunroIds) =>
-      super.noSuchMethod(
+  set setGroupFilterMunroIds(List<int>? groupFilterMunroIds) => super.noSuchMethod(
         Invocation.setter(
           #setGroupFilterMunroIds,
           groupFilterMunroIds,
@@ -1320,8 +1325,7 @@ class MockMunroState extends _i1.Mock implements _i3.MunroState {
       );
 
   @override
-  set setBulkMunroUpdateFilterString(String? filterString) =>
-      super.noSuchMethod(
+  set setBulkMunroUpdateFilterString(String? filterString) => super.noSuchMethod(
         Invocation.setter(
           #setBulkMunroUpdateFilterString,
           filterString,
@@ -1403,8 +1407,7 @@ class MockMunroState extends _i1.Mock implements _i3.MunroState {
 /// A class which mocks [MunroCompletionState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMunroCompletionState extends _i1.Mock
-    implements _i3.MunroCompletionState {
+class MockMunroCompletionState extends _i1.Mock implements _i3.MunroCompletionState {
   MockMunroCompletionState() {
     _i1.throwOnMissingStub(this);
   }
@@ -1471,9 +1474,7 @@ class MockMunroCompletionState extends _i1.Mock
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addBulkCompletions(
-          {required List<_i2.MunroCompletion>? munroCompletions}) =>
-      (super.noSuchMethod(
+  _i5.Future<void> addBulkCompletions({required List<_i2.MunroCompletion>? munroCompletions}) => (super.noSuchMethod(
         Invocation.method(
           #addBulkCompletions,
           [],
@@ -1510,9 +1511,7 @@ class MockMunroCompletionState extends _i1.Mock
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> removeMunroCompletion(
-          {required _i2.MunroCompletion? munroCompletion}) =>
-      (super.noSuchMethod(
+  _i5.Future<void> removeMunroCompletion({required _i2.MunroCompletion? munroCompletion}) => (super.noSuchMethod(
         Invocation.method(
           #removeMunroCompletion,
           [],
@@ -1693,8 +1692,7 @@ class MockSavedListState extends _i1.Mock implements _i3.SavedListState {
       ) as bool);
 
   @override
-  _i5.Future<dynamic> createSavedList({required String? name}) =>
-      (super.noSuchMethod(
+  _i5.Future<dynamic> createSavedList({required String? name}) => (super.noSuchMethod(
         Invocation.method(
           #createSavedList,
           [],
@@ -1713,9 +1711,7 @@ class MockSavedListState extends _i1.Mock implements _i3.SavedListState {
       ) as _i5.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> updateSavedListName(
-          {required _i2.SavedList? savedList}) =>
-      (super.noSuchMethod(
+  _i5.Future<dynamic> updateSavedListName({required _i2.SavedList? savedList}) => (super.noSuchMethod(
         Invocation.method(
           #updateSavedListName,
           [],
@@ -1725,8 +1721,7 @@ class MockSavedListState extends _i1.Mock implements _i3.SavedListState {
       ) as _i5.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> deleteSavedList({required _i2.SavedList? savedList}) =>
-      (super.noSuchMethod(
+  _i5.Future<dynamic> deleteSavedList({required _i2.SavedList? savedList}) => (super.noSuchMethod(
         Invocation.method(
           #deleteSavedList,
           [],
@@ -1845,8 +1840,7 @@ class MockSavedListState extends _i1.Mock implements _i3.SavedListState {
 /// A class which mocks [PushNotificationState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPushNotificationState extends _i1.Mock
-    implements _i11.PushNotificationState {
+class MockPushNotificationState extends _i1.Mock implements _i11.PushNotificationState {
   MockPushNotificationState() {
     _i1.throwOnMissingStub(this);
   }
@@ -1895,8 +1889,7 @@ class MockPushNotificationState extends _i1.Mock
       ) as _i5.Future<bool>);
 
   @override
-  _i5.Future<void> syncTokenIfNeeded({bool? force = false}) =>
-      (super.noSuchMethod(
+  _i5.Future<void> syncTokenIfNeeded({bool? force = false}) => (super.noSuchMethod(
         Invocation.method(
           #syncTokenIfNeeded,
           [],
@@ -1946,8 +1939,7 @@ class MockPushNotificationState extends _i1.Mock
 /// A class which mocks [StartupOverlayPolicies].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStartupOverlayPolicies extends _i1.Mock
-    implements _i12.StartupOverlayPolicies {
+class MockStartupOverlayPolicies extends _i1.Mock implements _i12.StartupOverlayPolicies {
   MockStartupOverlayPolicies() {
     _i1.throwOnMissingStub(this);
   }

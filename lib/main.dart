@@ -17,6 +17,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/app_providers.dart';
 import 'package:two_eight_two/config/app_config.dart';
+import 'package:two_eight_two/config/onboarding_config.dart';
 import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -29,6 +30,7 @@ main() async {
   final prefs = await SharedPreferences.getInstance();
   final mixpanel = await Mixpanel.init(config.mixpanelToken, trackAutomaticEvents: true);
   mixpanel.setServerURL("https://api-eu.mixpanel.com");
+  await mixpanel.registerSuperProperties({'onboarding_version': onboardingVersion});
 
   MapboxOptions.setAccessToken(config.mapboxToken);
   if (kDebugMode) {

@@ -25,7 +25,10 @@ class UserTrailingButton extends StatelessWidget {
 
     void onPressed() {
       if (userState.currentUser == null) {
-        Navigator.of(context).pushNamed(AuthHomeScreen.route);
+        Navigator.of(context).pushNamed(
+          AuthHomeScreen.route,
+          arguments: const AuthHomeScreenArgs(gateSource: 'profile_tab'),
+        );
       } else if (isFollowing) {
         currentUserFollowerState.unfollowUser(targetUserId: profileUserId);
       } else {

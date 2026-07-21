@@ -21,7 +21,17 @@ class OnboardingState extends ChangeNotifier {
   }
 
   int _currentPage = 0;
+  int _maxPageReached = 0;
   static const int totalPages = 4;
+  static const List<String> _stepNames = ['welcome', 'progress', 'achievement', 'munro_question'];
+  // Distinct event per step so funnel reports can show step names as column
+  // headers instead of one repeated event name with different filters.
+  static const List<String> _stepEventNames = [
+    AnalyticsEvent.onboardingWelcomeViewed,
+    AnalyticsEvent.onboardingProgressViewed,
+    AnalyticsEvent.onboardingAchievementViewed,
+    AnalyticsEvent.onboardingMunroQuestionViewed,
+  ];
   List<OnboardingFeedPost> _feedPosts = [];
   OnboardingTotals? _totals;
   List<OnboardingAchievements> _achievements = [];
@@ -29,6 +39,8 @@ class OnboardingState extends ChangeNotifier {
   bool get hasCompletedOnboarding => _hascompletedOnboarding;
 
   int get currentPage => _currentPage;
+
+  String get currentStepName => _stepNames[_currentPage];
 
   bool get isFirstPage => _currentPage == 0;
   bool get isLastPage => _currentPage == totalPages - 1;
@@ -52,8 +64,13 @@ class OnboardingState extends ChangeNotifier {
       _analytics.track(AnalyticsEvent.onboardingStarted);
       _analytics.track(
         AnalyticsEvent.onboardingScreenViewed,
-        props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
+        props: {
+          AnalyticsProp.stepNumber: 1,
+          AnalyticsProp.stepName: _stepNames[0],
+          AnalyticsProp.source: 'first_run_onboarding',
+        },
       );
+      _analytics.track(_stepEventNames[0]);
     } catch (error, stackTrace) {
       _logger.error(
         "Failed to load onboarding data",
@@ -63,11 +80,11 @@ class OnboardingState extends ChangeNotifier {
     }
   }
 
-  Future<void> markOnboardingCompleted() async {
+  Future<void> markOnboardingCompleted({required String branch}) async {
     _hascompletedOnboarding = true;
     await _appFlagsRepository.setOnboardingCompleted(true);
     notifyListeners();
-    _analytics.track(AnalyticsEvent.onboardingCompleted);
+    _analytics.track(AnalyticsEvent.onboardingCompleted, props: {AnalyticsProp.branch: branch});
   }
 
   void nextPage() {
@@ -87,14 +104,25 @@ class OnboardingState extends ChangeNotifier {
   // goToPage() - nextPage()/previousPage() above are never hit in production,
   // only by tests. Tracking lives here so every screen change is captured
   // regardless of swipe direction or entry point.
+  //
+  // Analytics only fires the first time a page is reached (page > _maxPageReached)
+  // so swiping back and forth doesn't inflate view counts for already-seen steps.
   void goToPage(int page) {
     if (page >= 0 && page < totalPages) {
       _currentPage = page;
       notifyListeners();
-      _analytics.track(
-        AnalyticsEvent.onboardingScreenViewed,
-        props: {AnalyticsProp.screenIndex: _currentPage, AnalyticsProp.source: 'first_run_onboarding'},
-      );
+      if (page > _maxPageReached) {
+        _maxPageReached = page;
+        _analytics.track(
+          AnalyticsEvent.onboardingScreenViewed,
+          props: {
+            AnalyticsProp.stepNumber: page + 1,
+            AnalyticsProp.stepName: _stepNames[page],
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
+        );
+        _analytics.track(_stepEventNames[page]);
+      }
     }
   }
 }

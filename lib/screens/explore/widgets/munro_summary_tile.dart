@@ -125,7 +125,11 @@ class MunroSummaryTile extends StatelessWidget {
                             AnalyticsProp.munroId: (munro.id).toString(),
                           });
                           if (userId == null) {
-                            Navigator.pushNamed(context, AuthHomeScreen.route);
+                            Navigator.pushNamed(
+                              context,
+                              AuthHomeScreen.route,
+                              arguments: const AuthHomeScreenArgs(gateSource: 'explore_tile'),
+                            );
                           } else {
                             munroState.setSelectedMunroId = munro.id;
                             await SaveMunroBottomSheet.show(context, munroId: munro.id);
@@ -139,7 +143,11 @@ class MunroSummaryTile extends StatelessWidget {
                       child: InkWell(
                         onTap: () async {
                           if (userId == null) {
-                            Navigator.pushNamed(context, AuthHomeScreen.route);
+                            Navigator.pushNamed(
+                              context,
+                              AuthHomeScreen.route,
+                              arguments: const AuthHomeScreenArgs(gateSource: 'explore_tile'),
+                            );
                             return;
                           }
                           if (munroSummited) return;

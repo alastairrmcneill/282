@@ -24,7 +24,10 @@ class FollowingButton extends StatelessWidget {
 
     void onPressed() {
       if (loggedInUser == null) {
-        Navigator.of(context).pushNamed(AuthHomeScreen.route);
+        Navigator.of(context).pushNamed(
+          AuthHomeScreen.route,
+          arguments: const AuthHomeScreenArgs(gateSource: 'follow_button'),
+        );
       } else {
         final profileState = context.read<ProfileState>();
         if (isFollowing) {

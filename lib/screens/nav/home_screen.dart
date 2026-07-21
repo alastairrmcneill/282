@@ -117,7 +117,10 @@ class HomeScreenState extends State<HomeScreen> {
 
           if (value != 0) {
             if (userId == null) {
-              Navigator.of(context).pushNamed(AuthHomeScreen.route);
+              Navigator.of(context).pushNamed(
+                AuthHomeScreen.route,
+                arguments: const AuthHomeScreenArgs(gateSource: 'home_nav_tab'),
+              );
               return;
             }
           }

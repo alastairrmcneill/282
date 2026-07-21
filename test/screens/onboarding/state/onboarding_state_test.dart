@@ -135,7 +135,11 @@ void main() {
         verify(mockAnalytics.track(AnalyticsEvent.onboardingStarted)).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 1,
+            AnalyticsProp.stepName: 'welcome',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
       });
 
@@ -194,7 +198,7 @@ void main() {
         when(mockAppFlagsRepository.setOnboardingCompleted(any)).thenAnswer((_) async => {});
 
         // Act
-        await onboardingState.markOnboardingCompleted();
+        await onboardingState.markOnboardingCompleted(branch: 'yes');
 
         // Assert
         expect(onboardingState.hasCompletedOnboarding, true);
@@ -206,10 +210,27 @@ void main() {
         when(mockAppFlagsRepository.setOnboardingCompleted(any)).thenAnswer((_) async => {});
 
         // Act
-        await onboardingState.markOnboardingCompleted();
+        await onboardingState.markOnboardingCompleted(branch: 'yes');
 
         // Assert
-        verify(mockAnalytics.track(AnalyticsEvent.onboardingCompleted)).called(1);
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingCompleted,
+          props: {AnalyticsProp.branch: 'yes'},
+        )).called(1);
+      });
+
+      test('should track the no-branch when marking completed via the short-circuit path', () async {
+        // Arrange
+        when(mockAppFlagsRepository.setOnboardingCompleted(any)).thenAnswer((_) async => {});
+
+        // Act
+        await onboardingState.markOnboardingCompleted(branch: 'no');
+
+        // Assert
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingCompleted,
+          props: {AnalyticsProp.branch: 'no'},
+        )).called(1);
       });
 
       test('should notify listeners when marking completed', () async {
@@ -219,7 +240,7 @@ void main() {
         onboardingState.addListener(() => notified = true);
 
         // Act
-        await onboardingState.markOnboardingCompleted();
+        await onboardingState.markOnboardingCompleted(branch: 'yes');
 
         // Assert
         expect(notified, true);
@@ -258,7 +279,11 @@ void main() {
         // Assert
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 1, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 2,
+            AnalyticsProp.stepName: 'progress',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
       });
 
@@ -338,7 +363,7 @@ void main() {
         expect(notified, false);
       });
 
-      test('should track analytics when going back', () {
+      test('should not re-track analytics when going back to an already-seen page', () {
         // Arrange
         onboardingState.nextPage(); // Move to page 1
         reset(mockAnalytics);
@@ -346,12 +371,13 @@ void main() {
         // Act
         onboardingState.previousPage();
 
-        // Assert - previousPage delegates to goToPage, so the screen
-        // becoming visible again is tracked like any other page change.
-        verify(mockAnalytics.track(
+        // Assert - previousPage delegates to goToPage, but page 0 was already
+        // seen (via init()), so revisiting it via swipe-back must not re-fire
+        // analytics and inflate its view count.
+        verifyNever(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
-        )).called(1);
+          props: anyNamed('props'),
+        ));
       });
     });
 
@@ -437,8 +463,27 @@ void main() {
         // so it must track like nextPage/previousPage do.
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 2, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 3,
+            AnalyticsProp.stepName: 'achievement',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
+      });
+
+      test('should not re-track analytics when returning to a lower page than the max reached', () {
+        // Arrange
+        onboardingState.goToPage(3); // Reach the furthest page first
+        reset(mockAnalytics);
+
+        // Act
+        onboardingState.goToPage(1); // Step back to an already-seen page
+
+        // Assert
+        verifyNever(mockAnalytics.track(
+          AnalyticsEvent.onboardingScreenViewed,
+          props: anyNamed('props'),
+        ));
       });
     });
 
@@ -622,7 +667,7 @@ void main() {
         bool notified = false;
         onboardingState.addListener(() => notified = true);
 
-        await onboardingState.markOnboardingCompleted();
+        await onboardingState.markOnboardingCompleted(branch: 'yes');
 
         expect(notified, true);
       });
@@ -673,7 +718,7 @@ void main() {
         onboardingState.addListener(() => notificationCount++);
         onboardingState.addListener(() => notificationCount++);
 
-        await onboardingState.markOnboardingCompleted();
+        await onboardingState.markOnboardingCompleted(branch: 'yes');
 
         expect(notificationCount, 3);
       });
@@ -699,32 +744,44 @@ void main() {
         onboardingState.nextPage(); // Page 1
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 1, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 2,
+            AnalyticsProp.stepName: 'progress',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
 
         onboardingState.nextPage(); // Page 2
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 2, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 3,
+            AnalyticsProp.stepName: 'achievement',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
 
         onboardingState.nextPage(); // Page 3
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 3, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 4,
+            AnalyticsProp.stepName: 'munro_question',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
       });
 
-      test('should track analytics for previousPage', () {
+      test('should not re-track analytics for previousPage to an already-seen page', () {
         onboardingState.nextPage();
         reset(mockAnalytics);
 
         onboardingState.previousPage();
 
-        verify(mockAnalytics.track(
+        verifyNever(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
-        )).called(1);
+          props: anyNamed('props'),
+        ));
       });
 
       test('should track analytics for goToPage', () {
@@ -734,7 +791,11 @@ void main() {
 
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 2, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 3,
+            AnalyticsProp.stepName: 'achievement',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
       });
 
@@ -746,16 +807,23 @@ void main() {
         verify(mockAnalytics.track(AnalyticsEvent.onboardingStarted)).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
-          props: {AnalyticsProp.screenIndex: 0, AnalyticsProp.source: 'first_run_onboarding'},
+          props: {
+            AnalyticsProp.stepNumber: 1,
+            AnalyticsProp.stepName: 'welcome',
+            AnalyticsProp.source: 'first_run_onboarding',
+          },
         )).called(1);
       });
 
-      test('should track onboarding completed', () async {
+      test('should track onboarding completed with branch', () async {
         when(mockAppFlagsRepository.setOnboardingCompleted(any)).thenAnswer((_) async => {});
 
-        await onboardingState.markOnboardingCompleted();
+        await onboardingState.markOnboardingCompleted(branch: 'yes');
 
-        verify(mockAnalytics.track(AnalyticsEvent.onboardingCompleted)).called(1);
+        verify(mockAnalytics.track(
+          AnalyticsEvent.onboardingCompleted,
+          props: {AnalyticsProp.branch: 'yes'},
+        )).called(1);
       });
     });
   });

@@ -17,13 +17,15 @@ class FeedbackSurveyDialog extends StatelessWidget {
   final TextEditingController _feedbackController1 = TextEditingController();
   final TextEditingController _feedbackController2 = TextEditingController();
 
-  Future<void> _submit(
+  Future<bool> _submit(
     FeedbackRepository repository,
     int surveyNumber,
     String? userId,
     String response1,
     String response2,
   ) async {
+    if (response1.isEmpty && response2.isEmpty) return false;
+
     final bool isIOS = Platform.isIOS;
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -37,8 +39,8 @@ class FeedbackSurveyDialog extends StatelessWidget {
       platform: isIOS ? 'iOS' : 'Android',
     );
 
-    if (response1.isEmpty && response2.isEmpty) return;
     await repository.create(feedback: feedback);
+    return true;
   }
 
   @override
@@ -118,11 +120,12 @@ class FeedbackSurveyDialog extends StatelessWidget {
                   final analytics = context.read<Analytics>();
                   final navigator = Navigator.of(context);
 
-                  await _submit(feedbackRepository, surveyNumber, userId, response1, response2);
-                  analytics.track(AnalyticsEvent.surveyAnswers, props: {
-                    AnalyticsProp.q1: response1.isNotEmpty,
-                    AnalyticsProp.q2: response2.isNotEmpty,
-                  });
+                  final saved = await _submit(feedbackRepository, surveyNumber, userId, response1, response2);
+                  if (saved) {
+                    analytics.track(AnalyticsEvent.surveyAnswers, props: {
+                      AnalyticsProp.surveyNumber: surveyNumber,
+                    });
+                  }
                   if (context.mounted) showSnackBar(context, 'Thank you for your feedback! 🙏');
                   navigator.pop();
                 },

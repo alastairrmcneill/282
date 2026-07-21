@@ -10,8 +10,14 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+class AuthHomeScreenArgs {
+  final String? gateSource;
+  const AuthHomeScreenArgs({this.gateSource});
+}
+
 class AuthHomeScreen extends StatefulWidget {
-  const AuthHomeScreen({super.key});
+  final String? gateSource;
+  const AuthHomeScreen({super.key, this.gateSource});
   static const String authRoute = '/auth';
   static const String route = '$authRoute/home';
 
@@ -84,13 +90,13 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                       ), // Not centered
                     ),
                     const SizedBox(height: 30),
-                    const AppleSignInButton(style: SignInWithAppleButtonStyle.white),
+                    AppleSignInButton(style: SignInWithAppleButtonStyle.white, gateSource: widget.gateSource),
                     const SizedBox(height: 20),
-                    const GoogleSignInButton(),
+                    GoogleSignInButton(gateSource: widget.gateSource),
                     const SizedBox(height: 15),
                     const TextDivider(text: "or", color: Colors.white),
                     const SizedBox(height: 15),
-                    const CreateFreeAccountButton(),
+                    CreateFreeAccountButton(gateSource: widget.gateSource),
                     const SizedBox(height: 15),
                     RichText(
                       textAlign: TextAlign.center,
@@ -106,7 +112,10 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).pushNamed(LoginScreen.route);
+                                Navigator.of(context).pushNamed(
+                                  LoginScreen.route,
+                                  arguments: LoginScreenArgs(gateSource: widget.gateSource),
+                                );
                               },
                           ),
                         ],

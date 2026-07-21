@@ -10,9 +10,9 @@ class CustomCheckbox extends StatelessWidget {
     this.size = 18,
     this.targetSize = 48,
     this.activeFillColor,
-    this.inactiveFillColor = const Color.fromRGBO(245, 245, 245, 1.0),
+    this.inactiveFillColor,
     this.activeBorderColor,
-    this.inactiveBorderColor = const Color.fromRGBO(224, 224, 224, 1.0),
+    this.inactiveBorderColor,
     this.checkColor = Colors.white,
     this.borderRadius = 4,
     this.borderWidth = 0.8,
@@ -23,9 +23,9 @@ class CustomCheckbox extends StatelessWidget {
   final double size;
   final double targetSize;
   final Color? activeFillColor;
-  final Color inactiveFillColor;
+  final Color? inactiveFillColor;
   final Color? activeBorderColor;
-  final Color inactiveBorderColor;
+  final Color? inactiveBorderColor;
   final Color checkColor;
   final double borderRadius;
   final double borderWidth;
@@ -34,6 +34,8 @@ class CustomCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     final activeColor = activeFillColor ?? context.colors.accent;
     final activeBorder = activeBorderColor ?? context.colors.accent;
+    final inactiveFill = inactiveFillColor ?? context.colors.surface;
+    final inactiveBorder = inactiveBorderColor ?? context.colors.border;
     return InkResponse(
       onTap: () => onChanged(!value),
       highlightShape: BoxShape.circle,
@@ -51,10 +53,10 @@ class CustomCheckbox extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(
-                color: value ? activeBorder : inactiveBorderColor,
+                color: value ? activeBorder : inactiveBorder,
                 width: borderWidth,
               ),
-              color: value ? activeColor : inactiveFillColor,
+              color: value ? activeColor : inactiveFill,
             ),
             child: value
                 ? Icon(

@@ -34,7 +34,11 @@ class MunroSaveButton extends StatelessWidget {
             AnalyticsProp.munroName: munro.name,
           });
           if (userId == null) {
-            Navigator.pushNamed(context, AuthHomeScreen.route);
+            Navigator.pushNamed(
+              context,
+              AuthHomeScreen.route,
+              arguments: const AuthHomeScreenArgs(gateSource: 'munro_save_button'),
+            );
           } else {
             await SaveMunroBottomSheet.show(context, munroId: munro.id);
           }

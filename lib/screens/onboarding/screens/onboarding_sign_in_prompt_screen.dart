@@ -28,7 +28,12 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<Analytics>().track(
         AnalyticsEvent.onboardingScreenViewed,
-        props: {AnalyticsProp.screenIndex: 4, AnalyticsProp.source: 'first_run_onboarding'},
+        props: {
+          AnalyticsProp.stepNumber: 6,
+          AnalyticsProp.stepName: 'sign_in',
+          AnalyticsProp.source: 'first_run_onboarding',
+          AnalyticsProp.branch: 'yes',
+        },
       );
     });
   }
@@ -104,8 +109,10 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                                       context.read<Analytics>().track(
                                         AnalyticsEvent.onboardingBackTapped,
                                         props: {
-                                          AnalyticsProp.screenIndex: 4,
+                                          AnalyticsProp.stepNumber: 6,
+                                          AnalyticsProp.stepName: 'sign_in',
                                           AnalyticsProp.source: 'first_run_onboarding',
+                                          AnalyticsProp.branch: 'yes',
                                         },
                                       );
                                       Navigator.pop(context);

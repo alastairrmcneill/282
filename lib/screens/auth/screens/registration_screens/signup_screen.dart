@@ -11,14 +11,16 @@ import 'package:two_eight_two/widgets/widgets.dart';
 
 class SignUpScreenArgs {
   final bool fromOnboarding;
-  const SignUpScreenArgs({this.fromOnboarding = false});
+  final String? gateSource;
+  const SignUpScreenArgs({this.fromOnboarding = false, this.gateSource});
 }
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key, this.fromOnboarding = false});
+  const SignUpScreen({super.key, this.fromOnboarding = false, this.gateSource});
   static const String route = '${AuthHomeScreen.authRoute}/signup';
 
   final bool fromOnboarding;
+  final String? gateSource;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -63,12 +65,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ..password = _passwordController.text.trim()
       ..firstName = _firstNameController.text.trim()
       ..lastName = _lastNameController.text.trim()
-      ..displayName =
-          '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}';
+      ..displayName = '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}';
 
     final authResult = await context.read<AuthState>().registerWithEmail(
           registrationData: data,
-          source: widget.fromOnboarding ? 'first_run_onboarding' : null,
+          source: widget.fromOnboarding ? 'first_run_onboarding' : 'in_app_onboarding',
+          gateSource: widget.gateSource,
         );
 
     if (!mounted) return;
@@ -77,18 +79,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (mounted) {
         Navigator.pushNamed(context, OnboardingNotificationsScreen.route);
       }
-    } else if (authResult.success &&
-        authResult.showOnboarding &&
-        authResult.userId != null) {
+    } else if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
       Navigator.pushNamed(
         context,
         InAppOnboardingScreen.route,
-        arguments: InAppOnboardingScreenArgs(userId: authResult.userId!),
+        arguments: InAppOnboardingScreenArgs(userId: authResult.userId!, gateSource: widget.gateSource),
       );
     } else if (authResult.success) {
       await context.read<MunroCompletionState>().loadUserMunroCompletions();
-      Navigator.pushNamedAndRemoveUntil(
-          context, HomeScreen.route, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (route) => false);
     } else {
       setState(() => _error = mapAuthErrorMessage(authResult.errorMessage));
     }
@@ -113,9 +112,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   if (!widget.fromOnboarding) ...[
                     const SizedBox(height: 10),
-                    const AppleSignInButton(),
+                    AppleSignInButton(gateSource: widget.gateSource),
                     const SizedBox(height: 10),
-                    const GoogleSignInButton(),
+                    GoogleSignInButton(gateSource: widget.gateSource),
                     const SizedBox(height: 20),
                     const TextDivider(text: "or"),
                     const SizedBox(height: 20),
@@ -150,8 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   PasswordFormField(textEditingController: _passwordController),
                   const SizedBox(height: 12),
                   ConfirmPasswordFormField(
-                    confirmPassword_TextEditingController:
-                        _confirmPasswordController,
+                    confirmPassword_TextEditingController: _confirmPasswordController,
                     password_TextEditingController: _passwordController,
                   ),
                   if (password.isNotEmpty) ...[
@@ -167,6 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           bottomNavigationBar: BottomButtonBar(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 CtaButton(

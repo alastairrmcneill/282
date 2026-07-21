@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
 import 'package:two_eight_two/screens/onboarding/screens/welcome_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/progress_screen.dart';
@@ -47,6 +48,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _previousPage() {
+    final state = context.read<OnboardingState>();
+    context.read<Analytics>().track(
+      AnalyticsEvent.onboardingBackTapped,
+      props: {
+        AnalyticsProp.stepNumber: state.currentPage + 1,
+        AnalyticsProp.stepName: state.currentStepName,
+        AnalyticsProp.source: 'first_run_onboarding',
+      },
+    );
     _pageController.previousPage(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -54,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _onNo() async {
-    await context.read<OnboardingState>().markOnboardingCompleted();
+    await context.read<OnboardingState>().markOnboardingCompleted(branch: 'no');
     // RootGate rebuilds automatically when hasCompletedOnboarding changes
   }
 

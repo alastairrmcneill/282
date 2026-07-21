@@ -66,6 +66,7 @@ class AuthState extends ChangeNotifier {
   Future<AuthResult> registerWithEmail({
     required RegistrationData registrationData,
     String? source,
+    String? gateSource,
   }) async {
     _setLoading();
 
@@ -105,6 +106,7 @@ class AuthState extends ChangeNotifier {
         AnalyticsProp.method: 'email',
         AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
         if (source != null) AnalyticsProp.source: source,
+        if (gateSource != null) AnalyticsProp.gateSource: gateSource,
       });
 
       // Load essential user data after successful authentication
@@ -129,6 +131,7 @@ class AuthState extends ChangeNotifier {
     required String email,
     required String password,
     String? source,
+    String? gateSource,
   }) async {
     _setLoading();
 
@@ -145,6 +148,7 @@ class AuthState extends ChangeNotifier {
       _analytics.track(AnalyticsEvent.signIn, props: {
         AnalyticsProp.method: 'email',
         if (source != null) AnalyticsProp.source: source,
+        if (gateSource != null) AnalyticsProp.gateSource: gateSource,
       });
 
       final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
@@ -158,7 +162,7 @@ class AuthState extends ChangeNotifier {
     }
   }
 
-  Future<AuthResult> signInWithApple({String? source}) async {
+  Future<AuthResult> signInWithApple({String? source, String? gateSource}) async {
     _setLoading();
     try {
       final result = await _authRepo.signInWithApple();
@@ -216,11 +220,13 @@ class AuthState extends ChangeNotifier {
           AnalyticsProp.method: 'apple',
           AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
           if (source != null) AnalyticsProp.source: source,
+          if (gateSource != null) AnalyticsProp.gateSource: gateSource,
         });
       } else {
         _analytics.track(AnalyticsEvent.signIn, props: {
           AnalyticsProp.method: 'apple',
           if (source != null) AnalyticsProp.source: source,
+          if (gateSource != null) AnalyticsProp.gateSource: gateSource,
         });
       }
 
@@ -255,7 +261,7 @@ class AuthState extends ChangeNotifier {
     }
   }
 
-  Future<AuthResult> signInWithGoogle({String? source}) async {
+  Future<AuthResult> signInWithGoogle({String? source, String? gateSource}) async {
     _setLoading();
     try {
       final cred = await _authRepo.signInWithGoogle();
@@ -302,11 +308,13 @@ class AuthState extends ChangeNotifier {
           AnalyticsProp.method: 'google',
           AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
           if (source != null) AnalyticsProp.source: source,
+          if (gateSource != null) AnalyticsProp.gateSource: gateSource,
         });
       } else {
         _analytics.track(AnalyticsEvent.signIn, props: {
           AnalyticsProp.method: 'google',
           if (source != null) AnalyticsProp.source: source,
+          if (gateSource != null) AnalyticsProp.gateSource: gateSource,
         });
       }
 
