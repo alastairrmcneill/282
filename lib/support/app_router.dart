@@ -121,48 +121,6 @@ class AppRouter {
           settings: settings,
         );
 
-      case PhotoGalleryRoutes.munroGallery:
-        final args = settings.arguments as MunroPhotoGalleryArgs;
-        return MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
-            create: (ctx) => PhotoGalleryState<MunroPicture>(
-              ctx.read<UserState>(),
-              ctx.read<Logger>(),
-              ({required offset, required count, required excludedAuthorIds}) {
-                return ctx.read<MunroPicturesRepository>().readMunroPictures(
-                      munroId: args.munroId,
-                      excludedAuthorIds: excludedAuthorIds,
-                      offset: offset,
-                      count: count,
-                    );
-              },
-            )..loadInitital(),
-            child: PhotoGalleryScreen(title: "Photos from ${args.munroName}"),
-          ),
-          settings: settings,
-        );
-
-      case PhotoGalleryRoutes.profileGallery:
-        final args = settings.arguments as ProfilePhotoGalleryArgs;
-        return MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
-            create: (ctx) => PhotoGalleryState<MunroPicture>(
-              ctx.read<UserState>(),
-              ctx.read<Logger>(),
-              ({required offset, required count, required excludedAuthorIds}) {
-                return ctx.read<MunroPicturesRepository>().readProfilePictures(
-                      profileId: args.userId,
-                      excludedAuthorIds: excludedAuthorIds,
-                      offset: offset,
-                      count: count,
-                    );
-              },
-            )..loadInitital(),
-            child: PhotoGalleryScreen(title: "Photos from ${args.displayName}"),
-          ),
-          settings: settings,
-        );
-
       case ProfileScreen.route:
         final args = settings.arguments as ProfileScreenArgs;
 

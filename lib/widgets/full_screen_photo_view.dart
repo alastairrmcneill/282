@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -76,19 +77,25 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
             },
             builder: (context, index) {
               return PhotoViewGalleryPageOptions(
-                imageProvider: CachedNetworkImageProvider(photos[index].imageUrl),
+                tightMode: false,
+                imageProvider: CachedNetworkImageProvider(
+                  photos[index].imageUrl,
+                ),
                 initialScale: PhotoViewComputedScale.contained,
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 2,
                 errorBuilder: (context, error, stackTrace) {
                   context.read<Logger>().error(
-                        'Failed to load photo',
-                        error: error,
-                        stackTrace: stackTrace,
-                        context: {'imageUrl': photos[index].imageUrl},
-                      );
+                    'Failed to load photo',
+                    error: error,
+                    stackTrace: stackTrace,
+                    context: {'imageUrl': photos[index].imageUrl},
+                  );
                   return const Center(
-                    child: Icon(Icons.error, color: Colors.white),
+                    child: Icon(
+                      PhosphorIconsRegular.warning,
+                      color: Colors.white,
+                    ),
                   );
                 },
               );
@@ -102,7 +109,7 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
             top: 40,
             left: 20,
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: const Icon(PhosphorIconsBold.x, color: Colors.white),
               onPressed: () => Navigator.pop(context),
             ),
           ),
