@@ -44,7 +44,7 @@ class _MunroScreenState extends State<MunroScreen> {
 
       final appFlags = context.read<AppFlagsRepository>();
       await appFlags.incrementMunroDetailOpenCount();
-      if (context.mounted && appFlags.munroDetailOpenCount == 10) {
+      if (context.mounted && appFlags.munroDetailOpenCount >= 10) {
         await maybeShowReviewPrompt(context);
       }
     });

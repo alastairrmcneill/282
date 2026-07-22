@@ -38,6 +38,8 @@ class AnalyticsEvent {
   static const achievementUnlockedDialogShown = 'achievement_unlocked_dialog_shown';
   static const reviewPromptShown = 'review_prompt_shown';
   static const reviewPromptResponse = 'review_prompt_response';
+  static const reviewSentimentPromptShown = 'review_sentiment_prompt_shown';
+  static const reviewSentimentPromptResponse = 'review_sentiment_prompt_response';
   static const editPost = "edit_post";
   static const deletePost = "delete_post";
   static const createComment = "create_comment";
