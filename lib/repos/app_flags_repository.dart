@@ -15,6 +15,7 @@ class AppFlagsRepository {
   static const _kOpenCount = 'open_count';
   static const _kOnboardingCompletedKey = 'onboarding_completed';
   static const _kMunroDetailOpenCount = 'munro_detail_open_count';
+  static const _kLastReviewSentimentPromptDate = 'last_review_sentiment_prompt_date';
 
   bool get onboardingCompleted => _prefs.getBool(_kOnboardingCompletedKey) ?? false;
   Future<void> setOnboardingCompleted(bool v) async {
@@ -98,4 +99,14 @@ class AppFlagsRepository {
   }
 
   Future<void> incrementMunroDetailOpenCount() => setMunroDetailOpenCount(munroDetailOpenCount + 1);
+
+  DateTime? get lastReviewSentimentPromptDate {
+    final raw = _prefs.getString(_kLastReviewSentimentPromptDate);
+    return raw == null ? null : DateTime.tryParse(raw);
+  }
+
+  Future<void> setLastReviewSentimentPromptDate(DateTime v) async {
+    final ok = await _prefs.setString(_kLastReviewSentimentPromptDate, v.toIso8601String());
+    if (!ok) throw Exception('Failed to persist $_kLastReviewSentimentPromptDate');
+  }
 }
