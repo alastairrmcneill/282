@@ -68,15 +68,23 @@ class CreatePostState extends ChangeNotifier {
 
       // Upload picture and get url
       Map<int, List<String>> addedImageUrlsMap = {};
+      final uploadFutures = <Future<(int, String)>>[];
 
       for (int munroId in _addedImages.keys) {
         for (File image in _addedImages[munroId]!) {
-          String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
-          if (addedImageUrlsMap[munroId] == null) {
-            addedImageUrlsMap[munroId] = [];
-          }
-          addedImageUrlsMap[munroId]!.add(imageURL);
+          uploadFutures.add(_storageRepository
+              .uploadImage(imageFile: image, type: ImageUploadType.post)
+              .then((imageURL) => (munroId, imageURL)));
         }
+      }
+
+      final results = await Future.wait(uploadFutures);
+
+      for (final (munroId, imageURL) in results) {
+        if (addedImageUrlsMap[munroId] == null) {
+          addedImageUrlsMap[munroId] = [];
+        }
+        addedImageUrlsMap[munroId]!.add(imageURL);
       }
 
       // Get title
