@@ -7,7 +7,6 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/feed/widgets/widgets.dart';
 import 'package:two_eight_two/screens/profile/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/widgets/pagination_loader.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class ProfileScreenArgs {
