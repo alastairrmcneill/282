@@ -196,8 +196,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
         }
       }
 
+      final previouslySelectedMunroId = munroState.selectedMunroId;
       await deselectAnnotation(munroState, munroCompletionState.munroCompletions);
-      if (closestAnnotation != null && closestMunroId != null) {
+      // Don't re-select if the user tapped the already-selected munro — just leave it deselected.
+      if (closestAnnotation != null && closestMunroId != null && closestMunroId != previouslySelectedMunroId) {
         await selectAnnotation(closestMunroId, closestAnnotation);
       }
     } finally {
@@ -264,10 +266,18 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       iconAnchor: IconAnchor.BOTTOM,
     );
 
+    // Delete the tapped annotation.
     try {
       await _annotationManager.delete(tappedAnnotation);
     } on PlatformException {
       // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+    }
+
+    final currentSlot = allAnnotations[munroId];
+    if (currentSlot != null && currentSlot.id != tappedAnnotation.id) {
+      try {
+        await _annotationManager.delete(currentSlot);
+      } on PlatformException {}
     }
 
     var newAnnotation = await _annotationManager.create(newAnnotationOptions);
