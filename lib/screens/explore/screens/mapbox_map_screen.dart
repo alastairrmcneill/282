@@ -196,8 +196,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
         }
       }
 
+      final previouslySelectedMunroId = munroState.selectedMunroId;
       await deselectAnnotation(munroState, munroCompletionState.munroCompletions);
-      if (closestAnnotation != null && closestMunroId != null) {
+      // Don't re-select if the user tapped the already-selected munro — just leave it deselected.
+      if (closestAnnotation != null && closestMunroId != null && closestMunroId != previouslySelectedMunroId) {
         await selectAnnotation(closestMunroId, closestAnnotation);
       }
     } finally {
@@ -206,31 +208,45 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
-    if (selectedAnnotation != null && munroState.selectedMunroId != null) {
-      final icons = markerIcons;
-      if (icons == null) return;
+    final annotationToDelete = selectedAnnotation;
+    final previousMunroId = munroState.selectedMunroId;
 
-      final Munro munro = munroState.munroList.firstWhere(
-        (munro) => munro.id == munroState.selectedMunroId,
-        orElse: () => Munro.empty,
-      );
-      final bool summited = munroCompletions.any((element) => element.munroId == munro.id);
-      final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
-        geometry: selectedAnnotation!.geometry,
-        image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
-        iconSize: 0.8,
-        iconAnchor: IconAnchor.BOTTOM,
-      );
+    if (annotationToDelete == null || previousMunroId == null) return;
+
+    // Clear state eagerly before any awaits so concurrent operations (e.g. _refreshAnnotations)
+    // see clean state and can't leave selectedAnnotation/selectedMunroId inconsistent.
+    selectedAnnotation = null;
+    munroState.setSelectedMunroId = null;
+
+    final icons = markerIcons;
+    if (icons == null) return;
+
+    final Munro munro = munroState.munroList.firstWhere(
+      (munro) => munro.id == previousMunroId,
+      orElse: () => Munro.empty,
+    );
+    final bool summited = munroCompletions.any((element) => element.munroId == previousMunroId);
+    final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
+      geometry: annotationToDelete.geometry,
+      image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+      iconSize: 0.8,
+      iconAnchor: IconAnchor.BOTTOM,
+    );
+
+    try {
+      await _annotationManager.delete(annotationToDelete);
+    } on PlatformException {
+      // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+    }
+
+    // If a concurrent refresh already cleared and repopulated allAnnotations, skip recreating.
+    if (allAnnotations.containsKey(previousMunroId)) {
       try {
-        await _annotationManager.delete(selectedAnnotation!);
+        final oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
+        allAnnotations[previousMunroId] = oldAnnotation;
       } on PlatformException {
-        // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+        // Map state changed concurrently.
       }
-      var oldAnnotation = await _annotationManager.create(oldAnnotationOptions);
-      allAnnotations[munroState.selectedMunroId!] = oldAnnotation;
-
-      selectedAnnotation = null;
-      munroState.setSelectedMunroId = null;
     }
   }
 
@@ -250,10 +266,18 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       iconAnchor: IconAnchor.BOTTOM,
     );
 
+    // Delete the tapped annotation.
     try {
       await _annotationManager.delete(tappedAnnotation);
     } on PlatformException {
       // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+    }
+
+    final currentSlot = allAnnotations[munroId];
+    if (currentSlot != null && currentSlot.id != tappedAnnotation.id) {
+      try {
+        await _annotationManager.delete(currentSlot);
+      } on PlatformException {}
     }
 
     var newAnnotation = await _annotationManager.create(newAnnotationOptions);

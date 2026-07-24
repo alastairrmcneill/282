@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -18,32 +17,32 @@ class AppRouter {
     switch (settings.name) {
       case HomeScreen.route:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
+          builder: (_) => HomeScreen(startingIndex: 0),
           settings: settings,
         );
       case ExploreTab.route:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
+          builder: (_) => HomeScreen(startingIndex: 0),
           settings: settings,
         );
       case FeedTab.route:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 1),
+          builder: (_) => HomeScreen(startingIndex: 1),
           settings: settings,
         );
       case GroupFilterTab.route:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 2),
+          builder: (_) => HomeScreen(startingIndex: 2),
           settings: settings,
         );
       case SavedTab.route:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 3),
+          builder: (_) => HomeScreen(startingIndex: 3),
           settings: settings,
         );
       case ProfileTab.route:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 4),
+          builder: (_) => HomeScreen(startingIndex: 4),
           settings: settings,
         );
       case AuthHomeScreen.route:
@@ -117,48 +116,6 @@ class AppRouter {
               ),
             ],
             child: MunroScreen(),
-          ),
-          settings: settings,
-        );
-
-      case PhotoGalleryRoutes.munroGallery:
-        final args = settings.arguments as MunroPhotoGalleryArgs;
-        return MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
-            create: (ctx) => PhotoGalleryState<MunroPicture>(
-              ctx.read<UserState>(),
-              ctx.read<Logger>(),
-              ({required offset, required count, required excludedAuthorIds}) {
-                return ctx.read<MunroPicturesRepository>().readMunroPictures(
-                      munroId: args.munroId,
-                      excludedAuthorIds: excludedAuthorIds,
-                      offset: offset,
-                      count: count,
-                    );
-              },
-            )..loadInitital(),
-            child: PhotoGalleryScreen(title: "Photos from ${args.munroName}"),
-          ),
-          settings: settings,
-        );
-
-      case PhotoGalleryRoutes.profileGallery:
-        final args = settings.arguments as ProfilePhotoGalleryArgs;
-        return MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider<PhotoGalleryState<MunroPicture>>(
-            create: (ctx) => PhotoGalleryState<MunroPicture>(
-              ctx.read<UserState>(),
-              ctx.read<Logger>(),
-              ({required offset, required count, required excludedAuthorIds}) {
-                return ctx.read<MunroPicturesRepository>().readProfilePictures(
-                      profileId: args.userId,
-                      excludedAuthorIds: excludedAuthorIds,
-                      offset: offset,
-                      count: count,
-                    );
-              },
-            )..loadInitital(),
-            child: PhotoGalleryScreen(title: "Photos from ${args.displayName}"),
           ),
           settings: settings,
         );
@@ -434,7 +391,7 @@ class AppRouter {
 
       default:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(key: homeScreenKey, startingIndex: 0),
+          builder: (_) => HomeScreen(startingIndex: 0),
           settings: settings,
         );
     }
