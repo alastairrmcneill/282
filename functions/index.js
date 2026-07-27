@@ -1,7 +1,7 @@
-const admin = require("firebase-admin");
+const { initializeApp, getApps } = require("firebase-admin/app");
 
-if (admin.apps.length === 0) {
-  admin.initializeApp();
+if (!getApps().length) {
+  initializeApp();
 }
 
 exports.beforecreated = require("./authTriggers").beforecreated;
