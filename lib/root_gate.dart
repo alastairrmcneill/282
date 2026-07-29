@@ -14,7 +14,7 @@ class RootGate extends StatelessWidget {
     final auth = context.watch<AuthState>();
 
     final skipOnboarding = onboarding.hasCompletedOnboarding || auth.currentUserId != null;
-
+    return Onboarding2Screen();
     return skipOnboarding
         ? AgeGateScreen(child: HomeScreen(key: homeScreenKey, startingIndex: 0))
         : const OnboardingScreen();

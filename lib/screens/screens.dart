@@ -1,4 +1,5 @@
 export 'auth/auth_home_screen.dart';
+export 'auth/screens/login_screen.dart';
 export 'create_post/create_post_screen.dart';
 export 'create_post/select_munros_screen.dart';
 export 'edit_profile/edit_profile_screen.dart';
@@ -8,6 +9,7 @@ export 'munro/munro_screen.dart';
 export 'munro/screens/munro_summits_screen.dart';
 export 'munro/screens/munro_map_screen.dart';
 export 'nav/home_screen.dart';
+export 'onboarding2/onboarding_2_screen.dart';
 export 'onboarding/onboarding_screen.dart';
 export 'onboarding/screens/onboarding_bulk_log_screen.dart';
 export 'onboarding/screens/onboarding_sign_in_prompt_screen.dart';
