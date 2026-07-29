@@ -55,7 +55,6 @@ class AnalyticsEvent {
   static const deleteAccount = "delete_account";
   static const selectCommonlyClimbedMunros = "select_commonly_climbed_munros_screen";
   static const onboardingCompleted = 'onboarding_completed';
-  static const onboardingStarted = 'onboarding_started';
   static const onboardingScreenViewed = 'onboarding_screen_viewed';
   static const appShared = 'app_shared';
   static const munroStartingPointClicked = 'munro_starting_point_clicked';
@@ -91,10 +90,6 @@ class AnalyticsEvent {
   static const ageGateBirthdatePromptShown = 'age_gate_birthdate_prompt_shown';
 
   static const onboardingBackTapped = 'onboarding_back_tapped';
-  static const onboardingWelcomeViewed = 'onboarding_welcome_viewed';
-  static const onboardingProgressViewed = 'onboarding_progress_viewed';
-  static const onboardingAchievementViewed = 'onboarding_achievement_viewed';
-  static const onboardingMunroQuestionViewed = 'onboarding_munro_question_viewed';
   static const onboardingLegalLinkTapped = 'onboarding_legal_link_tapped';
   static const onboardingAuthCtaTapped = 'onboarding_auth_cta_tapped';
   static const bulkLogViewToggled = 'bulk_log_view_toggled';
@@ -120,6 +115,8 @@ class AnalyticsProp {
   static const source = 'source';
   static const gateSource = 'gate_source';
   static const munroCompletionsAdded = "munro_completions_added";
+  static const munrosLogged = "munros_logged";
+  static const notificationsEnabled = "notifications_enabled";
   static const munroChallengeCount = "munro_challenge_count";
   static const imagesAdded = "images_added";
   static const postId = "post_id";

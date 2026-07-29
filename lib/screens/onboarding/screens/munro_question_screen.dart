@@ -65,10 +65,17 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen>
     super.dispose();
   }
 
+  int get _stepNumber => widget.source == 'in_app_onboarding' ? 1 : 4;
+
   void _handleYes() {
     context.read<Analytics>().track(
       AnalyticsEvent.munroQuestionAnswered,
-      props: {AnalyticsProp.response: 'yes', AnalyticsProp.source: widget.source},
+      props: {
+        AnalyticsProp.response: 'yes',
+        AnalyticsProp.source: widget.source,
+        AnalyticsProp.stepNumber: _stepNumber,
+        AnalyticsProp.stepName: 'munro_question',
+      },
     );
     widget.onYes();
   }
@@ -76,7 +83,12 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen>
   void _handleNo() {
     context.read<Analytics>().track(
       AnalyticsEvent.munroQuestionAnswered,
-      props: {AnalyticsProp.response: 'no', AnalyticsProp.source: widget.source},
+      props: {
+        AnalyticsProp.response: 'no',
+        AnalyticsProp.source: widget.source,
+        AnalyticsProp.stepNumber: _stepNumber,
+        AnalyticsProp.stepName: 'munro_question',
+      },
     );
     widget.onNo();
   }

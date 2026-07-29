@@ -1,5 +1,6 @@
 package com.example.two_eight_two
 
+import android.provider.Settings
 import com.google.android.play.agesignals.AgeSignalsManagerFactory
 import com.google.android.play.agesignals.AgeSignalsRequest
 import com.google.android.play.agesignals.model.AgeSignalsVerificationStatus
@@ -18,6 +19,20 @@ class MainActivity : FlutterActivity() {
                     return@setMethodCallHandler
                 }
                 requestAgeSignal(result)
+            }
+
+        // Play Store publishes trigger an automated Firebase Test Lab pre-launch
+        // report on every upload (before review), which installs the app on a
+        // lab device and drives it with the Robo crawler. That traffic looks
+        // like a real new user in analytics unless we detect and exclude it.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "app/environment")
+            .setMethodCallHandler { call, result ->
+                if (call.method != "isTestLab") {
+                    result.notImplemented()
+                    return@setMethodCallHandler
+                }
+                val isTestLab = Settings.System.getString(contentResolver, "firebase.test.lab") == "true"
+                result.success(isTestLab)
             }
     }
 

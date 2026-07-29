@@ -88,6 +88,7 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
       final munroCompletionState = context.read<MunroCompletionState>();
       final appFlagsRepo = context.read<AppFlagsRepository>();
       final userState = context.read<UserState>();
+      final munrosLoggedCount = bulkState.addedMunroCompletions.length;
 
       if (bulkState.addedMunroCompletions.isNotEmpty) {
         final uid = userState.currentUser?.uid;
@@ -112,7 +113,11 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
             props: {AnalyticsProp.status: 'completed', AnalyticsProp.branch: widget.branch},
           );
         } else {
-          await context.read<OnboardingState>().markOnboardingCompleted(branch: 'yes');
+          await context.read<OnboardingState>().markOnboardingCompleted(
+                branch: 'yes',
+                munrosLogged: munrosLoggedCount,
+                notificationsEnabled: enableNotifications,
+              );
         }
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (_) => false);

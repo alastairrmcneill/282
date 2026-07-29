@@ -132,7 +132,6 @@ void main() {
         await onboardingState.init();
 
         // Assert
-        verify(mockAnalytics.track(AnalyticsEvent.onboardingStarted)).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
           props: {
@@ -215,7 +214,12 @@ void main() {
         // Assert
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingCompleted,
-          props: {AnalyticsProp.branch: 'yes'},
+          props: {
+            AnalyticsProp.branch: 'yes',
+            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.munrosLogged: 0,
+            AnalyticsProp.notificationsEnabled: false,
+          },
         )).called(1);
       });
 
@@ -229,7 +233,12 @@ void main() {
         // Assert
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingCompleted,
-          props: {AnalyticsProp.branch: 'no'},
+          props: {
+            AnalyticsProp.branch: 'no',
+            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.munrosLogged: 0,
+            AnalyticsProp.notificationsEnabled: false,
+          },
         )).called(1);
       });
 
@@ -799,12 +808,11 @@ void main() {
         )).called(1);
       });
 
-      test('should track onboarding started and first screen on init', () async {
+      test('should track the first screen view on init', () async {
         reset(mockAnalytics);
 
         await onboardingState.init();
 
-        verify(mockAnalytics.track(AnalyticsEvent.onboardingStarted)).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingScreenViewed,
           props: {
@@ -822,7 +830,12 @@ void main() {
 
         verify(mockAnalytics.track(
           AnalyticsEvent.onboardingCompleted,
-          props: {AnalyticsProp.branch: 'yes'},
+          props: {
+            AnalyticsProp.branch: 'yes',
+            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.munrosLogged: 0,
+            AnalyticsProp.notificationsEnabled: false,
+          },
         )).called(1);
       });
     });
