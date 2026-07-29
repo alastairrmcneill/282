@@ -24,6 +24,25 @@ import DeclaredAgeRange
         }
         self?.requestDeclaredAgeRange(result: result)
       }
+
+      // Mirrors the Android channel so Flutter can drop analytics traffic that
+      // isn't a real user. App Review and TestFlight builds are signed with a
+      // sandbox receipt rather than the production one a store install gets.
+      let environmentChannel = FlutterMethodChannel(
+        name: "app/environment",
+        binaryMessenger: controller.binaryMessenger
+      )
+      environmentChannel.setMethodCallHandler { call, result in
+        guard call.method == "environmentInfo" else {
+          result(FlutterMethodNotImplemented)
+          return
+        }
+        let receiptName = Bundle.main.appStoreReceiptURL?.lastPathComponent
+        result([
+          "isSandboxReceipt": receiptName == "sandboxReceipt",
+          "installSource": receiptName as Any,
+        ])
+      }
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

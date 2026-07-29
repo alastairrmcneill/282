@@ -29,14 +29,23 @@ main() async {
   final config = AppConfig.fromEnvironment();
   await Firebase.initializeApp();
   final prefs = await SharedPreferences.getInstance();
-  final isSyntheticTraffic = await SyntheticTrafficHelper.isSyntheticTraffic();
+  final traffic = await SyntheticTrafficHelper.classify(env: config.env);
   final mixpanel = await Mixpanel.init(
     config.mixpanelToken,
     trackAutomaticEvents: true,
-    optOutTrackingDefault: isSyntheticTraffic,
+    optOutTrackingDefault: traffic.isSynthetic,
   );
   mixpanel.setServerURL("https://api-eu.mixpanel.com");
-  await mixpanel.registerSuperProperties({'onboarding_version': onboardingVersion});
+  final hasOptedOut = await mixpanel.hasOptedOutTracking() ?? false;
+  if (traffic.isSynthetic && !hasOptedOut) {
+    mixpanel.optOutTracking();
+  } else if (!traffic.isSynthetic && hasOptedOut) {
+    mixpanel.optInTracking();
+  }
+  await mixpanel.registerSuperProperties({
+    'onboarding_version': onboardingVersion,
+    ...traffic.signals,
+  });
 
   MapboxOptions.setAccessToken(config.mapboxToken);
   if (kDebugMode) {
