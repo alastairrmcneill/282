@@ -80,7 +80,7 @@ class ProfilePhotosWidget extends StatelessWidget {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: ClickableImage(
-                      image: munroPicture,
+                      imageUrl: munroPicture.thumbnail(),
                       munroPictures: state.photos,
                       initialIndex: index,
                       fetchMorePhotos: () async => state.paginate(),

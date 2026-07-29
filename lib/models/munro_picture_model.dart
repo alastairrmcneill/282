@@ -41,6 +41,11 @@ class MunroPicture {
     );
   }
 
+  String thumbnail() {
+    if (imageUrl.contains('token=')) return imageUrl;
+    return '$imageUrl?width=300&quality=60';
+  }
+
   Map<String, dynamic> toJSON() => {
         MunroPictureFields.munroId: munroId,
         MunroPictureFields.authorId: authorId,

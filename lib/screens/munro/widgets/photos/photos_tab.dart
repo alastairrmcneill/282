@@ -122,7 +122,7 @@ class _PhotosTabState extends State<PhotosTab> {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: ClickableImage(
-                  image: munroPicture,
+                  imageUrl: munroPicture.thumbnail(),
                   munroPictures: state.photos,
                   initialIndex: index,
                   fetchMorePhotos: () async {
