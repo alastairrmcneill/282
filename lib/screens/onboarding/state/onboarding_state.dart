@@ -24,14 +24,6 @@ class OnboardingState extends ChangeNotifier {
   int _maxPageReached = 0;
   static const int totalPages = 4;
   static const List<String> _stepNames = ['welcome', 'progress', 'achievement', 'munro_question'];
-  // Distinct event per step so funnel reports can show step names as column
-  // headers instead of one repeated event name with different filters.
-  static const List<String> _stepEventNames = [
-    AnalyticsEvent.onboardingWelcomeViewed,
-    AnalyticsEvent.onboardingProgressViewed,
-    AnalyticsEvent.onboardingAchievementViewed,
-    AnalyticsEvent.onboardingMunroQuestionViewed,
-  ];
   List<OnboardingFeedPost> _feedPosts = [];
   OnboardingTotals? _totals;
   List<OnboardingAchievements> _achievements = [];
@@ -61,7 +53,6 @@ class OnboardingState extends ChangeNotifier {
         _achievements = results[2] as List<OnboardingAchievements>;
         notifyListeners();
       });
-      _analytics.track(AnalyticsEvent.onboardingStarted);
       _analytics.track(
         AnalyticsEvent.onboardingScreenViewed,
         props: {
@@ -70,7 +61,6 @@ class OnboardingState extends ChangeNotifier {
           AnalyticsProp.source: 'first_run_onboarding',
         },
       );
-      _analytics.track(_stepEventNames[0]);
     } catch (error, stackTrace) {
       _logger.error(
         "Failed to load onboarding data",
@@ -80,11 +70,23 @@ class OnboardingState extends ChangeNotifier {
     }
   }
 
-  Future<void> markOnboardingCompleted({required String branch}) async {
+  Future<void> markOnboardingCompleted({
+    required String branch,
+    int munrosLogged = 0,
+    bool notificationsEnabled = false,
+  }) async {
     _hascompletedOnboarding = true;
     await _appFlagsRepository.setOnboardingCompleted(true);
     notifyListeners();
-    _analytics.track(AnalyticsEvent.onboardingCompleted, props: {AnalyticsProp.branch: branch});
+    _analytics.track(
+      AnalyticsEvent.onboardingCompleted,
+      props: {
+        AnalyticsProp.branch: branch,
+        AnalyticsProp.source: 'first_run_onboarding',
+        AnalyticsProp.munrosLogged: munrosLogged,
+        AnalyticsProp.notificationsEnabled: notificationsEnabled,
+      },
+    );
   }
 
   void nextPage() {
@@ -121,7 +123,6 @@ class OnboardingState extends ChangeNotifier {
             AnalyticsProp.source: 'first_run_onboarding',
           },
         );
-        _analytics.track(_stepEventNames[page]);
       }
     }
   }
