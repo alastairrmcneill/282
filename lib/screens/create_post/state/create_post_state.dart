@@ -145,6 +145,8 @@ class CreatePostState extends ChangeNotifier {
         },
       );
 
+      _analytics.incrementProfileProperty('munros_logged', selectedMunroIds.length.toDouble());
+
       // Complete munros
       await _munroCompletionState.markMunrosAsCompleted(
         munroIds: selectedMunroIds.toList(),

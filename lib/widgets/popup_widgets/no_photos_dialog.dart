@@ -45,15 +45,21 @@ class NoPhotosDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             PrimaryButton(
-              analyticsEvent: AnalyticsEvent.createPostNoPhotosDialogResponse,
-              analyticsProperties: const {AnalyticsProp.response: "add"},
+              analyticsEvent: AnalyticsEvent.dialogResponse,
+              analyticsProperties: const {
+                AnalyticsProp.dialogName: AnalyticsDialog.createPostNoPhotos,
+                AnalyticsProp.response: AnalyticsResponse.add
+              },
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Yes, Add Photos!'),
             ),
             const SizedBox(height: 10),
             SecondaryButton(
-              analyticsEvent: AnalyticsEvent.createPostNoPhotosDialogResponse,
-              analyticsProperties: const {AnalyticsProp.response: "skip"},
+              analyticsEvent: AnalyticsEvent.dialogResponse,
+              analyticsProperties: const {
+                AnalyticsProp.dialogName: AnalyticsDialog.createPostNoPhotos,
+                AnalyticsProp.response: AnalyticsResponse.skip
+              },
               onPressed: () => Navigator.of(context).pop(true),
               child: const Text('No, Skip'),
             ),

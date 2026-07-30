@@ -36,16 +36,9 @@ class InAppOnboardingState extends ChangeNotifier {
         props: {
           AnalyticsProp.stepNumber: 1,
           AnalyticsProp.stepName: 'munro_question',
-          AnalyticsProp.source: 'in_app_onboarding',
+          AnalyticsProp.source: AnalyticsSource.inAppOnboarding,
         },
       );
-      analytics.track(
-        AnalyticsEvent.inAppOnboardingProgress,
-        props: {
-          AnalyticsProp.status: 'started',
-        },
-      );
-
       // User data and munro completions are now loaded in AuthState after sign-in
       // Only load if not already present (defensive check)
       if (userState.currentUser == null) {

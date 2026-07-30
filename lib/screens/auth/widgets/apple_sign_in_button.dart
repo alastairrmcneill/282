@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
@@ -18,9 +19,8 @@ class AppleSignInButton extends StatelessWidget {
       return SignInWithAppleButton(
         style: style ?? (isDark ? SignInWithAppleButtonStyle.white : SignInWithAppleButtonStyle.black),
         onPressed: () async {
-          final authResult = await context
-              .read<AuthState>()
-              .signInWithApple(source: gateSource != null ? 'in_app_onboarding' : null, gateSource: gateSource);
+          final authResult = await context.read<AuthState>().signInWithApple(
+              source: gateSource != null ? AnalyticsSource.inAppOnboarding : null, gateSource: gateSource);
           if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
             Navigator.pushNamed(
               context,

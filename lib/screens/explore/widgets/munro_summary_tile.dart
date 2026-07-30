@@ -120,8 +120,8 @@ class MunroSummaryTile extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: InkWell(
                         onTap: () async {
-                          context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
-                            AnalyticsProp.source: "Munro Summary Tile",
+                          context.read<Analytics>().track(AnalyticsEvent.munroSaveButtonClicked, props: {
+                            AnalyticsProp.surface: AnalyticsSurface.munroSummaryTile,
                             AnalyticsProp.munroId: (munro.id).toString(),
                           });
                           if (userId == null) {

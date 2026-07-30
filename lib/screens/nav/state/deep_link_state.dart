@@ -20,6 +20,7 @@ class DeepLinkState extends ChangeNotifier {
   DeepLinkState(this._repo, this._intents, this._analytics, this._logger);
 
   StreamSubscription<NavigationIntent>? _sub;
+  StreamSubscription<BranchLinkClick>? _clickSub;
   bool _started = false;
 
   Future<void> init({required bool enableLogging}) async {
@@ -28,13 +29,21 @@ class DeepLinkState extends ChangeNotifier {
 
     try {
       await _repo.init(enableLogging: enableLogging);
-      _sub = _repo.events.listen((intent) {
+
+      _clickSub = _repo.clicks.listen((click) {
         _analytics.track(
           AnalyticsEvent.branchLinkClicked,
-          props: {AnalyticsProp.source: intent.runtimeType.toString()},
+          props: {
+            AnalyticsProp.linkType: click.canonicalIdentifier,
+            AnalyticsProp.channel: click.channel,
+            AnalyticsProp.campaign: click.campaign,
+            AnalyticsProp.feature: click.feature,
+            AnalyticsProp.routed: click.routed,
+          },
         );
-        _intents.enqueue(intent);
       });
+
+      _sub = _repo.events.listen(_intents.enqueue);
     } catch (error, stackstrace) {
       _logger.error('DeepLink init failed', error: error, stackTrace: stackstrace);
     }
@@ -43,6 +52,7 @@ class DeepLinkState extends ChangeNotifier {
   @override
   void dispose() {
     _sub?.cancel();
+    _clickSub?.cancel();
     super.dispose();
   }
 }

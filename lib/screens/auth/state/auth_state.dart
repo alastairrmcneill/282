@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/config/onboarding_config.dart';
 import 'package:two_eight_two/helpers/device_info_helper.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -63,6 +64,40 @@ class AuthState extends ChangeNotifier {
     super.dispose();
   }
 
+  Future<void> _syncAnalyticsProfile({
+    required String method,
+    required bool isNewUser,
+    String? source,
+    String? gateSource,
+  }) async {
+    try {
+      final user = _userState.currentUser;
+      final packageInfo = await PackageInfo.fromPlatform();
+      final platform = Platform.isIOS ? 'iOS' : 'Android';
+
+      if (isNewUser) {
+        await _analytics.setProfilePropertiesOnce({
+          r'$created': DateTime.now().toUtc().toIso8601String(),
+          'signup_method': method,
+          'signup_platform': platform,
+          'signup_onboarding_version': onboardingVersion,
+          if (source != null) 'signup_source': source,
+          if (gateSource != null) 'signup_gate_source': gateSource,
+        });
+      }
+
+      await _analytics.setProfileProperties({
+        'platform': platform,
+        'app_version': packageInfo.version,
+        'sign_in_method': method,
+        'munros_logged': user?.munrosCompleted ?? 0,
+        if (user?.profileVisibility != null) 'profile_visibility': user!.profileVisibility,
+      });
+    } catch (e, st) {
+      _logger.error('Failed to sync analytics profile: $e', stackTrace: st);
+    }
+  }
+
   Future<AuthResult> registerWithEmail({
     required RegistrationData registrationData,
     String? source,
@@ -113,6 +148,12 @@ class AuthState extends ChangeNotifier {
       if (currentUserId != null) {
         await _userState.readUser(uid: currentUserId);
         await _userState.loadBlockedUsers();
+        await _syncAnalyticsProfile(
+          method: 'email',
+          isNewUser: true,
+          source: source,
+          gateSource: gateSource,
+        );
       }
 
       // State doesn’t navigate – just tell UI what to do.
@@ -143,6 +184,7 @@ class AuthState extends ChangeNotifier {
         await _analytics.identify(currentUserId!);
         await _userState.readUser(uid: currentUserId);
         await _userState.loadBlockedUsers();
+        await _syncAnalyticsProfile(method: 'email', isNewUser: false);
       }
 
       _analytics.track(AnalyticsEvent.signIn, props: {
@@ -234,6 +276,12 @@ class AuthState extends ChangeNotifier {
       if (currentUserId != null) {
         await _userState.readUser(uid: currentUserId);
         await _userState.loadBlockedUsers();
+        await _syncAnalyticsProfile(
+          method: 'apple',
+          isNewUser: isNewUser,
+          source: source,
+          gateSource: gateSource,
+        );
       }
 
       final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");
@@ -322,6 +370,12 @@ class AuthState extends ChangeNotifier {
       if (currentUserId != null) {
         await _userState.readUser(uid: currentUserId);
         await _userState.loadBlockedUsers();
+        await _syncAnalyticsProfile(
+          method: 'google',
+          isNewUser: isNewUser,
+          source: source,
+          gateSource: gateSource,
+        );
       }
 
       final showOnboarding = _appFlagsRepository.showInAppOnboarding(currentUserId ?? "");

@@ -47,7 +47,8 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
         props: {
           AnalyticsProp.stepNumber: widget.alreadyAuthenticated ? 2 : 5,
           AnalyticsProp.stepName: 'bulk_log',
-          AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+          AnalyticsProp.source:
+              widget.alreadyAuthenticated ? AnalyticsSource.inAppOnboarding : AnalyticsSource.firstRunOnboarding,
           AnalyticsProp.branch: 'yes',
         },
       );
@@ -98,7 +99,8 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
               AnalyticsEvent.bulkLogViewToggled,
               props: {
                 AnalyticsProp.viewMode: value.first.name,
-                AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+                AnalyticsProp.source:
+                    widget.alreadyAuthenticated ? AnalyticsSource.inAppOnboarding : AnalyticsSource.firstRunOnboarding,
               },
             );
           },
@@ -150,7 +152,9 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
                 context.read<Analytics>().track(
                   AnalyticsEvent.bulkLogSearchCleared,
                   props: {
-                    AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+                    AnalyticsProp.source: widget.alreadyAuthenticated
+                        ? AnalyticsSource.inAppOnboarding
+                        : AnalyticsSource.firstRunOnboarding,
                   },
                 );
               },
@@ -168,7 +172,8 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
       AnalyticsEvent.bulkLogContinueTapped,
       props: {
         AnalyticsProp.selectedMunroCount: count,
-        AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+        AnalyticsProp.source:
+            widget.alreadyAuthenticated ? AnalyticsSource.inAppOnboarding : AnalyticsSource.firstRunOnboarding,
       },
     );
     if (widget.alreadyAuthenticated) {
@@ -192,7 +197,8 @@ class _OnboardingBulkLogScreenState extends State<OnboardingBulkLogScreen> {
             props: {
               AnalyticsProp.stepNumber: widget.alreadyAuthenticated ? 2 : 5,
               AnalyticsProp.stepName: 'bulk_log',
-              AnalyticsProp.source: widget.alreadyAuthenticated ? 'in_app_onboarding' : 'first_run_onboarding',
+              AnalyticsProp.source:
+                  widget.alreadyAuthenticated ? AnalyticsSource.inAppOnboarding : AnalyticsSource.firstRunOnboarding,
               AnalyticsProp.branch: 'yes',
             },
           );

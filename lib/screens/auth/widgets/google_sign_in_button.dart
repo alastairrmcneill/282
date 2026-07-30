@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
@@ -25,9 +26,8 @@ class GoogleSignInButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          final authResult = await context
-              .read<AuthState>()
-              .signInWithGoogle(source: gateSource != null ? 'in_app_onboarding' : null, gateSource: gateSource);
+          final authResult = await context.read<AuthState>().signInWithGoogle(
+              source: gateSource != null ? AnalyticsSource.inAppOnboarding : null, gateSource: gateSource);
           if (authResult.success && authResult.showOnboarding && authResult.userId != null) {
             Navigator.pushNamed(
               context,

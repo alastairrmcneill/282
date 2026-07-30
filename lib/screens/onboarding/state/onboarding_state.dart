@@ -58,7 +58,7 @@ class OnboardingState extends ChangeNotifier {
         props: {
           AnalyticsProp.stepNumber: 1,
           AnalyticsProp.stepName: _stepNames[0],
-          AnalyticsProp.source: 'first_run_onboarding',
+          AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
         },
       );
     } catch (error, stackTrace) {
@@ -82,7 +82,7 @@ class OnboardingState extends ChangeNotifier {
       AnalyticsEvent.onboardingCompleted,
       props: {
         AnalyticsProp.branch: branch,
-        AnalyticsProp.source: 'first_run_onboarding',
+        AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
         AnalyticsProp.munrosLogged: munrosLogged,
         AnalyticsProp.notificationsEnabled: notificationsEnabled,
       },
@@ -120,7 +120,7 @@ class OnboardingState extends ChangeNotifier {
           props: {
             AnalyticsProp.stepNumber: page + 1,
             AnalyticsProp.stepName: _stepNames[page],
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         );
       }

@@ -61,7 +61,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             focusNode: _focusNode,
             hintText: "Find friends",
             onClear: () {
-              context.read<Analytics>().track(AnalyticsEvent.userSearchClearTapped);
+              context.read<Analytics>().track(
+                AnalyticsEvent.searchCleared,
+                props: {AnalyticsProp.surface: AnalyticsSurface.userSearch},
+              );
               _searchController.clear();
               userSearchState.clearSearch();
             },

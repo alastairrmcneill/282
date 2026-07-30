@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/helpers/device_info_helper.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -15,6 +16,7 @@ class PushNotificationState extends ChangeNotifier {
   final UserState _userState;
   final NavigationIntentState _intents;
   final AppInfoRepository _appInfo;
+  final Analytics _analytics;
   final Logger _logger;
   PushNotificationState(
     this._repo,
@@ -23,6 +25,7 @@ class PushNotificationState extends ChangeNotifier {
     this._userState,
     this._intents,
     this._appInfo,
+    this._analytics,
     this._logger,
   );
 
@@ -39,11 +42,13 @@ class PushNotificationState extends ChangeNotifier {
       // Handle cold start.
       final initial = await _repo.getInitialMessage();
       if (initial != null) {
+        _trackPushOpened(initial, coldStart: true);
         _intents.enqueue(OpenNotificationsIntent());
       }
 
       // Handle tap when app in bg/fg.
       _openedSub = _repo.onNotificationOpened.listen((msg) {
+        _trackPushOpened(msg, coldStart: false);
         _intents.enqueue(OpenNotificationsIntent());
       });
 
@@ -59,6 +64,17 @@ class PushNotificationState extends ChangeNotifier {
     }
   }
 
+  void _trackPushOpened(RemoteMessage message, {required bool coldStart}) {
+    _analytics.track(
+      AnalyticsEvent.pushOpened,
+      props: {
+        AnalyticsProp.notificationId: message.data['notificationId'],
+        AnalyticsProp.notificationType: message.data['type'],
+        AnalyticsProp.coldStart: coldStart,
+      },
+    );
+  }
+
   Future<bool> onPushSettingChanged() async {
     if (!_settings.enablePushNotifications) {
       return await disablePush();
@@ -70,8 +86,7 @@ class PushNotificationState extends ChangeNotifier {
   Future<bool> enablePush() async {
     try {
       final settings = await _repo.requestPermission();
-      if (settings.authorizationStatus != AuthorizationStatus.authorized)
-        return false;
+      if (settings.authorizationStatus != AuthorizationStatus.authorized) return false;
 
       await syncTokenIfNeeded(force: true);
       return true;

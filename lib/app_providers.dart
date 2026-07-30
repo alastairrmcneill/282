@@ -305,6 +305,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<UserState>(),
           ctx.read<NavigationIntentState>(),
           ctx.read<AppInfoRepository>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),

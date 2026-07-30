@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/screens/munro_question_screen.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -62,7 +63,7 @@ class _InAppOnboardingState extends State<InAppOnboardingScreen> {
         body: MunroQuestionScreen(
           onYes: _onMunroQuestionYes,
           onNo: _onMunroQuestionNo,
-          source: 'in_app_onboarding',
+          source: AnalyticsSource.inAppOnboarding,
         ),
       ),
     );
