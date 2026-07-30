@@ -97,7 +97,6 @@ You'll need to create your own Firebase project for development.
 ### 1. Create Firebase Project and Configure Apps
 
 1. **Create Firebase Project** (if you don't have one):
-
    - Go to [Firebase Console](https://console.firebase.google.com/)
    - Click "Add project"
    - Name your project (e.g., "282-dev-yourname")
@@ -109,7 +108,6 @@ You'll need to create your own Firebase project for development.
    In your Firebase Console, add both Android and iOS apps:
 
    **For Development:**
-
    - **Android App**: Package name `com.alastairrmcneill.TwoEightTwo.dev`
    - **iOS App**: Bundle ID `com.alastairrmcneill.TwoEightTwo.dev`
    - Download `google-services.json` → place in `android/app/src/development/`
@@ -271,10 +269,17 @@ select vault.create_secret('https://<your-project-ref>.supabase.co', 'edge_funct
 3. Set the edge function secrets:
 
 ```bash
-supabase secrets set RESEND_API_KEY=your_resend_api_key NOTIFICATION_EMAIL=your_email@example.com --project-ref your-project-ref
+supabase secrets set \
+  RESEND_API_KEY=your_resend_api_key \
+  NOTIFICATION_EMAIL=your_email@example.com \
+  MIXPANEL_TOKEN=your_mixpanel_token \
+  FIREBASE_SERVICE_ACCOUNT_BASE64=your_base64_encoded_service_account \
+  --project-ref your-project-ref
 ```
 
 `FROM_EMAIL` is optional and defaults to `onboarding@resend.dev` (Resend's test sender, no domain verification needed).
+
+`FIREBASE_SERVICE_ACCOUNT_BASE64` is the Firebase service account JSON base64-encoded: `base64 -i path/to/service-account.json`.
 
 ## Mixpanel Analytics
 
@@ -323,31 +328,26 @@ Allows for deep linking to be tested
 If you want to use Google Sign-In in the development app, you'll need to set up OAuth 2.0 client credentials:
 
 1. **Set up OAuth consent screen**:
-
    - In [Google Cloud Console](https://console.cloud.google.com/), go to APIs & Services → OAuth consent screen
    - Choose "External" user type
    - Fill in required fields (App name, User support email, Developer contact)
    - Add your email to test users during development
 
 2. **Create OAuth 2.0 Client IDs**:
-
    - Go to APIs & Services → Credentials
    - Click "Create Credentials" → "OAuth 2.0 Client IDs"
    - Create **two separate client IDs**:
 
    **For Android Development:**
-
    - Application type: Android
    - Package name: `com.alastairrmcneill.TwoEightTwo.dev`
    - SHA-1 certificate fingerprint: Get from your debug keystore
 
    **For iOS:**
-
    - Application type: iOS
    - Bundle ID: `com.alastairrmcneill.TwoEightTwo.dev`
 
 3. **Download client configuration files**:
-
    - For each OAuth client, download the JSON configuration file
    - Rename them to match the pattern: `client_secret_[CLIENT_ID].apps.googleusercontent.com.json`
    - Place the two files in: `android/app/`
@@ -365,12 +365,10 @@ If you want to use Google Sign-In in the development app, you'll need to set up 
 If you want to use Apple Sign-In in the development app, you'll need to do the following steps:
 
 1. **Apple Developer Account Requirements**:
-
    - You need an active Apple Developer Program membership ($99/year)
    - Access to Apple Developer Console
 
 2. **Configure App ID and Capabilities**:
-
    - Go to [Apple Developer Console](https://developer.apple.com/account/)
    - Navigate to Certificates, Identifiers & Profiles → Identifiers
    - Find or create your App ID: `com.alastairrmcneill.TwoEightTwo.dev`

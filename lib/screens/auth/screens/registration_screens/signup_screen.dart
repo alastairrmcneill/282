@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/auth/auth_error_messages.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
@@ -69,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     final authResult = await context.read<AuthState>().registerWithEmail(
           registrationData: data,
-          source: widget.fromOnboarding ? 'first_run_onboarding' : 'in_app_onboarding',
+          source: widget.fromOnboarding ? AnalyticsSource.firstRunOnboarding : AnalyticsSource.inAppOnboarding,
           gateSource: widget.gateSource,
         );
 

@@ -38,7 +38,10 @@ class OverlayIntentCoordinator extends StatelessWidget {
 
     switch (intent) {
       case HardUpdateDialogIntent():
-        navCtx.read<Analytics>().track(AnalyticsEvent.hardAppUpdateDialogShown);
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.hardAppUpdate},
+        );
         showDialog(
           context: navCtx,
           barrierDismissible: false,
@@ -48,7 +51,10 @@ class OverlayIntentCoordinator extends StatelessWidget {
         );
         return;
       case SoftUpdateDialogIntent():
-        navCtx.read<Analytics>().track(AnalyticsEvent.appUpdateDialogShown);
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.softAppUpdate},
+        );
 
         showDialog(
           context: navCtx,
@@ -68,8 +74,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
 
       case WhatsNewDialogIntent():
         navCtx.read<Analytics>().track(
-          AnalyticsEvent.whatsNewDialogShown,
-          props: {AnalyticsProp.version: intent.version},
+          AnalyticsEvent.dialogShown,
+          props: {
+            AnalyticsProp.dialogName: AnalyticsDialog.whatsNew,
+            AnalyticsProp.version: intent.version,
+          },
         );
 
         await showDialog(
@@ -104,8 +113,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
         await Future.delayed(Duration(seconds: 1));
 
         navCtx.read<Analytics>().track(
-          AnalyticsEvent.achievementUnlockedDialogShown,
-          props: {AnalyticsProp.achievementCount: intent.achievements.length},
+          AnalyticsEvent.dialogShown,
+          props: {
+            AnalyticsProp.dialogName: AnalyticsDialog.achievementUnlocked,
+            AnalyticsProp.achievementCount: intent.achievements.length,
+          },
         );
 
         await showDialog(
@@ -118,7 +130,10 @@ class OverlayIntentCoordinator extends StatelessWidget {
         return;
 
       case BulkMunroUpdateDialogIntent():
-        navCtx.read<Analytics>().track(AnalyticsEvent.bulkMunroUpdateDidalogShown);
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.bulkMunroUpdate},
+        );
 
         final wantsBulk = await showDialog<bool>(
           context: navCtx,
@@ -128,8 +143,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
         );
 
         navCtx.read<Analytics>().track(
-          AnalyticsEvent.bulkMunroUpdateDialogResponse,
-          props: {AnalyticsProp.response: wantsBulk == true ? 'go' : 'dismiss'},
+          AnalyticsEvent.dialogResponse,
+          props: {
+            AnalyticsProp.dialogName: AnalyticsDialog.bulkMunroUpdate,
+            AnalyticsProp.response: wantsBulk == true ? AnalyticsResponse.go : AnalyticsResponse.dismiss,
+          },
         );
 
         await navCtx.read<AppFlagsRepository>().setShowBulkMunroDialog(false);
@@ -141,7 +159,10 @@ class OverlayIntentCoordinator extends StatelessWidget {
         return;
 
       case AnnualMunroChallengeDialogIntent():
-        navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogShown);
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.annualMunroChallenge},
+        );
 
         final go = await showDialog(
           context: navCtx,
@@ -154,14 +175,19 @@ class OverlayIntentCoordinator extends StatelessWidget {
               '${intent.achievement.userId}-${intent.achievement.achievementId}',
             );
 
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogResponse,
+          props: {
+            AnalyticsProp.dialogName: AnalyticsDialog.annualMunroChallenge,
+            AnalyticsProp.response: go == true ? AnalyticsResponse.confirmed : AnalyticsResponse.dismissed,
+          },
+        );
+
         if (go == true) {
-          navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogConfirmed);
           navCtx.read<AchievementsState>()
             ..reset()
             ..setCurrentAchievement = intent.achievement;
           Navigator.of(navCtx).pushNamed(MunroChallengeDetailScreen.route);
-        } else {
-          navCtx.read<Analytics>().track(AnalyticsEvent.annualMunroChallengeDialogDismissed);
         }
         return;
 

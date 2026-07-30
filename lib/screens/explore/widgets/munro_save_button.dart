@@ -28,8 +28,8 @@ class MunroSaveButton extends StatelessWidget {
           padding: const EdgeInsets.all(2), // Adjust padding to make it circular
         ),
         onPressed: () async {
-          context.read<Analytics>().track(AnalyticsEvent.saveMunroButtonClicked, props: {
-            AnalyticsProp.source: "Munro Page",
+          context.read<Analytics>().track(AnalyticsEvent.munroSaveButtonClicked, props: {
+            AnalyticsProp.surface: AnalyticsSurface.munroPage,
             AnalyticsProp.munroId: munro.id,
             AnalyticsProp.munroName: munro.name,
           });

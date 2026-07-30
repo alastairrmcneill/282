@@ -51,6 +51,55 @@ const supabase = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
 );
 
+const MIXPANEL_API_URL = "https://api-eu.mixpanel.com/track";
+
+async function trackPushSent(
+  notification: Notification,
+  results: FcmSendResult[],
+): Promise<void> {
+  const token = Deno.env.get("MIXPANEL_TOKEN");
+  if (!token) {
+    console.warn("📊 ~ MIXPANEL_TOKEN not set, skipping push_sent");
+    return;
+  }
+
+  const successCount = results.filter((r) => r.success).length;
+
+  try {
+    const res = await fetch(MIXPANEL_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([
+        {
+          event: "push_sent",
+          properties: {
+            token,
+            $user_id: notification.target_id,
+            distinct_id: notification.target_id,
+            time: Date.now(),
+            $insert_id: notification.id,
+            notification_id: notification.id,
+            notification_type: notification.type,
+            device_count: results.length,
+            delivered_device_count: successCount,
+            delivered: successCount > 0,
+          },
+        },
+      ]),
+    });
+
+    if (!res.ok) {
+      console.error(
+        "📊 ~ Mixpanel push_sent failed:",
+        res.status,
+        await res.text(),
+      );
+    }
+  } catch (err) {
+    console.error("📊 ~ Mixpanel push_sent threw:", err);
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const payload: WebhookPayload = await req.json();
@@ -123,6 +172,8 @@ Deno.serve(async (req) => {
     );
 
     const results = await Promise.all(sendPromises);
+
+    await trackPushSent(notification, results);
 
     // Process results and clean up invalid tokens
     const invalidTokenIds = results
@@ -216,6 +267,8 @@ async function sendFcmNotification(
               type: notification.type,
               postId: notification.post_id ?? "",
               detail: notification.detail ?? "",
+              // Lets the client join push_opened back to this push_sent.
+              notificationId: notification.id,
             },
           },
         }),

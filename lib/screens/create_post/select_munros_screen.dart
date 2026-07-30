@@ -25,8 +25,7 @@ class TestMunroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    Color backgroundColor =
-        isSelected || isMain ? colors.accent.withValues(alpha: 0.12) : colors.surface;
+    Color backgroundColor = isSelected || isMain ? colors.accent.withValues(alpha: 0.12) : colors.surface;
     Color borderColor = isMain
         ? colors.accent.withValues(alpha: 0.4)
         : isSelected
@@ -54,9 +53,7 @@ class TestMunroCard extends StatelessWidget {
               )
             else
               Icon(
-                isSelected
-                    ? Icons.check_box_rounded
-                    : Icons.check_box_outline_blank_rounded,
+                isSelected ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
                 size: 20,
                 color: isSelected ? colors.accent : colors.textMuted,
               ),
@@ -135,15 +132,11 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
     final createPostState = context.watch<CreatePostState>();
 
     List<Munro> commonlyClimbedWith = munroState.munroList
-        .where((munro) => widget.mainMunro.commonlyClimbedWith
-            .map((e) => e.climbedWithId)
-            .contains(munro.id))
+        .where((munro) => widget.mainMunro.commonlyClimbedWith.map((e) => e.climbedWithId).contains(munro.id))
         .toList();
 
     List<Munro> otherMunros = munroState.munroList
-        .where((munro) =>
-            munro.id != widget.mainMunro.id &&
-            !commonlyClimbedWith.map((e) => e.id).contains(munro.id))
+        .where((munro) => munro.id != widget.mainMunro.id && !commonlyClimbedWith.map((e) => e.id).contains(munro.id))
         .toList();
 
     var selectedMunroIds = createPostState.selectedMunroIds;
@@ -165,8 +158,7 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
           children: [
             Text(
               'Select any munros you climbed with ${widget.mainMunro.name}',
-              style: textTheme.titleSmall
-                  ?.copyWith(color: context.colors.textSubtitle),
+              style: textTheme.titleSmall?.copyWith(color: context.colors.textSubtitle),
             ),
             const SizedBox(height: 16),
 
@@ -290,14 +282,10 @@ class _SelectMunrosScreenState extends State<SelectMunrosScreen> {
             height: 48,
             child: FilledButton(
               onPressed: () {
-                context
-                    .read<Analytics>()
-                    .track(AnalyticsEvent.selectCommonlyClimbedMunros, props: {
+                context.read<Analytics>().track(AnalyticsEvent.createPostMunrosSelected, props: {
                   AnalyticsProp.munroId: widget.mainMunro.id,
-                  AnalyticsProp.commonlyClimbedWithCount:
-                      commonlyClimbedWith.length,
-                  AnalyticsProp.selectedMunroCount:
-                      createPostState.selectedMunroIds.length,
+                  AnalyticsProp.commonlyClimbedWithCount: commonlyClimbedWith.length,
+                  AnalyticsProp.selectedMunroCount: createPostState.selectedMunroIds.length,
                 });
                 Navigator.of(context).pushNamed(CreatePostScreen.route);
               },

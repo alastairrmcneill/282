@@ -91,8 +91,9 @@ class FeedState extends ChangeNotifier {
       _friendsPosts.addAll(newPosts);
       setFriendsStatus = FeedStatus.loaded;
       _analytics.track(
-        AnalyticsEvent.paginateFriendsFeed,
+        AnalyticsEvent.feedPaginated,
         props: {
+          AnalyticsProp.feed: AnalyticsFeed.friends,
           AnalyticsProp.postCount: _friendsPosts.length,
         },
       );
@@ -157,8 +158,9 @@ class FeedState extends ChangeNotifier {
       _globalPosts.addAll(newPosts);
       setGlobalStatus = FeedStatus.loaded;
       _analytics.track(
-        AnalyticsEvent.paginateGlobalFeed,
+        AnalyticsEvent.feedPaginated,
         props: {
+          AnalyticsProp.feed: AnalyticsFeed.global,
           AnalyticsProp.postCount: _globalPosts.length,
         },
       );

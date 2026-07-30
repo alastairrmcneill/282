@@ -48,6 +48,17 @@ class UserSearchState extends ChangeNotifier {
         AnalyticsEvent.userSearchQuerySubmitted,
         props: {AnalyticsProp.resultCount: _users.length},
       );
+
+      if (_users.isEmpty) {
+        // Query length only — user-search terms are people's names.
+        _analytics.track(
+          AnalyticsEvent.searchNoResults,
+          props: {
+            AnalyticsProp.surface: AnalyticsSurface.userSearch,
+            AnalyticsProp.queryLength: query.trim().length,
+          },
+        );
+      }
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue with the search. Please try again.");

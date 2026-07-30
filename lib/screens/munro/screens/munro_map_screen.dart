@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
 
@@ -65,6 +66,7 @@ class _MunroMapScreenState extends State<MunroMapScreen> {
         elevation: 0,
       ),
       body: MapWidget(
+        onMapLoadErrorListener: (data) => trackMapLoadFailure(context, AnalyticsSurface.munroFullMap, data),
         key: const ValueKey("munroMapScreen"),
         styleUri: _activeStyleUri(context),
         cameraOptions: CameraOptions(

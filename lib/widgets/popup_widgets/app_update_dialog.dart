@@ -39,10 +39,7 @@ class SoftUpdateDialog extends StatelessWidget {
             Center(
               child: Text(
                 'Update Available',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             const SizedBox(height: 8),
@@ -57,10 +54,7 @@ class SoftUpdateDialog extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 "What's new",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall
-                    ?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
               ...updates.map(
@@ -83,7 +77,11 @@ class SoftUpdateDialog extends StatelessWidget {
             ],
             const SizedBox(height: 24),
             PrimaryButton(
-              analyticsEvent: AnalyticsEvent.appUpdateDialogUpdateNow,
+              analyticsEvent: AnalyticsEvent.dialogResponse,
+              analyticsProperties: const {
+                AnalyticsProp.dialogName: AnalyticsDialog.softAppUpdate,
+                AnalyticsProp.response: AnalyticsResponse.updateNow,
+              },
               onPressed: () async {
                 final url = Platform.isIOS
                     ? 'https://apps.apple.com/us/app/282/id6474512889'

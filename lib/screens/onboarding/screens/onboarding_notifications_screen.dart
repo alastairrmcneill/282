@@ -48,7 +48,8 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
         props: {
           AnalyticsProp.stepNumber: widget.fromInAppOnboarding ? (widget.branch == 'yes' ? 3 : 2) : 7,
           AnalyticsProp.stepName: 'notifications',
-          AnalyticsProp.source: widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+          AnalyticsProp.source:
+              widget.fromInAppOnboarding ? AnalyticsSource.inAppOnboarding : AnalyticsSource.firstRunOnboarding,
           AnalyticsProp.branch: widget.branch,
         },
       );
@@ -59,8 +60,9 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
     context.read<Analytics>().track(
       AnalyticsEvent.onboardingNotificationsResponse,
       props: {
-        AnalyticsProp.response: enableNotifications ? 'enable' : 'skip',
-        AnalyticsProp.source: widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+        AnalyticsProp.response: enableNotifications ? AnalyticsResponse.enable : AnalyticsResponse.skip,
+        AnalyticsProp.source:
+            widget.fromInAppOnboarding ? AnalyticsSource.inAppOnboarding : AnalyticsSource.firstRunOnboarding,
         AnalyticsProp.branch: widget.branch,
       },
     );
@@ -109,8 +111,13 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
       if (mounted) {
         if (widget.fromInAppOnboarding) {
           context.read<Analytics>().track(
-            AnalyticsEvent.inAppOnboardingProgress,
-            props: {AnalyticsProp.status: 'completed', AnalyticsProp.branch: widget.branch},
+            AnalyticsEvent.onboardingCompleted,
+            props: {
+              AnalyticsProp.source: AnalyticsSource.inAppOnboarding,
+              AnalyticsProp.branch: widget.branch,
+              AnalyticsProp.munrosLogged: munrosLoggedCount,
+              AnalyticsProp.notificationsEnabled: enableNotifications,
+            },
           );
         } else {
           await context.read<OnboardingState>().markOnboardingCompleted(
@@ -156,8 +163,9 @@ class _OnboardingNotificationsScreenState extends State<OnboardingNotificationsS
                                     AnalyticsProp.stepNumber:
                                         widget.fromInAppOnboarding ? (widget.branch == 'yes' ? 3 : 2) : 7,
                                     AnalyticsProp.stepName: 'notifications',
-                                    AnalyticsProp.source:
-                                        widget.fromInAppOnboarding ? 'in_app_onboarding' : 'first_run_onboarding',
+                                    AnalyticsProp.source: widget.fromInAppOnboarding
+                                        ? AnalyticsSource.inAppOnboarding
+                                        : AnalyticsSource.firstRunOnboarding,
                                     AnalyticsProp.branch: widget.branch,
                                   },
                                 );

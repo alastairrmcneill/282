@@ -2,11 +2,31 @@ import 'dart:async';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:two_eight_two/models/models.dart';
 
+class BranchLinkClick {
+  const BranchLinkClick({
+    required this.canonicalIdentifier,
+    required this.channel,
+    required this.campaign,
+    required this.feature,
+    required this.routed,
+  });
+
+  final String? canonicalIdentifier;
+  final String? channel;
+  final String? campaign;
+  final String? feature;
+
+  final bool routed;
+}
+
 class DeepLinkRepository {
   StreamSubscription<Map>? _sub;
   final _controller = StreamController<NavigationIntent>.broadcast();
+  final _clicks = StreamController<BranchLinkClick>.broadcast();
 
   Stream<NavigationIntent> get events => _controller.stream;
+
+  Stream<BranchLinkClick> get clicks => _clicks.stream;
 
   Future<void> init({required bool enableLogging}) async {
     await FlutterBranchSdk.init(
@@ -19,25 +39,39 @@ class DeepLinkRepository {
       if (!clicked) return;
 
       final canonicalIdentifier = data['~canonical_identifier'] as String?;
+      final intent = _intentFor(canonicalIdentifier, data);
 
-      if (canonicalIdentifier != null && canonicalIdentifier.startsWith('munro/')) {
-        final munroIdRaw = data['munroId'];
-        final munroId = munroIdRaw is int ? munroIdRaw : int.tryParse('$munroIdRaw');
+      _clicks.add(
+        BranchLinkClick(
+          canonicalIdentifier: canonicalIdentifier,
+          channel: data['~channel'] as String?,
+          campaign: data['~campaign'] as String?,
+          feature: data['~feature'] as String?,
+          routed: intent != null,
+        ),
+      );
 
-        if (munroId != null && munroId > 0) {
-          _controller.add(OpenMunroIntent(munroId: munroId));
-        }
-        return;
-      }
-
-      if (canonicalIdentifier == 'app') {
-        return;
-      }
+      if (intent != null) _controller.add(intent);
     });
+  }
+
+  NavigationIntent? _intentFor(String? canonicalIdentifier, Map data) {
+    if (canonicalIdentifier == null) return null;
+
+    if (canonicalIdentifier.startsWith('munro/')) {
+      final munroIdRaw = data['munroId'];
+      final munroId = munroIdRaw is int ? munroIdRaw : int.tryParse('$munroIdRaw');
+
+      if (munroId != null && munroId > 0) {
+        return OpenMunroIntent(munroId: munroId);
+      }
+    }
+    return null;
   }
 
   Future<void> dispose() async {
     await _sub?.cancel();
     await _controller.close();
+    await _clicks.close();
   }
 }

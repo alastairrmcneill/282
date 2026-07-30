@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -260,6 +261,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
         return Stack(
           children: [
             MapWidget(
+              onMapLoadErrorListener: (data) => trackMapLoadFailure(context, AnalyticsSurface.bulkMunroMap, data),
               key: const ValueKey("bulkMunroMapWidget"),
               onMapCreated: (MapboxMap mapboxMap) => _onMapCreated(
                 mapboxMap,

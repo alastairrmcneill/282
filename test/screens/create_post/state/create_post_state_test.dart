@@ -113,6 +113,7 @@ void main() {
       any,
       props: anyNamed('props'),
     )).thenAnswer((_) async => {});
+    when(mockAnalytics.incrementProfileProperty(any, any)).thenAnswer((_) async => {});
 
     // Reset the state to ensure clean slate for each test
     createPostState.reset();
@@ -437,6 +438,82 @@ void main() {
         )).called(1);
         verifyNever(mockPostsRepository.create(post: anyNamed('post')));
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        // uploadImage throws synchronously here (thenThrow), so the exception occurs
+        // while building uploadFutures, never inside the Future.wait try/catch —
+        // photoUploadFailed only fires for a future that rejects asynchronously (see below).
+        verifyNever(mockAnalytics.track(AnalyticsEvent.photoUploadFailed, props: anyNamed('props')));
+        verify(mockAnalytics.track(
+          AnalyticsEvent.postCreateFailed,
+          props: {
+            AnalyticsProp.reason: 'storage',
+            AnalyticsProp.selectedMunroCount: 1,
+            AnalyticsProp.imagesAdded: 1,
+          },
+        )).called(1);
+      });
+
+      test('should track photoUploadFailed when an image upload rejects asynchronously', () async {
+        // Arrange
+        final mockFile = File('test/image.jpg');
+
+        createPostState.setTitle = 'Test Post';
+        createPostState.addMunro(1);
+        createPostState.addImage(munroId: 1, image: mockFile);
+
+        when(mockStorageRepository.uploadImage(imageFile: anyNamed('imageFile'), type: anyNamed('type')))
+            .thenAnswer((_) => Future<String>.error(Exception('storage upload rejected')));
+
+        // Act
+        final result = await createPostState.createPost();
+
+        // Assert
+        expect(result, isNull);
+        expect(createPostState.status, CreatePostStatus.error);
+        verify(mockAnalytics.track(
+          AnalyticsEvent.photoUploadFailed,
+          props: {
+            AnalyticsProp.source: AnalyticsEvent.createPost,
+            AnalyticsProp.imagesAdded: 1,
+          },
+        )).called(1);
+        verify(mockAnalytics.track(
+          AnalyticsEvent.postCreateFailed,
+          props: {
+            AnalyticsProp.reason: 'storage',
+            AnalyticsProp.selectedMunroCount: 1,
+            AnalyticsProp.imagesAdded: 1,
+          },
+        )).called(1);
+      });
+
+      test('should classify failure reasons for postCreateFailed', () async {
+        final cases = <String, String>{
+          'Socket connection failed': 'network',
+          'Connection reset by peer': 'network',
+          'Request timeout': 'timeout',
+          'Permission denied': 'permission',
+          'User is unauthorized': 'permission',
+          'Storage quota exceeded': 'storage',
+          'Something odd happened': 'unknown',
+        };
+
+        for (final entry in cases.entries) {
+          createPostState.reset();
+          createPostState.setTitle = 'Test Post';
+          createPostState.addMunro(1);
+          when(mockPostsRepository.create(post: anyNamed('post'))).thenThrow(Exception(entry.key));
+
+          await createPostState.createPost();
+
+          verify(mockAnalytics.track(
+            AnalyticsEvent.postCreateFailed,
+            props: {
+              AnalyticsProp.reason: entry.value,
+              AnalyticsProp.selectedMunroCount: 1,
+              AnalyticsProp.imagesAdded: 0,
+            },
+          )).called(1);
+        }
       });
 
       test('should create post without images and not call storage repository', () async {
@@ -454,6 +531,37 @@ void main() {
 
         // Assert
         verifyNever(mockStorageRepository.uploadImage(imageFile: anyNamed('imageFile'), type: anyNamed('type')));
+      });
+
+      test('should increment munros_logged profile property by the number of selected munros', () async {
+        // Arrange
+        createPostState.setTitle = 'Test Post';
+        createPostState.setCompletionDate = sampleDate;
+        createPostState.addMunro(1);
+        createPostState.addMunro(2);
+
+        when(mockPostsRepository.create(post: anyNamed('post'))).thenAnswer((_) async => 'post123');
+        when(mockMunroPicturesRepository.createMunroPictures(munroPictures: anyNamed('munroPictures')))
+            .thenAnswer((_) async {});
+
+        // Act
+        await createPostState.createPost();
+
+        // Assert
+        verify(mockAnalytics.incrementProfileProperty('munros_logged', 2.0)).called(1);
+      });
+
+      test('should not increment munros_logged profile property when post creation fails', () async {
+        // Arrange
+        createPostState.setTitle = 'Test Post';
+        createPostState.addMunro(1);
+        when(mockPostsRepository.create(post: anyNamed('post'))).thenThrow(Exception('Create failed'));
+
+        // Act
+        await createPostState.createPost();
+
+        // Assert
+        verifyNever(mockAnalytics.incrementProfileProperty(any, any));
       });
     });
 
@@ -871,6 +979,13 @@ void main() {
         )).called(1);
         verifyNever(mockPostsRepository.update(post: anyNamed('post')));
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockAnalytics.track(
+          AnalyticsEvent.photoUploadFailed,
+          props: {
+            AnalyticsProp.source: AnalyticsEvent.editPost,
+            AnalyticsProp.imagesAdded: 1,
+          },
+        )).called(1);
       });
 
       test('should handle storage error when deleting images during edit', () async {

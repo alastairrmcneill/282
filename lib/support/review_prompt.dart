@@ -25,7 +25,10 @@ Future<void> maybeShowReviewPrompt(BuildContext context) async {
   if (lastAsked != null && DateTime.now().difference(lastAsked) < _sentimentPromptCooldown) return;
   await appFlags.setLastReviewSentimentPromptDate(DateTime.now());
 
-  context.read<Analytics>().track(AnalyticsEvent.reviewSentimentPromptShown);
+  context.read<Analytics>().track(
+    AnalyticsEvent.dialogShown,
+    props: {AnalyticsProp.dialogName: AnalyticsDialog.reviewSentimentPrompt},
+  );
 
   final result = await showDialog<ReviewSentimentResult>(
     context: context,
@@ -34,20 +37,29 @@ Future<void> maybeShowReviewPrompt(BuildContext context) async {
 
   if (!context.mounted) return;
   context.read<Analytics>().track(
-    AnalyticsEvent.reviewSentimentPromptResponse,
-    props: {AnalyticsProp.response: (result ?? ReviewSentimentResult.negativeDeclined).name},
+    AnalyticsEvent.dialogResponse,
+    props: {
+      AnalyticsProp.dialogName: AnalyticsDialog.reviewSentimentPrompt,
+      AnalyticsProp.response: (result ?? ReviewSentimentResult.negativeDeclined).name,
+    },
   );
 
   if (result != ReviewSentimentResult.positive) return;
 
-  context.read<Analytics>().track(AnalyticsEvent.reviewPromptShown);
+  context.read<Analytics>().track(
+    AnalyticsEvent.dialogShown,
+    props: {AnalyticsProp.dialogName: AnalyticsDialog.reviewPrompt},
+  );
 
   await rateMyApp.showRateDialog(
     context,
     listener: (button) {
       context.read<Analytics>().track(
-        AnalyticsEvent.reviewPromptResponse,
-        props: {AnalyticsProp.response: button.name},
+        AnalyticsEvent.dialogResponse,
+        props: {
+          AnalyticsProp.dialogName: AnalyticsDialog.reviewPrompt,
+          AnalyticsProp.response: button.name,
+        },
       );
       return true;
     },

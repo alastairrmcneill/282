@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/push/push_notifications_state.dart';
@@ -20,6 +21,7 @@ import 'push_notifications_state_test.mocks.dart';
   UserState,
   NavigationIntentState,
   AppInfoRepository,
+  Analytics,
   Logger,
 ])
 void main() {
@@ -29,6 +31,7 @@ void main() {
   late MockUserState mockUserState;
   late MockNavigationIntentState mockNavigationIntentState;
   late MockAppInfoRepository mockAppInfoRepository;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late PushNotificationState pushNotificationState;
 
@@ -120,6 +123,7 @@ void main() {
     mockUserState = MockUserState();
     mockNavigationIntentState = MockNavigationIntentState();
     mockAppInfoRepository = MockAppInfoRepository();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
 
     // Create stream controllers for mocking
@@ -157,6 +161,7 @@ void main() {
       mockUserState,
       mockNavigationIntentState,
       mockAppInfoRepository,
+      mockAnalytics,
       mockLogger,
     );
   });
@@ -195,6 +200,39 @@ void main() {
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
       });
 
+      test('should track pushOpened with coldStart true on cold start message', () async {
+        // Arrange
+        final initialMessage = RemoteMessage(
+          messageId: 'msg1',
+          data: {'notificationId': 'notif_1', 'type': 'like'},
+        );
+        when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => initialMessage);
+
+        // Act
+        await pushNotificationState.init();
+
+        // Assert
+        verify(mockAnalytics.track(
+          AnalyticsEvent.pushOpened,
+          props: {
+            AnalyticsProp.notificationId: 'notif_1',
+            AnalyticsProp.notificationType: 'like',
+            AnalyticsProp.coldStart: true,
+          },
+        )).called(1);
+      });
+
+      test('should not track pushOpened when there is no cold start message', () async {
+        // Arrange
+        when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => null);
+
+        // Act
+        await pushNotificationState.init();
+
+        // Assert
+        verifyNever(mockAnalytics.track(AnalyticsEvent.pushOpened, props: anyNamed('props')));
+      });
+
       test('should handle cold start with no initial message', () async {
         // Arrange
         when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => null);
@@ -223,6 +261,30 @@ void main() {
 
         // Assert
         verify(mockNavigationIntentState.enqueue(any)).called(1);
+      });
+
+      test('should track pushOpened with coldStart false when notification opened from stream', () async {
+        // Arrange
+        when(mockPushNotificationRepository.getInitialMessage()).thenAnswer((_) async => null);
+        await pushNotificationState.init();
+
+        // Act
+        final message = RemoteMessage(
+          messageId: 'msg2',
+          data: {'notificationId': 'notif_2', 'type': 'follow'},
+        );
+        onNotificationOpenedController.add(message);
+        await Future.delayed(Duration(milliseconds: 50));
+
+        // Assert
+        verify(mockAnalytics.track(
+          AnalyticsEvent.pushOpened,
+          props: {
+            AnalyticsProp.notificationId: 'notif_2',
+            AnalyticsProp.notificationType: 'follow',
+            AnalyticsProp.coldStart: false,
+          },
+        )).called(1);
       });
 
       test('should subscribe to token refresh stream and sync token', () async {

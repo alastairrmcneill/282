@@ -31,7 +31,7 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
         props: {
           AnalyticsProp.stepNumber: 6,
           AnalyticsProp.stepName: 'sign_in',
-          AnalyticsProp.source: 'first_run_onboarding',
+          AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           AnalyticsProp.branch: 'yes',
         },
       );
@@ -111,7 +111,7 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                                         props: {
                                           AnalyticsProp.stepNumber: 6,
                                           AnalyticsProp.stepName: 'sign_in',
-                                          AnalyticsProp.source: 'first_run_onboarding',
+                                          AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
                                           AnalyticsProp.branch: 'yes',
                                         },
                                       );
@@ -179,7 +179,7 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                           setState(() => _errorMessage = null);
                           final result = await context
                               .read<AuthState>()
-                              .signInWithApple(source: 'first_run_onboarding');
+                              .signInWithApple(source: AnalyticsSource.firstRunOnboarding);
                           if (mounted) await _handleAuthResult(result);
                         },
                       ),
@@ -202,7 +202,10 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                       onPressed: () {
                         context.read<Analytics>().track(
                           AnalyticsEvent.onboardingAuthCtaTapped,
-                          props: {AnalyticsProp.ctaType: 'create_account', AnalyticsProp.source: 'first_run_onboarding'},
+                          props: {
+                            AnalyticsProp.ctaType: 'create_account',
+                            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding
+                          },
                         );
                         Navigator.pushNamed(
                           context,
@@ -234,7 +237,10 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               ..onTap = () {
                                 context.read<Analytics>().track(
                                   AnalyticsEvent.onboardingAuthCtaTapped,
-                                  props: {AnalyticsProp.ctaType: 'log_in', AnalyticsProp.source: 'first_run_onboarding'},
+                                  props: {
+                                    AnalyticsProp.ctaType: 'log_in',
+                                    AnalyticsProp.source: AnalyticsSource.firstRunOnboarding
+                                  },
                                 );
                                 Navigator.pushNamed(
                                   context,
@@ -265,7 +271,10 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               ..onTap = () {
                                 context.read<Analytics>().track(
                                   AnalyticsEvent.onboardingLegalLinkTapped,
-                                  props: {AnalyticsProp.linkType: 'terms', AnalyticsProp.source: 'first_run_onboarding'},
+                                  props: {
+                                    AnalyticsProp.linkType: 'terms',
+                                    AnalyticsProp.source: AnalyticsSource.firstRunOnboarding
+                                  },
                                 );
                                 openTermsUrl();
                               },
@@ -282,7 +291,10 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                               ..onTap = () {
                                 context.read<Analytics>().track(
                                   AnalyticsEvent.onboardingLegalLinkTapped,
-                                  props: {AnalyticsProp.linkType: 'privacy', AnalyticsProp.source: 'first_run_onboarding'},
+                                  props: {
+                                    AnalyticsProp.linkType: 'privacy',
+                                    AnalyticsProp.source: AnalyticsSource.firstRunOnboarding
+                                  },
                                 );
                                 openPrivacyPolicyUrl();
                               },
@@ -319,7 +331,7 @@ class _OnboardingGoogleButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         ),
         onPressed: () async {
-          final result = await context.read<AuthState>().signInWithGoogle(source: 'first_run_onboarding');
+          final result = await context.read<AuthState>().signInWithGoogle(source: AnalyticsSource.firstRunOnboarding);
           await onResult(result);
         },
         child: Row(

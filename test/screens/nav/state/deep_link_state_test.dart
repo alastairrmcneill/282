@@ -25,6 +25,7 @@ void main() {
   late DeepLinkState deepLinkState;
 
   late StreamController<NavigationIntent> eventStreamController;
+  late StreamController<BranchLinkClick> clickStreamController;
 
   setUp(() {
     mockDeepLinkRepository = MockDeepLinkRepository();
@@ -38,15 +39,18 @@ void main() {
       mockLogger,
     );
 
-    // Create a fresh stream controller for each test
+    // Create fresh stream controllers for each test
     eventStreamController = StreamController<NavigationIntent>.broadcast();
+    clickStreamController = StreamController<BranchLinkClick>.broadcast();
 
     // Default mock behavior for DeepLinkRepository
     when(mockDeepLinkRepository.events).thenAnswer((_) => eventStreamController.stream);
+    when(mockDeepLinkRepository.clicks).thenAnswer((_) => clickStreamController.stream);
   });
 
   tearDown(() async {
     await eventStreamController.close();
+    await clickStreamController.close();
   });
 
   group('DeepLinkState', () {
@@ -79,6 +83,7 @@ void main() {
         // Assert
         verify(mockDeepLinkRepository.init(enableLogging: true)).called(1);
         verify(mockDeepLinkRepository.events).called(1);
+        verify(mockDeepLinkRepository.clicks).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
       });
 
@@ -92,6 +97,7 @@ void main() {
         // Assert
         verify(mockDeepLinkRepository.init(enableLogging: false)).called(1);
         verify(mockDeepLinkRepository.events).called(1);
+        verify(mockDeepLinkRepository.clicks).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
       });
 
@@ -181,6 +187,7 @@ void main() {
         // Assert
         verify(mockDeepLinkRepository.init(enableLogging: true)).called(1);
         verify(mockDeepLinkRepository.events).called(1);
+        verify(mockDeepLinkRepository.clicks).called(1);
       });
 
       test('should not re-subscribe to events on multiple init calls', () async {
@@ -274,6 +281,110 @@ void main() {
         // Assert
         verify(mockNavigationIntentState.enqueue(intent1)).called(1);
         verify(mockNavigationIntentState.enqueue(intent2)).called(1);
+      });
+    });
+
+    group('Click Analytics Tracking', () {
+      test('should track branchLinkClicked when a click is received', () async {
+        // Arrange
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+
+        const click = BranchLinkClick(
+          canonicalIdentifier: 'munro/123',
+          channel: 'facebook',
+          campaign: 'summer_launch',
+          feature: 'share',
+          routed: true,
+        );
+
+        // Act
+        await deepLinkState.init(enableLogging: true);
+        clickStreamController.add(click);
+        await Future.delayed(Duration(milliseconds: 50));
+
+        // Assert
+        verify(mockAnalytics.track(
+          AnalyticsEvent.branchLinkClicked,
+          props: {
+            AnalyticsProp.linkType: 'munro/123',
+            AnalyticsProp.channel: 'facebook',
+            AnalyticsProp.campaign: 'summer_launch',
+            AnalyticsProp.feature: 'share',
+            AnalyticsProp.routed: true,
+          },
+        )).called(1);
+      });
+
+      test('should track branchLinkClicked with routed false when click did not resolve to an intent', () async {
+        // Arrange
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+
+        const click = BranchLinkClick(
+          canonicalIdentifier: 'app',
+          channel: null,
+          campaign: null,
+          feature: null,
+          routed: false,
+        );
+
+        // Act
+        await deepLinkState.init(enableLogging: true);
+        clickStreamController.add(click);
+        await Future.delayed(Duration(milliseconds: 50));
+
+        // Assert
+        verify(mockAnalytics.track(
+          AnalyticsEvent.branchLinkClicked,
+          props: {
+            AnalyticsProp.linkType: 'app',
+            AnalyticsProp.channel: null,
+            AnalyticsProp.campaign: null,
+            AnalyticsProp.feature: null,
+            AnalyticsProp.routed: false,
+          },
+        )).called(1);
+      });
+
+      test('should not track branchLinkClicked when a navigation intent is received (no click)', () async {
+        // Arrange
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+
+        // Act
+        await deepLinkState.init(enableLogging: true);
+        eventStreamController.add(OpenMunroIntent(munroId: 123));
+        await Future.delayed(Duration(milliseconds: 50));
+
+        // Assert - analytics tracking now only happens off the clicks stream, not events
+        verifyNever(mockAnalytics.track(any, props: anyNamed('props')));
+      });
+
+      test('should track multiple clicks independently', () async {
+        // Arrange
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+
+        const click1 = BranchLinkClick(
+          canonicalIdentifier: 'munro/1',
+          channel: 'sms',
+          campaign: null,
+          feature: null,
+          routed: true,
+        );
+        const click2 = BranchLinkClick(
+          canonicalIdentifier: 'munro/2',
+          channel: 'email',
+          campaign: null,
+          feature: null,
+          routed: true,
+        );
+
+        // Act
+        await deepLinkState.init(enableLogging: true);
+        clickStreamController.add(click1);
+        clickStreamController.add(click2);
+        await Future.delayed(Duration(milliseconds: 50));
+
+        // Assert
+        verify(mockAnalytics.track(AnalyticsEvent.branchLinkClicked, props: anyNamed('props'))).called(2);
       });
     });
 

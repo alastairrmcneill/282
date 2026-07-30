@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/auth/auth_error_messages.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final result = await context.read<AuthState>().signInWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
-          source: widget.fromOnboarding ? 'first_run_onboarding' : 'in_app_onboarding',
+          source: widget.fromOnboarding ? AnalyticsSource.firstRunOnboarding : AnalyticsSource.inAppOnboarding,
           gateSource: widget.gateSource,
         );
 

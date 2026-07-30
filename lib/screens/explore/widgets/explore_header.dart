@@ -51,7 +51,10 @@ class ExploreTabHeader extends StatelessWidget {
                             munroState.setFilterString = value;
                           },
                           onClear: () {
-                            context.read<Analytics>().track(AnalyticsEvent.exploreSearchClearTapped);
+                            context.read<Analytics>().track(
+                              AnalyticsEvent.searchCleared,
+                              props: {AnalyticsProp.surface: AnalyticsSurface.explore},
+                            );
                             munroState.setFilterString = '';
                           },
                           trailing: const ExploreHeaderFilterButton(),

@@ -54,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       props: {
         AnalyticsProp.stepNumber: state.currentPage + 1,
         AnalyticsProp.stepName: state.currentStepName,
-        AnalyticsProp.source: 'first_run_onboarding',
+        AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
       },
     );
     _pageController.previousPage(
@@ -92,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 WelcomeScreen(onNext: _nextPage),
                 ProgressScreen(onNext: _nextPage, onBack: _previousPage),
                 AchievementScreen(onNext: _nextPage, onBack: _previousPage),
-                MunroQuestionScreen(onNo: _onNo, onYes: _onYes, source: 'first_run_onboarding'),
+                MunroQuestionScreen(onNo: _onNo, onYes: _onYes, source: AnalyticsSource.firstRunOnboarding),
               ],
             ),
           ),
@@ -110,9 +110,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     dotHeight: 8,
                     dotWidth: 8,
                     activeDotColor: const Color(0xFF10b981),
-                    dotColor: lightBackground
-                        ? Colors.black.withOpacity(0.3)
-                        : Colors.white.withOpacity(0.3),
+                    dotColor: lightBackground ? Colors.black.withOpacity(0.3) : Colors.white.withOpacity(0.3),
                     spacing: 8,
                   ),
                 ),

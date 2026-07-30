@@ -35,10 +35,7 @@ class HardUpdateDialog extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 'Update Required',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
@@ -49,7 +46,11 @@ class HardUpdateDialog extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               PrimaryButton(
-                analyticsEvent: AnalyticsEvent.appUpdateDialogUpdateNow,
+                analyticsEvent: AnalyticsEvent.dialogResponse,
+                analyticsProperties: const {
+                  AnalyticsProp.dialogName: AnalyticsDialog.hardAppUpdate,
+                  AnalyticsProp.response: AnalyticsResponse.updateNow,
+                },
                 onPressed: () async {
                   final url = Platform.isIOS
                       ? 'https://apps.apple.com/us/app/282/id6474512889'

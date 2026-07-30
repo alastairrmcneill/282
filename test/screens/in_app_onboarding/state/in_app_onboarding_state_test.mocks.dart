@@ -1043,6 +1043,45 @@ class MockAnalytics extends _i1.Mock implements _i11.Analytics {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setProfileProperties(Map<String, Object?>? props) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setProfileProperties,
+          [props],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setProfilePropertiesOnce(Map<String, Object?>? props) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setProfilePropertiesOnce,
+          [props],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> incrementProfileProperty(
+    String? prop,
+    double? by,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #incrementProfileProperty,
+          [
+            prop,
+            by,
+          ],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [Logger].
