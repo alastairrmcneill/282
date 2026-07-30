@@ -177,6 +177,11 @@ class AnalyticsSurface {
   static const munroPage = 'munro_page';
   static const munroSummaryTile = 'munro_summary_tile';
   static const munroAppBar = 'munro_app_bar';
+
+  static const exploreMap = 'explore_map';
+  static const munroOverviewMap = 'munro_overview_map';
+  static const munroFullMap = 'munro_full_map';
+  static const bulkMunroMap = 'bulk_munro_map';
 }
 
 class AnalyticsSource {

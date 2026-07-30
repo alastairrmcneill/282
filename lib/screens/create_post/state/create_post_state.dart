@@ -78,7 +78,19 @@ class CreatePostState extends ChangeNotifier {
         }
       }
 
-      final results = await Future.wait(uploadFutures);
+      final List<(int, String)> results;
+      try {
+        results = await Future.wait(uploadFutures);
+      } catch (error) {
+        _analytics.track(
+          AnalyticsEvent.photoUploadFailed,
+          props: {
+            AnalyticsProp.source: AnalyticsEvent.createPost,
+            AnalyticsProp.imagesAdded: uploadFutures.length,
+          },
+        );
+        rethrow;
+      }
 
       for (final (munroId, imageURL) in results) {
         if (addedImageUrlsMap[munroId] == null) {
@@ -175,9 +187,30 @@ class CreatePostState extends ChangeNotifier {
       );
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
+      _analytics.track(
+        AnalyticsEvent.postCreateFailed,
+        props: {
+          AnalyticsProp.reason: _failureReason(error),
+          AnalyticsProp.selectedMunroCount: selectedMunroIds.length,
+          AnalyticsProp.imagesAdded: _addedImages.values.fold<int>(0, (sum, list) => sum + list.length),
+        },
+      );
       setError = Error(message: "There was an issue uploading your post. Please try again");
       return null;
     }
+  }
+
+  String _failureReason(Object error) {
+    final text = error.toString().toLowerCase();
+    if (text.contains('socket') || text.contains('network') || text.contains('connection')) {
+      return 'network';
+    }
+    if (text.contains('timeout')) return 'timeout';
+    if (text.contains('permission') || text.contains('denied') || text.contains('unauthorized')) {
+      return 'permission';
+    }
+    if (text.contains('storage') || text.contains('upload')) return 'storage';
+    return 'unknown';
   }
 
   Future<Post?> editPost() async {
@@ -187,14 +220,25 @@ class CreatePostState extends ChangeNotifier {
       // Get the original post
       Map<int, List<String>> addedImageUrlsMap = {};
 
-      for (int munroId in _addedImages.keys) {
-        for (File image in _addedImages[munroId]!) {
-          String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
-          if (addedImageUrlsMap[munroId] == null) {
-            addedImageUrlsMap[munroId] = [];
+      try {
+        for (int munroId in _addedImages.keys) {
+          for (File image in _addedImages[munroId]!) {
+            String imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
+            if (addedImageUrlsMap[munroId] == null) {
+              addedImageUrlsMap[munroId] = [];
+            }
+            addedImageUrlsMap[munroId]!.add(imageURL);
           }
-          addedImageUrlsMap[munroId]!.add(imageURL);
         }
+      } catch (error) {
+        _analytics.track(
+          AnalyticsEvent.photoUploadFailed,
+          props: {
+            AnalyticsProp.source: AnalyticsEvent.editPost,
+            AnalyticsProp.imagesAdded: _addedImages.values.fold<int>(0, (sum, list) => sum + list.length),
+          },
+        );
+        rethrow;
       }
 
       // Create post object

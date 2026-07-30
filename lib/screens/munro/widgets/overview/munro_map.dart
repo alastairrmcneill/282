@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
@@ -87,6 +88,7 @@ class _MunroMapWidgetState extends State<MunroMapWidget> {
             height: 150,
             width: double.infinity,
             child: MapWidget(
+              onMapLoadErrorListener: (data) => trackMapLoadFailure(context, AnalyticsSurface.munroOverviewMap, data),
               key: const ValueKey("munroMapWidget"),
               styleUri: _activeStyleUri(context),
               cameraOptions: CameraOptions(

@@ -11,7 +11,8 @@ import 'dart:ui' as _i9;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
-import 'package:two_eight_two/logging/logging.dart' as _i13;
+import 'package:two_eight_two/analytics/analytics.dart' as _i13;
+import 'package:two_eight_two/logging/logging.dart' as _i14;
 import 'package:two_eight_two/models/models.dart' as _i3;
 import 'package:two_eight_two/repos/repos.dart' as _i4;
 import 'package:two_eight_two/screens/auth/state/user_state.dart' as _i10;
@@ -849,10 +850,110 @@ class MockAppInfoRepository extends _i1.Mock implements _i4.AppInfoRepository {
       ) as int);
 }
 
+/// A class which mocks [Analytics].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAnalytics extends _i1.Mock implements _i13.Analytics {
+  MockAnalytics() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<void> track(
+    String? name, {
+    Map<String, Object?>? props,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #track,
+          [name],
+          {#props: props},
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> identify(String? userId) => (super.noSuchMethod(
+        Invocation.method(
+          #identify,
+          [userId],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> reset() => (super.noSuchMethod(
+        Invocation.method(
+          #reset,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> registerSuperProperty(
+    String? key,
+    Object? value,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #registerSuperProperty,
+          [
+            key,
+            value,
+          ],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setProfileProperties(Map<String, Object?>? props) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setProfileProperties,
+          [props],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setProfilePropertiesOnce(Map<String, Object?>? props) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setProfilePropertiesOnce,
+          [props],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> incrementProfileProperty(
+    String? prop,
+    double? by,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #incrementProfileProperty,
+          [
+            prop,
+            by,
+          ],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+}
+
 /// A class which mocks [Logger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogger extends _i1.Mock implements _i13.Logger {
+class MockLogger extends _i1.Mock implements _i14.Logger {
   MockLogger() {
     _i1.throwOnMissingStub(this);
   }

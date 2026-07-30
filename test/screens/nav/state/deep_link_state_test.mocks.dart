@@ -57,6 +57,12 @@ class MockDeepLinkRepository extends _i1.Mock
       ) as _i4.Stream<_i5.NavigationIntent>);
 
   @override
+  _i4.Stream<_i3.BranchLinkClick> get clicks => (super.noSuchMethod(
+        Invocation.getter(#clicks),
+        returnValue: _i4.Stream<_i3.BranchLinkClick>.empty(),
+      ) as _i4.Stream<_i3.BranchLinkClick>);
+
+  @override
   _i4.Future<void> init({required bool? enableLogging}) => (super.noSuchMethod(
         Invocation.method(
           #init,
@@ -212,6 +218,45 @@ class MockAnalytics extends _i1.Mock implements _i8.Analytics {
           [
             key,
             value,
+          ],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> setProfileProperties(Map<String, Object?>? props) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setProfileProperties,
+          [props],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> setProfilePropertiesOnce(Map<String, Object?>? props) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setProfilePropertiesOnce,
+          [props],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> incrementProfileProperty(
+    String? prop,
+    double? by,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #incrementProfileProperty,
+          [
+            prop,
+            by,
           ],
         ),
         returnValue: _i4.Future<void>.value(),

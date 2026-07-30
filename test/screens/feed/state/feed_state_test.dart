@@ -262,6 +262,13 @@ void main() {
         )).called(1);
         verify(mockUserLikeState.getLikedPostIds(posts: additionalPosts)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+        verify(mockAnalytics.track(
+          AnalyticsEvent.feedPaginated,
+          props: {
+            AnalyticsProp.feed: AnalyticsFeed.friends,
+            AnalyticsProp.postCount: feedState.friendsPosts.length,
+          },
+        )).called(1);
       });
 
       test('should exclude blocked users when paginating', () async {
@@ -473,6 +480,13 @@ void main() {
         )).called(1);
         verify(mockUserLikeState.getLikedPostIds(posts: additionalPosts)).called(1);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+        verify(mockAnalytics.track(
+          AnalyticsEvent.feedPaginated,
+          props: {
+            AnalyticsProp.feed: AnalyticsFeed.global,
+            AnalyticsProp.postCount: feedState.globalPosts.length,
+          },
+        )).called(1);
       });
 
       test('should exclude blocked users when paginating', () async {

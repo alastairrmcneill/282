@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -12,10 +13,12 @@ import 'munro_state_test.mocks.dart';
 // Generate mocks
 @GenerateMocks([
   MunroRepository,
+  Analytics,
   Logger,
 ])
 void main() {
   late MockMunroRepository mockMunroRepository;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late MunroState munroState;
 
@@ -100,8 +103,9 @@ void main() {
 
   setUp(() {
     mockMunroRepository = MockMunroRepository();
+    mockAnalytics = MockAnalytics();
     mockLogger = MockLogger();
-    munroState = MunroState(mockMunroRepository, mockLogger);
+    munroState = MunroState(mockMunroRepository, mockAnalytics, mockLogger);
   });
 
   group('MunroState', () {
@@ -198,6 +202,52 @@ void main() {
 
         // Assert - no change should occur
         expect(munroState.filteredMunroList, equals(initialFilteredList));
+      });
+    });
+
+    group('searchNoResults tracking', () {
+      setUp(() {
+        munroState.setMunroList = sampleMunros;
+      });
+
+      test('should track searchNoResults when a query yields no results', () {
+        munroState.setFilterString = 'nonexistent munro xyz';
+
+        verify(mockAnalytics.track(
+          AnalyticsEvent.searchNoResults,
+          props: {
+            AnalyticsProp.surface: AnalyticsSurface.explore,
+            AnalyticsProp.query: 'nonexistent munro xyz',
+            AnalyticsProp.queryLength: 'nonexistent munro xyz'.length,
+          },
+        )).called(1);
+      });
+
+      test('should not track searchNoResults when the query has results', () {
+        munroState.setFilterString = 'Ben Nevis';
+
+        verifyNever(mockAnalytics.track(AnalyticsEvent.searchNoResults, props: anyNamed('props')));
+      });
+
+      test('should not track searchNoResults for an empty query', () {
+        munroState.setFilterString = '';
+
+        verifyNever(mockAnalytics.track(AnalyticsEvent.searchNoResults, props: anyNamed('props')));
+      });
+
+      test('should not re-track searchNoResults on repeated no-result queries', () {
+        munroState.setFilterString = 'nonexistent1';
+        munroState.setFilterString = 'nonexistent2';
+
+        verify(mockAnalytics.track(AnalyticsEvent.searchNoResults, props: anyNamed('props'))).called(1);
+      });
+
+      test('should track again after a no-results query is followed by a query with results then another miss', () {
+        munroState.setFilterString = 'nonexistent'; // no results -> tracked
+        munroState.setFilterString = 'Ben Nevis'; // has results -> resets _hadResults
+        munroState.setFilterString = 'still nothing'; // no results -> tracked again
+
+        verify(mockAnalytics.track(AnalyticsEvent.searchNoResults, props: anyNamed('props'))).called(2);
       });
     });
 

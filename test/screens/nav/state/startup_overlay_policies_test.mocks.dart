@@ -480,6 +480,17 @@ class MockAppFlagsRepository extends _i1.Mock
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setLastReviewSentimentPromptDate(DateTime? v) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setLastReviewSentimentPromptDate,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [AppInfoRepository].

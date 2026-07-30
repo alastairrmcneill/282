@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/enums/enums.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -6,8 +7,11 @@ import 'package:two_eight_two/repos/repos.dart';
 
 class MunroState extends ChangeNotifier {
   final MunroRepository munroRepository;
+  final Analytics _analytics;
   final Logger _logger;
-  MunroState(this.munroRepository, this._logger);
+  MunroState(this.munroRepository, this._analytics, this._logger);
+
+  bool _hadResults = true;
 
   MunroStatus _status = MunroStatus.initial;
   Error _error = Error();
@@ -130,11 +134,31 @@ class MunroState extends ChangeNotifier {
 
     _filteredMunroList = runningList;
 
+    _maybeTrackNoResults();
+
     bool equal = _munroListsEqual(initialList, _filteredMunroList);
 
     if (!equal) {
       notifyListeners();
     }
+  }
+
+  void _maybeTrackNoResults() {
+    final query = _filterString.trim();
+    final hasResults = _filteredMunroList.isNotEmpty;
+
+    if (query.isNotEmpty && !hasResults && _hadResults) {
+      _analytics.track(
+        AnalyticsEvent.searchNoResults,
+        props: {
+          AnalyticsProp.surface: AnalyticsSurface.explore,
+          AnalyticsProp.query: query,
+          AnalyticsProp.queryLength: query.length,
+        },
+      );
+    }
+
+    _hadResults = hasResults;
   }
 
   void clearFilterAndSorting() {

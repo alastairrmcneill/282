@@ -137,7 +137,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 1,
             AnalyticsProp.stepName: 'welcome',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
       });
@@ -216,7 +216,7 @@ void main() {
           AnalyticsEvent.onboardingCompleted,
           props: {
             AnalyticsProp.branch: 'yes',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
             AnalyticsProp.munrosLogged: 0,
             AnalyticsProp.notificationsEnabled: false,
           },
@@ -235,7 +235,7 @@ void main() {
           AnalyticsEvent.onboardingCompleted,
           props: {
             AnalyticsProp.branch: 'no',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
             AnalyticsProp.munrosLogged: 0,
             AnalyticsProp.notificationsEnabled: false,
           },
@@ -291,7 +291,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 2,
             AnalyticsProp.stepName: 'progress',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
       });
@@ -475,7 +475,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 3,
             AnalyticsProp.stepName: 'achievement',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
       });
@@ -756,7 +756,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 2,
             AnalyticsProp.stepName: 'progress',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
 
@@ -766,7 +766,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 3,
             AnalyticsProp.stepName: 'achievement',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
 
@@ -776,7 +776,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 4,
             AnalyticsProp.stepName: 'munro_question',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
       });
@@ -803,7 +803,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 3,
             AnalyticsProp.stepName: 'achievement',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
       });
@@ -818,7 +818,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 1,
             AnalyticsProp.stepName: 'welcome',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
           },
         )).called(1);
       });
@@ -832,7 +832,7 @@ void main() {
           AnalyticsEvent.onboardingCompleted,
           props: {
             AnalyticsProp.branch: 'yes',
-            AnalyticsProp.source: 'first_run_onboarding',
+            AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
             AnalyticsProp.munrosLogged: 0,
             AnalyticsProp.notificationsEnabled: false,
           },

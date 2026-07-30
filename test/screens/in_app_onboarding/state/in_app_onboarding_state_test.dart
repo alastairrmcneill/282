@@ -151,15 +151,10 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 1,
             AnalyticsProp.stepName: 'munro_question',
-            AnalyticsProp.source: 'in_app_onboarding',
+            AnalyticsProp.source: AnalyticsSource.inAppOnboarding,
           },
         )).called(1);
-        verify(mockAnalytics.track(
-          AnalyticsEvent.inAppOnboardingProgress,
-          props: {
-            AnalyticsProp.status: 'started',
-          },
-        )).called(1);
+        verifyNoMoreInteractions(mockAnalytics);
       });
 
       test('should handle error when reading user fails', () async {
@@ -279,7 +274,7 @@ void main() {
           props: {
             AnalyticsProp.stepNumber: 1,
             AnalyticsProp.stepName: 'munro_question',
-            AnalyticsProp.source: 'in_app_onboarding',
+            AnalyticsProp.source: AnalyticsSource.inAppOnboarding,
           },
         )).called(3);
       });

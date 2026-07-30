@@ -122,11 +122,13 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ChangeNotifierProxyProvider<MunroCompletionState, MunroState>(
         create: (ctx) => MunroState(
           ctx.read<MunroRepository>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
         update: (ctx, completions, munroState) {
           munroState ??= MunroState(
             ctx.read<MunroRepository>(),
+            ctx.read<Analytics>(),
             ctx.read<Logger>(),
           );
           munroState.syncCompletedIds(completions.completedMunroIds);

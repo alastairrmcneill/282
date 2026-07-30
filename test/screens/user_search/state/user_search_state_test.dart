@@ -213,6 +213,42 @@ void main() {
         expect(userSearchState.status, SearchStatus.loaded);
         expect(userSearchState.users, isEmpty);
       });
+
+      test('should track searchNoResults when search returns no users', () async {
+        // Arrange
+        when(mockUserRepository.readUsersByName(
+          searchTerm: anyNamed('searchTerm'),
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+          offset: anyNamed('offset'),
+        )).thenAnswer((_) async => []);
+
+        // Act
+        await userSearchState.search(query: '  NonExistent  ');
+
+        // Assert
+        verify(mockAnalytics.track(
+          AnalyticsEvent.searchNoResults,
+          props: {
+            AnalyticsProp.surface: AnalyticsSurface.userSearch,
+            AnalyticsProp.queryLength: 'NonExistent'.length,
+          },
+        )).called(1);
+      });
+
+      test('should not track searchNoResults when search returns users', () async {
+        // Arrange
+        when(mockUserRepository.readUsersByName(
+          searchTerm: anyNamed('searchTerm'),
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+          offset: anyNamed('offset'),
+        )).thenAnswer((_) async => sampleUsers);
+
+        // Act
+        await userSearchState.search(query: 'John');
+
+        // Assert
+        verifyNever(mockAnalytics.track(AnalyticsEvent.searchNoResults, props: anyNamed('props')));
+      });
     });
 
     group('paginateSearch', () {
@@ -369,6 +405,22 @@ void main() {
         // Assert
         expect(userSearchState.status, SearchStatus.loaded);
         expect(userSearchState.users.length, 3);
+      });
+
+      test('should not track searchNoResults when pagination returns no additional users', () async {
+        // Arrange - pagination doesn't emit searchNoResults, only the initial search does
+        userSearchState.setUsers = List.from(sampleUsers);
+        when(mockUserRepository.readUsersByName(
+          searchTerm: anyNamed('searchTerm'),
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+          offset: anyNamed('offset'),
+        )).thenAnswer((_) async => []);
+
+        // Act
+        await userSearchState.paginateSearch(query: 'John');
+
+        // Assert
+        verifyNever(mockAnalytics.track(AnalyticsEvent.searchNoResults, props: anyNamed('props')));
       });
     });
 
