@@ -50,7 +50,7 @@ class StartupOverlayPolicies {
   }
 
   void maybeEnqueueWhatsNew() {
-    String version = "1.2.6"; // TODO update this to the version you want to show a whats new for;
+    String version = "2.1.0"; // TODO update this to the version you want to show a whats new for;
     bool showWhatsNewDialog = _appFlagsRepository.showWhatsNewDialog(version);
 
     String? firstAppVersion = _appFlagsRepository.firstAppVersion;

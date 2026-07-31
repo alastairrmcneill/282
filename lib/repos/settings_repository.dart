@@ -13,6 +13,7 @@ class SettingsRepository {
       metricTemperature: _prefs.getBool(SettingsFields.metricTemperature) ?? true,
       defaultPostVisibility: _prefs.getString(SettingsFields.defaultPostVisibility) ?? Privacy.public,
       themeMode: _prefs.getString(SettingsFields.themeMode) ?? ThemeModeOption.system,
+      mapStyle: _prefs.getString(SettingsFields.mapStyle) ?? MapStyleOption.classic,
     );
   }
 
@@ -22,5 +23,6 @@ class SettingsRepository {
     await _prefs.setBool(SettingsFields.metricTemperature, s.metricTemperature);
     await _prefs.setString(SettingsFields.defaultPostVisibility, s.defaultPostVisibility);
     await _prefs.setString(SettingsFields.themeMode, s.themeMode);
+    await _prefs.setString(SettingsFields.mapStyle, s.mapStyle);
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class WhatsNewDialog extends StatelessWidget {
@@ -7,6 +9,7 @@ class WhatsNewDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final captionStyle = Theme.of(context).textTheme.labelMedium?.copyWith(color: context.colors.textMuted);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
@@ -36,7 +39,7 @@ class WhatsNewDialog extends StatelessWidget {
             const SizedBox(height: 20),
             // TODO: Update content each release
             Text(
-              'New Group Planning view',
+              'Simpler map pins',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -44,22 +47,39 @@ class WhatsNewDialog extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Struggling to decide which munro to do with your friends? Select them in the Group Planning screen and browse all the munros that none of you have done yet.',
+              "Munro pins now default to Classic: simple red, green and blue for at-a-glance progress. "
+              "Prefer the old multicoloured-by-region pins? Switch back any time in Settings → Map Style.",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                'assets/images/whats_new_group_filter.png',
+                'assets/images/whats_new_map_style.png',
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Expanded(child: Center(child: Text('Classic', style: captionStyle))),
+                Expanded(child: Center(child: Text('Regions', style: captionStyle))),
+              ],
             ),
             const SizedBox(height: 24),
             PrimaryButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('Got it'),
+            ),
+            const SizedBox(height: 12),
+            SecondaryButton(
+              onPressed: () {
+                final navigator = Navigator.of(context);
+                navigator.pop();
+                navigator.pushNamed(MapStyleSettingsScreen.route);
+              },
+              child: const Text('Open Settings'),
             ),
           ],
         ),

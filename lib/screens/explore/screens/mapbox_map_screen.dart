@@ -47,6 +47,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     maxZoom: 14,
   );
   bool showTerrain = false;
+  String? _lastMapStyle;
 
   CameraOptions startingCamera = CameraOptions(
     center: Point(coordinates: Position(-4.559, 57.334)),
@@ -82,6 +83,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {
+    final mapStyle = context.read<SettingsState>().mapStyleSetting;
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
@@ -92,13 +94,15 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     await _addMunroSymbols(
       munroState: munroState,
       completedMunros: munroCompletionState.munroCompletions,
+      mapStyle: mapStyle,
     );
     _lastFilteredIds = munroState.filteredMunroList.map((m) => m.id).toList();
+    _lastMapStyle = mapStyle;
     _mapInitialized = true;
   }
 
   Future<void> _addMunroSymbols(
-      {required MunroState munroState, required List<MunroCompletion> completedMunros}) async {
+      {required MunroState munroState, required List<MunroCompletion> completedMunros, required String mapStyle}) async {
     final List<Munro> munros = munroState.filteredMunroList;
     final icons = markerIcons;
 
@@ -114,10 +118,10 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       final summited = completedMunros.any((element) => element.munroId == munro.id);
       final selected = munroState.selectedMunroId == munro.id;
       final icon = selected
-          ? icons.selectedFor(munro.area)
+          ? icons.selectedFor(munro.area, mapStyle)
           : summited
-              ? icons.completedFor(munro.area)
-              : icons.uncompleted;
+              ? icons.completedFor(munro.area, mapStyle)
+              : icons.uncompletedFor(mapStyle);
 
       pointAnnotationOptions.add(
         PointAnnotationOptions(
@@ -136,7 +140,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     }
   }
 
-  Future<void> _refreshAnnotations(MunroState munroState, MunroCompletionState munroCompletionState) async {
+  Future<void> _refreshAnnotations(
+      MunroState munroState, MunroCompletionState munroCompletionState, String mapStyle) async {
     final icons = markerIcons;
     if (icons == null) return;
 
@@ -153,7 +158,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       final summited = munroCompletionState.munroCompletions.any((e) => e.munroId == munro.id);
       options.add(PointAnnotationOptions(
         geometry: Point(coordinates: Position(munro.lng, munro.lat)),
-        image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+        image: summited ? icons.completedFor(munro.area, mapStyle) : icons.uncompletedFor(mapStyle),
         iconSize: 0.8,
         iconAnchor: IconAnchor.BOTTOM,
       ));
@@ -170,6 +175,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     if (_isHandlingTap) return;
     _isHandlingTap = true;
     try {
+      final mapStyle = context.read<SettingsState>().mapStyleSetting;
       const double threshold = 40.0;
 
       int? closestMunroId;
@@ -198,7 +204,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
       }
 
       final previouslySelectedMunroId = munroState.selectedMunroId;
-      await deselectAnnotation(munroState, munroCompletionState.munroCompletions);
+      await deselectAnnotation(munroState, munroCompletionState.munroCompletions, mapStyle);
       // Don't re-select if the user tapped the already-selected munro — just leave it deselected.
       if (closestAnnotation != null && closestMunroId != null && closestMunroId != previouslySelectedMunroId) {
         await selectAnnotation(closestMunroId, closestAnnotation);
@@ -208,7 +214,8 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     }
   }
 
-  Future<void> deselectAnnotation(MunroState munroState, List<MunroCompletion> munroCompletions) async {
+  Future<void> deselectAnnotation(
+      MunroState munroState, List<MunroCompletion> munroCompletions, String mapStyle) async {
     final annotationToDelete = selectedAnnotation;
     final previousMunroId = munroState.selectedMunroId;
 
@@ -229,7 +236,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     final bool summited = munroCompletions.any((element) => element.munroId == previousMunroId);
     final PointAnnotationOptions oldAnnotationOptions = PointAnnotationOptions(
       geometry: annotationToDelete.geometry,
-      image: summited ? icons.completedFor(munro.area) : icons.uncompleted,
+      image: summited ? icons.completedFor(munro.area, mapStyle) : icons.uncompletedFor(mapStyle),
       iconSize: 0.8,
       iconAnchor: IconAnchor.BOTTOM,
     );
@@ -256,13 +263,14 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     if (icons == null) return;
 
     final munroState = context.read<MunroState>();
+    final mapStyle = context.read<SettingsState>().mapStyleSetting;
     final Munro munro = munroState.munroList.firstWhere(
       (munro) => munro.id == munroId,
       orElse: () => Munro.empty,
     );
     final PointAnnotationOptions newAnnotationOptions = PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
-      image: icons.selectedFor(munro.area),
+      image: icons.selectedFor(munro.area, mapStyle),
       iconSize: 0.9,
       iconAnchor: IconAnchor.BOTTOM,
     );
@@ -296,13 +304,16 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   Widget build(BuildContext context) {
     final munroState = context.watch<MunroState>();
     final munroCompletionState = context.read<MunroCompletionState>();
+    final mapStyle = context.watch<SettingsState>().mapStyleSetting;
 
     if (_mapInitialized) {
       final currentIds = munroState.filteredMunroList.map((m) => m.id).toList();
-      if (!listEquals(currentIds, _lastFilteredIds)) {
+      final mapStyleChanged = _lastMapStyle != null && _lastMapStyle != mapStyle;
+      if (!listEquals(currentIds, _lastFilteredIds) || mapStyleChanged) {
         _lastFilteredIds = currentIds;
+        _lastMapStyle = mapStyle;
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _refreshAnnotations(munroState, munroCompletionState);
+          if (mounted) _refreshAnnotations(munroState, munroCompletionState, mapStyle);
         });
       }
     }

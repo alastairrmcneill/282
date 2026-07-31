@@ -26,6 +26,7 @@ class SettingsState extends ChangeNotifier {
   bool get metricTemperature => _appSettings?.metricTemperature ?? true;
   String get defaultPostVisibility => _appSettings?.defaultPostVisibility ?? Privacy.public;
   String get themeModeSetting => _appSettings?.themeMode ?? ThemeModeOption.system;
+  String get mapStyleSetting => _appSettings?.mapStyle ?? MapStyleOption.classic;
 
   set setError(Error error) {
     _status = SettingsStatus.error;
@@ -97,6 +98,11 @@ class SettingsState extends ChangeNotifier {
   Future<void> setThemeMode(String v) {
     _trackSettingChanged('theme_mode', v);
     return update(_appSettings!.copyWith(themeMode: v));
+  }
+
+  Future<void> setMapStyle(String v) {
+    _trackSettingChanged('map_style', v);
+    return update(_appSettings!.copyWith(mapStyle: v));
   }
 }
 

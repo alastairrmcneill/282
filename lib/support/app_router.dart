@@ -366,6 +366,11 @@ class AppRouter {
           builder: (_) => const AppearanceSettingsScreen(),
           settings: settings,
         );
+      case MapStyleSettingsScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const MapStyleSettingsScreen(),
+          settings: settings,
+        );
       case SplashScreen.route:
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),

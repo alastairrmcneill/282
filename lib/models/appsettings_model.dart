@@ -6,6 +6,7 @@ class AppSettings {
   final bool metricTemperature;
   final String defaultPostVisibility;
   final String themeMode;
+  final String mapStyle;
 
   AppSettings({
     required this.pushNotifications,
@@ -13,6 +14,7 @@ class AppSettings {
     required this.metricTemperature,
     required this.defaultPostVisibility,
     required this.themeMode,
+    required this.mapStyle,
   });
 
   static AppSettings get initial => AppSettings(
@@ -21,6 +23,7 @@ class AppSettings {
         metricTemperature: true,
         defaultPostVisibility: Privacy.public,
         themeMode: ThemeModeOption.system,
+        mapStyle: MapStyleOption.classic,
       );
 
   Map<String, dynamic> toJSON() {
@@ -30,6 +33,7 @@ class AppSettings {
       SettingsFields.metricTemperature: metricTemperature,
       SettingsFields.defaultPostVisibility: defaultPostVisibility,
       SettingsFields.themeMode: themeMode,
+      SettingsFields.mapStyle: mapStyle,
     };
   }
 
@@ -40,6 +44,7 @@ class AppSettings {
       metricTemperature: json[SettingsFields.metricTemperature] as bool? ?? true,
       defaultPostVisibility: json[SettingsFields.defaultPostVisibility] as String? ?? Privacy.public,
       themeMode: json[SettingsFields.themeMode] as String? ?? ThemeModeOption.system,
+      mapStyle: json[SettingsFields.mapStyle] as String? ?? MapStyleOption.classic,
     );
   }
 
@@ -49,6 +54,7 @@ class AppSettings {
     bool? metricTemperature,
     String? defaultPostVisibility,
     String? themeMode,
+    String? mapStyle,
   }) {
     return AppSettings(
       pushNotifications: pushNotifications ?? this.pushNotifications,
@@ -56,6 +62,7 @@ class AppSettings {
       metricTemperature: metricTemperature ?? this.metricTemperature,
       defaultPostVisibility: defaultPostVisibility ?? this.defaultPostVisibility,
       themeMode: themeMode ?? this.themeMode,
+      mapStyle: mapStyle ?? this.mapStyle,
     );
   }
 
@@ -65,7 +72,8 @@ class AppSettings {
       ${SettingsFields.metricHeight}: $metricHeight,
       ${SettingsFields.metricTemperature}: $metricTemperature,
       ${SettingsFields.defaultPostVisibility}: $defaultPostVisibility,
-      ${SettingsFields.themeMode}: $themeMode""";
+      ${SettingsFields.themeMode}: $themeMode,
+      ${SettingsFields.mapStyle}: $mapStyle""";
   }
 }
 
@@ -75,10 +83,16 @@ class SettingsFields {
   static String metricTemperature = "metric_temperature";
   static String defaultPostVisibility = "default_post_visibility";
   static String themeMode = "theme_mode";
+  static String mapStyle = "map_style";
 }
 
 class ThemeModeOption {
   static const String system = "system";
   static const String light = "light";
   static const String dark = "dark";
+}
+
+class MapStyleOption {
+  static const String regions = "regions";
+  static const String classic = "classic";
 }
