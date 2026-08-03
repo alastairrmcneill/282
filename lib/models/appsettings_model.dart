@@ -23,7 +23,7 @@ class AppSettings {
         metricTemperature: true,
         defaultPostVisibility: Privacy.public,
         themeMode: ThemeModeOption.system,
-        mapStyle: MapStyleOption.classic,
+        mapStyle: MapStyleOption.regions,
       );
 
   Map<String, dynamic> toJSON() {
@@ -44,7 +44,7 @@ class AppSettings {
       metricTemperature: json[SettingsFields.metricTemperature] as bool? ?? true,
       defaultPostVisibility: json[SettingsFields.defaultPostVisibility] as String? ?? Privacy.public,
       themeMode: json[SettingsFields.themeMode] as String? ?? ThemeModeOption.system,
-      mapStyle: json[SettingsFields.mapStyle] as String? ?? MapStyleOption.classic,
+      mapStyle: json[SettingsFields.mapStyle] as String? ?? MapStyleOption.regions,
     );
   }
 

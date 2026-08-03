@@ -26,7 +26,7 @@ class SettingsState extends ChangeNotifier {
   bool get metricTemperature => _appSettings?.metricTemperature ?? true;
   String get defaultPostVisibility => _appSettings?.defaultPostVisibility ?? Privacy.public;
   String get themeModeSetting => _appSettings?.themeMode ?? ThemeModeOption.system;
-  String get mapStyleSetting => _appSettings?.mapStyle ?? MapStyleOption.classic;
+  String get mapStyleSetting => _appSettings?.mapStyle ?? MapStyleOption.regions;
 
   set setError(Error error) {
     _status = SettingsStatus.error;

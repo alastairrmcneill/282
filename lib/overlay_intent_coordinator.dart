@@ -81,14 +81,23 @@ class OverlayIntentCoordinator extends StatelessWidget {
           },
         );
 
-        await showDialog(
+        final whatsNewResponse = await showDialog<String>(
           context: navCtx,
           builder: (BuildContext context) {
             return WhatsNewDialog(version: intent.version);
           },
-        ).then(
-          (_) => navCtx.read<AppFlagsRepository>().setShownWhatsNewDialog(intent.version),
         );
+
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogResponse,
+          props: {
+            AnalyticsProp.dialogName: AnalyticsDialog.whatsNew,
+            AnalyticsProp.version: intent.version,
+            AnalyticsProp.response: whatsNewResponse ?? AnalyticsResponse.dismiss,
+          },
+        );
+
+        await navCtx.read<AppFlagsRepository>().setShownWhatsNewDialog(intent.version);
         return;
 
       case FeedbackSurveyIntent():

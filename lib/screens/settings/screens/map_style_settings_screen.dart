@@ -35,17 +35,17 @@ class MapStyleSettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   OptionListTile(
-                    title: 'Classic',
-                    subtitle: 'Simple red, green and blue pins for at-a-glance progress.',
-                    value: MapStyleOption.classic,
+                    title: 'Regions',
+                    subtitle: "Each of Scotland's munro regions gets its own colour.",
+                    value: MapStyleOption.regions,
                     groupValue: settingsState.mapStyleSetting,
                     onChanged: (value) => settingsState.setMapStyle(value),
                   ),
                   Divider(indent: 15, endIndent: 15),
                   OptionListTile(
-                    title: 'Regions',
-                    subtitle: "Each of Scotland's munro regions gets its own colour.",
-                    value: MapStyleOption.regions,
+                    title: 'Classic',
+                    subtitle: 'Simple red, green and blue pins for at-a-glance progress.',
+                    value: MapStyleOption.classic,
                     groupValue: settingsState.mapStyleSetting,
                     onChanged: (value) => settingsState.setMapStyle(value),
                   ),

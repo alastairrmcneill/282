@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -39,7 +40,7 @@ class WhatsNewDialog extends StatelessWidget {
             const SizedBox(height: 20),
             // TODO: Update content each release
             Text(
-              'Simpler map pins',
+              'New: Classic map pins',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -47,8 +48,8 @@ class WhatsNewDialog extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              "Munro pins now default to Classic: simple red, green and blue for at-a-glance progress. "
-              "Prefer the old multicoloured-by-region pins? Switch back any time in Settings → Map Style.",
+              "Prefer a simpler look? You can now switch to Classic pins: simple red, green and blue for "
+              "at-a-glance progress, instead of a colour per region. Find it any time in Settings → Map Style.",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
@@ -69,14 +70,14 @@ class WhatsNewDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             PrimaryButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(AnalyticsResponse.dismiss),
               child: const Text('Got it'),
             ),
             const SizedBox(height: 12),
             SecondaryButton(
               onPressed: () {
                 final navigator = Navigator.of(context);
-                navigator.pop();
+                navigator.pop(AnalyticsResponse.openSettings);
                 navigator.pushNamed(MapStyleSettingsScreen.route);
               },
               child: const Text('Open Settings'),
