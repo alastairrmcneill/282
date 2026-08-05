@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -37,35 +38,37 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
           ),
           items: imageUrls
               .map(
-                (url) => Container(
-                  margin: EdgeInsets.zero,
-                  child: Center(
-                    child: CachedNetworkImage(
-                      imageUrl: url,
-                      fit: BoxFit.cover,
-                      height: 300,
-                      width: MediaQuery.of(context).size.width,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/post_image_placeholder.png',
+                (url) => PinchZoomReleaseUnzoomWidget(
+                  child: Container(
+                    margin: EdgeInsets.zero,
+                    child: Center(
+                      child: CachedNetworkImage(
+                        imageUrl: url,
                         fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
                         height: 300,
+                        width: MediaQuery.of(context).size.width,
+                        placeholder: (context, url) => Image.asset(
+                          'assets/images/post_image_placeholder.png',
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 300,
+                        ),
+                        fadeInDuration: Duration.zero,
+                        errorWidget: (context, url, error) {
+                          context.read<Logger>().error(
+                            'Failed to load photo',
+                            error: error,
+                            context: {'imageUrl': url},
+                          );
+                          return Center(
+                            child: Icon(
+                              PhosphorIconsRegular.warning,
+                              size: 40,
+                              color: Colors.grey[400],
+                            ),
+                          );
+                        },
                       ),
-                      fadeInDuration: Duration.zero,
-                      errorWidget: (context, url, error) {
-                        context.read<Logger>().error(
-                              'Failed to load photo',
-                              error: error,
-                              context: {'imageUrl': url},
-                            );
-                        return Center(
-                          child: Icon(
-                            PhosphorIconsRegular.warning,
-                            size: 40,
-                            color: Colors.grey[400],
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ),
