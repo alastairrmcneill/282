@@ -216,7 +216,7 @@ void main() {
     });
 
     group('maybeEnqueueWhatsNew', () {
-      const version = '1.2.6';
+      const version = '2.1.0';
 
       test('should set firstAppVersion and not enqueue when firstAppVersion is null', () {
         // Arrange
