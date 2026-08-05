@@ -23,6 +23,7 @@ String munroAreaSlug(String area) => area.toLowerCase().replaceAll(' ', '-');
 
 /// Rasterizes an SVG asset into PNG bytes, for use as a Mapbox point
 /// annotation image (which requires a raster image, not a vector one).
+/// Draws a slight drop shadow beneath the icon so pins lift off the map.
 Future<Uint8List> loadSvgMarker(String assetPath, {int size = 100}) async {
   final pictureInfo = await vg.loadPicture(SvgAssetLoader(assetPath), null);
 
@@ -30,6 +31,17 @@ Future<Uint8List> loadSvgMarker(String assetPath, {int size = 100}) async {
   final canvas = ui.Canvas(recorder);
   final scale = size / pictureInfo.size.width;
   canvas.scale(scale);
+
+  canvas.save();
+  canvas.translate(0, 3.5);
+  final shadowPaint = ui.Paint()
+    ..colorFilter = const ui.ColorFilter.mode(ui.Color(0x4D000000), ui.BlendMode.srcIn)
+    ..maskFilter = const ui.MaskFilter.blur(ui.BlurStyle.normal, 2.2);
+  canvas.saveLayer(null, shadowPaint);
+  canvas.drawPicture(pictureInfo.picture);
+  canvas.restore();
+  canvas.restore();
+
   canvas.drawPicture(pictureInfo.picture);
   final picture = recorder.endRecording();
 
