@@ -78,6 +78,14 @@ class SettingsScreen extends StatelessWidget {
                 leading: Icon(PhosphorIconsRegular.moon, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
               ),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(MapStyleSettingsScreen.route);
+                },
+                title: const Text("Map Style"),
+                leading: Icon(PhosphorIconsRegular.mapPin, color: context.colors.accent),
+                trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
+              ),
             ],
           ),
           SettingsGroup(

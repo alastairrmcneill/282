@@ -31,6 +31,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
   int? _selectedMunroId;
   late PointAnnotationManager _annotationManager;
   List<int> _lastMunroIds = [];
+  String? _lastMapStyle;
 
   final CameraBoundsOptions cameraBounds = CameraBoundsOptions(
     bounds: CoordinateBounds(
@@ -79,6 +80,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState,
       BulkMunroUpdateState bulkMunroUpdateState) async {
+    final mapStyle = context.read<SettingsState>().mapStyleSetting;
     _mapboxMap = mapboxMap;
     await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
     await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
@@ -87,8 +89,10 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
       munros: munroState.munroList,
       munroCompletionState: munroCompletionState,
       bulkMunroUpdateState: bulkMunroUpdateState,
+      mapStyle: mapStyle,
     );
     _lastMunroIds = munroState.munroList.map((m) => m.id).toList();
+    _lastMapStyle = mapStyle;
     _mapInitialized = true;
   }
 
@@ -96,6 +100,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     required List<Munro> munros,
     required MunroCompletionState munroCompletionState,
     required BulkMunroUpdateState bulkMunroUpdateState,
+    required String mapStyle,
   }) async {
     if (markerIcons == null || bulkSelectedIcon == null) {
       return;
@@ -112,6 +117,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
           munroCompletionState: munroCompletionState,
           bulkMunroUpdateState: bulkMunroUpdateState,
           isFocused: false,
+          mapStyle: mapStyle,
         ),
         iconSize: 0.8,
         iconAnchor: IconAnchor.BOTTOM,
@@ -129,14 +135,17 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     required MunroCompletionState munroCompletionState,
     required BulkMunroUpdateState bulkMunroUpdateState,
     required bool isFocused,
+    required String mapStyle,
   }) {
     final icons = markerIcons!;
-    if (isFocused) return icons.selectedFor(munro.area);
+    if (isFocused) return icons.selectedFor(munro.area, mapStyle);
     final existingCompletion = munroCompletionState.munroCompletions.any((c) => c.munroId == munro.id);
-    if (existingCompletion) return icons.completedFor(munro.area);
+    if (existingCompletion) return icons.completedFor(munro.area, mapStyle);
     final bulkSelected = bulkMunroUpdateState.addedMunroCompletions.any((c) => c.munroId == munro.id);
-    if (bulkSelected) return bulkSelectedIcon!;
-    return icons.uncompleted;
+    if (bulkSelected) {
+      return mapStyle == MapStyleOption.classic ? icons.selectedFor(munro.area, mapStyle) : bulkSelectedIcon!;
+    }
+    return icons.uncompletedFor(mapStyle);
   }
 
   void handleMapTap(ScreenCoordinate tapScreenPoint, MunroState munroState, MunroCompletionState munroCompletionState,
@@ -174,6 +183,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     if (selectedAnnotation == null || _selectedMunroId == null) return;
 
     final munroState = context.read<MunroState>();
+    final mapStyle = context.read<SettingsState>().mapStyleSetting;
     final munro = munroState.munroList.firstWhere(
       (munro) => munro.id == _selectedMunroId,
       orElse: () => Munro.empty,
@@ -183,6 +193,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
       munroCompletionState: munroCompletionState,
       bulkMunroUpdateState: bulkMunroUpdateState,
       isFocused: false,
+      mapStyle: mapStyle,
     );
 
     await _annotationManager.delete(selectedAnnotation!);
@@ -200,6 +211,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
 
   Future<void> _selectAnnotation(int munroId, PointAnnotation tappedAnnotation) async {
     final munroState = context.read<MunroState>();
+    final mapStyle = context.read<SettingsState>().mapStyleSetting;
     final munro = munroState.munroList.firstWhere(
       (munro) => munro.id == munroId,
       orElse: () => Munro.empty,
@@ -208,7 +220,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     await _annotationManager.delete(tappedAnnotation);
     final newAnnotation = await _annotationManager.create(PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
-      image: markerIcons!.selectedFor(munro.area),
+      image: markerIcons!.selectedFor(munro.area, mapStyle),
       iconSize: 0.9,
       iconAnchor: IconAnchor.BOTTOM,
     ));
@@ -228,11 +240,14 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
     final munroState = context.watch<MunroState>();
     final munroCompletionState = context.read<MunroCompletionState>();
     final bulkMunroUpdateState = context.read<BulkMunroUpdateState>();
+    final mapStyle = context.watch<SettingsState>().mapStyleSetting;
 
     if (_mapInitialized) {
       final currentIds = munroState.munroList.map((m) => m.id).toList();
-      if (!listEquals(currentIds, _lastMunroIds)) {
+      final mapStyleChanged = _lastMapStyle != null && _lastMapStyle != mapStyle;
+      if (!listEquals(currentIds, _lastMunroIds) || mapStyleChanged) {
         _lastMunroIds = currentIds;
+        _lastMapStyle = mapStyle;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _annotationManager.deleteAll();
@@ -243,6 +258,7 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
               munros: munroState.munroList,
               munroCompletionState: munroCompletionState,
               bulkMunroUpdateState: bulkMunroUpdateState,
+              mapStyle: mapStyle,
             );
           }
         });

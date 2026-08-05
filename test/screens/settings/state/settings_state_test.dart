@@ -31,6 +31,7 @@ void main() {
       metricTemperature: true,
       defaultPostVisibility: Privacy.public,
       themeMode: ThemeModeOption.system,
+      mapStyle: MapStyleOption.classic,
     );
 
     mockSettingsRepository = MockSettingsRepository();
@@ -77,6 +78,7 @@ void main() {
           metricTemperature: false,
           defaultPostVisibility: Privacy.private,
           themeMode: ThemeModeOption.system,
+          mapStyle: MapStyleOption.classic,
         );
         when(mockSettingsRepository.load()).thenReturn(customSettings);
 
@@ -145,6 +147,7 @@ void main() {
           metricTemperature: false,
           defaultPostVisibility: Privacy.friends,
           themeMode: ThemeModeOption.system,
+          mapStyle: MapStyleOption.classic,
         );
         when(mockSettingsRepository.save(any)).thenAnswer((_) async => Future.value());
 

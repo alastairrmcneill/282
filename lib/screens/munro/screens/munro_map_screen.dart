@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class MunroMapScreenArgs {
   final Munro munro;
@@ -43,9 +45,11 @@ class _MunroMapScreenState extends State<MunroMapScreen> {
   Future<void> _onMapCreated(MapboxMap mapboxMap) async {
     _mapboxMap = mapboxMap;
 
-    final icon = await loadSvgMarker(
-      'assets/munro-icons-svg/selected-${munroAreaSlug(widget.munro.area)}.svg',
-    );
+    final mapStyle = context.read<SettingsState>().mapStyleSetting;
+    final iconPath = mapStyle == MapStyleOption.classic
+        ? 'assets/munro-icons-svg/mono-selected.svg'
+        : 'assets/munro-icons-svg/selected-${munroAreaSlug(widget.munro.area)}.svg';
+    final icon = await loadSvgMarker(iconPath);
     final annotationManager = await mapboxMap.annotations.createPointAnnotationManager();
     await annotationManager.create(
       PointAnnotationOptions(

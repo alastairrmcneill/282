@@ -200,6 +200,7 @@ class AnalyticsResponse {
   static const confirmed = 'confirmed';
   static const dismissed = 'dismissed';
   static const updateNow = 'update_now';
+  static const openSettings = 'open_settings';
 }
 
 class AnalyticsFeed {

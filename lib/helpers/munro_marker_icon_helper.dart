@@ -2,10 +2,8 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:two_eight_two/models/models.dart';
 
-/// The 12 Munro areas, each with its own completed/selected marker colour.
-/// Must match the slugs used for the `completed-<slug>.svg` and
-/// `selected-<slug>.svg` files in assets/munro-icons-svg/.
 const List<String> munroAreas = [
   'Angus',
   'Argyll',
@@ -25,6 +23,7 @@ String munroAreaSlug(String area) => area.toLowerCase().replaceAll(' ', '-');
 
 /// Rasterizes an SVG asset into PNG bytes, for use as a Mapbox point
 /// annotation image (which requires a raster image, not a vector one).
+/// Draws a slight drop shadow beneath the icon so pins lift off the map.
 Future<Uint8List> loadSvgMarker(String assetPath, {int size = 100}) async {
   final pictureInfo = await vg.loadPicture(SvgAssetLoader(assetPath), null);
 
@@ -32,6 +31,17 @@ Future<Uint8List> loadSvgMarker(String assetPath, {int size = 100}) async {
   final canvas = ui.Canvas(recorder);
   final scale = size / pictureInfo.size.width;
   canvas.scale(scale);
+
+  canvas.save();
+  canvas.translate(0, 3.5);
+  final shadowPaint = ui.Paint()
+    ..colorFilter = const ui.ColorFilter.mode(ui.Color(0x4D000000), ui.BlendMode.srcIn)
+    ..maskFilter = const ui.MaskFilter.blur(ui.BlurStyle.normal, 2.2);
+  canvas.saveLayer(null, shadowPaint);
+  canvas.drawPicture(pictureInfo.picture);
+  canvas.restore();
+  canvas.restore();
+
   canvas.drawPicture(pictureInfo.picture);
   final picture = recorder.endRecording();
 
@@ -45,21 +55,28 @@ Future<Uint8List> loadSvgMarker(String assetPath, {int size = 100}) async {
   return bytes;
 }
 
-/// Loads the full set of area-coloured Munro marker icons: a single
-/// uncompleted icon, plus a completed and selected icon per area.
 class MunroMarkerIcons {
   final Uint8List uncompleted;
   final Map<String, Uint8List> completed;
   final Map<String, Uint8List> selected;
+  final Uint8List monoUncompleted;
+  final Uint8List monoCompleted;
+  final Uint8List monoSelected;
 
   const MunroMarkerIcons({
     required this.uncompleted,
     required this.completed,
     required this.selected,
+    required this.monoUncompleted,
+    required this.monoCompleted,
+    required this.monoSelected,
   });
 
   static Future<MunroMarkerIcons> load({int size = 100}) async {
     final uncompleted = await loadSvgMarker('assets/munro-icons-svg/uncompleted.svg', size: size);
+    final monoUncompleted = await loadSvgMarker('assets/munro-icons-svg/mono-uncompleted.svg', size: size);
+    final monoCompleted = await loadSvgMarker('assets/munro-icons-svg/mono-completed.svg', size: size);
+    final monoSelected = await loadSvgMarker('assets/munro-icons-svg/mono-selected.svg', size: size);
 
     final completed = <String, Uint8List>{};
     final selected = <String, Uint8List>{};
@@ -69,10 +86,25 @@ class MunroMarkerIcons {
       selected[slug] = await loadSvgMarker('assets/munro-icons-svg/selected-$slug.svg', size: size);
     }
 
-    return MunroMarkerIcons(uncompleted: uncompleted, completed: completed, selected: selected);
+    return MunroMarkerIcons(
+      uncompleted: uncompleted,
+      completed: completed,
+      selected: selected,
+      monoUncompleted: monoUncompleted,
+      monoCompleted: monoCompleted,
+      monoSelected: monoSelected,
+    );
   }
 
-  Uint8List completedFor(String area) => completed[munroAreaSlug(area)] ?? uncompleted;
+  Uint8List uncompletedFor(String mapStyle) => mapStyle == MapStyleOption.classic ? monoUncompleted : uncompleted;
 
-  Uint8List selectedFor(String area) => selected[munroAreaSlug(area)] ?? uncompleted;
+  Uint8List completedFor(String area, String mapStyle) {
+    if (mapStyle == MapStyleOption.classic) return monoCompleted;
+    return completed[munroAreaSlug(area)] ?? uncompleted;
+  }
+
+  Uint8List selectedFor(String area, String mapStyle) {
+    if (mapStyle == MapStyleOption.classic) return monoSelected;
+    return selected[munroAreaSlug(area)] ?? uncompleted;
+  }
 }
