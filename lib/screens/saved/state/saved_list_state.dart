@@ -110,7 +110,12 @@ class SavedListState extends ChangeNotifier {
     try {
       removeSavedList(savedList);
 
-      await _savedListRepository.deleteFromUid(uid: savedList.uid ?? "");
+      final uid = savedList.uid;
+      if (uid == null) {
+        // Nothing was ever persisted for this list — nothing to delete server-side.
+        return;
+      }
+      await _savedListRepository.deleteFromUid(uid: uid);
     } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(message: "There was an issue deleting your post. Please try again.");

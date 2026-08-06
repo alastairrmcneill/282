@@ -28,7 +28,14 @@ class SavedListRepository {
   }
 
   Future<void> update({required SavedList savedList}) async {
-    await _table.update(savedList.toJSON()).eq(SavedListFields.uid, savedList.uid ?? "");
+    final uid = savedList.uid;
+    if (uid == null) {
+      // Nothing was ever persisted for this list — there's nothing to update
+      // server-side. Sending "" here previously reached Postgres as
+      // `invalid input syntax for type uuid: ""`.
+      throw ArgumentError('Cannot update a saved list with no id — it has not been persisted yet.');
+    }
+    await _table.update(savedList.toJSON()).eq(SavedListFields.uid, uid);
   }
 
   Future<void> deleteFromUid({required String uid}) async {

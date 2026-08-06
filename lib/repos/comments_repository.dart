@@ -9,8 +9,11 @@ class CommentsRepository {
   SupabaseQueryBuilder get _view => _db.from('vu_post_comments');
 
   // Create Comment
-  Future<void> create({required Comment comment}) async {
-    await _table.insert(comment.toJSON());
+  // Returns the persisted comment (including its server-generated id) so callers
+  // can use it for any immediate follow-up action (e.g. deleting it again).
+  Future<Comment> create({required Comment comment}) async {
+    final response = await _table.insert(comment.toJSON()).select().single();
+    return Comment.fromJSON(response);
   }
 
   // Update Comment
@@ -37,6 +40,14 @@ class CommentsRepository {
 
   // Delete comment
   Future deleteComment({required Comment comment}) async {
-    await _table.delete().eq(CommentFields.uid, comment.uid ?? "");
+    final uid = comment.uid;
+    if (uid == null) {
+      // Nothing was ever persisted for this comment (e.g. the create() call that
+      // should have populated it hasn't completed/succeeded) — there's nothing to
+      // delete server-side. Sending "" here previously reached Postgres as
+      // `invalid input syntax for type uuid: ""`.
+      return;
+    }
+    await _table.delete().eq(CommentFields.uid, uid);
   }
 }
