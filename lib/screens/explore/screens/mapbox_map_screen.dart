@@ -84,12 +84,6 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {
-    // onMapCreated is a fire-and-forget callback (async void) — an uncaught
-    // exception here crashes the whole app rather than just this screen.
-    // The native map channels can occasionally fail to establish right at
-    // startup (PlatformException channel-error, MissingPluginException on
-    // slower devices), so guard the whole setup sequence and degrade to a
-    // plain, unconfigured map instead of taking the app down.
     try {
       final mapStyle = context.read<SettingsState>().mapStyleSetting;
       _mapboxMap = mapboxMap;
@@ -119,7 +113,9 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   Future<void> _addMunroSymbols(
-      {required MunroState munroState, required List<MunroCompletion> completedMunros, required String mapStyle}) async {
+      {required MunroState munroState,
+      required List<MunroCompletion> completedMunros,
+      required String mapStyle}) async {
     final List<Munro> munros = munroState.filteredMunroList;
     final icons = markerIcons;
 

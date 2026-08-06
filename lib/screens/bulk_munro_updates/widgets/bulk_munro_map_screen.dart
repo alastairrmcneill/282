@@ -81,12 +81,6 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState,
       BulkMunroUpdateState bulkMunroUpdateState) async {
-    // onMapCreated is a fire-and-forget callback (async void) — an uncaught
-    // exception here crashes the whole app rather than just this screen.
-    // The native map channels can occasionally fail to establish right at
-    // startup (PlatformException channel-error, MissingPluginException on
-    // slower devices), so guard the whole setup sequence and degrade to a
-    // plain, unconfigured map instead of taking the app down.
     try {
       final mapStyle = context.read<SettingsState>().mapStyleSetting;
       _mapboxMap = mapboxMap;
