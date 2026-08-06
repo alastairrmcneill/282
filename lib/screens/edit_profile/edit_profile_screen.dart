@@ -85,6 +85,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 profilePicture: _image,
               );
 
+              if (!mounted) return;
+
               context.read<Analytics>().track(
                 AnalyticsEvent.profileEditSaved,
                 props: {
