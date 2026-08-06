@@ -10,7 +10,17 @@ class SentryLogger implements Logger {
       if (context != null) debugPrint('CTX: $context');
       return;
     }
-    Sentry.captureMessage(message, level: SentryLevel.info);
+    // Info-level messages are expected, routine occurrences (e.g. deduped
+    // notifications) rather than problems. Recording them as breadcrumbs keeps
+    // them attached to any subsequent error's context without creating a
+    // standalone Sentry issue for every info log line.
+    Sentry.addBreadcrumb(
+      Breadcrumb(
+        message: message,
+        level: SentryLevel.info,
+        data: context,
+      ),
+    );
   }
 
   @override
