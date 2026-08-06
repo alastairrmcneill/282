@@ -12,6 +12,9 @@ class SavedListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final munroState = context.read<MunroState>();
+    // A saved munroId may not (yet) exist in munroState.munroList, e.g. while
+    // the munro list is still loading. Skip those rather than crashing.
+    final munroIds = savedList.munroIds.where((id) => munroState.munroList.any((m) => m.id == id)).toList();
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
@@ -20,16 +23,16 @@ class SavedListTile extends StatelessWidget {
           children: [
             SavedListHeader(savedList: savedList),
             const SizedBox(height: 10),
-            savedList.munroIds.isEmpty
+            munroIds.isEmpty
                 ? SavedListEmptyMunroList()
                 : ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: savedList.munroIds.length,
+                    itemCount: munroIds.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
-                      final munroId = savedList.munroIds[index];
-                      final Munro munro = munroState.munroList.where((m) => m.id == munroId).first;
+                      final munroId = munroIds[index];
+                      final Munro munro = munroState.munroList.firstWhere((m) => m.id == munroId);
                       return SavedListMunroTile(
                         munro: munro,
                         onDelete: () async {
