@@ -314,14 +314,14 @@ class AuthState extends ChangeNotifier {
       _setAuthenticated();
       return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } on SignInWithAppleAuthorizationException catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
-
       if (e.code == AuthorizationErrorCode.canceled) {
+        // The user dismissed the Apple sign-in sheet — expected, not an error.
         _status = AuthStatus.initial;
         notifyListeners();
         return AuthResult(success: false, canceled: true);
       }
 
+      _logger.error(e.toString(), stackTrace: st);
       _setError(e.message);
       return AuthResult(
         success: false,
@@ -408,13 +408,14 @@ class AuthState extends ChangeNotifier {
       _setAuthenticated();
       return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } on GoogleSignInException catch (e, st) {
-      _logger.error("Google Sign In Error: $e", stackTrace: st);
       if (e.code == GoogleSignInExceptionCode.canceled) {
+        // The user dismissed the Google sign-in sheet — expected, not an error.
         _status = AuthStatus.initial;
         notifyListeners();
         return AuthResult(success: false, canceled: true);
       }
 
+      _logger.error("Google Sign In Error: $e", stackTrace: st);
       _setError("There was an error signing in with Google.");
       return AuthResult(
         success: false,
