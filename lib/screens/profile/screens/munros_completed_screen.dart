@@ -32,7 +32,14 @@ class MunrosCompletedScreen extends StatelessWidget {
     final completedIds =
         isCurrentUser ? munroCompletionState.completedMunroIds : munroCompletions.map((mc) => mc.munroId).toSet();
 
-    final completedMunros = munroState.munroList.where((m) => completedIds.contains(m.id)).toList();
+    // Only keep munros that also have a matching completion record — completedIds can
+    // momentarily be ahead of the munroCompletions passed in (e.g. right after a completion
+    // is added, before this screen's args are refreshed), and firstWhere below would
+    // otherwise throw for those ids.
+    final completedMunroIdsWithCompletion =
+        completedIds.where((id) => munroCompletions.any((mc) => mc.munroId == id)).toSet();
+    final completedMunros =
+        munroState.munroList.where((m) => completedMunroIdsWithCompletion.contains(m.id)).toList();
 
     final totalCount = munroState.munroList.length;
 
