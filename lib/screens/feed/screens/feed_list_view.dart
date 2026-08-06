@@ -31,6 +31,8 @@ class FeedListView extends StatefulWidget {
 }
 
 class _FeedListViewState extends State<FeedListView> {
+  bool _blockScrolling = false;
+
   @override
   void initState() {
     super.initState();
@@ -77,70 +79,78 @@ class _FeedListViewState extends State<FeedListView> {
       onRefresh: () async {
         widget.refreshPosts();
       },
-      child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: widget.posts.length + 2, // +1 for header, +1 for loading indicator
-        itemBuilder: (context, index) {
-          // Header widget
-          if (index == 0) {
-            return widget.headerWidget ?? const SizedBox.shrink();
-          }
-
-          // Loading indicator at the bottom
-          if (index == widget.posts.length + 1) {
-            return widget.status == FeedStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
-          }
-
-          // Post items
-          final postIndex = index - 1;
-          final post = widget.posts[postIndex];
-
-          // Trigger pagination when reaching 2 posts from the end
-          if (postIndex >= widget.posts.length - postsFromEndToPaginate && widget.status != FeedStatus.paginating) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              widget.paginate();
-            });
-          }
-          return PostWidget(
-            post: post,
-            inFeed: true,
-            onEdit: () async {
-              final createPostState = context.read<CreatePostState>();
-              final settingsState = context.read<SettingsState>();
-
-              createPostState.reset();
-              createPostState.loadPost = post;
-              createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
-
-              final result = await Navigator.of(context).pushNamed(
-                CreatePostScreen.route,
-              );
-
-              if (result is Post) {
-                context.read<FeedState>().updatePost(result);
-              }
-            },
-            onDelete: () async {
-              final createPostState = context.read<CreatePostState>();
-              await createPostState.deletePost(post: post);
-
-              context.read<FeedState>().removePost(post);
-            },
-            onLikeTap: () async {
-              if (userLikeState.likedPosts.contains(post.uid)) {
-                userLikeState.unLikePost(
-                  post: post,
-                  onPostUpdated: feedState.updatePost,
-                );
-              } else {
-                userLikeState.likePost(
-                  post: post,
-                  onPostUpdated: feedState.updatePost,
-                );
-              }
-            },
-          );
+      child: NotificationListener<PinchZoomNotification>(
+        onNotification: (notification) {
+          setState(() {
+            _blockScrolling = notification.isZooming;
+          });
+          return true;
         },
+        child: ListView.builder(
+          physics: _blockScrolling ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+          itemCount: widget.posts.length + 2, // +1 for header, +1 for loading indicator
+          itemBuilder: (context, index) {
+            // Header widget
+            if (index == 0) {
+              return widget.headerWidget ?? const SizedBox.shrink();
+            }
+
+            // Loading indicator at the bottom
+            if (index == widget.posts.length + 1) {
+              return widget.status == FeedStatus.paginating ? const PaginationLoader() : const SizedBox.shrink();
+            }
+
+            // Post items
+            final postIndex = index - 1;
+            final post = widget.posts[postIndex];
+
+            // Trigger pagination when reaching 2 posts from the end
+            if (postIndex >= widget.posts.length - postsFromEndToPaginate && widget.status != FeedStatus.paginating) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                widget.paginate();
+              });
+            }
+            return PostWidget(
+              post: post,
+              inFeed: true,
+              onEdit: () async {
+                final createPostState = context.read<CreatePostState>();
+                final settingsState = context.read<SettingsState>();
+
+                createPostState.reset();
+                createPostState.loadPost = post;
+                createPostState.setPostPrivacy = settingsState.defaultPostVisibility;
+
+                final result = await Navigator.of(context).pushNamed(
+                  CreatePostScreen.route,
+                );
+
+                if (result is Post) {
+                  context.read<FeedState>().updatePost(result);
+                }
+              },
+              onDelete: () async {
+                final createPostState = context.read<CreatePostState>();
+                await createPostState.deletePost(post: post);
+
+                context.read<FeedState>().removePost(post);
+              },
+              onLikeTap: () async {
+                if (userLikeState.likedPosts.contains(post.uid)) {
+                  userLikeState.unLikePost(
+                    post: post,
+                    onPostUpdated: feedState.updatePost,
+                  );
+                } else {
+                  userLikeState.likePost(
+                    post: post,
+                    onPostUpdated: feedState.updatePost,
+                  );
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }

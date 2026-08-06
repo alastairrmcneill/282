@@ -8,6 +8,11 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 
+class PinchZoomNotification extends Notification {
+  final bool isZooming;
+  PinchZoomNotification({required this.isZooming});
+}
+
 class PostImagesCarousel extends StatefulWidget {
   final Post post;
   const PostImagesCarousel({super.key, required this.post});
@@ -18,6 +23,7 @@ class PostImagesCarousel extends StatefulWidget {
 
 class _PostImagesCarouselState extends State<PostImagesCarousel> {
   int _selectedIndex = 0;
+  bool isZooming = false;
   @override
   Widget build(BuildContext context) {
     final List<String> imageUrls = widget.post.imageUrlsMap.values.expand((urls) => urls).toList();
@@ -27,7 +33,7 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            scrollPhysics: const ClampingScrollPhysics(),
+            scrollPhysics: isZooming ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),
             autoPlay: false,
             enlargeCenterPage: false,
             animateToClosest: true,
@@ -39,6 +45,19 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
           items: imageUrls
               .map(
                 (url) => PinchZoomReleaseUnzoomWidget(
+                  twoFingersOn: () {
+                    setState(() => isZooming = true);
+                    PinchZoomNotification(isZooming: true).dispatch(context);
+                  },
+                  twoFingersOff: () {
+                    Future.delayed(
+                      PinchZoomReleaseUnzoomWidget.defaultResetDuration,
+                      () {
+                        setState(() => isZooming = false);
+                        PinchZoomNotification(isZooming: false).dispatch(context);
+                      },
+                    );
+                  },
                   child: Container(
                     margin: EdgeInsets.zero,
                     child: Center(
