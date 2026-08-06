@@ -8,8 +8,6 @@ class ReviewsRepository {
   SupabaseQueryBuilder get _view => _db.from('vu_munro_reviews');
   SupabaseQueryBuilder get _ratingsBreakdownView => _db.from('vu_munro_ratings_breakdown');
 
-  // Returns the persisted review (including its server-generated id) so callers
-  // can use it for any immediate follow-up action (e.g. editing it again).
   Future<Review> create({required Review review}) async {
     final response = await _table.insert(review.toJSON()).select().single();
     return Review.fromJSON(response);
@@ -18,9 +16,6 @@ class ReviewsRepository {
   Future<void> update({required Review review}) async {
     final uid = review.uid;
     if (uid == null) {
-      // Nothing was ever persisted for this review — there's nothing to update
-      // server-side. Sending "" here previously reached Postgres as
-      // `invalid input syntax for type uuid: ""`.
       throw ArgumentError('Cannot update a review with no id — it has not been persisted yet.');
     }
     await _table.update(review.toJSON()).eq(ReviewFields.uid, uid).select().single();
