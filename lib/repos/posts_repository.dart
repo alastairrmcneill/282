@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class PostsRepository {
@@ -53,15 +54,17 @@ class PostsRepository {
     required List<String> excludedAuthorIds,
     Post? lastPost,
   }) async {
-    final List<dynamic> response = await _db.rpc(
-      'get_friends_feed',
-      params: {
-        'p_limit': 10,
-        'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
-        'p_before_id': lastPost?.uid,
-        'p_excluded_author_ids': excludedAuthorIds,
-      },
-    ).timeout(Duration(seconds: 30));
+    final List<dynamic> response = await withNetworkRetry(
+      () => _db.rpc(
+        'get_friends_feed',
+        params: {
+          'p_limit': 10,
+          'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
+          'p_before_id': lastPost?.uid,
+          'p_excluded_author_ids': excludedAuthorIds,
+        },
+      ).timeout(Duration(seconds: 30)),
+    );
 
     return response.map((doc) => Post.fromJSON(doc as Map<String, dynamic>)).toList();
   }
@@ -71,15 +74,17 @@ class PostsRepository {
     required List<String> excludedAuthorIds,
     Post? lastPost,
   }) async {
-    final List<dynamic> response = await _db.rpc(
-      'get_global_feed',
-      params: {
-        'p_limit': 10,
-        'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
-        'p_before_id': lastPost?.uid,
-        'p_excluded_author_ids': excludedAuthorIds,
-      },
-    ).timeout(Duration(seconds: 30));
+    final List<dynamic> response = await withNetworkRetry(
+      () => _db.rpc(
+        'get_global_feed',
+        params: {
+          'p_limit': 10,
+          'p_before_date_time': lastPost?.dateTimeCreated.toUtc().toIso8601String(),
+          'p_before_id': lastPost?.uid,
+          'p_excluded_author_ids': excludedAuthorIds,
+        },
+      ).timeout(Duration(seconds: 30)),
+    );
 
     return response.map((doc) => Post.fromJSON(doc as Map<String, dynamic>)).toList();
   }
