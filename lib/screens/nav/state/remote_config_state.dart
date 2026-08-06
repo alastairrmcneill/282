@@ -30,11 +30,12 @@ class RemoteConfigState extends ChangeNotifier {
       _status = RemoteConfigStatus.loaded;
     } catch (error, stackTrace) {
       _error = Error(message: error.toString());
-      _logger.error('Failed to initialize remote config: $error', stackTrace: stackTrace);
+      _logger.info('Failed to initialize remote config, falling back to defaults: $error', context: {
+        'stackTrace': stackTrace.toString(),
+      });
       _config = _readConfigSnapshot();
       _status = RemoteConfigStatus.error;
     } finally {
-      print("🎯 ~ RemoteConfigState ~ init ~ _config: $_config");
       notifyListeners();
     }
   }
