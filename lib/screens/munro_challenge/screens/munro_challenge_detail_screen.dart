@@ -48,8 +48,8 @@ class MunroChallengeDetailScreen extends StatelessWidget {
     final munroCompletionState = context.watch<MunroCompletionState>();
     final munroState = context.watch<MunroState>();
 
-    final achievement = achievementsState.currentAchievement!;
-    final goal = achievement.annualTarget ?? 0;
+    final achievement = achievementsState.currentAchievement;
+    final goal = achievement?.annualTarget ?? 0;
 
     final yearCompletions = munroCompletionState.munroCompletions
         .where((mc) => mc.dateTimeCompleted.year == DateTime.now().year)
