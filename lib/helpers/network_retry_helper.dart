@@ -3,16 +3,6 @@ import 'dart:io';
 
 import 'package:http/http.dart' show ClientException;
 
-/// Retries [action] when it fails with a transient, connection-level error —
-/// the kind that shows up as OSError/SocketException/HandshakeException/
-/// ClientException/TimeoutException from the underlying HTTP client, most
-/// commonly right after the app resumes from the background and reuses a
-/// socket the OS has already torn down. Anything else (e.g. a Postgrest
-/// error response, a programming error) is rethrown immediately.
-///
-/// Uses a short, fixed number of retries with a small linear backoff — this
-/// is meant to smooth over a single flaky reconnect, not to paper over a
-/// genuinely unreachable server.
 Future<T> withNetworkRetry<T>(
   Future<T> Function() action, {
   int retries = 2,
