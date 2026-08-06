@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:provider/provider.dart';
@@ -196,7 +197,11 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
       mapStyle: mapStyle,
     );
 
-    await _annotationManager.delete(selectedAnnotation!);
+    try {
+      await _annotationManager.delete(selectedAnnotation!);
+    } on PlatformException {
+      // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+    }
     final restored = await _annotationManager.create(PointAnnotationOptions(
       geometry: selectedAnnotation!.geometry,
       image: icon,
@@ -217,7 +222,11 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
       orElse: () => Munro.empty,
     );
 
-    await _annotationManager.delete(tappedAnnotation);
+    try {
+      await _annotationManager.delete(tappedAnnotation);
+    } on PlatformException {
+      // Annotation may already be gone (e.g. cleared by a concurrent refresh).
+    }
     final newAnnotation = await _annotationManager.create(PointAnnotationOptions(
       geometry: tappedAnnotation.geometry,
       image: markerIcons!.selectedFor(munro.area, mapStyle),
