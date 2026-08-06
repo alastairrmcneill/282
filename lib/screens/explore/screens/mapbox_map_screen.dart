@@ -7,6 +7,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/screens/map_shimmer_loader.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -83,26 +84,38 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   }
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {
-    final mapStyle = context.read<SettingsState>().mapStyleSetting;
-    _mapboxMap = mapboxMap;
-    await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
-    await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
-    await mapboxMap.gestures.updateSettings(
-      GesturesSettings(rotateEnabled: false, pitchEnabled: false),
-    );
-    _mapboxMap.setBounds(cameraBounds);
-    await _addMunroSymbols(
-      munroState: munroState,
-      completedMunros: munroCompletionState.munroCompletions,
-      mapStyle: mapStyle,
-    );
-    _lastFilteredIds = munroState.filteredMunroList.map((m) => m.id).toList();
-    _lastMapStyle = mapStyle;
-    _mapInitialized = true;
+    try {
+      final mapStyle = context.read<SettingsState>().mapStyleSetting;
+      _mapboxMap = mapboxMap;
+      await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
+      await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
+      await mapboxMap.gestures.updateSettings(
+        GesturesSettings(rotateEnabled: false, pitchEnabled: false),
+      );
+      _mapboxMap.setBounds(cameraBounds);
+      await _addMunroSymbols(
+        munroState: munroState,
+        completedMunros: munroCompletionState.munroCompletions,
+        mapStyle: mapStyle,
+      );
+      _lastFilteredIds = munroState.filteredMunroList.map((m) => m.id).toList();
+      _lastMapStyle = mapStyle;
+      _mapInitialized = true;
+    } catch (error, stackTrace) {
+      if (mounted) {
+        context.read<Logger>().error(
+              'Failed to finish setting up the explore map',
+              error: error,
+              stackTrace: stackTrace,
+            );
+      }
+    }
   }
 
   Future<void> _addMunroSymbols(
-      {required MunroState munroState, required List<MunroCompletion> completedMunros, required String mapStyle}) async {
+      {required MunroState munroState,
+      required List<MunroCompletion> completedMunros,
+      required String mapStyle}) async {
     final List<Munro> munros = munroState.filteredMunroList;
     final icons = markerIcons;
 

@@ -7,6 +7,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/helpers/helpers.dart';
+import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/bulk_munro_updates/widgets/bulk_munro_map_summary_card.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -81,20 +82,30 @@ class _BulkMunroMapScreenState extends State<BulkMunroMapScreen> {
 
   void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState,
       BulkMunroUpdateState bulkMunroUpdateState) async {
-    final mapStyle = context.read<SettingsState>().mapStyleSetting;
-    _mapboxMap = mapboxMap;
-    await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
-    await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
-    _mapboxMap.setBounds(cameraBounds);
-    await _addMunroSymbols(
-      munros: munroState.munroList,
-      munroCompletionState: munroCompletionState,
-      bulkMunroUpdateState: bulkMunroUpdateState,
-      mapStyle: mapStyle,
-    );
-    _lastMunroIds = munroState.munroList.map((m) => m.id).toList();
-    _lastMapStyle = mapStyle;
-    _mapInitialized = true;
+    try {
+      final mapStyle = context.read<SettingsState>().mapStyleSetting;
+      _mapboxMap = mapboxMap;
+      await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
+      await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
+      _mapboxMap.setBounds(cameraBounds);
+      await _addMunroSymbols(
+        munros: munroState.munroList,
+        munroCompletionState: munroCompletionState,
+        bulkMunroUpdateState: bulkMunroUpdateState,
+        mapStyle: mapStyle,
+      );
+      _lastMunroIds = munroState.munroList.map((m) => m.id).toList();
+      _lastMapStyle = mapStyle;
+      _mapInitialized = true;
+    } catch (error, stackTrace) {
+      if (mounted) {
+        context.read<Logger>().error(
+              'Failed to finish setting up the bulk-update map',
+              error: error,
+              stackTrace: stackTrace,
+            );
+      }
+    }
   }
 
   Future<void> _addMunroSymbols({
