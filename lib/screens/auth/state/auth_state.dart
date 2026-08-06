@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -55,6 +56,30 @@ class AuthState extends ChangeNotifier {
     _status = AuthStatus.authenticated;
     _errorMessage = null;
     notifyListeners();
+  }
+
+  // Firebase auth codes that represent an expected, user-caused condition
+  // (wrong password, needs to sign in again before a sensitive action, etc.)
+  // rather than an app bug. These are still surfaced to the user via
+  // _setError — they just aren't reported to Sentry as production errors.
+  static const _expectedAuthErrorCodes = {
+    'invalid-credential',
+    'wrong-password',
+    'user-not-found',
+    'user-mismatch',
+    'requires-recent-login',
+    'too-many-requests',
+    'email-already-in-use',
+    'weak-password',
+    'invalid-email',
+  };
+
+  void _logAuthError(Object error, StackTrace stackTrace) {
+    if (error is FirebaseAuthException && _expectedAuthErrorCodes.contains(error.code)) {
+      _logger.info('Expected auth error: $error');
+    } else {
+      _logger.error(error.toString(), stackTrace: stackTrace);
+    }
   }
 
   @override
@@ -162,7 +187,7 @@ class AuthState extends ChangeNotifier {
       _setAuthenticated();
       return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -198,7 +223,7 @@ class AuthState extends ChangeNotifier {
       _setAuthenticated();
       return AuthResult(success: true, showOnboarding: showOnboarding, userId: currentUserId);
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -410,7 +435,7 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return AuthResult(success: true);
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -444,7 +469,7 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return AuthResult(success: true);
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -462,7 +487,7 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return AuthResult(success: true);
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
