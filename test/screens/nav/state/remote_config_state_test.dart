@@ -129,10 +129,11 @@ void main() {
         expect(remoteConfigState.config.whatsNew, 'Hello');
         expect(remoteConfigState.config.groupFilterNewIcon, false);
 
-        verify(mockLogger.error(
-          'Failed to initialize remote config: $exception',
-          stackTrace: anyNamed('stackTrace'),
+        verify(mockLogger.info(
+          'Failed to initialize remote config, falling back to defaults: $exception',
+          context: anyNamed('context'),
         )).called(1);
+        verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
 
         verify(mockRemoteConfigRespository.getInt(RCFields.feedbackSurveyNumber)).called(1);
         verify(mockRemoteConfigRespository.getString(RCFields.latestAppVersion)).called(1);

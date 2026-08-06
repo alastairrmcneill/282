@@ -30,11 +30,18 @@ class RemoteConfigState extends ChangeNotifier {
       _status = RemoteConfigStatus.loaded;
     } catch (error, stackTrace) {
       _error = Error(message: error.toString());
-      _logger.error('Failed to initialize remote config: $error', stackTrace: stackTrace);
+      // Not reported as an error: fetching remote config can time out on a slow
+      // cold-start connection, but we always fall back to the built-in defaults
+      // below and nothing in the UI branches on RemoteConfigStatus.error, so this
+      // never actually degrades the app. Logging it as info keeps it visible as
+      // context on any other error in the session without paging anyone for a
+      // condition that already fully recovered.
+      _logger.info('Failed to initialize remote config, falling back to defaults: $error', context: {
+        'stackTrace': stackTrace.toString(),
+      });
       _config = _readConfigSnapshot();
       _status = RemoteConfigStatus.error;
     } finally {
-      print("🎯 ~ RemoteConfigState ~ init ~ _config: $_config");
       notifyListeners();
     }
   }
