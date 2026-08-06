@@ -70,7 +70,7 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final brightness = Theme.of(context).brightness;
-    if (_lastBrightness != null && _lastBrightness != brightness) {
+    if (_lastBrightness != null && _lastBrightness != brightness && _mapInitialized) {
       final uri = brightness == Brightness.dark ? _darkStyleUri : _lightStyleUri;
       _mapboxMap.loadStyleURI(uri);
     }
