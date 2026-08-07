@@ -28,31 +28,46 @@ class DeepLinkRepository {
 
   Stream<BranchLinkClick> get clicks => _clicks.stream;
 
-  Future<void> init({required bool enableLogging}) async {
+  Future<void> init({
+    required bool enableLogging,
+    void Function(Object error, StackTrace stackTrace)? onSessionError,
+  }) async {
     await FlutterBranchSdk.init(
       enableLogging: enableLogging,
       branchAttributionLevel: BranchAttributionLevel.FULL,
     );
 
-    _sub = FlutterBranchSdk.listSession().listen((data) {
-      final clicked = data['+clicked_branch_link'] == true;
-      if (!clicked) return;
+    _sub = FlutterBranchSdk.listSession().listen(
+      (data) {
+        final clicked = data['+clicked_branch_link'] == true;
+        if (!clicked) return;
 
-      final canonicalIdentifier = data['~canonical_identifier'] as String?;
-      final intent = _intentFor(canonicalIdentifier, data);
+        final canonicalIdentifier = data['~canonical_identifier'] as String?;
+        final intent = _intentFor(canonicalIdentifier, data);
 
-      _clicks.add(
-        BranchLinkClick(
-          canonicalIdentifier: canonicalIdentifier,
-          channel: data['~channel'] as String?,
-          campaign: data['~campaign'] as String?,
-          feature: data['~feature'] as String?,
-          routed: intent != null,
-        ),
-      );
+        _clicks.add(
+          BranchLinkClick(
+            canonicalIdentifier: canonicalIdentifier,
+            channel: data['~channel'] as String?,
+            campaign: data['~campaign'] as String?,
+            feature: data['~feature'] as String?,
+            routed: intent != null,
+          ),
+        );
 
-      if (intent != null) _controller.add(intent);
-    });
+        if (intent != null) _controller.add(intent);
+      },
+      // The native Branch SDK delivers session/attribution data on this
+      // stream asynchronously, well after init() has already returned. With
+      // no onError handler here, a failure on the native side (init timeout,
+      // no connectivity, etc.) becomes an uncaught exception that reaches
+      // PlatformDispatcher.onError as a fatal, app-crashing error — even
+      // though losing Branch attribution for a session is harmless on its
+      // own. Route it to the caller instead so it can be logged as non-fatal.
+      onError: (Object error, StackTrace stackTrace) {
+        onSessionError?.call(error, stackTrace);
+      },
+    );
   }
 
   NavigationIntent? _intentFor(String? canonicalIdentifier, Map data) {

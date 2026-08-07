@@ -28,7 +28,16 @@ class DeepLinkState extends ChangeNotifier {
     _started = true;
 
     try {
-      await _repo.init(enableLogging: enableLogging);
+      await _repo.init(
+        enableLogging: enableLogging,
+        onSessionError: (error, stackTrace) {
+          // Branch attribution data failed to arrive for this session (e.g.
+          // the native SDK timed out initializing, or there's no network) —
+          // deep link click tracking is unavailable, but this must never
+          // crash the app or be treated as a fatal, unresolved error.
+          _logger.info('Branch session listener error (non-fatal): $error');
+        },
+      );
 
       _clickSub = _repo.clicks.listen((click) {
         _analytics.track(

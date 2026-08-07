@@ -158,6 +158,28 @@ void main() {
         verifyNever(mockNavigationIntentState.enqueue(any));
       });
 
+      test('logs a non-fatal Branch session error as info, not error', () async {
+        // Arrange — capture the onSessionError callback DeepLinkState passes down,
+        // simulating the native Branch session stream failing asynchronously after
+        // init() has already returned (e.g. a native init timeout).
+        void Function(Object, StackTrace)? capturedOnSessionError;
+        when(mockDeepLinkRepository.init(
+          enableLogging: anyNamed('enableLogging'),
+          onSessionError: anyNamed('onSessionError'),
+        )).thenAnswer((invocation) async {
+          capturedOnSessionError = invocation.namedArguments[#onSessionError]
+              as void Function(Object, StackTrace)?;
+        });
+
+        // Act
+        await deepLinkState.init(enableLogging: true);
+        capturedOnSessionError?.call(Exception('Branch session stream failed'), StackTrace.current);
+
+        // Assert — this must never be reported as an unresolved production error.
+        verify(mockLogger.info(argThat(contains('Branch session listener error')))).called(1);
+        verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
+      });
+
       test('should handle error when accessing events stream', () async {
         // Arrange
         when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
