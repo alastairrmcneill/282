@@ -57,13 +57,6 @@ class DeepLinkRepository {
 
         if (intent != null) _controller.add(intent);
       },
-      // The native Branch SDK delivers session/attribution data on this
-      // stream asynchronously, well after init() has already returned. With
-      // no onError handler here, a failure on the native side (init timeout,
-      // no connectivity, etc.) becomes an uncaught exception that reaches
-      // PlatformDispatcher.onError as a fatal, app-crashing error — even
-      // though losing Branch attribution for a session is harmless on its
-      // own. Route it to the caller instead so it can be logged as non-fatal.
       onError: (Object error, StackTrace stackTrace) {
         onSessionError?.call(error, stackTrace);
       },

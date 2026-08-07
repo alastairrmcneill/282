@@ -65,7 +65,10 @@ class MockDeepLinkRepository extends _i1.Mock
   @override
   _i4.Future<void> init({
     required bool? enableLogging,
-    void Function(Object, StackTrace)? onSessionError,
+    void Function(
+      Object,
+      StackTrace,
+    )? onSessionError,
   }) =>
       (super.noSuchMethod(
         Invocation.method(

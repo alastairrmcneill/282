@@ -613,6 +613,15 @@ class MockSettingsState extends _i1.Mock implements _i3.SettingsState {
       ) as String);
 
   @override
+  String get mapStyleSetting => (super.noSuchMethod(
+        Invocation.getter(#mapStyleSetting),
+        returnValue: _i7.dummyValue<String>(
+          this,
+          Invocation.getter(#mapStyleSetting),
+        ),
+      ) as String);
+
+  @override
   set setError(_i2.Error? error) => super.noSuchMethod(
         Invocation.setter(
           #setError,
@@ -692,6 +701,16 @@ class MockSettingsState extends _i1.Mock implements _i3.SettingsState {
   _i5.Future<void> setThemeMode(String? v) => (super.noSuchMethod(
         Invocation.method(
           #setThemeMode,
+          [v],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> setMapStyle(String? v) => (super.noSuchMethod(
+        Invocation.method(
+          #setMapStyle,
           [v],
         ),
         returnValue: _i5.Future<void>.value(),
