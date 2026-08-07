@@ -26,7 +26,20 @@ class PushNotificationRepository {
       final apnsReady = await _ensureApnsToken();
       if (!apnsReady) return null;
     }
-    return _messaging.getToken();
+    try {
+      return await _messaging.getToken();
+    } catch (e) {
+      // On Android, a device can accumulate too many stale FCM registrations
+      // for its Instance ID, and every getToken() call fails with
+      // TOO_MANY_REGISTRATIONS until it's cleared. Deleting the local
+      // Instance ID and requesting a fresh token resolves it — see
+      // https://github.com/firebase/firebase-android-sdk/issues/2438
+      if (e.toString().contains('TOO_MANY_REGISTRATIONS')) {
+        await deleteToken();
+        return await _messaging.getToken();
+      }
+      rethrow;
+    }
   }
 
   Future<void> deleteToken() async {
