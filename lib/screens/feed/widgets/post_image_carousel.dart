@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 
@@ -74,11 +75,18 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                         ),
                         fadeInDuration: Duration.zero,
                         errorWidget: (context, url, error) {
-                          context.read<Logger>().error(
-                            'Failed to load photo',
-                            error: error,
-                            context: {'imageUrl': url},
-                          );
+                          if (isTransientNetworkError(error)) {
+                            context.read<Logger>().info('Failed to load photo (transient network error)', context: {
+                              'imageUrl': url,
+                              'error': error.toString(),
+                            });
+                          } else {
+                            context.read<Logger>().error(
+                              'Failed to load photo',
+                              error: error,
+                              context: {'imageUrl': url},
+                            );
+                          }
                           return Center(
                             child: Icon(
                               PhosphorIconsRegular.warning,
