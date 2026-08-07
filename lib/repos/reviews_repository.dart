@@ -8,12 +8,17 @@ class ReviewsRepository {
   SupabaseQueryBuilder get _view => _db.from('vu_munro_reviews');
   SupabaseQueryBuilder get _ratingsBreakdownView => _db.from('vu_munro_ratings_breakdown');
 
-  Future<void> create({required Review review}) async {
-    await _table.insert(review.toJSON());
+  Future<Review> create({required Review review}) async {
+    final response = await _table.insert(review.toJSON()).select().single();
+    return Review.fromJSON(response);
   }
 
   Future<void> update({required Review review}) async {
-    await _table.update(review.toJSON()).eq(ReviewFields.uid, review.uid ?? "").select().single();
+    final uid = review.uid;
+    if (uid == null) {
+      throw ArgumentError('Cannot update a review with no id — it has not been persisted yet.');
+    }
+    await _table.update(review.toJSON()).eq(ReviewFields.uid, uid).select().single();
   }
 
   Future<List<Review>> readReviewsFromMunro({

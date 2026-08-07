@@ -73,6 +73,16 @@ class _FakeError_3 extends _i1.SmartFake implements _i3.Error {
         );
 }
 
+class _FakeComment_4 extends _i1.SmartFake implements _i3.Comment {
+  _FakeComment_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [CommentsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -83,16 +93,22 @@ class MockCommentsRepository extends _i1.Mock
   }
 
   @override
-  _i4.Future<void> create({required _i3.Comment? comment}) =>
+  _i4.Future<_i3.Comment> create({required _i3.Comment? comment}) =>
       (super.noSuchMethod(
         Invocation.method(
           #create,
           [],
           {#comment: comment},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i4.Future<_i3.Comment>.value(_FakeComment_4(
+          this,
+          Invocation.method(
+            #create,
+            [],
+            {#comment: comment},
+          ),
+        )),
+      ) as _i4.Future<_i3.Comment>);
 
   @override
   _i4.Future<void> update({required _i3.Comment? comment}) =>

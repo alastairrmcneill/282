@@ -46,8 +46,8 @@ class CommentsState extends ChangeNotifier {
         dateTime: DateTime.now().toUtc(),
         commentText: _commentText!,
       );
-      await _commentsRepository.create(comment: comment);
-      _comments.add(comment);
+      final createdComment = await _commentsRepository.create(comment: comment);
+      _comments.add(createdComment);
       _commentText = null;
       _status = CommentsStatus.loaded;
       notifyListeners();
