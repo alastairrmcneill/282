@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 
 import '../screens/profile/screens/screens.dart';
@@ -41,12 +42,19 @@ class CircularProfilePicture extends StatelessWidget {
                     profilePictureURL!,
                   ),
                   onError: (error, stackTrace) {
-                    context.read<Logger>().error(
-                          'Failed to load photo',
-                          error: error,
-                          stackTrace: stackTrace,
-                          context: {'imageUrl': profilePictureURL},
-                        );
+                    if (isTransientNetworkError(error)) {
+                      context.read<Logger>().info('Failed to load photo (transient network error)', context: {
+                        'imageUrl': profilePictureURL,
+                        'error': error.toString(),
+                      });
+                    } else {
+                      context.read<Logger>().error(
+                            'Failed to load photo',
+                            error: error,
+                            stackTrace: stackTrace,
+                            context: {'imageUrl': profilePictureURL},
+                          );
+                    }
                   },
                 ),
         ),
