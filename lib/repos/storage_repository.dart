@@ -12,15 +12,18 @@ class StorageRepository {
   final Uuid _uuid;
   final Duration _uploadTimeout;
   final int _compressQuality;
+  final int _maxUploadAttempts;
 
   StorageRepository(
     this._storage, {
     Uuid? uuid,
     Duration? uploadTimeout,
     int? compressQuality,
+    int? maxUploadAttempts,
   })  : _uuid = uuid ?? const Uuid(),
         _uploadTimeout = uploadTimeout ?? const Duration(seconds: 10),
-        _compressQuality = compressQuality ?? 50;
+        _compressQuality = compressQuality ?? 50,
+        _maxUploadAttempts = maxUploadAttempts ?? 2;
 
   Future<String> uploadImage({
     required File imageFile,
@@ -35,21 +38,56 @@ class StorageRepository {
     };
 
     try {
-      return await _uploadFile(storagePath, compressedPath).timeout(_uploadTimeout, onTimeout: () {
-        throw FirebaseException(
-          plugin: "Storage",
-          code: "timeout",
-          message: type == ImageUploadType.profile
-              ? "There was an issue with editing your profile picture, please try again later."
-              : "There was an issue with your upload, please try again later.",
-        );
-      });
+      return await _uploadWithRetry(storagePath, compressedPath, type);
     } finally {
       try {
         final f = File(compressedPath);
         if (await f.exists()) await f.delete();
       } catch (_) {}
     }
+  }
+
+  Future<String> _uploadWithRetry(String storagePath, String localPath, ImageUploadType type) async {
+    for (var attempt = 1; ; attempt++) {
+      try {
+        return await _uploadFile(storagePath, localPath).timeout(_uploadTimeout, onTimeout: () {
+          throw FirebaseException(
+            plugin: "Storage",
+            code: "timeout",
+            message: type == ImageUploadType.profile
+                ? "There was an issue with editing your profile picture, please try again later."
+                : "There was an issue with your upload, please try again later.",
+          );
+        });
+      } catch (e) {
+        // A slow/flaky connection can cause a single upload attempt to time
+        // out or drop mid-transfer even though the network recovers a moment
+        // later. Retry transient failures before surfacing them to the user
+        // (and reporting them as an unresolved error) — a genuine failure
+        // (bad file, permission error, etc.) still fails immediately.
+        if (attempt >= _maxUploadAttempts || !_isRetryableUploadError(e)) rethrow;
+      }
+    }
+  }
+
+  bool _isRetryableUploadError(Object error) {
+    if (error is FirebaseException && error.code == 'timeout') return true;
+
+    final message = error.toString().toLowerCase();
+    const transientMarkers = [
+      'socketexception',
+      'clientexception',
+      'handshakeexception',
+      'connection closed',
+      'connection reset',
+      'connection terminated',
+      'connection refused',
+      'operation timed out',
+      "can't assign requested address",
+      'failed host lookup',
+      'software caused connection abort',
+    ];
+    return transientMarkers.any(message.contains);
   }
 
   Future<void> deleteByUrl(String imageUrl) async {
