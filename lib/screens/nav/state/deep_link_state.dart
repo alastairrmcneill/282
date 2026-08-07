@@ -28,7 +28,12 @@ class DeepLinkState extends ChangeNotifier {
     _started = true;
 
     try {
-      await _repo.init(enableLogging: enableLogging);
+      await _repo.init(
+        enableLogging: enableLogging,
+        onSessionError: (error, stackTrace) {
+          _logger.info('Branch session listener error (non-fatal): $error');
+        },
+      );
 
       _clickSub = _repo.clicks.listen((click) {
         _analytics.track(

@@ -28,31 +28,39 @@ class DeepLinkRepository {
 
   Stream<BranchLinkClick> get clicks => _clicks.stream;
 
-  Future<void> init({required bool enableLogging}) async {
+  Future<void> init({
+    required bool enableLogging,
+    void Function(Object error, StackTrace stackTrace)? onSessionError,
+  }) async {
     await FlutterBranchSdk.init(
       enableLogging: enableLogging,
       branchAttributionLevel: BranchAttributionLevel.FULL,
     );
 
-    _sub = FlutterBranchSdk.listSession().listen((data) {
-      final clicked = data['+clicked_branch_link'] == true;
-      if (!clicked) return;
+    _sub = FlutterBranchSdk.listSession().listen(
+      (data) {
+        final clicked = data['+clicked_branch_link'] == true;
+        if (!clicked) return;
 
-      final canonicalIdentifier = data['~canonical_identifier'] as String?;
-      final intent = _intentFor(canonicalIdentifier, data);
+        final canonicalIdentifier = data['~canonical_identifier'] as String?;
+        final intent = _intentFor(canonicalIdentifier, data);
 
-      _clicks.add(
-        BranchLinkClick(
-          canonicalIdentifier: canonicalIdentifier,
-          channel: data['~channel'] as String?,
-          campaign: data['~campaign'] as String?,
-          feature: data['~feature'] as String?,
-          routed: intent != null,
-        ),
-      );
+        _clicks.add(
+          BranchLinkClick(
+            canonicalIdentifier: canonicalIdentifier,
+            channel: data['~channel'] as String?,
+            campaign: data['~campaign'] as String?,
+            feature: data['~feature'] as String?,
+            routed: intent != null,
+          ),
+        );
 
-      if (intent != null) _controller.add(intent);
-    });
+        if (intent != null) _controller.add(intent);
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        onSessionError?.call(error, stackTrace);
+      },
+    );
   }
 
   NavigationIntent? _intentFor(String? canonicalIdentifier, Map data) {

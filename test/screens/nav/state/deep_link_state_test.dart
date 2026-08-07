@@ -61,27 +61,27 @@ void main() {
 
       test('should not be started initially', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         // Act - calling init twice
         await deepLinkState.init(enableLogging: true);
         await deepLinkState.init(enableLogging: true);
 
         // Assert - init should only be called once
-        verify(mockDeepLinkRepository.init(enableLogging: true)).called(1);
+        verify(mockDeepLinkRepository.init(enableLogging: true, onSessionError: anyNamed('onSessionError'))).called(1);
       });
     });
 
     group('init', () {
       test('should initialize repository and listen to events', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         // Act
         await deepLinkState.init(enableLogging: true);
 
         // Assert
-        verify(mockDeepLinkRepository.init(enableLogging: true)).called(1);
+        verify(mockDeepLinkRepository.init(enableLogging: true, onSessionError: anyNamed('onSessionError'))).called(1);
         verify(mockDeepLinkRepository.events).called(1);
         verify(mockDeepLinkRepository.clicks).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
@@ -89,13 +89,13 @@ void main() {
 
       test('should initialize with logging disabled', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         // Act
         await deepLinkState.init(enableLogging: false);
 
         // Assert
-        verify(mockDeepLinkRepository.init(enableLogging: false)).called(1);
+        verify(mockDeepLinkRepository.init(enableLogging: false, onSessionError: anyNamed('onSessionError'))).called(1);
         verify(mockDeepLinkRepository.events).called(1);
         verify(mockDeepLinkRepository.clicks).called(1);
         verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
@@ -103,7 +103,7 @@ void main() {
 
       test('should enqueue intents when received from repository events', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: 123);
 
@@ -120,7 +120,7 @@ void main() {
 
       test('should enqueue multiple intents from repository events', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent1 = OpenMunroIntent(munroId: 123);
         final intent2 = OpenMunroIntent(munroId: 456);
@@ -143,7 +143,7 @@ void main() {
 
       test('should handle error during repository initialization', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging')))
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError')))
             .thenThrow(Exception('Initialization failed'));
 
         // Act
@@ -158,9 +158,31 @@ void main() {
         verifyNever(mockNavigationIntentState.enqueue(any));
       });
 
+      test('logs a non-fatal Branch session error as info, not error', () async {
+        // Arrange — capture the onSessionError callback DeepLinkState passes down,
+        // simulating the native Branch session stream failing asynchronously after
+        // init() has already returned (e.g. a native init timeout).
+        void Function(Object, StackTrace)? capturedOnSessionError;
+        when(mockDeepLinkRepository.init(
+          enableLogging: anyNamed('enableLogging'),
+          onSessionError: anyNamed('onSessionError'),
+        )).thenAnswer((invocation) async {
+          capturedOnSessionError = invocation.namedArguments[#onSessionError]
+              as void Function(Object, StackTrace)?;
+        });
+
+        // Act
+        await deepLinkState.init(enableLogging: true);
+        capturedOnSessionError?.call(Exception('Branch session stream failed'), StackTrace.current);
+
+        // Assert — this must never be reported as an unresolved production error.
+        verify(mockLogger.info(argThat(contains('Branch session listener error')))).called(1);
+        verifyNever(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace')));
+      });
+
       test('should handle error when accessing events stream', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
         when(mockDeepLinkRepository.events).thenThrow(Exception('Stream error'));
 
         // Act
@@ -177,7 +199,7 @@ void main() {
 
       test('should only initialize once even when called multiple times', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         // Act
         await deepLinkState.init(enableLogging: true);
@@ -185,14 +207,14 @@ void main() {
         await deepLinkState.init(enableLogging: true);
 
         // Assert
-        verify(mockDeepLinkRepository.init(enableLogging: true)).called(1);
+        verify(mockDeepLinkRepository.init(enableLogging: true, onSessionError: anyNamed('onSessionError'))).called(1);
         verify(mockDeepLinkRepository.events).called(1);
         verify(mockDeepLinkRepository.clicks).called(1);
       });
 
       test('should not re-subscribe to events on multiple init calls', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: 789);
 
@@ -211,7 +233,7 @@ void main() {
     group('Event Stream Handling', () {
       test('should handle OpenMunroIntent with valid munro ID', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: 42);
 
@@ -226,7 +248,7 @@ void main() {
 
       test('should handle RefreshHomeIntent', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = RefreshHomeIntent();
 
@@ -241,7 +263,7 @@ void main() {
 
       test('should handle rapid succession of intents', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intents = List.generate(10, (i) => OpenMunroIntent(munroId: i));
 
@@ -261,7 +283,7 @@ void main() {
 
       test('should continue listening after receiving intents', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent1 = OpenMunroIntent(munroId: 1);
         final intent2 = OpenMunroIntent(munroId: 2);
@@ -287,7 +309,7 @@ void main() {
     group('Click Analytics Tracking', () {
       test('should track branchLinkClicked when a click is received', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         const click = BranchLinkClick(
           canonicalIdentifier: 'munro/123',
@@ -317,7 +339,7 @@ void main() {
 
       test('should track branchLinkClicked with routed false when click did not resolve to an intent', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         const click = BranchLinkClick(
           canonicalIdentifier: 'app',
@@ -347,7 +369,7 @@ void main() {
 
       test('should not track branchLinkClicked when a navigation intent is received (no click)', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         // Act
         await deepLinkState.init(enableLogging: true);
@@ -360,7 +382,7 @@ void main() {
 
       test('should track multiple clicks independently', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         const click1 = BranchLinkClick(
           canonicalIdentifier: 'munro/1',
@@ -392,7 +414,7 @@ void main() {
       test('should handle stream errors gracefully during initialization', () async {
         // Arrange
         final errorStreamController = StreamController<NavigationIntent>.broadcast();
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
         when(mockDeepLinkRepository.events).thenAnswer((_) => errorStreamController.stream);
 
         // Act
@@ -411,7 +433,7 @@ void main() {
 
       test('should handle OpenMunroIntent with zero munro ID', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: 0);
 
@@ -426,7 +448,7 @@ void main() {
 
       test('should handle OpenMunroIntent with negative munro ID', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: -1);
 
@@ -441,7 +463,7 @@ void main() {
 
       test('should handle OpenMunroIntent with large munro ID', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: 999999);
 
@@ -456,7 +478,7 @@ void main() {
 
       test('should handle same intent being sent multiple times', () async {
         // Arrange
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) async {});
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) async {});
 
         final intent = OpenMunroIntent(munroId: 123);
 
@@ -476,7 +498,7 @@ void main() {
       test('should handle async initialization completing after dispose', () async {
         // Arrange
         final completer = Completer<void>();
-        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'))).thenAnswer((_) => completer.future);
+        when(mockDeepLinkRepository.init(enableLogging: anyNamed('enableLogging'), onSessionError: anyNamed('onSessionError'))).thenAnswer((_) => completer.future);
 
         // Act
         final initFuture = deepLinkState.init(enableLogging: true);

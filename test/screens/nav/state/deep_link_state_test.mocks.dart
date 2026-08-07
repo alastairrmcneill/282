@@ -63,11 +63,21 @@ class MockDeepLinkRepository extends _i1.Mock
       ) as _i4.Stream<_i3.BranchLinkClick>);
 
   @override
-  _i4.Future<void> init({required bool? enableLogging}) => (super.noSuchMethod(
+  _i4.Future<void> init({
+    required bool? enableLogging,
+    void Function(
+      Object,
+      StackTrace,
+    )? onSessionError,
+  }) =>
+      (super.noSuchMethod(
         Invocation.method(
           #init,
           [],
-          {#enableLogging: enableLogging},
+          {
+            #enableLogging: enableLogging,
+            #onSessionError: onSessionError,
+          },
         ),
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
