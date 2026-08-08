@@ -18,6 +18,7 @@ import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/app_providers.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/config/onboarding_config.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -40,7 +41,12 @@ main() async {
   await Supabase.initialize(
     url: config.supabaseUrl,
     anonKey: config.supabaseAnonKey,
-    accessToken: () async => FirebaseAuth.instance.currentUser?.getIdToken(false),
+    // Called before every Supabase request; a transient network hiccup
+    // refreshing the Firebase ID token would otherwise fail that request
+    // outright with an uncaught FirebaseAuthException.
+    accessToken: () => withTransientRetry(
+      () async => FirebaseAuth.instance.currentUser?.getIdToken(false),
+    ),
   );
 
   await FirebaseAuth.instance.currentUser?.getIdToken(true);

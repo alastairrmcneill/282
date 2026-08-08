@@ -70,10 +70,14 @@ class StorageRepository {
     }
   }
 
+  static final _backendGatewayErrorPattern = RegExp(r'unexpected 5\d\d code from backend');
+
   bool _isRetryableUploadError(Object error) {
     if (error is FirebaseException && error.code == 'timeout') return true;
 
     final message = error.toString().toLowerCase();
+    if (_backendGatewayErrorPattern.hasMatch(message)) return true;
+
     const transientMarkers = [
       'socketexception',
       'clientexception',
