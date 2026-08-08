@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class MunroRepository {
@@ -8,7 +9,7 @@ class MunroRepository {
   SupabaseQueryBuilder get _view => _db.from('vu_munros');
 
   Future<List<Munro>> getMunroData() async {
-    final response = await _view.select();
+    final response = await withTransientRetry(() => _view.select());
 
     return response.map((item) => Munro.fromJSON(item)).toList();
   }

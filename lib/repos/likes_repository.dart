@@ -8,7 +8,14 @@ class LikesRepository {
   SupabaseQueryBuilder get _view => _db.from('vu_likes');
 
   Future create({required Like like}) async {
-    await _table.insert(like.toJSON());
+    try {
+      await _table.insert(like.toJSON());
+    } on PostgrestException catch (error) {
+      // Unique constraint on (userId, postId) — a double-tap or a retried
+      // request already recorded this like, so treat it as a no-op.
+      if (error.code == '23505') return;
+      rethrow;
+    }
   }
 
   Future delete({

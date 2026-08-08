@@ -53,6 +53,9 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                     Future.delayed(
                       PinchZoomReleaseUnzoomWidget.defaultResetDuration,
                       () {
+                        // The widget can be disposed (e.g. carousel scrolled away,
+                        // post removed) before this delayed callback fires.
+                        if (!mounted) return;
                         setState(() => isZooming = false);
                         PinchZoomNotification(isZooming: false).dispatch(context);
                       },
