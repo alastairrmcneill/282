@@ -171,7 +171,7 @@ void main() {
           lon: anyNamed('lon'),
           metric: anyNamed('metric'),
           apiKey: anyNamed('apiKey'),
-        )).thenThrow(Exception('Network error'));
+        )).thenThrow(Exception('Unexpected forecast parsing error'));
 
         // Act
         await weatherState.getWeather(sampleMunro);
@@ -180,6 +180,24 @@ void main() {
         expect(weatherState.status, WeatherStatus.error);
         expect(weatherState.error.message, 'There was an error fetching the weather data.');
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+      });
+
+      test('should log a transient network error during weather fetch as info, not error', () async {
+        // Arrange
+        when(mockWeatherRepository.fetchWeather(
+          lat: anyNamed('lat'),
+          lon: anyNamed('lon'),
+          metric: anyNamed('metric'),
+          apiKey: anyNamed('apiKey'),
+        )).thenThrow(const SocketException('Failed host lookup'));
+
+        // Act
+        await weatherState.getWeather(sampleMunro);
+
+        // Assert
+        expect(weatherState.status, WeatherStatus.error);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+        verify(mockLogger.info(any)).called(1);
       });
 
       test('should set status to loading during async operation', () async {

@@ -9,6 +9,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/config/onboarding_config.dart';
 import 'package:two_eight_two/helpers/device_info_helper.dart';
+import 'package:two_eight_two/helpers/network_helper.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -77,6 +78,8 @@ class AuthState extends ChangeNotifier {
   void _logAuthError(Object error, StackTrace stackTrace) {
     if (error is FirebaseAuthException && _expectedAuthErrorCodes.contains(error.code)) {
       _logger.info('Expected auth error: $error');
+    } else if (isTransientNetworkError(error)) {
+      _logger.info('Transient network error during auth request: $error');
     } else {
       _logger.error(error.toString(), stackTrace: stackTrace);
     }
