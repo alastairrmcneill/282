@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/config/app_config.dart';
-import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
@@ -45,11 +44,7 @@ class WeatherState extends ChangeNotifier {
         code: error.toString(),
         message: "There was an error fetching the weather data.",
       );
-      if (isTransientNetworkError(error)) {
-        _logger.info('Failed to fetch weather (transient network error): $error');
-      } else {
-        _logger.error(error.toString(), stackTrace: stackTrace);
-      }
+      _logger.logPossibleNetworkError('Failed to fetch weather', error, stackTrace: stackTrace);
       notifyListeners();
     }
   }

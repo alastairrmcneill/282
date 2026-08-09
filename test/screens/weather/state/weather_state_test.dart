@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -179,7 +181,7 @@ void main() {
         // Assert
         expect(weatherState.status, WeatherStatus.error);
         expect(weatherState.error.message, 'There was an error fetching the weather data.');
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(any, error: anyNamed('error'), stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
       test('should log a transient network error during weather fetch as info, not error', () async {
@@ -197,7 +199,7 @@ void main() {
         // Assert
         expect(weatherState.status, WeatherStatus.error);
         verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
-        verify(mockLogger.info(any)).called(1);
+        verify(mockLogger.info(any, context: anyNamed('context'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
