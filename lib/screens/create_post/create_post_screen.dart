@@ -133,17 +133,6 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
 
-    if (!createPostState.hasImage) {
-      context.read<Analytics>().track(AnalyticsEvent.dialogShown, props: {
-        AnalyticsProp.dialogName: AnalyticsDialog.createPostNoPhotos,
-      });
-      bool? carryOn = await showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) => const NoPhotosDialog(),
-      );
-      if (carryOn == null || carryOn == false) return;
-    }
-
     if (createPostState.status == CreatePostStatus.initial) {
       if (createPostState.editingPost == null) {
         createPostState.createPost();

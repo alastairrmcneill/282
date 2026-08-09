@@ -437,11 +437,17 @@ void main() {
           type: ImageUploadType.post,
         )).called(1);
         verifyNever(mockPostsRepository.create(post: anyNamed('post')));
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
-        // uploadImage throws synchronously here (thenThrow), so the exception occurs
-        // while building uploadFutures, never inside the Future.wait try/catch —
-        // photoUploadFailed only fires for a future that rejects asynchronously (see below).
-        verifyNever(mockAnalytics.track(AnalyticsEvent.photoUploadFailed, props: anyNamed('props')));
+        verify(mockLogger.error(any,
+                error: anyNamed('error'), stackTrace: anyNamed('stackTrace'), context: anyNamed('context')))
+            .called(1);
+
+        verify(mockAnalytics.track(
+          AnalyticsEvent.photoUploadFailed,
+          props: {
+            AnalyticsProp.source: AnalyticsEvent.createPost,
+            AnalyticsProp.imagesAdded: 1,
+          },
+        )).called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.postCreateFailed,
           props: {
@@ -978,7 +984,9 @@ void main() {
           type: ImageUploadType.post,
         )).called(1);
         verifyNever(mockPostsRepository.update(post: anyNamed('post')));
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(any,
+                error: anyNamed('error'), stackTrace: anyNamed('stackTrace'), context: anyNamed('context')))
+            .called(1);
         verify(mockAnalytics.track(
           AnalyticsEvent.photoUploadFailed,
           props: {
@@ -1016,7 +1024,9 @@ void main() {
         expect(result, isNull);
         expect(createPostState.status, CreatePostStatus.error);
         verify(mockStorageRepository.deleteByUrl(deletedURL)).called(1);
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(any,
+                error: anyNamed('error'), stackTrace: anyNamed('stackTrace'), context: anyNamed('context')))
+            .called(1);
       });
 
       test('should upload multiple images via storage repository for multiple munros', () async {
