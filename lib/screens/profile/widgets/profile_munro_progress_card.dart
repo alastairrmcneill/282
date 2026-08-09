@@ -11,7 +11,10 @@ class ProfileMunroProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profileState = context.watch<ProfileState>();
-    final completed = profileState.profile?.munrosCompleted ?? 0;
+    final munroCompletionState = context.watch<MunroCompletionState>();
+    final completed = profileState.isCurrentUser
+        ? munroCompletionState.completedMunroIds.length
+        : profileState.profile?.munrosCompleted ?? 0;
     const total = 282;
     final percent = completed / total;
 

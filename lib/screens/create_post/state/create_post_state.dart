@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:two_eight_two/analytics/analytics_base.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+
+const _maxConcurrentImageUploads = 3;
 
 class CreatePostState extends ChangeNotifier {
   final PostsRepository _postsRepository;
@@ -68,25 +71,27 @@ class CreatePostState extends ChangeNotifier {
 
       // Upload picture and get url
       Map<int, List<String>> addedImageUrlsMap = {};
-      final uploadFutures = <Future<(int, String)>>[];
+      final imagesToUpload = <(int, File)>[];
 
       for (int munroId in _addedImages.keys) {
         for (File image in _addedImages[munroId]!) {
-          uploadFutures.add(_storageRepository
-              .uploadImage(imageFile: image, type: ImageUploadType.post)
-              .then((imageURL) => (munroId, imageURL)));
+          imagesToUpload.add((munroId, image));
         }
       }
 
       final List<(int, String)> results;
       try {
-        results = await Future.wait(uploadFutures);
+        results = await mapWithConcurrency(imagesToUpload, _maxConcurrentImageUploads, (entry) async {
+          final (munroId, image) = entry;
+          final imageURL = await _storageRepository.uploadImage(imageFile: image, type: ImageUploadType.post);
+          return (munroId, imageURL);
+        });
       } catch (error) {
         _analytics.track(
           AnalyticsEvent.photoUploadFailed,
           props: {
             AnalyticsProp.source: AnalyticsEvent.createPost,
-            AnalyticsProp.imagesAdded: uploadFutures.length,
+            AnalyticsProp.imagesAdded: imagesToUpload.length,
           },
         );
         rethrow;
@@ -186,7 +191,16 @@ class CreatePostState extends ChangeNotifier {
         imageUrlsMap: addedImageUrlsMap,
       );
     } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(
+        'Create post failed',
+        error: error,
+        stackTrace: stackTrace,
+        context: {
+          'reason': _failureReason(error),
+          'selected_munro_count': selectedMunroIds.length,
+          'images_added': _addedImages.values.fold<int>(0, (sum, list) => sum + list.length),
+        },
+      );
       _analytics.track(
         AnalyticsEvent.postCreateFailed,
         props: {
@@ -323,7 +337,15 @@ class CreatePostState extends ChangeNotifier {
       );
       return newPostState;
     } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.error(
+        'Edit post failed',
+        error: error,
+        stackTrace: stackTrace,
+        context: {
+          'reason': _failureReason(error),
+          'images_added': _addedImages.values.fold<int>(0, (sum, list) => sum + list.length),
+        },
+      );
       setError = Error(message: "There was an issue uploading your post. Please try again");
       return null;
     }

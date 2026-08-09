@@ -174,6 +174,32 @@ class MyTheme {
         ),
         dialBackgroundColor: Colors.white,
         dialTextStyle: TextStyle(color: AppColors.light.textPrimary, fontSize: 16, fontWeight: FontWeight.w300),
+        dialHandColor: AppColors.light.accent,
+        hourMinuteColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.light.accent.withValues(alpha: 0.15);
+          }
+          return AppColors.light.surface;
+        }),
+        hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.light.accent;
+          }
+          return AppColors.light.textPrimary;
+        }),
+        dayPeriodColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.light.accent.withValues(alpha: 0.15);
+          }
+          return AppColors.light.surface;
+        }),
+        dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.light.accent;
+          }
+          return AppColors.light.textPrimary;
+        }),
+        entryModeIconColor: AppColors.light.accent,
         padding: const EdgeInsets.all(20),
       ),
       iconTheme: IconThemeData(color: AppColors.light.accent),
@@ -413,6 +439,32 @@ class MyTheme {
         ),
         dialBackgroundColor: AppColors.dark.surface,
         dialTextStyle: TextStyle(color: AppColors.dark.textPrimary, fontSize: 16, fontWeight: FontWeight.w300),
+        dialHandColor: AppColors.dark.accent,
+        hourMinuteColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.dark.accent.withValues(alpha: 0.15);
+          }
+          return AppColors.dark.background;
+        }),
+        hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.dark.accent;
+          }
+          return AppColors.dark.textPrimary;
+        }),
+        dayPeriodColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.dark.accent.withValues(alpha: 0.15);
+          }
+          return AppColors.dark.background;
+        }),
+        dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.dark.accent;
+          }
+          return AppColors.dark.textPrimary;
+        }),
+        entryModeIconColor: AppColors.dark.accent,
         padding: const EdgeInsets.all(20),
       ),
       iconTheme: IconThemeData(color: AppColors.dark.accent),
