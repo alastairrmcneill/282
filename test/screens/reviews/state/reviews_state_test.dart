@@ -196,37 +196,27 @@ void main() {
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
       });
 
-      // TODO(app-bug): ReviewsState.getMunroReviewsAndRatings (lib/screens/munro/state/reviews_state.dart)
-      // doesn't await/return its `Future.wait([...]).then().catchError()` chain, unlike the sibling
-      // paginateMunroReviews which properly awaits inside a try/catch. That means `await
-      // getMunroReviewsAndRatings(...)` resolves before the underlying repo calls finish, so status
-      // never reliably reaches `loaded` by the time the await returns. Skipped until a human fixes the
-      // production method to await its own async work.
-      test(
-        'should set status to loading during async operation',
-        () async {
-          // Arrange
-          when(mockReviewsRepository.readReviewsFromMunro(
-            munroId: anyNamed('munroId'),
-            excludedAuthorIds: anyNamed('excludedAuthorIds'),
-            offset: anyNamed('offset'),
-          )).thenAnswer((_) async {
-            await Future.delayed(Duration(milliseconds: 100));
-            return sampleReviews;
-          });
+      test('should set status to loading during async operation', () async {
+        // Arrange
+        when(mockReviewsRepository.readReviewsFromMunro(
+          munroId: anyNamed('munroId'),
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+          offset: anyNamed('offset'),
+        )).thenAnswer((_) async {
+          await Future.delayed(Duration(milliseconds: 100));
+          return sampleReviews;
+        });
 
-          // Act
-          final future = reviewsState.getMunroReviewsAndRatings(sampleMunro.id);
+        // Act
+        final future = reviewsState.getMunroReviewsAndRatings(sampleMunro.id);
 
-          // Assert intermediate state
-          expect(reviewsState.status, ReviewsStatus.loading);
+        // Assert intermediate state
+        expect(reviewsState.status, ReviewsStatus.loading);
 
-          // Wait for completion
-          await future;
-          expect(reviewsState.status, ReviewsStatus.loaded);
-        },
-        skip: 'app bug: getMunroReviewsAndRatings does not await its internal Future.wait chain',
-      );
+        // Wait for completion
+        await future;
+        expect(reviewsState.status, ReviewsStatus.loaded);
+      });
     });
 
     group('paginateMunroReviews', () {

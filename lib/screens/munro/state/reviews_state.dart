@@ -35,25 +35,27 @@ class ReviewsState extends ChangeNotifier {
 
     setStatus = ReviewsStatus.loading;
 
-    Future.wait([
-      _reviewsRepository.readReviewsFromMunro(
-        munroId: munroId,
-        excludedAuthorIds: blockedUsers,
-        offset: 0,
-      ),
-      _reviewsRepository.readRatingsBreakdownFromMunro(munroId: munroId),
-    ]).then((results) {
+    try {
+      final results = await Future.wait([
+        _reviewsRepository.readReviewsFromMunro(
+          munroId: munroId,
+          excludedAuthorIds: blockedUsers,
+          offset: 0,
+        ),
+        _reviewsRepository.readRatingsBreakdownFromMunro(munroId: munroId),
+      ]);
+
       _reviews = results[0] as List<Review>;
       _ratingsBreakdown = results[1] as MunroRatingsBreakdown;
 
       setStatus = ReviewsStatus.loaded;
-    }).catchError((error, stackTrace) {
+    } catch (error, stackTrace) {
       _logger.error(error.toString(), stackTrace: stackTrace);
       setError = Error(
         message: "There was an issue getting reviews for this munro. Please try again",
         code: error.toString(),
       );
-    });
+    }
   }
 
   Future<void> paginateMunroReviews(int munroId) async {
