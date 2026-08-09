@@ -28,7 +28,11 @@ class SavedListRepository {
   }
 
   Future<void> update({required SavedList savedList}) async {
-    await _table.update(savedList.toJSON()).eq(SavedListFields.uid, savedList.uid ?? "");
+    final uid = savedList.uid;
+    if (uid == null) {
+      throw ArgumentError('Cannot update a saved list with no id — it has not been persisted yet.');
+    }
+    await _table.update(savedList.toJSON()).eq(SavedListFields.uid, uid);
   }
 
   Future<void> deleteFromUid({required String uid}) async {

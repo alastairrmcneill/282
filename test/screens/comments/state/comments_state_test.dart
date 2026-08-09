@@ -119,7 +119,8 @@ void main() {
         commentsState.setPostId = 'post123';
         commentsState.setCommentText = 'This is a new comment';
 
-        when(mockCommentsRepository.create(comment: anyNamed('comment'))).thenAnswer((_) async => {});
+        when(mockCommentsRepository.create(comment: anyNamed('comment')))
+            .thenAnswer((invocation) async => invocation.namedArguments[#comment] as Comment);
 
         // Act
         await commentsState.createComment();
@@ -138,7 +139,8 @@ void main() {
         commentsState.setPostId = 'post123';
         commentsState.setCommentText = 'Test comment';
 
-        when(mockCommentsRepository.create(comment: anyNamed('comment'))).thenAnswer((_) async => {});
+        when(mockCommentsRepository.create(comment: anyNamed('comment')))
+            .thenAnswer((invocation) async => invocation.namedArguments[#comment] as Comment);
 
         // Act
         await commentsState.createComment();
@@ -714,7 +716,8 @@ void main() {
         commentsState.setPostId = 'post123';
         commentsState.setCommentText = 'Test comment';
 
-        when(mockCommentsRepository.create(comment: anyNamed('comment'))).thenAnswer((_) async => {});
+        when(mockCommentsRepository.create(comment: anyNamed('comment')))
+            .thenAnswer((invocation) async => invocation.namedArguments[#comment] as Comment);
 
         // Act
         await commentsState.createComment();
@@ -732,7 +735,8 @@ void main() {
         commentsState.setPostId = 'post123';
         commentsState.setCommentText = 'Test';
 
-        when(mockCommentsRepository.create(comment: anyNamed('comment'))).thenAnswer((_) async => {});
+        when(mockCommentsRepository.create(comment: anyNamed('comment')))
+            .thenAnswer((invocation) async => invocation.namedArguments[#comment] as Comment);
 
         bool notified = false;
         commentsState.addListener(() => notified = true);

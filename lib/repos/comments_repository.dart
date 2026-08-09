@@ -8,9 +8,9 @@ class CommentsRepository {
   SupabaseQueryBuilder get _table => _db.from('comments');
   SupabaseQueryBuilder get _view => _db.from('vu_post_comments');
 
-  // Create Comment
-  Future<void> create({required Comment comment}) async {
-    await _table.insert(comment.toJSON());
+  Future<Comment> create({required Comment comment}) async {
+    final response = await _table.insert(comment.toJSON()).select().single();
+    return Comment.fromJSON(response);
   }
 
   // Update Comment
@@ -37,6 +37,9 @@ class CommentsRepository {
 
   // Delete comment
   Future deleteComment({required Comment comment}) async {
-    await _table.delete().eq(CommentFields.uid, comment.uid ?? "");
+    final uid = comment.uid;
+    if (uid == null) return;
+
+    await _table.delete().eq(CommentFields.uid, uid);
   }
 }

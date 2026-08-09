@@ -82,6 +82,16 @@ class _FakeError_4 extends _i1.SmartFake implements _i2.Error {
         );
 }
 
+class _FakeReview_5 extends _i1.SmartFake implements _i2.Review {
+  _FakeReview_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [MunroPicturesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -170,15 +180,22 @@ class MockReviewsRepository extends _i1.Mock implements _i3.ReviewsRepository {
   }
 
   @override
-  _i4.Future<void> create({required _i2.Review? review}) => (super.noSuchMethod(
+  _i4.Future<_i2.Review> create({required _i2.Review? review}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #create,
           [],
           {#review: review},
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i4.Future<_i2.Review>.value(_FakeReview_5(
+          this,
+          Invocation.method(
+            #create,
+            [],
+            {#review: review},
+          ),
+        )),
+      ) as _i4.Future<_i2.Review>);
 
   @override
   _i4.Future<void> update({required _i2.Review? review}) => (super.noSuchMethod(
