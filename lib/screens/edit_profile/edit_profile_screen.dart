@@ -150,9 +150,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   _photoURL!,
                                 ),
                                 onError: (error, stackTrace) {
-                                  context.read<Logger>().error(
+                                  context.read<Logger>().logPossibleNetworkError(
                                         'Failed to load photo',
-                                        error: error,
+                                        error,
                                         stackTrace: stackTrace,
                                         context: {'imageUrl': _photoURL},
                                       );

@@ -104,12 +104,12 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 2,
                 errorBuilder: (context, error, stackTrace) {
-                  context.read<Logger>().error(
-                    'Failed to load photo',
-                    error: error,
-                    stackTrace: stackTrace,
-                    context: {'imageUrl': photos[index].imageUrl},
-                  );
+                  context.read<Logger>().logPossibleNetworkError(
+                        'Failed to load photo',
+                        error,
+                        stackTrace: stackTrace,
+                        context: {'imageUrl': photos[index].imageUrl},
+                      );
                   return const Center(
                     child: Icon(
                       PhosphorIconsRegular.warning,

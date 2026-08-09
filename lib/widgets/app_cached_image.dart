@@ -36,9 +36,9 @@ class AppCachedImage extends StatelessWidget {
         fit: BoxFit.cover,
       ),
       errorWidget: (context, url, error) {
-        context.read<Logger>().error(
+        context.read<Logger>().logPossibleNetworkError(
               'Failed to load photo',
-              error: error,
+              error,
               context: {'imageUrl': url},
             );
         return Center(

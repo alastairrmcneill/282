@@ -97,9 +97,9 @@ class CreatePostImagePicker extends StatelessWidget {
                             ),
                             fadeInDuration: Duration.zero,
                             errorWidget: (context, url, error) {
-                              context.read<Logger>().error(
+                              context.read<Logger>().logPossibleNetworkError(
                                     'Failed to load photo',
-                                    error: error,
+                                    error,
                                     context: {'imageUrl': url},
                                   );
                               return const Icon(CupertinoIcons.camera_viewfinder);

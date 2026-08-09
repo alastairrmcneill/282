@@ -74,11 +74,11 @@ class _PostImagesCarouselState extends State<PostImagesCarousel> {
                         ),
                         fadeInDuration: Duration.zero,
                         errorWidget: (context, url, error) {
-                          context.read<Logger>().error(
-                            'Failed to load photo',
-                            error: error,
-                            context: {'imageUrl': url},
-                          );
+                          context.read<Logger>().logPossibleNetworkError(
+                                'Failed to load photo',
+                                error,
+                                context: {'imageUrl': url},
+                              );
                           return Center(
                             child: Icon(
                               PhosphorIconsRegular.warning,

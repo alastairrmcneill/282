@@ -44,7 +44,7 @@ class WeatherState extends ChangeNotifier {
         code: error.toString(),
         message: "There was an error fetching the weather data.",
       );
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.logPossibleNetworkError('Failed to fetch weather', error, stackTrace: stackTrace);
       notifyListeners();
     }
   }

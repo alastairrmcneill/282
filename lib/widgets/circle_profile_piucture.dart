@@ -41,9 +41,9 @@ class CircularProfilePicture extends StatelessWidget {
                     profilePictureURL!,
                   ),
                   onError: (error, stackTrace) {
-                    context.read<Logger>().error(
+                    context.read<Logger>().logPossibleNetworkError(
                           'Failed to load photo',
-                          error: error,
+                          error,
                           stackTrace: stackTrace,
                           context: {'imageUrl': profilePictureURL},
                         );

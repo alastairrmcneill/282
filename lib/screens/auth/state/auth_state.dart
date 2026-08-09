@@ -78,7 +78,7 @@ class AuthState extends ChangeNotifier {
     if (error is FirebaseAuthException && _expectedAuthErrorCodes.contains(error.code)) {
       _logger.info('Expected auth error: $error');
     } else {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.logPossibleNetworkError('Auth request failed', error, stackTrace: stackTrace);
     }
   }
 
