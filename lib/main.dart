@@ -18,6 +18,7 @@ import 'package:two_eight_two/app.dart';
 import 'package:two_eight_two/app_providers.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/config/onboarding_config.dart';
+import 'package:two_eight_two/helpers/helpers.dart';
 import 'package:two_eight_two/push/push.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -47,7 +48,17 @@ main() async {
 
   final logger = SentryLogger();
   FlutterError.onError = (details) {
-    logger.fatal(details.exception, stackTrace: details.stack);
+    // Framework-level errors can surface transient network failures (e.g. an
+    // image fetch failing mid-load while the app is backgrounded) — treat
+    // those the same as everywhere else instead of reporting them as fatal.
+    if (isTransientNetworkError(details.exception)) {
+      logger.info(
+        'Flutter error (transient network error): ${details.exceptionAsString()}',
+        context: {'error': details.exception.toString()},
+      );
+    } else {
+      logger.fatal(details.exception, stackTrace: details.stack);
+    }
   };
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
