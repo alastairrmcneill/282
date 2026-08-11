@@ -86,7 +86,9 @@ class _ExploreTabState extends State<ExploreTab> {
                 _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
                 borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
-                _searchFocusNode.unfocus();
+                if (_searchFocusNode.hasFocus) {
+                  _searchFocusNode.unfocus();
+                }
               }
             }),
             panelBuilder: (sc) {
