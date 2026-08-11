@@ -86,9 +86,6 @@ class _ExploreTabState extends State<ExploreTab> {
                 _hasLoggedPanelOpen = false;
                 _isMunroListViewVisible = false;
                 borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
-                // onPanelSlide fires on every animation frame while position < 0.8, so
-                // guard against re-issuing resignFirstResponder each frame - repeated
-                // calls raced with keyboard focus changes and hung the main thread.
                 if (_searchFocusNode.hasFocus) {
                   _searchFocusNode.unfocus();
                 }
