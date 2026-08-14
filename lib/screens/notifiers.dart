@@ -35,3 +35,4 @@ export 'saved/state/saved_list_state.dart';
 export 'settings/state/settings_state.dart';
 export 'user_search/state/user_search_state.dart';
 export 'munro/state/weather_state.dart';
+export 'nav/state/strava_state.dart';

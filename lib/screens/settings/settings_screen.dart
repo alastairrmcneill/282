@@ -31,6 +31,12 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         children: [
           SettingsGroup(
+            title: 'Connect',
+            children: [
+              StravaConnectListItem(userId: user!.uid!),
+            ],
+          ),
+          SettingsGroup(
             title: 'Account',
             children: [
               ListTile(
@@ -146,13 +152,17 @@ class SettingsScreen extends StatelessWidget {
                 title: const Text("Terms of Service"),
                 leading: Icon(PhosphorIconsRegular.fileText, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () { openTermsUrl(); },
+                onTap: () {
+                  openTermsUrl();
+                },
               ),
               ListTile(
                 title: const Text("Privacy Policy"),
                 leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () { openPrivacyPolicyUrl(); },
+                onTap: () {
+                  openPrivacyPolicyUrl();
+                },
               ),
             ],
           ),
@@ -175,7 +185,7 @@ class SettingsScreen extends StatelessWidget {
                     context,
                     message: "Are you sure you want to delete account and all associated data?",
                     onConfirm: () async {
-                      await context.read<AuthState>().deleteUser(user!).then((_) {
+                      await context.read<AuthState>().deleteUser(user).then((_) {
                         context.read<MunroCompletionState>().reset();
                         context.read<SavedListState>().reset();
                         Navigator.of(context).pushReplacementNamed(HomeScreen.route);

@@ -342,7 +342,12 @@ class AppRouter {
 
       case SettingsScreen.route:
         return MaterialPageRoute(
-          builder: (_) => const SettingsScreen(),
+          builder: (context) {
+            context.read<StravaState>().getStravaConnectionStatus(
+                  userId: context.read<UserState>().currentUser?.uid ?? '',
+                );
+            return const SettingsScreen();
+          },
           settings: settings,
         );
 
