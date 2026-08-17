@@ -35,7 +35,7 @@ class Review {
       uid: json[ReviewFields.uid] as String?,
       munroId: json[ReviewFields.munroId] as int,
       authorId: json[ReviewFields.authorId] as String,
-      authorDisplayName: json[ReviewFields.authorDisplayName] as String,
+      authorDisplayName: (json[ReviewFields.authorDisplayName] as String?) ?? '',
       authorProfilePictureURL: json[ReviewFields.authorProfilePictureURL] as String?,
       dateTime: DateTime.parse(json[ReviewFields.dateTime] as String),
       rating: json[ReviewFields.rating] as int,
