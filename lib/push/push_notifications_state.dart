@@ -144,7 +144,7 @@ class PushNotificationState extends ChangeNotifier {
         deviceModel: deviceInfo.deviceModel,
       );
     } catch (e, st) {
-      _logger.error('Sync FCM token failed', error: e, stackTrace: st);
+      _logger.logPossibleNetworkError('Sync FCM token failed', e, stackTrace: st);
     }
   }
 
