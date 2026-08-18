@@ -38,15 +38,32 @@ main() async {
     // Styles are being iterated on in Mapbox Studio; never render a stale cached copy in dev.
     await MapboxMapsOptions.clearData();
   }
+  final logger = SentryLogger();
+
   await Supabase.initialize(
     url: config.supabaseUrl,
     anonKey: config.supabaseAnonKey,
-    accessToken: () async => FirebaseAuth.instance.currentUser?.getIdToken(false),
+    accessToken: () async {
+      try {
+        return await withNetworkRetry(
+          () => FirebaseAuth.instance.currentUser?.getIdToken(false),
+        );
+      } catch (error, stackTrace) {
+        // Falls back to the anon key for this request rather than crashing the
+        // Postgrest/Realtime call that triggered the token refresh — Supabase
+        // will simply retry with a fresh token next time one is needed.
+        logger.logPossibleNetworkError(
+          'Failed to refresh Supabase access token',
+          error,
+          stackTrace: stackTrace,
+        );
+        return null;
+      }
+    },
   );
 
   await FirebaseAuth.instance.currentUser?.getIdToken(true);
 
-  final logger = SentryLogger();
   FlutterError.onError = (details) {
     // Framework-level errors can surface transient network failures (e.g. an
     // image fetch failing mid-load while the app is backgrounded) — treat
