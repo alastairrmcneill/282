@@ -57,7 +57,7 @@ class FeedState extends ChangeNotifier {
       _friendsPosts = posts;
       setFriendsStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.logPossibleNetworkError('Failed to fetch friends feed', error, stackTrace: stackTrace);
       setFriendsError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your posts. Please try again.",
@@ -98,7 +98,7 @@ class FeedState extends ChangeNotifier {
         },
       );
     } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.logPossibleNetworkError('Failed to paginate friends feed', error, stackTrace: stackTrace);
       setFriendsError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }
@@ -124,7 +124,7 @@ class FeedState extends ChangeNotifier {
       _globalPosts = posts;
       setGlobalStatus = FeedStatus.loaded;
     } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.logPossibleNetworkError('Failed to fetch global feed', error, stackTrace: stackTrace);
       setGlobalError = Error(
         code: error.toString(),
         message: "There was an issue retreiving your posts. Please try again.",
@@ -165,7 +165,7 @@ class FeedState extends ChangeNotifier {
         },
       );
     } catch (error, stackTrace) {
-      _logger.error(error.toString(), stackTrace: stackTrace);
+      _logger.logPossibleNetworkError('Failed to paginate global feed', error, stackTrace: stackTrace);
       setGlobalError = Error(message: "There was an issue loading your feed. Please try again.");
     }
   }
