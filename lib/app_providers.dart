@@ -56,6 +56,7 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => WeartherRepository()),
       Provider(create: (_) => ShareLinkRepository()),
       Provider(create: (_) => StravaConnectionsRepository(client)),
+      Provider(create: (_) => MunroMatchesRepository(client)),
       Provider<Analytics>(
         create: (ctx) => MixpanelAnalytics(
           mixpanel,
@@ -315,7 +316,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ProxyProvider4<RemoteConfigState, OverlayIntentState, AppFlagsRepository, AppInfoRepository,
           StartupOverlayPolicies>(
         update: (
-          _,
+          ctx,
           remoteConfig,
           overlays,
           flags,
@@ -327,6 +328,8 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           overlays,
           flags,
           appInfo,
+          ctx.read<MunroMatchesRepository>(),
+          ctx.read<AuthState>(),
         ),
       ),
       ChangeNotifierProvider(

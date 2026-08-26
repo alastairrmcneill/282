@@ -74,3 +74,10 @@ final class ReviewPromptIntent extends OverlayIntent {
   @override
   String get dedupeKey => 'review_prompt';
 }
+
+final class StravaReviewActivityIntent extends OverlayIntent {
+  const StravaReviewActivityIntent();
+
+  @override
+  String get dedupeKey => 'strava_review_activity';
+}

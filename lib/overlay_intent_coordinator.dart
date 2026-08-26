@@ -203,6 +203,14 @@ class OverlayIntentCoordinator extends StatelessWidget {
       case ReviewPromptIntent():
         await maybeShowReviewPrompt(navCtx);
         return;
+
+      case StravaReviewActivityIntent():
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.stravaReviewActivity},
+        );
+
+        return;
     }
   }
 }

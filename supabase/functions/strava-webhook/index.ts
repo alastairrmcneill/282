@@ -13,9 +13,6 @@ Deno.serve(async (req) => {
     const token = url.searchParams.get("hub.verify_token");
     const challenge = url.searchParams.get("hub.challenge");
 
-    console.log("🎯 ~ mode:", mode);
-    console.log("🎯 ~ token:", token);
-    console.log("🎯 ~ challenge:", challenge);
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
       return new Response(JSON.stringify({ "hub.challenge": challenge }), {
         headers: { "Content-Type": "application/json" },
@@ -29,49 +26,17 @@ Deno.serve(async (req) => {
     const event = await req.json();
     console.log("Strava webhook event:", JSON.stringify(event));
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-
-    const stravaAthleteId = event.owner_id;
-
-    const userId = await supabase.from("strava_connections").select("user_id")
-      .eq("strava_athlete_id", stravaAthleteId).single();
-
-    const userData = await supabase.from("users").select("*").eq(
-      "id",
-      userId.data?.user_id,
-    ).single();
-
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    const notificationEmail = Deno.env.get("NOTIFICATION_EMAIL");
-    const fromEmail = Deno.env.get("FROM_EMAIL") ?? "onboarding@resend.dev";
-    console.log("🎯 ~ notificationEmail:", notificationEmail);
-    console.log("🎯 ~ fromEmail:", fromEmail);
-
-    if (!resendApiKey || !notificationEmail) {
-      throw new Error(
-        "RESEND_API_KEY or NOTIFICATION_EMAIL secret is not set",
+    if (event.aspect_type === "create" || event.aspect_type === "update") { // TODO find way of handling removing account from strava side. Comes through as an update {"aspect_type":"update","event_time":1787205955,"object_id":13865404,"object_type":"athlete","owner_id":13865404,"subscription_id":365010,"updates":{"authorized":"false"}}
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       );
+
+      await supabase.from("jobs").insert({
+        job_type: "strava_webhook_activity",
+        payload: event,
+      });
     }
-
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: `282 Feedback <${fromEmail}>`,
-        to: [notificationEmail],
-        subject: `New Strava activity`,
-        html: JSON.stringify(userData),
-      }),
-    });
-
-    // Strava requires a fast 200 response
-    return new Response("EVENT_RECEIVED", { status: 200 });
   }
 
   return new Response("Method Not Allowed", { status: 405 });

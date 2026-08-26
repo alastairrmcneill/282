@@ -9,6 +9,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/widgets/strava_historical_scan_list_item.dart';
 import 'package:two_eight_two/support/contact_support.dart';
 import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -36,6 +37,7 @@ class SettingsScreen extends StatelessWidget {
               StravaConnectListItem(userId: user!.uid!),
             ],
           ),
+          StravaHistoricalScanListItem(),
           SettingsGroup(
             title: 'Account',
             children: [
