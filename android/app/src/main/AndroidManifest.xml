@@ -19,8 +19,13 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/notification_color" />
-        <meta-data 
-            android:name="flutter_deeplinking_enabled" 
+        <meta-data
+            android:name="flutter_deeplinking_enabled"
+            android:value="false" />
+        <!-- Impeller's Vulkan backend segfaults during resource teardown on some
+             devices/drivers (282-APP-119); fall back to the Skia renderer. -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
         <activity
             android:name=".MainActivity"
