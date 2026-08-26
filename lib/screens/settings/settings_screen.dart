@@ -160,11 +160,11 @@ class SettingsScreen extends StatelessWidget {
             children: [
               ListTile(
                 onTap: () async {
-                  await context.read<AuthState>().signOut().then((_) {
-                    context.read<MunroCompletionState>().reset();
-                    context.read<SavedListState>().reset();
-                    Navigator.of(context).pushReplacementNamed(HomeScreen.route);
-                  });
+                  await context.read<AuthState>().signOut();
+                  if (!context.mounted) return;
+                  context.read<MunroCompletionState>().reset();
+                  context.read<SavedListState>().reset();
+                  Navigator.of(context).pushReplacementNamed(HomeScreen.route);
                 },
                 title: const Text("Sign out"),
                 leading: Icon(PhosphorIconsRegular.signOut, color: context.colors.accent),
@@ -175,11 +175,11 @@ class SettingsScreen extends StatelessWidget {
                     context,
                     message: "Are you sure you want to delete account and all associated data?",
                     onConfirm: () async {
-                      await context.read<AuthState>().deleteUser(user!).then((_) {
-                        context.read<MunroCompletionState>().reset();
-                        context.read<SavedListState>().reset();
-                        Navigator.of(context).pushReplacementNamed(HomeScreen.route);
-                      });
+                      await context.read<AuthState>().deleteUser(user!);
+                      if (!context.mounted) return;
+                      context.read<MunroCompletionState>().reset();
+                      context.read<SavedListState>().reset();
+                      Navigator.of(context).pushReplacementNamed(HomeScreen.route);
                     },
                   );
                 },
