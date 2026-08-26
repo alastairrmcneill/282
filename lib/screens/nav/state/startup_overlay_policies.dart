@@ -116,9 +116,11 @@ class StartupOverlayPolicies {
 
   Future<void> maybeEnqueueStravaActivity() async {
     final userId = _authState.currentUserId;
+    print("🎯 ~ StartupOverlayPolicies ~ maybeEnqueueStravaActivity ~ userId: $userId");
     if (userId == null) return;
 
-    final pendingMatches = await _munroMatchesRepository.getPendingUserMunroMatches(userId: userId);
+    final pendingMatches = await _munroMatchesRepository.getUsersPendingActivityReviews(userId: userId);
+    print("🎯 ~ StartupOverlayPolicies ~ maybeEnqueueStravaActivity ~ pendingMatches: ${pendingMatches.length}");
 
     if (pendingMatches.isNotEmpty) {
       _overlayIntentState.enqueue(StravaReviewActivityIntent());

@@ -19,15 +19,15 @@ create table public.strava_activities (
   user_id text not null references public.users(id),
   source text not null,              -- 'historical_scan' | 'webhook'
   activity_type text not null,
+  name text not null,
   start_date timestamptz not null,
   start_latlng point null,
   end_latlng point null,
   distance_m numeric null,
   elevation_gain_m numeric null,
   elev_high_m numeric null,
-  summary_polyline text null,
+  polyline text null,
   match_status text not null default 'pending', -- pending | no_match | matched | skipped_manual | skipped_type | skipped_out_of_region
-  raw_summary jsonb null,
   created_at timestamptz not null default now()
 );
 

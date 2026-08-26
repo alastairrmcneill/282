@@ -44,9 +44,9 @@ function matchActivity(activity: any, munros: any[], config: any) {
     lng <= box.ne_lng;
   if (!(inBox(sLat, sLng) || inBox(eLat, eLng))) return [];
   if ((activity.elev_high ?? 0) < config.elev_high_threshold_m) return [];
-  if (!activity.map?.summary_polyline) return [];
+  if (!activity.map?.polyline) return [];
 
-  const points = decodePolyline(activity.map.summary_polyline);
+  const points = decodePolyline(activity.map.polyline);
   const matches: { munroId: number; distanceM: number }[] = [];
   for (const munro of munros) {
     let closest = Infinity;
@@ -130,13 +130,13 @@ Deno.serve(async () => {
           user_id: conn.user_id,
           source: "webhook",
           activity_type: activity.type,
+          name: activity.name,
           start_date: activity.start_date,
           distance_m: activity.distance,
           elevation_gain_m: activity.total_elevation_gain,
           elev_high_m: activity.elev_high,
-          summary_polyline: activity.map?.summary_polyline,
+          polyline: activity.map?.polyline,
           match_status: matches.length ? "matched" : "no_match",
-          raw_summary: activity,
         });
         for (const m of matches) {
           await supabase.from("munro_matches").upsert({
@@ -212,13 +212,13 @@ Deno.serve(async () => {
             user_id: conn.user_id,
             source: "historical",
             activity_type: activity.type,
+            name: activity.name,
             start_date: activity.start_date,
             distance_m: activity.distance,
             elevation_gain_m: activity.total_elevation_gain,
             elev_high_m: activity.elev_high,
-            summary_polyline: activity.map?.summary_polyline,
+            polyline: activity.map?.polyline,
             match_status: "pending",
-            raw_summary: activity,
           })),
         );
 

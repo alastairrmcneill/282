@@ -283,6 +283,15 @@ class MyTheme {
           return Colors.white; // Off color
         }),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: true,
+        dragHandleColor: AppColors.light.border,
+        dragHandleSize: const Size(48, 4),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        modalBackgroundColor: AppColors.light.surface,
+      ),
     );
   }
 

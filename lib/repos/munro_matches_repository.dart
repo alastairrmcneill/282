@@ -15,13 +15,25 @@ class MunroMatchesRepository {
         .map((rows) => rows.map(MunroMatch.fromJSON).toList());
   }
 
-  Future<List<MunroMatch>> getPendingUserMunroMatches({required String userId}) async {
+  Future<List<PendingActivityReview>> getUsersPendingActivityReviews({required String userId}) async {
     final response = await _table
-        .select()
+        .select('*, strava_activities(*)')
         .eq(MunroMatchFields.userId, userId)
-        .eq(MunroMatchFields.status, MunroMatchStatus.pending.toString())
+        .eq(MunroMatchFields.status, MunroMatchStatus.pending.toJsonString())
         .order(MunroMatchFields.detectedAt, ascending: false);
 
-    return response.map((e) => MunroMatch.fromJSON(e)).toList();
+    final matchesByActivityId = <int, List<MunroMatch>>{};
+    final activitiesById = <int, StravaActivity>{};
+
+    for (final row in response) {
+      final match = MunroMatch.fromJSON(row);
+      final activity = StravaActivity.fromJSON(row['strava_activities'] as Map<String, dynamic>);
+      matchesByActivityId.putIfAbsent(match.stravaActivityId, () => []).add(match);
+      activitiesById.putIfAbsent(match.stravaActivityId, () => activity);
+    }
+
+    return activitiesById.entries
+        .map((e) => PendingActivityReview(activity: e.value, matches: matchesByActivityId[e.key]!))
+        .toList();
   }
 }

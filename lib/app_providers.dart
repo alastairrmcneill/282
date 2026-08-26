@@ -313,14 +313,15 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Logger>(),
         ),
       ),
-      ProxyProvider4<RemoteConfigState, OverlayIntentState, AppFlagsRepository, AppInfoRepository,
-          StartupOverlayPolicies>(
+      ProxyProvider5<RemoteConfigState, OverlayIntentState, AppFlagsRepository, AppInfoRepository,
+          MunroMatchesRepository, StartupOverlayPolicies>(
         update: (
           ctx,
           remoteConfig,
           overlays,
           flags,
           appInfo,
+          munroMatchesRepository,
           __,
         ) =>
             StartupOverlayPolicies(
@@ -328,8 +329,17 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           overlays,
           flags,
           appInfo,
-          ctx.read<MunroMatchesRepository>(),
+          munroMatchesRepository,
           ctx.read<AuthState>(),
+        ),
+      ),
+      ChangeNotifierProvider<StravaActivityReviewState>(
+        create: (ctx) => StravaActivityReviewState(
+          ctx.read<MunroMatchesRepository>(),
+          ctx.read<UserState>(),
+          ctx.read<MunroCompletionState>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider(

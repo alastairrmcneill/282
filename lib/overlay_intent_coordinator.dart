@@ -10,6 +10,8 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/review_prompt.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+import 'screens/nav/widgets/widgets.dart';
+
 class OverlayIntentCoordinator extends StatelessWidget {
   const OverlayIntentCoordinator({super.key, required this.child});
   final Widget child;
@@ -209,6 +211,11 @@ class OverlayIntentCoordinator extends StatelessWidget {
           AnalyticsEvent.dialogShown,
           props: {AnalyticsProp.dialogName: AnalyticsDialog.stravaReviewActivity},
         );
+        await navCtx.read<StravaActivityReviewState>().loadPendingReviews();
+
+        if (navCtx.mounted) {
+          await StravaMatchesReviewBottomSheet.show(navCtx);
+        }
 
         return;
     }
