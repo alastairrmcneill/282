@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -192,7 +194,7 @@ void main() {
         // Arrange
         when(mockPostsRepository.getFriendsFeed(
           excludedAuthorIds: anyNamed('excludedAuthorIds'),
-        )).thenThrow(Exception('Network error'));
+        )).thenThrow(Exception('Unexpected error'));
 
         // Act
         await feedState.getFriendsFeed();
@@ -201,6 +203,21 @@ void main() {
         expect(feedState.friendsStatus, FeedStatus.error);
         expect(feedState.friendsError.message, 'There was an issue retreiving your posts. Please try again.');
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+      });
+
+      test('should log a transient network error during friends feed fetch as info, not error', () async {
+        // Arrange
+        when(mockPostsRepository.getFriendsFeed(
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+        )).thenThrow(TimeoutException('Future not completed', Duration(seconds: 30)));
+
+        // Act
+        await feedState.getFriendsFeed();
+
+        // Assert
+        expect(feedState.friendsStatus, FeedStatus.error);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+        verify(mockLogger.info(any, context: anyNamed('context'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
@@ -419,6 +436,21 @@ void main() {
         expect(feedState.globalStatus, FeedStatus.error);
         expect(feedState.globalError.message, 'There was an issue retreiving your posts. Please try again.');
         verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+      });
+
+      test('should log a transient network error during global feed fetch as info, not error', () async {
+        // Arrange
+        when(mockPostsRepository.getGlobalFeed(
+          excludedAuthorIds: anyNamed('excludedAuthorIds'),
+        )).thenThrow(TimeoutException('Future not completed', Duration(seconds: 30)));
+
+        // Act
+        await feedState.getGlobalFeed();
+
+        // Assert
+        expect(feedState.globalStatus, FeedStatus.error);
+        verifyNever(mockLogger.error(any, stackTrace: anyNamed('stackTrace')));
+        verify(mockLogger.info(any, context: anyNamed('context'))).called(1);
       });
 
       test('should set status to loading during async operation', () async {
