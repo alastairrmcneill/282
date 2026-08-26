@@ -94,6 +94,20 @@ main() async {
       options.environment = config.env == AppEnvironment.prod ? "Prod" : "Dev";
       options.attachScreenshot = true;
       options.enableNativeCrashHandling = true;
+      options.beforeSend = (event, hint) {
+        // Some transient network failures (e.g. an image download aborted
+        // mid-request) are thrown outside FlutterError.onError's reach and
+        // would otherwise still get reported as unresolved production errors.
+        final throwable = event.throwable;
+        if (throwable != null && isTransientNetworkError(throwable)) {
+          logger.info(
+            'Suppressed transient network error from Sentry report',
+            context: {'error': throwable.toString()},
+          );
+          return null;
+        }
+        return event;
+      };
     },
     appRunner: () => runApp(MultiProvider(
       providers: [
