@@ -106,6 +106,10 @@ main() async {
           );
           return null;
         }
+        if (isNoisyBackgroundAnr(event)) {
+          logger.info('Suppressed system-frame-only background ANR from Sentry report');
+          return null;
+        }
         return event;
       };
     },
