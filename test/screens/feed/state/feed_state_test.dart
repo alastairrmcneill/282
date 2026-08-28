@@ -202,7 +202,12 @@ void main() {
         // Assert
         expect(feedState.friendsStatus, FeedStatus.error);
         expect(feedState.friendsError.message, 'There was an issue retreiving your posts. Please try again.');
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(
+          any,
+          error: anyNamed('error'),
+          stackTrace: anyNamed('stackTrace'),
+          context: anyNamed('context'),
+        )).called(1);
       });
 
       test('should log a transient network error during friends feed fetch as info, not error', () async {
@@ -343,7 +348,12 @@ void main() {
         expect(feedState.friendsError.message, 'There was an issue loading your feed. Please try again.');
         // Original posts should remain unchanged
         expect(feedState.friendsPosts.length, initialCount);
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(
+          any,
+          error: anyNamed('error'),
+          stackTrace: anyNamed('stackTrace'),
+          context: anyNamed('context'),
+        )).called(1);
       });
 
       test('should set status to paginating during async operation', () async {
@@ -435,7 +445,12 @@ void main() {
         // Assert
         expect(feedState.globalStatus, FeedStatus.error);
         expect(feedState.globalError.message, 'There was an issue retreiving your posts. Please try again.');
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(
+          any,
+          error: anyNamed('error'),
+          stackTrace: anyNamed('stackTrace'),
+          context: anyNamed('context'),
+        )).called(1);
       });
 
       test('should log a transient network error during global feed fetch as info, not error', () async {
@@ -576,7 +591,12 @@ void main() {
         expect(feedState.globalError.message, 'There was an issue loading your feed. Please try again.');
         // Original posts should remain unchanged
         expect(feedState.globalPosts.length, initialCount);
-        verify(mockLogger.error(any, stackTrace: anyNamed('stackTrace'))).called(1);
+        verify(mockLogger.error(
+          any,
+          error: anyNamed('error'),
+          stackTrace: anyNamed('stackTrace'),
+          context: anyNamed('context'),
+        )).called(1);
       });
 
       test('should set status to paginating during async operation', () async {
