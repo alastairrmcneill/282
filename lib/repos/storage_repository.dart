@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +11,7 @@ enum ImageUploadType { profile, post }
 
 class StorageRepository {
   final FirebaseStorage _storage;
+  final FirebaseAuth _auth;
   final Logger _logger;
   final Uuid _uuid;
   final Duration _uploadTimeout;
@@ -19,6 +21,7 @@ class StorageRepository {
 
   StorageRepository(
     this._storage,
+    this._auth,
     this._logger, {
     Uuid? uuid,
     Duration? uploadTimeout,
@@ -63,6 +66,7 @@ class StorageRepository {
     int originalBytes,
   ) async {
     final stopwatch = Stopwatch()..start();
+    var reauthAttempted = false;
     for (var attempt = 1; ; attempt++) {
       try {
         return await _uploadFile(storagePath, localPath).timeout(_uploadTimeout, onTimeout: () {
@@ -86,6 +90,18 @@ class StorageRepository {
           'compressed_bytes': compressedBytes,
         };
 
+        // Storage rules only require request.auth != null, so an "unauthorized"
+        // response means the ID token attached to this request was stale (e.g.
+        // the app sat backgrounded past the token's expiry). Force a fresh
+        // token once and retry before treating it as a genuine failure.
+        if (!reauthAttempted && _isStaleAuthError(e)) {
+          reauthAttempted = true;
+          if (await _refreshAuthToken()) {
+            _logger.info('Image upload unauthorized, retrying after refreshing auth token', context: context);
+            continue;
+          }
+        }
+
         // A slow/flaky connection can cause a single upload attempt to time
         // out or drop mid-transfer even though the network recovers a moment
         // later. Retry transient failures before surfacing them to the user
@@ -104,6 +120,19 @@ class StorageRepository {
         _logger.error('Image upload failed', error: e, stackTrace: stackTrace, context: context);
         rethrow;
       }
+    }
+  }
+
+  bool _isStaleAuthError(Object error) => error is FirebaseException && error.code == 'unauthorized';
+
+  Future<bool> _refreshAuthToken() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    try {
+      await user.getIdToken(true);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

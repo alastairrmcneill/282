@@ -64,7 +64,7 @@ List<SingleChildWidget> buildRepositories(
       Provider<AppRouteObserver>(
         create: (ctx) => AppRouteObserver(ctx.read<Analytics>()),
       ),
-      Provider(create: (ctx) => StorageRepository(firebaseStorage, ctx.read<Logger>())),
+      Provider(create: (ctx) => StorageRepository(firebaseStorage, firebaseAuth, ctx.read<Logger>())),
       Provider(create: (_) => RemoteConfigRespository(remoteConfig)),
       Provider(create: (_) => DeepLinkRepository()),
       Provider<PushNotificationRepository>(
