@@ -55,6 +55,7 @@ class StravaActivity {
   final String activityType;
   final String name;
   final DateTime startDate;
+  final double? durationS;
   final double? startLat;
   final double? startLng;
   final double? endLat;
@@ -73,6 +74,7 @@ class StravaActivity {
     required this.activityType,
     required this.name,
     required this.startDate,
+    this.durationS,
     this.startLat,
     this.startLng,
     this.endLat,
@@ -103,6 +105,9 @@ class StravaActivity {
       activityType: json[StravaActivityFields.activityType] as String,
       name: json[StravaActivityFields.name] as String,
       startDate: DateTime.parse(json[StravaActivityFields.startDate] as String),
+      durationS: json[StravaActivityFields.durationS] != null
+          ? (json[StravaActivityFields.durationS] as num).toDouble()
+          : null,
       startLat: start?.value,
       startLng: start?.key,
       endLat: end?.value,
@@ -129,6 +134,7 @@ class StravaActivity {
     String? activityType,
     String? name,
     DateTime? startDate,
+    double? durationS,
     double? startLat,
     double? startLng,
     double? endLat,
@@ -147,6 +153,7 @@ class StravaActivity {
       activityType: activityType ?? this.activityType,
       name: name ?? this.name,
       startDate: startDate ?? this.startDate,
+      durationS: durationS ?? this.durationS,
       startLat: startLat ?? this.startLat,
       startLng: startLng ?? this.startLng,
       endLat: endLat ?? this.endLat,
@@ -176,4 +183,5 @@ class StravaActivityFields {
   static String polyline = "polyline";
   static String matchStatus = "match_status";
   static String createdAt = "created_at";
+  static String durationS = "duration_s";
 }

@@ -28,6 +28,7 @@ export 'custom_app_bar_back_arrow.dart';
 export 'custom_check_box.dart';
 export 'action_sheet_menu.dart';
 export 'option_list_tile.dart';
+export 'sheet_drag_handle.dart';
 
 export 'app_text_form_field.dart';
 export 'cta_button.dart';

@@ -211,12 +211,14 @@ class OverlayIntentCoordinator extends StatelessWidget {
           AnalyticsEvent.dialogShown,
           props: {AnalyticsProp.dialogName: AnalyticsDialog.stravaReviewActivity},
         );
-        await navCtx.read<StravaActivityReviewState>().loadPendingReviews();
+        final reviews = await navCtx.read<StravaActivityReviewState>().loadPendingReviews();
+        if (reviews.isEmpty || !navCtx.mounted) return;
 
-        if (navCtx.mounted) {
+        if (reviews.length == 1) {
           await StravaMatchesReviewBottomSheet.show(navCtx);
+        } else {
+          await StravaMatchesSummaryBottomSheet.show(navCtx);
         }
-
         return;
     }
   }

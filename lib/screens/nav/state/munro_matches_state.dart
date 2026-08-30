@@ -24,10 +24,12 @@ class StravaActivityReviewState extends ChangeNotifier {
 
   MunroMatchesStatus _status = MunroMatchesStatus.initial;
   List<PendingActivityReview> _pendingReviews = [];
+  Set<String> _selectedMatchIds = {};
   Error _error = Error();
 
   MunroMatchesStatus get status => _status;
   List<PendingActivityReview> get pendingReviews => _pendingReviews;
+  Set<String> get selectedMatchIds => _selectedMatchIds;
   Error get error => _error;
 
   Future<List<PendingActivityReview>> loadPendingReviews() async {
@@ -50,6 +52,62 @@ class StravaActivityReviewState extends ChangeNotifier {
       _error = Error(message: 'Failed to load pending matches');
       notifyListeners();
       rethrow;
+    }
+  }
+
+  void startReviewing(PendingActivityReview review) {
+    _selectedMatchIds.clear();
+    _selectedMatchIds.addAll(review.matches.map((match) => match.id));
+    notifyListeners();
+  }
+
+  void toggleMatchSelection(String matchId) {
+    if (_selectedMatchIds.contains(matchId)) {
+      _selectedMatchIds.remove(matchId);
+    } else {
+      _selectedMatchIds.add(matchId);
+    }
+    notifyListeners();
+  }
+
+  Future<void> finalizeReview({
+    required PendingActivityReview review,
+    required Set<String> confirmedMatchIds,
+  }) async {
+    final confirmed = review.matches.where((m) => confirmedMatchIds.contains(m.id)).map((m) => m.id).toList();
+    final rejected = review.matches.where((m) => !confirmedMatchIds.contains(m.id)).map((m) => m.id).toList();
+
+    // Optimistic: let the UI move on immediately, reconcile with the server in the background.
+    _pendingReviews = _pendingReviews.where((r) => r.activity.id != review.activity.id).toList();
+    _selectedMatchIds = {};
+    notifyListeners();
+
+    try {
+      await Future.wait([
+        _munroMatchesRepository.updateMatchesStatus(matchIds: confirmed, status: MunroMatchStatus.confirmed),
+        _munroMatchesRepository.updateMatchesStatus(matchIds: rejected, status: MunroMatchStatus.rejected),
+      ]);
+    } catch (error, stackTrace) {
+      _logger.error('Failed to finalize activity review', error: error, stackTrace: stackTrace);
+      _pendingReviews = [..._pendingReviews, review];
+      setError = Error(message: 'Failed to update your munro matches');
+    }
+  }
+
+  Future<void> rejectReviews({required List<PendingActivityReview> reviews}) async {
+    final matchIds = reviews.expand((r) => r.matches.map((m) => m.id)).toList();
+
+    // Optimistic: let the UI move on immediately, reconcile with the server in the background.
+    _pendingReviews = _pendingReviews.where((r) => !reviews.contains(r)).toList();
+    _selectedMatchIds = {};
+    notifyListeners();
+
+    try {
+      await _munroMatchesRepository.updateMatchesStatus(matchIds: matchIds, status: MunroMatchStatus.rejected);
+    } catch (error, stackTrace) {
+      _logger.error('Failed to reject activity reviews', error: error, stackTrace: stackTrace);
+      _pendingReviews = [..._pendingReviews, ...reviews];
+      setError = Error(message: 'Failed to reject your munro matches');
     }
   }
 

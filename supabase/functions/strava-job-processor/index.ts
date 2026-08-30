@@ -68,47 +68,75 @@ Deno.serve(async () => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const { data: config } = await supabase.from("strava_matching_config").select(
+  const { data: config, error: configError } = await supabase.from(
+    "strava_matching_config",
+  ).select(
     "*",
   ).single();
+  if (configError) {
+    console.error("🎯 ~ configError:", configError);
+    return new Response("failed to load matching config", { status: 500 });
+  }
   console.log("🎯 ~ config:", config);
-  const { data: munros } = await supabase.from("munros").select(
-    "id, lat, lng, meters",
-  );
+
+  const { data: munros, error: munrosError } = await supabase.from("munros")
+    .select(
+      "id, lat, lng, meters",
+    );
+  if (munrosError) {
+    console.error("🎯 ~ munrosError:", munrosError);
+    return new Response("failed to load munros", { status: 500 });
+  }
   console.log("🎯 ~ munros:", munros);
 
-  const { data: jobs } = await supabase.from("jobs")
+  const { data: jobs, error: jobsError } = await supabase.from("jobs")
     .select("*").eq("status", "queued").lte(
       "run_after",
       new Date().toISOString(),
     ).limit(5);
+  if (jobsError) {
+    console.error("🎯 ~ jobsError:", jobsError);
+    return new Response("failed to load jobs", { status: 500 });
+  }
   console.log("🎯 ~ jobs:", jobs);
 
   for (const job of jobs ?? []) {
-    await supabase.from("jobs").update({ status: "running" }).eq("id", job.id);
+    const { error: runningError } = await supabase.from("jobs").update({
+      status: "running",
+    }).eq("id", job.id);
+    if (runningError) console.error("🎯 ~ runningError:", runningError);
     try {
       if (job.job_type === "strava_webhook_activity") {
         const event = job.payload;
         console.log("🎯 ~ event:", event);
         if (event.object_type !== "activity") {
-          await supabase.from("jobs").update({ status: "done" }).eq(
+          const { error } = await supabase.from("jobs").update({
+            status: "done",
+          }).eq(
             "id",
             job.id,
           );
+          if (error) console.error("🎯 ~ error:", error);
           continue;
         }
 
-        const { data: conn } = await supabase.from("strava_connections")
+        const { data: conn, error: connError } = await supabase.from(
+          "strava_connections",
+        )
           .select("*").eq("strava_athlete_id", event.owner_id).is(
             "revoked_at",
             null,
           ).single();
+        if (connError) console.error("🎯 ~ connError:", connError);
         console.log("🎯 ~ conn:", conn);
         if (!conn) {
-          await supabase.from("jobs").update({ status: "failed" }).eq(
+          const { error } = await supabase.from("jobs").update({
+            status: "failed",
+          }).eq(
             "id",
             job.id,
           );
+          if (error) console.error("🎯 ~ error:", error);
           continue;
         }
 
@@ -125,51 +153,70 @@ Deno.serve(async () => {
         const matches = matchActivity(activity, munros!, config);
         console.log("🎯 ~ matches:", matches);
 
-        await supabase.from("strava_activities").upsert({
+        const { error: activityError } = await supabase.from(
+          "strava_activities",
+        ).upsert({
           id: activity.id,
           user_id: conn.user_id,
           source: "webhook",
           activity_type: activity.type,
           name: activity.name,
-          start_date: activity.start_date,
+          start_date: activity.start_date_local,
+          duration_s: activity.elapsed_time,
           distance_m: activity.distance,
           elevation_gain_m: activity.total_elevation_gain,
           elev_high_m: activity.elev_high,
           polyline: activity.map?.polyline,
           match_status: matches.length ? "matched" : "no_match",
         });
+        if (activityError) throw activityError;
+
         for (const m of matches) {
-          await supabase.from("munro_matches").upsert({
-            user_id: conn.user_id,
-            munro_id: m.munroId,
-            strava_activity_id: activity.id,
-            match_distance_m: m.distanceM,
-          }, { onConflict: "user_id,munro_id,strava_activity_id" });
+          const { error: matchError } = await supabase.from("munro_matches")
+            .upsert({
+              user_id: conn.user_id,
+              munro_id: m.munroId,
+              strava_activity_id: activity.id,
+              match_distance_m: m.distanceM,
+            }, { onConflict: "user_id,munro_id,strava_activity_id" });
+          if (matchError) throw matchError;
         }
       }
 
       if (job.job_type === "strava_historical_scan") {
         // Get user connection
-        const { data: conn } = await supabase.from("strava_connections")
+        const { data: conn, error: connError } = await supabase.from(
+          "strava_connections",
+        )
           .select("*").eq("user_id", job.payload.user_id).is(
             "revoked_at",
             null,
           ).single();
+        if (connError) console.error("🎯 ~ connError:", connError);
         console.log("🎯 ~ conn:", conn);
 
         if (!conn) {
-          await supabase.from("jobs").update({ status: "failed" }).eq(
+          const { error } = await supabase.from("jobs").update({
+            status: "failed",
+          }).eq(
             "id",
             job.id,
           );
+          if (error) console.error("🎯 ~ error:", error);
           continue;
         }
 
-        await supabase.from("jobs").update({ status: "in_progress" }).eq(
+        const { error: inProgressError } = await supabase.from("jobs").update({
+          status: "in_progress",
+        }).eq(
           "id",
           job.id,
         );
-        await supabase.from("strava_connections").update({
+        if (inProgressError) throw inProgressError;
+
+        const { error: scanStartError } = await supabase.from(
+          "strava_connections",
+        ).update({
           historical_scan_status: "in_progress",
           historical_scan_progress: {
             total_activities: 0,
@@ -177,6 +224,7 @@ Deno.serve(async () => {
             munros_matched: 0,
           },
         }).eq("user_id", conn.user_id);
+        if (scanStartError) throw scanStartError;
 
         // Get all activities for user, paginated
         const token = await getValidAccessToken(supabase, conn); // refresh if needed
@@ -206,14 +254,17 @@ Deno.serve(async () => {
 
         // Store all activites in strava_activities table
 
-        await supabase.from("strava_activities").upsert(
+        const { error: bulkActivitiesError } = await supabase.from(
+          "strava_activities",
+        ).upsert(
           userActivities.map((activity) => ({
             id: activity.id,
             user_id: conn.user_id,
             source: "historical",
             activity_type: activity.type,
             name: activity.name,
-            start_date: activity.start_date,
+            start_date: activity.start_date_local,
+            duration_s: activity.elapsed_time,
             distance_m: activity.distance,
             elevation_gain_m: activity.total_elevation_gain,
             elev_high_m: activity.elev_high,
@@ -221,8 +272,11 @@ Deno.serve(async () => {
             match_status: "pending",
           })),
         );
+        if (bulkActivitiesError) throw bulkActivitiesError;
 
-        await supabase.from("strava_connections").update({
+        const { error: progressInitError } = await supabase.from(
+          "strava_connections",
+        ).update({
           historical_scan_status: "in_progress",
           historical_scan_progress: {
             total_activities: userActivities.length,
@@ -230,6 +284,7 @@ Deno.serve(async () => {
             munros_matched: 0,
           },
         }).eq("user_id", conn.user_id);
+        if (progressInitError) throw progressInitError;
 
         // Scan activities for matches
         let totalMatches = 0;
@@ -241,11 +296,16 @@ Deno.serve(async () => {
           totalMatches += matches.length;
           scannedActivities += 1;
 
-          await supabase.from("strava_activities").update({
+          const { error: activityUpdateError } = await supabase.from(
+            "strava_activities",
+          ).update({
             match_status: matches.length ? "matched" : "no_match",
           }).eq("id", activity.id);
+          if (activityUpdateError) throw activityUpdateError;
 
-          await supabase.from("munro_matches").upsert(
+          const { error: matchesError } = await supabase.from(
+            "munro_matches",
+          ).upsert(
             matches.map((match) => ({
               user_id: conn.user_id,
               munro_id: match.munroId,
@@ -253,24 +313,33 @@ Deno.serve(async () => {
               match_distance_m: match.distanceM,
             })),
           );
-          await supabase.from("strava_connections").update({
+          if (matchesError) throw matchesError;
+
+          const { error: progressError } = await supabase.from(
+            "strava_connections",
+          ).update({
             historical_scan_progress: {
               total_activities: userActivities.length,
               activities_scanned: scannedActivities,
               munros_matched: totalMatches,
             },
           }).eq("user_id", conn.user_id);
+          if (progressError) throw progressError;
         }
       }
 
-      await supabase.from("jobs").update({ status: "done" }).eq("id", job.id);
+      const { error: doneError } = await supabase.from("jobs").update({
+        status: "done",
+      }).eq("id", job.id);
+      if (doneError) throw doneError;
     } catch (e) {
       console.error("🎯 ~ error:", e);
-      await supabase.from("jobs").update({
+      const { error: failError } = await supabase.from("jobs").update({
         status: "failed",
         attempts: job.attempts + 1,
         run_after: new Date(Date.now() + 60_000).toISOString(),
       }).eq("id", job.id);
+      if (failError) console.error("🎯 ~ failError:", failError);
     }
   }
 

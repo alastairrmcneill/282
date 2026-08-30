@@ -21,6 +21,7 @@ create table public.strava_activities (
   activity_type text not null,
   name text not null,
   start_date timestamptz not null,
+  duration_s numeric not null,
   start_latlng point null,
   end_latlng point null,
   distance_m numeric null,
@@ -84,3 +85,4 @@ create table public.jobs (
 
 
 alter publication supabase_realtime add table public.munro_matches;
+GRANT SELECT, UPDATE ON munro_matches TO authenticated;

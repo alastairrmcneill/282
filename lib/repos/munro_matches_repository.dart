@@ -36,4 +36,15 @@ class MunroMatchesRepository {
         .map((e) => PendingActivityReview(activity: e.value, matches: matchesByActivityId[e.key]!))
         .toList();
   }
+
+  Future<void> updateMatchesStatus({
+    required List<String> matchIds,
+    required MunroMatchStatus status,
+  }) async {
+    if (matchIds.isEmpty) return;
+    await _table.update({
+      MunroMatchFields.status: status.toJsonString(),
+      MunroMatchFields.reviewedAt: DateTime.now().toIso8601String(),
+    }).inFilter(MunroMatchFields.id, matchIds);
+  }
 }

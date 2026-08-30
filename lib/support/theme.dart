@@ -284,9 +284,7 @@ class MyTheme {
         }),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        showDragHandle: true,
-        dragHandleColor: AppColors.light.border,
-        dragHandleSize: const Size(48, 4),
+        showDragHandle: false,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -557,6 +555,13 @@ class MyTheme {
           return AppColors.dark.surface;
         }),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        modalBackgroundColor: AppColors.dark.surface,
+      ),
     );
   }
 }
@@ -593,6 +598,8 @@ abstract class AppColors {
   Color get border;
   Color get divider;
   Color get starColor;
+  Color get stravaBackground;
+  Color get stravaText;
   // LinearGradient get overlayGradient;
 }
 
@@ -619,6 +626,10 @@ class MyLightColors implements AppColors {
   Color get divider => const Color(0xFFE5E7EB); // gray-200
   @override
   Color get starColor => const Color(0xFFF59E0B); // amber-400
+  @override
+  Color get stravaBackground => const Color.fromRGBO(255, 237, 232, 1);
+  @override
+  Color get stravaText => const Color(0xFFFC4C02);
   // @override
   // LinearGradient get overlayGradient => const LinearGradient(
   //       begin: Alignment.topCenter,
@@ -650,6 +661,10 @@ class MyDarkColors implements AppColors {
   Color get divider => const Color(0xFF364153); // gray-800
   @override
   Color get starColor => const Color(0xFFF59E0B); // amber-400
+  @override
+  Color get stravaBackground => const Color.fromRGBO(255, 237, 232, 1);
+  @override
+  Color get stravaText => const Color(0xFFFC4C02);
   // @override
   // LinearGradient get overlayGradient => const LinearGradient(
   //       begin: Alignment.topCenter,
