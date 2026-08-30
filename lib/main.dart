@@ -46,7 +46,7 @@ main() async {
     accessToken: () async {
       try {
         return await withNetworkRetry(
-          () => FirebaseAuth.instance.currentUser?.getIdToken(false),
+          () => FirebaseAuth.instance.currentUser?.getIdToken(false) ?? Future.value(null),
         );
       } catch (error, stackTrace) {
         // Falls back to the anon key for this request rather than crashing the
