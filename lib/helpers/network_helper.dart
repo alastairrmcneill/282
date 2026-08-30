@@ -25,6 +25,9 @@ bool isTransientNetworkError(Object error) {
     'failed host lookup',
     'network-request-failed',
     'network error',
+    // FCM's own transient "Google Play services unreachable" signal — retrying
+    // later (e.g. on the next token refresh) resolves it without user action.
+    'service_not_available',
     'operation timed out',
     'software caused connection abort',
     "can't assign requested address",

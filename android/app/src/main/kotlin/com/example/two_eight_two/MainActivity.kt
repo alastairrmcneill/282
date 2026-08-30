@@ -8,8 +8,15 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+    // Guards against Play Services callbacks landing after the engine has
+    // detached (e.g. activity destroyed while the age signals request was
+    // still in flight), which otherwise crashes writing into the
+    // already-torn-down plugin/channel registry.
+    private var isEngineAttached = false
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        isEngineAttached = true
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.alastairrmcneill.TwoEightTwo/age_range")
             .setMethodCallHandler { call, result ->
@@ -19,6 +26,11 @@ class MainActivity : FlutterActivity() {
                 }
                 requestAgeSignal(result)
             }
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        isEngineAttached = false
+        super.cleanUpFlutterEngine(flutterEngine)
     }
 
     // Bridges to Google Play's Age Signals API so Flutter can check a user's
@@ -32,6 +44,7 @@ class MainActivity : FlutterActivity() {
         ageSignalsManager
             .checkAgeSignals(AgeSignalsRequest.builder().build())
             .addOnSuccessListener { ageSignalsResult ->
+                if (!isEngineAttached) return@addOnSuccessListener
                 val status = ageSignalsResult.userStatus()
                 if (status == null ||
                     status == AgeSignalsVerificationStatus.UNKNOWN ||
@@ -43,6 +56,7 @@ class MainActivity : FlutterActivity() {
                 }
             }
             .addOnFailureListener {
+                if (!isEngineAttached) return@addOnFailureListener
                 result.success(null)
             }
     }

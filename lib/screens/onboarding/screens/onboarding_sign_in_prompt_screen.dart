@@ -188,6 +188,9 @@ class _OnboardingSignInPromptScreenState extends State<OnboardingSignInPromptScr
                     // Google sign-in
                     _OnboardingGoogleButton(
                       onResult: (result) async {
+                        // The Google sign-in flow backgrounds the app (account picker); by the
+                        // time it resolves, this screen may have been unmounted.
+                        if (!mounted) return;
                         setState(() => _errorMessage = null);
                         await _handleAuthResult(result);
                       },
