@@ -8,10 +8,8 @@ class ReviewsRepository {
   SupabaseQueryBuilder get _view => _db.from('vu_munro_reviews');
   SupabaseQueryBuilder get _ratingsBreakdownView => _db.from('vu_munro_ratings_breakdown');
 
-  Future<Review> create({required Review review}) async {
-    final inserted = await _table.insert(review.toJSON()).select().single();
-    final response = await _view.select().eq(ReviewFields.uid, inserted[ReviewFields.uid]).single();
-    return Review.fromJSON(response);
+  Future<void> create({required Review review}) async {
+    await _table.insert(review.toJSON()).select().single();
   }
 
   Future<void> update({required Review review}) async {
