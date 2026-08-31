@@ -8,6 +8,7 @@ class CtaButton extends StatelessWidget {
   final bool? disabled;
   final double? width;
   final double? height;
+  final Color? backgroundColor;
   final String? analyticsEvent;
   final Map<String, dynamic>? analyticsProperties;
 
@@ -19,6 +20,7 @@ class CtaButton extends StatelessWidget {
     this.analyticsProperties,
     this.width = double.infinity,
     this.height = 48,
+    this.backgroundColor,
     this.disabled = false,
   });
 
@@ -30,10 +32,10 @@ class CtaButton extends StatelessWidget {
       height: height,
       child: FilledButton(
         style: FilledButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          ),
-        ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
+            backgroundColor: backgroundColor),
         onPressed: disabled == true
             ? null
             : () {

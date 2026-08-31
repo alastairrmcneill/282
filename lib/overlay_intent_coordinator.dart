@@ -220,6 +220,14 @@ class OverlayIntentCoordinator extends StatelessWidget {
           await StravaMatchesSummaryBottomSheet.show(navCtx);
         }
         return;
+
+      case StravaConnectIntent():
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.stravaConnect},
+        );
+        await StravaConnectBottomSheet.show(navCtx);
+        return;
     }
   }
 }

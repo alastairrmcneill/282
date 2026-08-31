@@ -81,3 +81,10 @@ final class StravaReviewActivityIntent extends OverlayIntent {
   @override
   String get dedupeKey => 'strava_review_activity';
 }
+
+final class StravaConnectIntent extends OverlayIntent {
+  const StravaConnectIntent();
+
+  @override
+  String get dedupeKey => 'strava_connect';
+}

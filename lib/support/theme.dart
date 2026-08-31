@@ -599,7 +599,7 @@ abstract class AppColors {
   Color get divider;
   Color get starColor;
   Color get stravaBackground;
-  Color get stravaText;
+  Color get stravaOrange;
   // LinearGradient get overlayGradient;
 }
 
@@ -629,7 +629,7 @@ class MyLightColors implements AppColors {
   @override
   Color get stravaBackground => const Color.fromRGBO(255, 237, 232, 1);
   @override
-  Color get stravaText => const Color(0xFFFC4C02);
+  Color get stravaOrange => const Color(0xFFFC5200);
   // @override
   // LinearGradient get overlayGradient => const LinearGradient(
   //       begin: Alignment.topCenter,
@@ -664,7 +664,7 @@ class MyDarkColors implements AppColors {
   @override
   Color get stravaBackground => const Color.fromRGBO(255, 237, 232, 1);
   @override
-  Color get stravaText => const Color(0xFFFC4C02);
+  Color get stravaOrange => const Color(0xFFFC5200);
   // @override
   // LinearGradient get overlayGradient => const LinearGradient(
   //       begin: Alignment.topCenter,

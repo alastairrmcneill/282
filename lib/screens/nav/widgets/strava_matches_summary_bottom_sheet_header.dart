@@ -23,7 +23,7 @@ class StravaMatchesSummaryBottomSheetHeader extends StatelessWidget {
           Text(
             'WHILE YOU WERE AWAY',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: context.colors.stravaText,
+                  color: context.colors.stravaOrange,
                   fontWeight: FontWeight.w600,
                 ),
           ),

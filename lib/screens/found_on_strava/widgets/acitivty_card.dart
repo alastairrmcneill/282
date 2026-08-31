@@ -153,7 +153,7 @@ class ActivityCard extends StatelessWidget {
                         height: 5,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                          color: context.colors.stravaText,
+                          color: context.colors.stravaOrange,
                         ),
                       ),
                       const SizedBox(width: 8),

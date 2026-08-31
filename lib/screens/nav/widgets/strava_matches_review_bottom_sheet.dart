@@ -23,9 +23,8 @@ class StravaMatchesReviewBottomSheet extends StatelessWidget {
     state.startReviewing(review);
 
     bool confirmed = false;
-    await showModalBottomSheet(
+    await showAppBottomSheet(
       context: context,
-      isScrollControlled: true,
       builder: (context) => StravaMatchesReviewBottomSheet(
         review: review,
         onSubmit: () => confirmed = true,
@@ -83,79 +82,69 @@ class StravaMatchesReviewBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stravaActivityReviewState = context.watch<StravaActivityReviewState>();
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.9,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    return AppBottomSheet(
+      children: [
+        StravaMatchesReviewBottomSheetHeader(activity: review.activity),
+        const SizedBox(height: 8),
+        StravaMatchesReviewBottomSheetTitle(review: review),
+        const SizedBox(height: 8),
+        Flexible(
+          child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(bottom: 20),
+            children: review.matches.map((match) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: StravaReviewMunroTile(munroMatch: match),
+              );
+            }).toList(),
+          ),
+        ),
+        const SizedBox(height: 8),
+        CtaButton(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(PhosphorIconsBold.check, size: 16),
+              const SizedBox(width: 10),
+              const Text('Add to my map'),
+            ],
+          ),
+          onPressed: () async {
+            await _onSuccess(
+              context,
+              stravaActivityReviewState: stravaActivityReviewState,
+              selectMore: false,
+            );
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const SheetDragHandle(),
-            StravaMatchesReviewBottomSheetHeader(activity: review.activity),
-            const SizedBox(height: 8),
-            StravaMatchesReviewBottomSheetTitle(review: review),
-            const SizedBox(height: 8),
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(bottom: 20),
-                children: review.matches.map((match) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: StravaReviewMunroTile(munroMatch: match),
-                  );
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            CtaButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(PhosphorIconsBold.check, size: 16),
-                  const SizedBox(width: 10),
-                  const Text('Add to my map'),
-                ],
-              ),
+            TextButton(
+              child: Text('Add one we missed', style: TextStyle(color: context.colors.textMuted)),
               onPressed: () async {
-                await _onSuccess(
+                _onSuccess(
                   context,
                   stravaActivityReviewState: stravaActivityReviewState,
-                  selectMore: false,
+                  selectMore: true,
                 );
               },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  child: Text('Add one we missed', style: TextStyle(color: context.colors.textMuted)),
-                  onPressed: () async {
-                    _onSuccess(
-                      context,
-                      stravaActivityReviewState: stravaActivityReviewState,
-                      selectMore: true,
-                    );
-                  },
-                ),
-                TextButton(
-                  child: Text('Dismiss', style: TextStyle(color: context.colors.textMuted)),
-                  onPressed: () {
-                    stravaActivityReviewState.finalizeReview(
-                      review: review,
-                      confirmedMatchIds: {},
-                    );
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+            TextButton(
+              child: Text('Dismiss', style: TextStyle(color: context.colors.textMuted)),
+              onPressed: () {
+                stravaActivityReviewState.finalizeReview(
+                  review: review,
+                  confirmedMatchIds: {},
+                );
+                Navigator.of(context).pop();
+              },
             ),
-            const SizedBox(height: 16),
           ],
         ),
-      ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

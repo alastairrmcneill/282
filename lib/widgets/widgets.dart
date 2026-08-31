@@ -10,6 +10,8 @@ export 'popup_widgets/achievements_completed_dialog.dart';
 export 'popup_widgets/annual_munro_challenge_dialog.dart';
 export 'popup_widgets/blocking_loading_overlay.dart';
 export 'popup_widgets/review_sentiment_dialog.dart';
+export 'popup_widgets/app_bottom_sheet.dart';
+export 'popup_widgets/strava_connect_bottom_sheet.dart';
 export 'loading_widget.dart';
 export 'centered_text.dart';
 export 'circle_profile_piucture.dart';

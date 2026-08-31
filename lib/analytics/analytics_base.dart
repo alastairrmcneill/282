@@ -170,6 +170,7 @@ class AnalyticsDialog {
   static const reviewPrompt = 'review_prompt';
   static const reviewSentimentPrompt = 'review_sentiment_prompt';
   static const stravaReviewActivity = 'strava_review_activity';
+  static const stravaConnect = 'strava_connect';
 }
 
 class AnalyticsSurface {

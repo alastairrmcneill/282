@@ -405,6 +405,12 @@ class AppRouter {
           settings: settings,
         );
 
+      case StravaConnectedScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const StravaConnectedScreen(),
+          settings: settings,
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) => HomeScreen(startingIndex: 0),

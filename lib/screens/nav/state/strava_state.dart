@@ -13,7 +13,7 @@ class StravaState extends ChangeNotifier {
 
   StravaStatus get status => _status;
 
-  Future<void> getStravaConnectionStatus({required String userId}) async {
+  Future<StravaStatus> getStravaConnectionStatus({required String userId}) async {
     try {
       final stravaConnection = await _stravaConnectionsRepository.stravaConnectionForUser(userId: userId);
       print("🎯 ~ StravaState ~ getStravaConnectionStatus ~ stravaConnection: $stravaConnection");
@@ -26,6 +26,7 @@ class StravaState extends ChangeNotifier {
       _status = StravaStatus.error;
       notifyListeners();
     }
+    return _status;
   }
 }
 

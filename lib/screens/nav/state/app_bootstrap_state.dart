@@ -79,6 +79,7 @@ class AppBootstrapState extends ChangeNotifier {
       _startupOverlayPolicies.maybeEnqueueWhatsNew();
       _startupOverlayPolicies.maybeEnqueueAppSurvey();
       _startupOverlayPolicies.maybeEnqueueStravaActivity();
+      _startupOverlayPolicies.maybeEnqueueStravaConnect();
     } catch (error, stacktrace) {
       _logger.error('Startup init failed', error: error, stackTrace: stacktrace);
       _status = AppBootstrapStatus.error;
