@@ -34,7 +34,11 @@ class DeepLinkRepository {
   }) async {
     await FlutterBranchSdk.init(
       enableLogging: enableLogging,
-      branchAttributionLevel: BranchAttributionLevel.FULL,
+      // FULL attribution keeps Branch's pasteboard-based install matching live even
+      // with NativeLink disabled in Info.plist, and that pasteboard access can block
+      // the main thread on launch (282-APP-11J). We only use direct link clicks, so
+      // REDUCED (no IDFA/pasteboard fingerprinting) loses nothing here.
+      branchAttributionLevel: BranchAttributionLevel.REDUCED,
     );
 
     _sub = FlutterBranchSdk.listSession().listen(
