@@ -29,7 +29,7 @@ class StorageRepository {
         _uploadTimeout = uploadTimeout ?? const Duration(seconds: 10),
         _retryDelay = retryDelay ?? const Duration(milliseconds: 500),
         _compressQuality = compressQuality ?? 50,
-        _maxUploadAttempts = maxUploadAttempts ?? 2;
+        _maxUploadAttempts = maxUploadAttempts ?? 3;
 
   Future<String> uploadImage({
     required File imageFile,
