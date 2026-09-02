@@ -321,14 +321,14 @@ class AuthState extends ChangeNotifier {
         return AuthResult(success: false, canceled: true);
       }
 
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.message);
       return AuthResult(
         success: false,
         errorMessage: e.message,
       );
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }
@@ -422,7 +422,7 @@ class AuthState extends ChangeNotifier {
         errorMessage: "There was an error signing in with Google.",
       );
     } catch (e, st) {
-      _logger.error(e.toString(), stackTrace: st);
+      _logAuthError(e, st);
       _setError(e.toString());
       return AuthResult(success: false, errorMessage: e.toString());
     }

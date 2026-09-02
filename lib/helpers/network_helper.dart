@@ -25,6 +25,10 @@ bool isTransientNetworkError(Object error) {
     'failed host lookup',
     'network-request-failed',
     'network error',
+    // Firebase Auth blocking Cloud Function (e.g. beforeSignIn) timing out —
+    // a backend hiccup, not a client bug.
+    'blocking-cloud-function-returned-error',
+    'deadline exceeded',
     // FCM's own transient "Google Play services unreachable" signal — retrying
     // later (e.g. on the next token refresh) resolves it without user action.
     'service_not_available',
