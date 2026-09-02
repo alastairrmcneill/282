@@ -56,6 +56,15 @@ void main() {
       );
     });
 
+    test('returns true for a blocking Cloud Function deadline-exceeded message', () {
+      expect(
+        isTransientNetworkError(
+          Exception('[firebase_auth/blocking-cloud-function-returned-error] Cloud function deadline exceeded.'),
+        ),
+        isTrue,
+      );
+    });
+
     test('returns false for an unrelated application error', () {
       expect(isTransientNetworkError(StateError('Image compression failed (returned null).')), isFalse);
     });
