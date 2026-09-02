@@ -411,6 +411,12 @@ class AppRouter {
           settings: settings,
         );
 
+      case StravaScanningScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const StravaScanningScreen(),
+          settings: settings,
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) => HomeScreen(startingIndex: 0),

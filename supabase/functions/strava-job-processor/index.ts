@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getValidAccessToken } from "../_shared/strava-token.ts";
+import { toStravaActivityRow } from "../_shared/strava-activity.ts";
 
 function decodePolyline(str: string) {
   let index = 0, lat = 0, lng = 0;
@@ -155,20 +156,13 @@ Deno.serve(async () => {
 
         const { error: activityError } = await supabase.from(
           "strava_activities",
-        ).upsert({
-          id: activity.id,
-          user_id: conn.user_id,
-          source: "webhook",
-          activity_type: activity.type,
-          name: activity.name,
-          start_date: activity.start_date_local,
-          duration_s: activity.elapsed_time,
-          distance_m: activity.distance,
-          elevation_gain_m: activity.total_elevation_gain,
-          elev_high_m: activity.elev_high,
-          polyline: activity.map?.polyline,
-          match_status: matches.length ? "matched" : "no_match",
-        });
+        ).upsert(
+          toStravaActivityRow(
+            activity,
+            conn.user_id,
+            matches.length ? "matched" : "no_match",
+          ),
+        );
         if (activityError) throw activityError;
 
         for (const m of matches) {
@@ -180,151 +174,6 @@ Deno.serve(async () => {
               match_distance_m: m.distanceM,
             }, { onConflict: "user_id,munro_id,strava_activity_id" });
           if (matchError) throw matchError;
-        }
-      }
-
-      if (job.job_type === "strava_historical_scan") {
-        // Get user connection
-        const { data: conn, error: connError } = await supabase.from(
-          "strava_connections",
-        )
-          .select("*").eq("user_id", job.payload.user_id).is(
-            "revoked_at",
-            null,
-          ).single();
-        if (connError) console.error("🎯 ~ connError:", connError);
-        console.log("🎯 ~ conn:", conn);
-
-        if (!conn) {
-          const { error } = await supabase.from("jobs").update({
-            status: "failed",
-          }).eq(
-            "id",
-            job.id,
-          );
-          if (error) console.error("🎯 ~ error:", error);
-          continue;
-        }
-
-        const { error: inProgressError } = await supabase.from("jobs").update({
-          status: "in_progress",
-        }).eq(
-          "id",
-          job.id,
-        );
-        if (inProgressError) throw inProgressError;
-
-        const { error: scanStartError } = await supabase.from(
-          "strava_connections",
-        ).update({
-          historical_scan_status: "in_progress",
-          historical_scan_progress: {
-            total_activities: 0,
-            activities_scanned: 0,
-            munros_matched: 0,
-          },
-        }).eq("user_id", conn.user_id);
-        if (scanStartError) throw scanStartError;
-
-        // Get all activities for user, paginated
-        const token = await getValidAccessToken(supabase, conn); // refresh if needed
-
-        let page = job.payload.page ?? 1;
-        const userActivities: any[] = [];
-        let finished = false;
-        while (!finished) {
-          const res = await fetch(
-            `https://www.strava.com/api/v3/athlete/activities?page=${page}&per_page=200`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
-          console.log("🎯 ~ res:", res);
-          const activities = await res.json();
-
-          console.log("🎯 ~ activities:", activities);
-          userActivities.push(...activities);
-
-          if (!activities.length) {
-            finished = true;
-            break;
-          }
-          page += 1;
-        }
-
-        // Store all activites in strava_activities table
-
-        const { error: bulkActivitiesError } = await supabase.from(
-          "strava_activities",
-        ).upsert(
-          userActivities.map((activity) => ({
-            id: activity.id,
-            user_id: conn.user_id,
-            source: "historical",
-            activity_type: activity.type,
-            name: activity.name,
-            start_date: activity.start_date_local,
-            duration_s: activity.elapsed_time,
-            distance_m: activity.distance,
-            elevation_gain_m: activity.total_elevation_gain,
-            elev_high_m: activity.elev_high,
-            polyline: activity.map?.polyline,
-            match_status: "pending",
-          })),
-        );
-        if (bulkActivitiesError) throw bulkActivitiesError;
-
-        const { error: progressInitError } = await supabase.from(
-          "strava_connections",
-        ).update({
-          historical_scan_status: "in_progress",
-          historical_scan_progress: {
-            total_activities: userActivities.length,
-            activities_scanned: 0,
-            munros_matched: 0,
-          },
-        }).eq("user_id", conn.user_id);
-        if (progressInitError) throw progressInitError;
-
-        // Scan activities for matches
-        let totalMatches = 0;
-        let scannedActivities = 0;
-
-        for (const activity of userActivities) {
-          const matches = matchActivity(activity, munros!, config);
-          console.log("🎯 ~ matches:", matches);
-          totalMatches += matches.length;
-          scannedActivities += 1;
-
-          const { error: activityUpdateError } = await supabase.from(
-            "strava_activities",
-          ).update({
-            match_status: matches.length ? "matched" : "no_match",
-          }).eq("id", activity.id);
-          if (activityUpdateError) throw activityUpdateError;
-
-          const { error: matchesError } = await supabase.from(
-            "munro_matches",
-          ).upsert(
-            matches.map((match) => ({
-              user_id: conn.user_id,
-              munro_id: match.munroId,
-              strava_activity_id: activity.id,
-              match_distance_m: match.distanceM,
-            })),
-          );
-          if (matchesError) throw matchesError;
-
-          const { error: progressError } = await supabase.from(
-            "strava_connections",
-          ).update({
-            historical_scan_progress: {
-              total_activities: userActivities.length,
-              activities_scanned: scannedActivities,
-              munros_matched: totalMatches,
-            },
-          }).eq("user_id", conn.user_id);
-          if (progressError) throw progressError;
         }
       }
 

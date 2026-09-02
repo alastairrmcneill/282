@@ -8,16 +8,12 @@ create table public.strava_connections (
   scope text not null,
   connected_at timestamptz not null default now(),
   revoked_at timestamptz null,
-  historical_scan_status text not null default 'pending', -- pending | in_progress | completed | failed
-  historical_scan_progress jsonb null, -- { activities_scanned, munros_found, page_cursor }
-  historical_scan_completed_at timestamptz null
 );
 
 -- Activity summaries pulled from Strava, and the outcome of matching
 create table public.strava_activities (
   id bigint primary key,             -- Strava's activity id
   user_id text not null references public.users(id),
-  source text not null,              -- 'historical_scan' | 'webhook'
   activity_type text not null,
   name text not null,
   start_date timestamptz not null,
@@ -38,7 +34,6 @@ create table public.munro_matches (
   user_id text not null references public.users(id),
   munro_id int not null references public.munros(id),
   strava_activity_id bigint not null references public.strava_activities(id),
-  match_distance_m numeric null,
   status text not null default 'pending', -- pending | confirmed | rejected
   detected_at timestamptz not null default now(),
   reviewed_at timestamptz null,

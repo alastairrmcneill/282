@@ -25,7 +25,6 @@ class MunroMatch {
   final String userId;
   final int munroId;
   final int stravaActivityId;
-  final double? matchDistanceM;
   final MunroMatchStatus status;
   final DateTime detectedAt;
   final DateTime? reviewedAt;
@@ -35,7 +34,6 @@ class MunroMatch {
     required this.userId,
     required this.munroId,
     required this.stravaActivityId,
-    this.matchDistanceM,
     required this.status,
     required this.detectedAt,
     this.reviewedAt,
@@ -47,9 +45,6 @@ class MunroMatch {
       userId: json[MunroMatchFields.userId] as String,
       munroId: json[MunroMatchFields.munroId] as int,
       stravaActivityId: json[MunroMatchFields.stravaActivityId] as int,
-      matchDistanceM: json[MunroMatchFields.matchDistanceM] != null
-          ? (json[MunroMatchFields.matchDistanceM] as num).toDouble()
-          : null,
       status: MunroMatchStatus.fromString(json[MunroMatchFields.status] as String),
       detectedAt: DateTime.parse(json[MunroMatchFields.detectedAt] as String),
       reviewedAt: json[MunroMatchFields.reviewedAt] != null
@@ -63,7 +58,6 @@ class MunroMatch {
     String? userId,
     int? munroId,
     int? stravaActivityId,
-    double? matchDistanceM,
     MunroMatchStatus? status,
     DateTime? detectedAt,
     DateTime? reviewedAt,
@@ -73,7 +67,6 @@ class MunroMatch {
       userId: userId ?? this.userId,
       munroId: munroId ?? this.munroId,
       stravaActivityId: stravaActivityId ?? this.stravaActivityId,
-      matchDistanceM: matchDistanceM ?? this.matchDistanceM,
       status: status ?? this.status,
       detectedAt: detectedAt ?? this.detectedAt,
       reviewedAt: reviewedAt ?? this.reviewedAt,
@@ -86,7 +79,6 @@ class MunroMatchFields {
   static String userId = "user_id";
   static String munroId = "munro_id";
   static String stravaActivityId = "strava_activity_id";
-  static String matchDistanceM = "match_distance_m";
   static String status = "status";
   static String detectedAt = "detected_at";
   static String reviewedAt = "reviewed_at";

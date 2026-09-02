@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/screens/nav/home_screen.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/strava/strava_connected_colors.dart';
 import 'package:two_eight_two/screens/strava/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -11,6 +13,7 @@ class StravaConnectedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    StravaState stravaState = context.read<StravaState>();
     return Scaffold(
       backgroundColor: StravaConnectedColors.background,
       body: DecoratedBox(
@@ -57,7 +60,10 @@ class StravaConnectedScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    stravaState.startHistoricalScan();
+                    Navigator.of(context).pushNamed(StravaScanningScreen.route);
+                  },
                   child: Text.rich(
                     TextSpan(
                       text: 'Missing a few from before? ',

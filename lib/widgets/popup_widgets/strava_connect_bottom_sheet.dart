@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
@@ -13,10 +14,12 @@ class StravaConnectBottomSheet extends StatelessWidget {
   const StravaConnectBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) async {
+    final appFlagsRepository = context.read<AppFlagsRepository>();
     await showAppBottomSheet(
       context: context,
       builder: (context) => StravaConnectBottomSheet(),
     );
+    await appFlagsRepository.setShowStravaConnect(false);
   }
 
   Widget _featureTile(BuildContext context, IconData icon, Widget content) {
@@ -144,13 +147,13 @@ class StravaConnectBottomSheet extends StatelessWidget {
             final connectionStatus = await context.read<StravaState>().getStravaConnectionStatus(userId: userId);
             print("🎯 ~ StravaConnectBottomSheet ~ build ~ connectionStatus: $connectionStatus");
 
-            if (connectionStatus == StravaStatus.connected) {
+            if (connectionStatus == StravaConnectionStatus.connected) {
               Navigator.of(context).pushReplacementNamed(StravaConnectedScreen.route);
             } else {}
           },
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(
             'Not just now',
             style: Theme.of(context)

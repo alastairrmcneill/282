@@ -35,10 +35,10 @@ class StravaConnectListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stravaState = context.watch<StravaState>();
-    final stravaStatus = stravaState.status;
+    final stravaStatus = stravaState.connectionStatus;
     return ListTile(
       onTap: () async {
-        if (stravaStatus == StravaStatus.error) {
+        if (stravaStatus == StravaConnectionStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Error with Strava connection. Please try again.')),
           );
@@ -46,15 +46,15 @@ class StravaConnectListItem extends StatelessWidget {
           return;
         }
 
-        if (stravaStatus == StravaStatus.connected) {
+        if (stravaStatus == StravaConnectionStatus.connected) {
           await disconnectStrava(context);
         } else {
           await connectStrava(context);
         }
       },
-      title: stravaStatus == StravaStatus.error
+      title: stravaStatus == StravaConnectionStatus.error
           ? const Text("Error with Strava connection")
-          : stravaStatus == StravaStatus.connected
+          : stravaStatus == StravaConnectionStatus.connected
               ? const Text("Disconnect from Strava")
               : const Text("Connect to Strava"),
     );

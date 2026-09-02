@@ -32,15 +32,10 @@ Deno.serve(async (req) => {
     refresh_token: tokens.refresh_token,
     token_expires_at: new Date(tokens.expires_at * 1000).toISOString(),
     scope: tokens.scope ?? "activity:read_all",
-    historical_scan_status: "pending",
     revoked_at: null,
   });
 
-  await supabase.from("jobs").insert({
-    job_type: "strava_historical_scan",
-    payload: { user_id: userId },
-  });
-  console.log("🎯 ~ inserted strava_historical_scan job for userId:", userId);
+  // Historical backfill is now user-initiated (strava-scan-activities), not auto-triggered here.
 
   return new Response(
     "<h1>Connected to 282!</h1><p>You can close this and go back to the app.</p>",

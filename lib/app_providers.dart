@@ -56,6 +56,7 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => WeartherRepository()),
       Provider(create: (_) => ShareLinkRepository()),
       Provider(create: (_) => StravaConnectionsRepository(client)),
+      Provider(create: (_) => StravaMatchingConfigRepository(client)),
       Provider(create: (_) => MunroMatchesRepository(client)),
       Provider<Analytics>(
         create: (ctx) => MixpanelAnalytics(
@@ -369,6 +370,8 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
       ChangeNotifierProvider(
         create: (ctx) => StravaState(
           ctx.read<StravaConnectionsRepository>(),
+          ctx.read<StravaMatchingConfigRepository>(),
+          ctx.read<MunroState>(),
           ctx.read<Logger>(),
         ),
       ),

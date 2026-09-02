@@ -115,16 +115,14 @@ class StartupOverlayPolicies {
   }
 
   void maybeEnqueueStravaConnect() {
-    _overlayIntentState.enqueue(StravaConnectIntent());
+    final userId = _authState.currentUserId;
+    if (userId == null) return;
 
-    // final userId = _authState.currentUserId;
-    // if (userId == null) return;
+    final showStravaConnect = _appFlagsRepository.showStravaConnect;
 
-    // final showStravaConnect = _appFlagsRepository.showStravaConnect;
-
-    // if (showStravaConnect) {
-    //   _overlayIntentState.enqueue(StravaConnectIntent());
-    // }
+    if (showStravaConnect) {
+      _overlayIntentState.enqueue(StravaConnectIntent());
+    }
   }
 
   Future<void> maybeEnqueueStravaActivity() async {
