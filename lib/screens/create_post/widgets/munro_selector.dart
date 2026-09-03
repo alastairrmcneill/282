@@ -4,6 +4,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroSelector extends StatefulWidget {
   const MunroSelector({super.key});
@@ -16,7 +17,6 @@ class _MunroSelectorState extends State<MunroSelector> {
   void _showModalSheet(MunroState munroState, CreatePostState createPostState, FormFieldState formState) {
     showModalBottomSheet(
       context: context,
-      showDragHandle: true,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
@@ -24,6 +24,7 @@ class _MunroSelectorState extends State<MunroSelector> {
               builder: (context, munroState, child) {
                 return ListView(
                   children: [
+                    const SheetDragHandle(),
                     const CreatePostMunroSearchbar(),
                     ...munroState.createPostFilteredMunroList.map((Munro munro) {
                       return Column(

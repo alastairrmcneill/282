@@ -342,7 +342,12 @@ class AppRouter {
 
       case SettingsScreen.route:
         return MaterialPageRoute(
-          builder: (_) => const SettingsScreen(),
+          builder: (context) {
+            context.read<StravaState>().getStravaConnectionStatus(
+                  userId: context.read<UserState>().currentUser?.uid ?? '',
+                );
+            return const SettingsScreen();
+          },
           settings: settings,
         );
 
@@ -391,6 +396,24 @@ class AppRouter {
         final args = settings.arguments as SelectMunrosScreenArgs;
         return MaterialPageRoute(
           builder: (_) => SelectMunrosScreen(mainMunro: args.mainMunro),
+          settings: settings,
+        );
+
+      case FoundOnStravaScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const FoundOnStravaScreen(),
+          settings: settings,
+        );
+
+      case StravaConnectedScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const StravaConnectedScreen(),
+          settings: settings,
+        );
+
+      case StravaScanningScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const StravaScanningScreen(),
           settings: settings,
         );
 

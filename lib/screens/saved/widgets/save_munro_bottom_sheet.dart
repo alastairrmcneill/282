@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/saved/widgets/widgets.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class SaveMunroBottomSheet extends StatelessWidget {
   final int munroId;
@@ -31,6 +32,7 @@ class SaveMunroBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SheetDragHandle(),
               // Title
               const SavedMunroBottomSheetHeader(),
               const Divider(thickness: 0.7),

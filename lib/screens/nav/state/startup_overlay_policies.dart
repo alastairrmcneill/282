@@ -8,12 +8,16 @@ class StartupOverlayPolicies {
   final OverlayIntentState _overlayIntentState;
   final AppFlagsRepository _appFlagsRepository;
   final AppInfoRepository _appInfoRepository;
+  final MunroMatchesRepository _munroMatchesRepository;
+  final AuthState _authState;
 
   const StartupOverlayPolicies(
     this._remoteConfig,
     this._overlayIntentState,
     this._appFlagsRepository,
     this._appInfoRepository,
+    this._munroMatchesRepository,
+    this._authState,
   );
 
   void maybeEnqueueHardUpdate() {
@@ -108,5 +112,27 @@ class StartupOverlayPolicies {
       if (v1[i] > v2[i]) return false; // version1 is newer
     }
     return false;
+  }
+
+  void maybeEnqueueStravaConnect() {
+    final userId = _authState.currentUserId;
+    if (userId == null) return;
+
+    final showStravaConnect = _appFlagsRepository.showStravaConnect;
+
+    if (showStravaConnect) {
+      _overlayIntentState.enqueue(StravaConnectIntent());
+    }
+  }
+
+  Future<void> maybeEnqueueStravaActivity() async {
+    final userId = _authState.currentUserId;
+    if (userId == null) return;
+
+    final pendingMatches = await _munroMatchesRepository.getUsersPendingActivityReviews(userId: userId);
+
+    if (pendingMatches.isNotEmpty) {
+      _overlayIntentState.enqueue(StravaReviewActivityIntent());
+    }
   }
 }

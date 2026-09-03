@@ -10,6 +10,8 @@ import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/review_prompt.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
+import 'screens/nav/widgets/widgets.dart';
+
 class OverlayIntentCoordinator extends StatelessWidget {
   const OverlayIntentCoordinator({super.key, required this.child});
   final Widget child;
@@ -202,6 +204,29 @@ class OverlayIntentCoordinator extends StatelessWidget {
 
       case ReviewPromptIntent():
         await maybeShowReviewPrompt(navCtx);
+        return;
+
+      case StravaReviewActivityIntent():
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.stravaReviewActivity},
+        );
+        final reviews = await navCtx.read<StravaActivityReviewState>().loadPendingReviews();
+        if (reviews.isEmpty || !navCtx.mounted) return;
+
+        if (reviews.length == 1) {
+          await StravaMatchesReviewBottomSheet.show(navCtx);
+        } else {
+          await StravaMatchesSummaryBottomSheet.show(navCtx);
+        }
+        return;
+
+      case StravaConnectIntent():
+        navCtx.read<Analytics>().track(
+          AnalyticsEvent.dialogShown,
+          props: {AnalyticsProp.dialogName: AnalyticsDialog.stravaConnect},
+        );
+        await StravaConnectBottomSheet.show(navCtx);
         return;
     }
   }

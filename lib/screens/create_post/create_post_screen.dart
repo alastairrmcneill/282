@@ -67,7 +67,6 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
 
     showModalBottomSheet(
       context: context,
-      showDragHandle: true,
       builder: (BuildContext ctx) {
         return StatefulBuilder(
           builder: (BuildContext ctx, StateSetter setModalState) {
@@ -75,6 +74,7 @@ class _CreatePostScreen1State extends State<CreatePostScreen> {
               builder: (ctx, munroState, child) {
                 return ListView(
                   children: [
+                    const SheetDragHandle(),
                     const CreatePostMunroSearchbar(),
                     ...munroState.createPostFilteredMunroList.map((Munro munro) {
                       return Column(

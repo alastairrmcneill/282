@@ -30,3 +30,6 @@ export 'global_completion_count_repository.dart';
 export 'local_storage_repository.dart';
 export 'onboarding_repository.dart';
 export 'age_gate_repository.dart';
+export 'strava_connections_repo.dart';
+export 'munro_matches_repository.dart';
+export 'strava_matching_config_repository.dart';

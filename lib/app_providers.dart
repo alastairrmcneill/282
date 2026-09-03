@@ -55,6 +55,9 @@ List<SingleChildWidget> buildRepositories(
       Provider(create: (_) => AgeGateRepository()),
       Provider(create: (_) => WeartherRepository()),
       Provider(create: (_) => ShareLinkRepository()),
+      Provider(create: (_) => StravaConnectionsRepository(client)),
+      Provider(create: (_) => StravaMatchingConfigRepository(client)),
+      Provider(create: (_) => MunroMatchesRepository(client)),
       Provider<Analytics>(
         create: (ctx) => MixpanelAnalytics(
           mixpanel,
@@ -311,14 +314,15 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Logger>(),
         ),
       ),
-      ProxyProvider4<RemoteConfigState, OverlayIntentState, AppFlagsRepository, AppInfoRepository,
-          StartupOverlayPolicies>(
+      ProxyProvider5<RemoteConfigState, OverlayIntentState, AppFlagsRepository, AppInfoRepository,
+          MunroMatchesRepository, StartupOverlayPolicies>(
         update: (
-          _,
+          ctx,
           remoteConfig,
           overlays,
           flags,
           appInfo,
+          munroMatchesRepository,
           __,
         ) =>
             StartupOverlayPolicies(
@@ -326,6 +330,17 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           overlays,
           flags,
           appInfo,
+          munroMatchesRepository,
+          ctx.read<AuthState>(),
+        ),
+      ),
+      ChangeNotifierProvider<StravaActivityReviewState>(
+        create: (ctx) => StravaActivityReviewState(
+          ctx.read<MunroMatchesRepository>(),
+          ctx.read<UserState>(),
+          ctx.read<MunroCompletionState>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
         ),
       ),
       ChangeNotifierProvider(
@@ -351,5 +366,13 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ), //..init(),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => StravaState(
+          ctx.read<StravaConnectionsRepository>(),
+          ctx.read<StravaMatchingConfigRepository>(),
+          ctx.read<MunroState>(),
+          ctx.read<Logger>(),
+        ),
       ),
     ];

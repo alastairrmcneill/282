@@ -34,3 +34,6 @@ export 'whats_new/whats_new_screen.dart';
 export 'in_app_onboarding/in_app_onboarding_screen.dart';
 export 'in_app_onboarding/screens/in_app_onboarding_notifications.dart';
 export 'group_filter/group_filter_tab.dart';
+export 'found_on_strava/found_on_strava_screen.dart';
+export 'strava/strava_connected_screen.dart';
+export 'strava/strava_scanning_screen.dart';

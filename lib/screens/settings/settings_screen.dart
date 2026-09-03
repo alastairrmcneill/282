@@ -9,6 +9,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/settings/screens/screens.dart';
+import 'package:two_eight_two/screens/settings/widgets/strava_historical_scan_list_item.dart';
 import 'package:two_eight_two/support/contact_support.dart';
 import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/screens/screens.dart';
@@ -30,6 +31,13 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          SettingsGroup(
+            title: 'Connect',
+            children: [
+              StravaConnectListItem(userId: user!.uid!),
+            ],
+          ),
+          StravaHistoricalScanListItem(),
           SettingsGroup(
             title: 'Account',
             children: [
@@ -146,13 +154,17 @@ class SettingsScreen extends StatelessWidget {
                 title: const Text("Terms of Service"),
                 leading: Icon(PhosphorIconsRegular.fileText, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () { openTermsUrl(); },
+                onTap: () {
+                  openTermsUrl();
+                },
               ),
               ListTile(
                 title: const Text("Privacy Policy"),
                 leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () { openPrivacyPolicyUrl(); },
+                onTap: () {
+                  openPrivacyPolicyUrl();
+                },
               ),
             ],
           ),

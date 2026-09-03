@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:two_eight_two/widgets/sheet_drag_handle.dart';
 
 class ActionMenuItems {
   final String title;
@@ -55,18 +56,19 @@ void _showAndroidBottomSheet(BuildContext context, List<ActionMenuItems> items) 
     builder: (BuildContext context) => SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: items
-            .map(
-              (item) => ListTile(
-                leading: item.isDestructive ? const Icon(Icons.delete, color: Colors.red) : null,
-                title: Text(item.title),
-                onTap: () {
-                  Navigator.pop(context);
-                  item.onPressed();
-                },
-              ),
-            )
-            .toList(),
+        children: [
+          const SheetDragHandle(),
+          ...items.map(
+            (item) => ListTile(
+              leading: item.isDestructive ? const Icon(Icons.delete, color: Colors.red) : null,
+              title: Text(item.title),
+              onTap: () {
+                Navigator.pop(context);
+                item.onPressed();
+              },
+            ),
+          ),
+        ],
       ),
     ),
   );
