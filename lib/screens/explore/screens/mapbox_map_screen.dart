@@ -83,13 +83,22 @@ class _MapboxMapScreenState extends State<MapboxMapScreen> {
     if (mounted) setState(() => loading = false);
   }
 
-  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) async {
+  void _onMapCreated(MapboxMap mapboxMap, MunroState munroState, MunroCompletionState munroCompletionState) {
+    _mapboxMap = mapboxMap;
+    // Defer setup (settings + creating all 282 annotations) past the first rendered
+    // frame, so it doesn't compete with the native map draw for the main thread
+    // right as the map appears.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _setUpMap(munroState, munroCompletionState);
+    });
+  }
+
+  Future<void> _setUpMap(MunroState munroState, MunroCompletionState munroCompletionState) async {
     try {
       final mapStyle = context.read<SettingsState>().mapStyleSetting;
-      _mapboxMap = mapboxMap;
-      await mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
-      await mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
-      await mapboxMap.gestures.updateSettings(
+      await _mapboxMap.compass.updateSettings(CompassSettings(enabled: false));
+      await _mapboxMap.scaleBar.updateSettings(ScaleBarSettings(enabled: false));
+      await _mapboxMap.gestures.updateSettings(
         GesturesSettings(rotateEnabled: false, pitchEnabled: false),
       );
       _mapboxMap.setBounds(cameraBounds);
