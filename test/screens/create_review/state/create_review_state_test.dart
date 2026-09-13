@@ -134,8 +134,7 @@ void main() {
         createReviewState.setMunroRating(2, 4);
         createReviewState.setMunroReview(2, 'Beautiful scenery');
 
-        when(mockReviewsRepository.create(review: anyNamed('review')))
-            .thenAnswer((invocation) async => invocation.namedArguments[#review] as Review);
+        when(mockReviewsRepository.create(review: anyNamed('review'))).thenAnswer((_) async {});
         when(mockMunroState.loadMunros()).thenAnswer((_) async => {});
 
         // Act
@@ -157,7 +156,6 @@ void main() {
         Review? capturedReview;
         when(mockReviewsRepository.create(review: anyNamed('review'))).thenAnswer((invocation) async {
           capturedReview = invocation.namedArguments[#review] as Review;
-          return capturedReview!;
         });
         when(mockMunroState.loadMunros()).thenAnswer((_) async => {});
 
@@ -199,7 +197,6 @@ void main() {
 
         when(mockReviewsRepository.create(review: anyNamed('review'))).thenAnswer((invocation) async {
           await Future.delayed(Duration(milliseconds: 100));
-          return invocation.namedArguments[#review] as Review;
         });
         when(mockMunroState.loadMunros()).thenAnswer((_) async => {});
 
@@ -224,7 +221,6 @@ void main() {
         Review? capturedReview;
         when(mockReviewsRepository.create(review: anyNamed('review'))).thenAnswer((invocation) async {
           capturedReview = invocation.namedArguments[#review] as Review;
-          return capturedReview!;
         });
         when(mockMunroState.loadMunros()).thenAnswer((_) async => {});
 
@@ -511,7 +507,6 @@ void main() {
         Review? capturedReview;
         when(mockReviewsRepository.create(review: anyNamed('review'))).thenAnswer((invocation) async {
           capturedReview = invocation.namedArguments[#review] as Review;
-          return capturedReview!;
         });
         when(mockMunroState.loadMunros()).thenAnswer((_) async => {});
 
@@ -547,8 +542,7 @@ void main() {
         createReviewState.setMunroRating(1, 5);
         createReviewState.setMunroReview(1, 'Test review');
 
-        when(mockReviewsRepository.create(review: anyNamed('review')))
-            .thenAnswer((invocation) async => invocation.namedArguments[#review] as Review);
+        when(mockReviewsRepository.create(review: anyNamed('review'))).thenAnswer((_) async {});
         when(mockMunroState.loadMunros()).thenAnswer((_) async => {});
 
         bool notified = false;

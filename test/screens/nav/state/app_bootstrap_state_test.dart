@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/push/push.dart';
@@ -24,6 +25,7 @@ import 'app_bootstrap_state_test.mocks.dart';
   PushNotificationState,
   StartupOverlayPolicies,
   FlavorState,
+  Analytics,
   Logger,
 ])
 void main() {
@@ -38,6 +40,7 @@ void main() {
   late MockFlavorState mockFlavorState;
   late MockPushNotificationState mockPushNotificationState;
   late StartupOverlayPolicies mockStartupOverlayPolicies;
+  late MockAnalytics mockAnalytics;
   late MockLogger mockLogger;
   late AppBootstrapState appBootstrapState;
 
@@ -54,6 +57,8 @@ void main() {
     mockStartupOverlayPolicies = MockStartupOverlayPolicies();
     mockFlavorState = MockFlavorState();
     when(mockFlavorState.environment).thenReturn(AppEnvironment.dev);
+    mockAnalytics = MockAnalytics();
+    when(mockAnalytics.identify(any)).thenAnswer((_) async => Future.value());
     mockLogger = MockLogger();
     appBootstrapState = AppBootstrapState(
       mockRemoteConfigState,
@@ -67,6 +72,7 @@ void main() {
       mockPushNotificationState,
       mockStartupOverlayPolicies,
       mockFlavorState,
+      mockAnalytics,
       mockLogger,
     );
   });
@@ -98,6 +104,7 @@ void main() {
         verify(mockRemoteConfigState.init()).called(1);
         verify(mockSettingsState.load()).called(1);
         verify(mockMunroState.loadMunros()).called(1);
+        verifyNever(mockAnalytics.identify(any));
         verifyNever(mockUserState.readUser(uid: anyNamed('uid')));
         verifyNever(mockMunroCompletionState.loadUserMunroCompletions());
         verifyNever(mockSavedListState.readUserSavedLists());
@@ -133,6 +140,7 @@ void main() {
         verify(mockRemoteConfigState.init()).called(1);
         verify(mockSettingsState.load()).called(1);
         verify(mockMunroState.loadMunros()).called(1);
+        verify(mockAnalytics.identify(testUid)).called(1);
         verify(mockUserState.readUser(uid: testUid)).called(1);
         verify(mockMunroCompletionState.loadUserMunroCompletions()).called(1);
         verify(mockSavedListState.readUserSavedLists()).called(1);

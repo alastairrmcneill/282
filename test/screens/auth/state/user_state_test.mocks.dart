@@ -8,7 +8,7 @@ import 'dart:io' as _i7;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
-import 'package:two_eight_two/logging/logger.dart' as _i9;
+import 'package:two_eight_two/logging/logging.dart' as _i9;
 import 'package:two_eight_two/models/models.dart' as _i4;
 import 'package:two_eight_two/repos/blocked_user_repository.dart' as _i5;
 import 'package:two_eight_two/repos/storage_repository.dart' as _i6;
