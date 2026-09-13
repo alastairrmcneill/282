@@ -341,6 +341,7 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
           ctx.read<PushNotificationState>(),
           ctx.read<StartupOverlayPolicies>(),
           ctx.read<FlavorState>(),
+          ctx.read<Analytics>(),
           ctx.read<Logger>(),
         ),
       ),
