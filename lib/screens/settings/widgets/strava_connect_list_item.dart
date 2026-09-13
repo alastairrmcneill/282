@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StravaConnectListItem extends StatelessWidget {
   final String userId;
@@ -19,17 +18,7 @@ class StravaConnectListItem extends StatelessWidget {
   }
 
   Future<void> connectStrava(BuildContext context) async {
-    final authUrl = Uri.https('www.strava.com', '/oauth/authorize', {
-      'client_id': '270263',
-      'redirect_uri': 'https://pqgaczyxzxopkgyjqudk.supabase.co/functions/v1/strava-connect',
-      'response_type': 'code',
-      'approval_prompt': 'force',
-      'scope': 'activity:read_all',
-      'state': userId, // see Part 6 — sign/expire this before production
-    });
-    await launchUrl(authUrl, mode: LaunchMode.inAppBrowserView);
-
-    context.read<StravaState>().getStravaConnectionStatus(userId: userId);
+    await context.read<StravaState>().connectWithStrava(userId: userId);
   }
 
   @override

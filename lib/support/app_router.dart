@@ -411,6 +411,12 @@ class AppRouter {
           settings: settings,
         );
 
+      case OnboardingStravaConnectedScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const OnboardingStravaConnectedScreen(),
+          settings: settings,
+        );
+
       case StravaScanningScreen.route:
         return MaterialPageRoute(
           builder: (_) => const StravaScanningScreen(),

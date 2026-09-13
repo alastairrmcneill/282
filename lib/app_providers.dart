@@ -360,19 +360,21 @@ List<SingleChildWidget> buildGlobalStates(AppEnvironment environment) => [
         ),
       ),
       ChangeNotifierProvider(
-        create: (ctx) => OnboardingState(
-          ctx.read<OnboardingRepository>(),
-          ctx.read<AppFlagsRepository>(),
-          ctx.read<Analytics>(),
-          ctx.read<Logger>(),
-        ), //..init(),
-      ),
-      ChangeNotifierProvider(
         create: (ctx) => StravaState(
           ctx.read<StravaConnectionsRepository>(),
           ctx.read<StravaMatchingConfigRepository>(),
           ctx.read<MunroState>(),
           ctx.read<Logger>(),
         ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => OnboardingState(
+          ctx.read<OnboardingRepository>(),
+          ctx.read<AppFlagsRepository>(),
+          ctx.read<AuthState>(),
+          ctx.read<StravaState>(),
+          ctx.read<Analytics>(),
+          ctx.read<Logger>(),
+        ), //..init(),
       ),
     ];

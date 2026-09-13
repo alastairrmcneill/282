@@ -3,10 +3,13 @@ import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/repos/repos.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 class OnboardingState extends ChangeNotifier {
   final OnboardingRepository _onboardingRepository;
   final AppFlagsRepository _appFlagsRepository;
+  final AuthState _authState;
+  final StravaState _stravaState;
   final Analytics _analytics;
   final Logger _logger;
   bool _hascompletedOnboarding = false;
@@ -14,6 +17,8 @@ class OnboardingState extends ChangeNotifier {
   OnboardingState(
     this._onboardingRepository,
     this._appFlagsRepository,
+    this._authState,
+    this._stravaState,
     this._analytics,
     this._logger,
   ) {
@@ -22,8 +27,8 @@ class OnboardingState extends ChangeNotifier {
 
   int _currentPage = 0;
   int _maxPageReached = 0;
-  static const int totalPages = 4;
-  static const List<String> _stepNames = ['welcome', 'progress', 'achievement', 'munro_question'];
+  static const int totalPages = 2;
+  static const List<String> _stepNames = ['welcome', 'munro_question'];
   List<OnboardingFeedPost> _feedPosts = [];
   OnboardingTotals? _totals;
   List<OnboardingAchievements> _achievements = [];
@@ -43,16 +48,8 @@ class OnboardingState extends ChangeNotifier {
 
   Future<void> init() async {
     try {
-      Future.wait([
-        _onboardingRepository.fetchFeedPosts(),
-        _onboardingRepository.fetchTotals(),
-        _onboardingRepository.fetchAchievements(),
-      ]).then((results) {
-        _feedPosts = results[0] as List<OnboardingFeedPost>;
-        _totals = results[1] as OnboardingTotals;
-        _achievements = results[2] as List<OnboardingAchievements>;
-        notifyListeners();
-      });
+      _totals = await _onboardingRepository.fetchTotals();
+      notifyListeners();
       _analytics.track(
         AnalyticsEvent.onboardingScreenViewed,
         props: {
@@ -89,6 +86,17 @@ class OnboardingState extends ChangeNotifier {
     );
   }
 
+  Future<StravaConnectionStatus> connectWithStrava() async {
+    // Create annonymous account
+    final authResult = await _authState.signInAnonymously();
+    if (!authResult.success) {
+      _logger.error("Failed to create anonymous account");
+      return StravaConnectionStatus.error;
+    }
+
+    return _stravaState.connectWithStrava(userId: authResult.userId ?? "");
+  }
+
   void nextPage() {
     if (_currentPage < totalPages - 1) {
       goToPage(_currentPage + 1);
@@ -101,14 +109,6 @@ class OnboardingState extends ChangeNotifier {
     }
   }
 
-  // The real PageView (onboarding_screen.dart) drives navigation entirely
-  // through PageController.next/previousPage(), which fires onPageChanged ->
-  // goToPage() - nextPage()/previousPage() above are never hit in production,
-  // only by tests. Tracking lives here so every screen change is captured
-  // regardless of swipe direction or entry point.
-  //
-  // Analytics only fires the first time a page is reached (page > _maxPageReached)
-  // so swiping back and forth doesn't inflate view counts for already-seen steps.
   void goToPage(int page) {
     if (page >= 0 && page < totalPages) {
       _currentPage = page;

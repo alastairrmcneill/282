@@ -102,4 +102,23 @@ class AuthRepository {
 
     return cred;
   }
+
+  // Annonymous Sign In
+  Future<UserCredential> signInAnonymously() async {
+    final cred = await _auth.signInAnonymously();
+    await _waitForAuthenticatedClaim(cred.user);
+    return cred;
+  }
+
+  // The onCreate trigger that assigns the `role: authenticated` claim Supabase
+  // needs is async for anonymous users (blocking functions don't cover them),
+  // so poll briefly for it before writing to Supabase as this user.
+  Future<void> _waitForAuthenticatedClaim(User? user) async {
+    if (user == null) return;
+    for (var attempt = 0; attempt < 6; attempt++) {
+      final result = await user.getIdTokenResult(true);
+      if (result.claims?['role'] == 'authenticated') return;
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+  }
 }

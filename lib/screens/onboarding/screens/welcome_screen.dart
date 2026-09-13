@@ -1,7 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:two_eight_two/screens/onboarding/widgets/onboarding_buttons.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class WelcomeScreen extends StatefulWidget {
   final VoidCallback onNext;
@@ -12,10 +15,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
-    with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _iconAnimation;
   late Animation<double> _titleAnimation;
   late Animation<double> _subtitleAnimation;
   late Animation<double> _fadeAnimation;
@@ -27,13 +28,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
-    );
-
-    _iconAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-      ),
     );
 
     _titleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -75,6 +69,33 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final onboardingState = context.read<OnboardingState>();
+
+    Widget buildStatItem(String stat, String label) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            stat,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: context.colors.accent,
+              height: 0,
+            ),
+          ),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              height: 0,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Stack(
       children: [
         // Background image
@@ -111,49 +132,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           left: 0,
           right: 0,
           top: 0,
-          bottom: 80,
+          bottom: 0,
           child: RepaintBoundary(
             child: SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // Icon
-                    AnimatedBuilder(
-                      animation: _iconAnimation,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: Offset(0, 30 * (1 - _iconAnimation.value)),
-                          child: Opacity(
-                            opacity: _iconAnimation.value,
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: ClipOval(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: const Color(0xFF10b981).withOpacity(0.2),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                LucideIcons.mountain,
-                                size: 40,
-                                color: Color(0xFF6ee7b7),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
                     // Title
                     AnimatedBuilder(
                       animation: _titleAnimation,
@@ -167,24 +155,23 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         );
                       },
                       child: const Text(
-                        'Your Munro Journey Begins',
+                        'Scratch off\nScotland.',
                         style: TextStyle(
-                          fontSize: 40,
+                          fontSize: 52,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           height: 1.2,
                         ),
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     // Subtitle
                     AnimatedBuilder(
                       animation: _subtitleAnimation,
                       builder: (context, child) {
                         return Transform.translate(
-                          offset:
-                              Offset(0, 30 * (1 - _subtitleAnimation.value)),
+                          offset: Offset(0, 30 * (1 - _subtitleAnimation.value)),
                           child: Opacity(
                             opacity: _subtitleAnimation.value,
                             child: child,
@@ -192,15 +179,53 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         );
                       },
                       child: const Text(
-                        '282 peaks. Endless adventures. One incredible story - yours.',
+                        'Every Munro you climb is an experience. Scratch them off your own map!',
                         style: TextStyle(
                           fontSize: 18,
                           color: Color(0xFFe2e8f0),
                           height: 1.5,
                         ),
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
                       ),
                     ),
+                    const SizedBox(height: 32),
+                    // Stats row
+                    AnimatedBuilder(
+                        animation: _subtitleAnimation,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, 30 * (1 - _subtitleAnimation.value)),
+                            child: Opacity(
+                              opacity: _subtitleAnimation.value,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Divider(
+                              color: AppColors.light.divider.withOpacity(0.5),
+                              thickness: 0.8,
+                            ),
+                            SizedBox(height: 16),
+                            Row(
+                              children: [
+                                buildStatItem('282', 'Munros'),
+                                const SizedBox(width: 24),
+                                buildStatItem((onboardingState.totals?.totalMunroCompletions ?? 0).shortenedThousands(),
+                                    'summits logged'),
+                                const SizedBox(width: 24),
+                                buildStatItem(
+                                    (onboardingState.totals?.totalUsers ?? 0).shortenedThousands(), 'baggers'),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            Divider(
+                              color: AppColors.light.divider.withOpacity(0.5),
+                              thickness: 0.8,
+                            ),
+                          ],
+                        )),
                     const SizedBox(height: 32),
                     // Button
                     AnimatedBuilder(
@@ -214,29 +239,50 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           ),
                         );
                       },
-                      child: OnboardingPrimaryButton(
+                      child: CtaButton(
                         onPressed: widget.onNext,
-                        text: 'Continue',
-                        height: 64,
+                        height: 56,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Get started',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                height: 1.2,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Icon(PhosphorIconsBold.caretRight),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 8),
                     // Footer text
-                    AnimatedBuilder(
-                      animation: _fadeAnimation,
-                      builder: (context, child) {
-                        return Opacity(
-                          opacity: _fadeAnimation.value,
-                          child: child,
-                        );
-                      },
-                      child: const Text(
-                        'Join thousands of baggers conquering Scotland\'s peaks',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFFcbd5e1),
+                    Align(
+                      alignment: Alignment.center,
+                      child: AnimatedBuilder(
+                        animation: _fadeAnimation,
+                        builder: (context, child) {
+                          return Opacity(
+                            opacity: _fadeAnimation.value,
+                            child: child,
+                          );
+                        },
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "I already have an account",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.dark.textSubtitle,
+                            ),
+                          ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],

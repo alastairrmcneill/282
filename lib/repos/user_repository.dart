@@ -30,7 +30,8 @@ class UserRepository {
 
   // Read single user
   Future<AppUser?> readUserFromUid({required String uid}) async {
-    final response = await _table.select().eq(AppUserFields.uid, uid).single();
+    final response = await _table.select().eq(AppUserFields.uid, uid).maybeSingle();
+    if (response == null) return null;
     return AppUser.fromJSON(response);
   }
 

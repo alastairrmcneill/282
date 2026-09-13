@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
 import 'package:two_eight_two/screens/onboarding/screens/welcome_screen.dart';
-import 'package:two_eight_two/screens/onboarding/screens/progress_screen.dart';
-import 'package:two_eight_two/screens/onboarding/screens/achievement_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/munro_question_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/onboarding_bulk_log_screen.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String route = '/onboarding';
@@ -90,28 +89,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onPageChanged: (value) => state.goToPage(value),
               children: [
                 WelcomeScreen(onNext: _nextPage),
-                ProgressScreen(onNext: _nextPage, onBack: _previousPage),
-                AchievementScreen(onNext: _nextPage, onBack: _previousPage),
                 MunroQuestionScreen(onNo: _onNo, onYes: _onYes, source: AnalyticsSource.firstRunOnboarding),
               ],
             ),
           ),
           // Hide dots on question page — it has its own CTA layout
-          if (state.currentPage < 3)
+          if (state.currentPage > 0)
             Positioned(
-              bottom: 32,
+              top: 32,
               left: 0,
               right: 0,
-              child: Center(
-                child: SmoothPageIndicator(
-                  controller: _pageController,
-                  count: OnboardingState.totalPages,
-                  effect: ExpandingDotsEffect(
-                    dotHeight: 8,
-                    dotWidth: 8,
-                    activeDotColor: const Color(0xFF10b981),
-                    dotColor: lightBackground ? Colors.black.withOpacity(0.3) : Colors.white.withOpacity(0.3),
-                    spacing: 8,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    children: [
+                      OnboardingBackButton(
+                        onPressed: _previousPage,
+                        backButtonLight: true,
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: LinearProgressIndicator(
+                          value: (state.currentPage) / OnboardingState.totalPages,
+                          borderRadius: BorderRadius.circular(100),
+                          color: context.colors.accent,
+                          backgroundColor: context.colors.divider.withOpacity(0.5),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

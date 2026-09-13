@@ -428,6 +428,42 @@ class AuthState extends ChangeNotifier {
     }
   }
 
+  Future<AuthResult> signInAnonymously() async {
+    _setLoading();
+    try {
+      final userCredential = await _authRepo.signInAnonymously();
+      final user = userCredential.user;
+
+      if (user == null) {
+        _setError("Failed to sign in anonymously.");
+        return AuthResult(success: false, errorMessage: "Failed to sign in anonymously.");
+      }
+      final packageInfo = await PackageInfo.fromPlatform();
+      final isIOS = Platform.isIOS;
+
+      final appUser = AppUser(
+        uid: user.uid,
+        displayName: "Guest",
+        searchName: "guest",
+        firstName: "Guest",
+        lastName: "Guest",
+        platform: isIOS ? "iOS" : "Android",
+        appVersion: packageInfo.version,
+        dateCreated: DateTime.now(),
+        signInMethod: "anonymous",
+        profileVisibility: Privacy.public,
+      );
+
+      await _userState.createUser(appUser: appUser);
+      _setAuthenticated();
+      return AuthResult(success: true, userId: user.uid);
+    } catch (e, st) {
+      _logger.error(e.toString(), stackTrace: st);
+      _setError(e.toString());
+      return AuthResult(success: false, errorMessage: e.toString());
+    }
+  }
+
   Future<AuthResult> forgotPassword({required String email}) async {
     _setLoading();
     try {

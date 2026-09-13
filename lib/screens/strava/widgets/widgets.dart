@@ -1,4 +1,5 @@
 export 'strava_connected_step_tile.dart';
+export 'strava_connected_timeline_step.dart';
 export 'check_mark_widget.dart';
 export 'strava_scanning_pulse.dart';
 export 'strava_scanning_progress_state.dart';

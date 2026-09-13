@@ -8,7 +8,6 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
 
 import 'package:two_eight_two/widgets/widgets.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StravaConnectBottomSheet extends StatelessWidget {
   const StravaConnectBottomSheet({super.key});
@@ -134,22 +133,12 @@ class StravaConnectBottomSheet extends StatelessWidget {
             ],
           ),
           onPressed: () async {
-            final authUrl = Uri.https('www.strava.com', '/oauth/authorize', {
-              'client_id': '270263',
-              'redirect_uri': 'https://pqgaczyxzxopkgyjqudk.supabase.co/functions/v1/strava-connect',
-              'response_type': 'code',
-              'approval_prompt': 'force',
-              'scope': 'activity:read_all',
-              'state': userId,
-            });
-            await launchUrl(authUrl, mode: LaunchMode.inAppBrowserView);
+            final connectionStatus = await context.read<StravaState>().connectWithStrava(userId: userId);
 
-            final connectionStatus = await context.read<StravaState>().getStravaConnectionStatus(userId: userId);
-            print("🎯 ~ StravaConnectBottomSheet ~ build ~ connectionStatus: $connectionStatus");
-
+            if (!context.mounted) return;
             if (connectionStatus == StravaConnectionStatus.connected) {
               Navigator.of(context).pushReplacementNamed(StravaConnectedScreen.route);
-            } else {}
+            }
           },
         ),
         TextButton(
