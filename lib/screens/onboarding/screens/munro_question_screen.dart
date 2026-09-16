@@ -1,16 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MunroQuestionScreen extends StatefulWidget {
   final VoidCallback onYes;
@@ -24,45 +22,6 @@ class MunroQuestionScreen extends StatefulWidget {
 }
 
 class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _iconAnimation;
-  late Animation<double> _titleAnimation;
-  late Animation<double> _button1Animation;
-  late Animation<double> _button2Animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-
-    _iconAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.45, curve: Curves.elasticOut)),
-    );
-
-    _titleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.2, 0.6, curve: Curves.easeOut)),
-    );
-
-    _button1Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.45, 0.75, curve: Curves.easeOut)),
-    );
-
-    _button2Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.55, 0.85, curve: Curves.easeOut)),
-    );
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   int get _stepNumber => widget.source == AnalyticsSource.inAppOnboarding ? 1 : 4;
 
   void _handleYes() {
@@ -137,18 +96,19 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTi
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.light.textPrimary,
+                      color: context.colors.textPrimary,
+                      height: 1,
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Log all your previous Munro summits in one go!',
                     style: TextStyle(
                       fontSize: 16,
-                      color: AppColors.light.textMuted,
+                      color: context.colors.textSubtitle,
                     ),
                   ),
                 ),
@@ -211,12 +171,18 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTi
                             height: 52,
                             backgroundColor: context.colors.stravaOrange,
                             onPressed: () async {
-                              final connectionStatus = await context.read<OnboardingState>().connectWithStrava();
-                              if (connectionStatus == StravaConnectionStatus.connected) {
-                                if (context.mounted) {
-                                  Navigator.of(context).pushReplacementNamed(OnboardingStravaConnectedScreen.route);
-                                }
-                              } else {}
+                              await OnboardingSignInBottomSheet.show(context);
+                              // final connectionStatus = await context
+                              //     .read<OnboardingState>()
+                              //     .connectWithStrava();
+
+                              // if (connectionStatus ==
+                              //     StravaConnectionStatus.connected) {
+                              //   if (context.mounted) {
+                              //     Navigator.of(context).pushReplacementNamed(
+                              //         OnboardingStravaConnectedScreen.route);
+                              //   }
+                              // } else {}
                             },
                             child: Row(
                               mainAxisSize: MainAxisSize.max,

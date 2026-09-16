@@ -7,7 +7,6 @@ import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/screens/auth/widgets/widgets.dart';
 import 'package:two_eight_two/screens/auth/screens/screens.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:two_eight_two/support/legal_urls.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class AuthHomeScreenArgs {
@@ -122,38 +121,11 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: "By continuing to use 282, you agree to our ",
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
-                        children: [
-                          TextSpan(
-                            text: "Terms & Conditions",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                openTermsUrl();
-                              },
-                          ),
-                          const TextSpan(text: " and "),
-                          TextSpan(
-                            text: "Privacy Policy",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                openPrivacyPolicyUrl();
-                              },
-                          ),
-                          const TextSpan(text: "."),
-                        ],
-                      ),
+                    const ConsentText(
+                      initialText: "By continuing to use 282, you agree to our ",
+                      termsText: "Terms",
+                      privacyPolicyText: "Privacy Policy",
+                      textColor: Colors.white,
                     ),
                   ],
                 ),

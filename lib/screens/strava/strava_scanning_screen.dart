@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/screens/strava/helpers/match_strava_activity.dart';
 import 'package:two_eight_two/screens/strava/widgets/widgets.dart';
@@ -109,27 +110,29 @@ class StravaScanningScreen extends StatelessWidget {
                 stravaState.scanningStatus != StravaScanningStatus.completed || stravaState.selectedMatches.isEmpty,
             height: 56,
             onPressed: () async {
-              List<MunroCompletion> completions = [];
+              await OnboardingSignInBottomSheet.show(context);
 
-              for (StravaMunroMatch match in stravaState.selectedMatches) {
-                final completion = MunroCompletion(
-                  munroId: match.munro.id,
-                  completionDate: match.stravaActivity.startDate,
-                  dateTimeCompleted: match.stravaActivity.startDate,
-                  userId: userId ?? '',
-                  completionDuration: match.stravaActivity.durationS == null
-                      ? null
-                      : Duration(seconds: match.stravaActivity.durationS!.toInt()),
-                  completionStartTime: TimeOfDay.fromDateTime(match.stravaActivity.startDate),
-                );
-                completions.add(completion);
-              }
+              // List<MunroCompletion> completions = [];
 
-              await munroCompletionState.addBulkCompletions(munroCompletions: completions);
+              // for (StravaMunroMatch match in stravaState.selectedMatches) {
+              //   final completion = MunroCompletion(
+              //     munroId: match.munro.id,
+              //     completionDate: match.stravaActivity.startDate,
+              //     dateTimeCompleted: match.stravaActivity.startDate,
+              //     userId: userId ?? '',
+              //     completionDuration: match.stravaActivity.durationS == null
+              //         ? null
+              //         : Duration(seconds: match.stravaActivity.durationS!.toInt()),
+              //     completionStartTime: TimeOfDay.fromDateTime(match.stravaActivity.startDate),
+              //   );
+              //   completions.add(completion);
+              // }
 
-              if (context.mounted) {
-                Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.route, (route) => false);
-              }
+              // await munroCompletionState.addBulkCompletions(munroCompletions: completions);
+
+              // if (context.mounted) {
+              //   Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.route, (route) => false);
+              // }
             },
             child: Text("Add ${stravaState.selectedMatches.length} to my map"),
           ),

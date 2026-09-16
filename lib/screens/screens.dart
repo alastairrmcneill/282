@@ -13,6 +13,7 @@ export 'onboarding/screens/onboarding_bulk_log_screen.dart';
 export 'onboarding/screens/onboarding_sign_in_prompt_screen.dart';
 export 'onboarding/screens/onboarding_notifications_screen.dart';
 export 'onboarding/screens/onboarding_strava_connected_screen.dart';
+export 'onboarding/screens/onboarding_welcome_screen.dart';
 export 'profile/profile_tab.dart';
 export 'saved/saved_tab.dart';
 export 'user_search/user_search_screen.dart';

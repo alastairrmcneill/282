@@ -18,16 +18,19 @@ class AuthRepository {
     required String password,
     String? displayName,
   }) async {
-    final cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    final wasAnnonymous = _auth.currentUser?.isAnonymous ?? false;
 
+    final cred = wasAnnonymous
+        ? await _auth.currentUser?.linkWithCredential(EmailAuthProvider.credential(email: email, password: password))
+        : await _auth.createUserWithEmailAndPassword(email: email, password: password);
     if (displayName != null && displayName.isNotEmpty) {
-      await cred.user?.updateDisplayName(displayName).then((_) async {
+      await cred?.user?.updateDisplayName(displayName).then((_) async {
         await cred.user?.reload();
       });
     }
 
-    await cred.user?.getIdToken(true);
-    return cred;
+    await cred?.user?.getIdToken(true);
+    return cred!;
   }
 
   Future<UserCredential> signInWithEmail({
@@ -56,7 +59,7 @@ class AuthRepository {
 
   // ---- Apple Sign In ----
 
-  Future<({UserCredential cred, String? givenName, String? familyName})> signInWithApple() async {
+  Future<({OAuthCredential credential, String? givenName, String? familyName})> getAppleCredential() async {
     final appleIdCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.fullName,
@@ -70,11 +73,8 @@ class AuthRepository {
       accessToken: appleIdCredential.authorizationCode,
     );
 
-    final cred = await _auth.signInWithCredential(appleCredential);
-    await cred.user?.getIdToken(true);
-
     return (
-      cred: cred,
+      credential: appleCredential,
       givenName: appleIdCredential.givenName,
       familyName: appleIdCredential.familyName,
     );
@@ -82,7 +82,7 @@ class AuthRepository {
 
   // ---- Google Sign In ----
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<OAuthCredential> getGoogleCredential() async {
     if (!_googleSignIn.supportsAuthenticate()) {
       throw Exception(
         "Platform doesn't support authenticate(). Use platform-specific sign-in method.",
@@ -97,10 +97,7 @@ class AuthRepository {
       idToken: googleAuth.idToken,
     );
 
-    final cred = await _auth.signInWithCredential(credential);
-    await cred.user?.getIdToken(true);
-
-    return cred;
+    return credential;
   }
 
   // Annonymous Sign In
@@ -108,6 +105,18 @@ class AuthRepository {
     final cred = await _auth.signInAnonymously();
     await _waitForAuthenticatedClaim(cred.user);
     return cred;
+  }
+
+  Future<UserCredential> signInWithCredential(OAuthCredential credential) async {
+    final cred = await _auth.signInWithCredential(credential);
+    await cred.user?.getIdToken(true);
+    return cred;
+  }
+
+  Future<UserCredential> linkWithCredential(OAuthCredential credential) async {
+    final cred = await _auth.currentUser?.linkWithCredential(credential);
+    await cred?.user?.getIdToken(true);
+    return cred!;
   }
 
   // The onCreate trigger that assigns the `role: authenticated` claim Supabase

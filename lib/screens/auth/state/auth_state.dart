@@ -232,8 +232,11 @@ class AuthState extends ChangeNotifier {
   Future<AuthResult> signInWithApple({String? source, String? gateSource}) async {
     _setLoading();
     try {
-      final result = await _authRepo.signInWithApple();
-      final cred = result.cred;
+      final wasAnnonymous = _authRepo.firebaseUser?.isAnonymous ?? false;
+      final result = await _authRepo.getAppleCredential();
+      final cred = wasAnnonymous
+          ? await _authRepo.linkWithCredential(result.credential)
+          : await _authRepo.signInWithCredential(result.credential);
       final isNewUser = cred.additionalUserInfo?.isNewUser ?? false;
       final firebaseUser = cred.user;
 
@@ -282,7 +285,7 @@ class AuthState extends ChangeNotifier {
 
       await _userState.createUser(appUser: appUser);
 
-      if (isNewUser) {
+      if (isNewUser || wasAnnonymous) {
         _analytics.track(AnalyticsEvent.signUp, props: {
           AnalyticsProp.method: 'apple',
           AnalyticsProp.platform: isIOS ? 'iOS' : 'Android',
@@ -303,7 +306,7 @@ class AuthState extends ChangeNotifier {
         await _userState.loadBlockedUsers();
         await _syncAnalyticsProfile(
           method: 'apple',
-          isNewUser: isNewUser,
+          isNewUser: isNewUser || wasAnnonymous,
           source: source,
           gateSource: gateSource,
         );
@@ -337,7 +340,10 @@ class AuthState extends ChangeNotifier {
   Future<AuthResult> signInWithGoogle({String? source, String? gateSource}) async {
     _setLoading();
     try {
-      final cred = await _authRepo.signInWithGoogle();
+      final wasAnnonymous = _authRepo.firebaseUser?.isAnonymous ?? false;
+      final result = await _authRepo.getGoogleCredential();
+      final cred =
+          wasAnnonymous ? await _authRepo.linkWithCredential(result) : await _authRepo.signInWithCredential(result);
       final isNewUser = cred.additionalUserInfo?.isNewUser ?? false;
       final firebaseUser = cred.user;
       if (firebaseUser == null) {
@@ -397,7 +403,7 @@ class AuthState extends ChangeNotifier {
         await _userState.loadBlockedUsers();
         await _syncAnalyticsProfile(
           method: 'google',
-          isNewUser: isNewUser,
+          isNewUser: isNewUser || wasAnnonymous,
           source: source,
           gateSource: gateSource,
         );

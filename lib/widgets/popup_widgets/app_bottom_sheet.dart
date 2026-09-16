@@ -10,6 +10,7 @@ class AppBottomSheet extends StatelessWidget {
   final double maxHeightFactor;
   final EdgeInsetsGeometry padding;
   final bool scrollable;
+  final bool isDismissible;
 
   const AppBottomSheet({
     super.key,
@@ -17,6 +18,7 @@ class AppBottomSheet extends StatelessWidget {
     this.maxHeightFactor = 0.9,
     this.padding = const EdgeInsets.symmetric(horizontal: 15),
     this.scrollable = false,
+    this.isDismissible = true,
   });
 
   @override
@@ -46,10 +48,12 @@ class AppBottomSheet extends StatelessWidget {
 Future<T?> showAppBottomSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
+  bool isDismissible = true,
 }) {
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: true,
+    isDismissible: isDismissible,
     builder: builder,
   );
 }

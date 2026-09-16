@@ -6,16 +6,16 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/support/theme.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class OnboardingWelcomeScreen extends StatefulWidget {
   final VoidCallback onNext;
 
-  const WelcomeScreen({super.key, required this.onNext});
+  const OnboardingWelcomeScreen({super.key, required this.onNext});
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  State<OnboardingWelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<OnboardingWelcomeScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _titleAnimation;
   late Animation<double> _subtitleAnimation;

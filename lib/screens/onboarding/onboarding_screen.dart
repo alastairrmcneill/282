@@ -3,10 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/onboarding/state/onboarding_state.dart';
-import 'package:two_eight_two/screens/onboarding/screens/welcome_screen.dart';
 import 'package:two_eight_two/screens/onboarding/screens/munro_question_screen.dart';
-import 'package:two_eight_two/screens/onboarding/screens/onboarding_bulk_log_screen.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String route = '/onboarding';
@@ -88,13 +87,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               controller: _pageController,
               onPageChanged: (value) => state.goToPage(value),
               children: [
-                WelcomeScreen(onNext: _nextPage),
+                OnboardingWelcomeScreen(onNext: _nextPage),
                 MunroQuestionScreen(onNo: _onNo, onYes: _onYes, source: AnalyticsSource.firstRunOnboarding),
               ],
             ),
           ),
           // Hide dots on question page — it has its own CTA layout
-          if (state.currentPage > 0)
+          if (state.currentPage > 1)
             Positioned(
               top: 32,
               left: 0,
