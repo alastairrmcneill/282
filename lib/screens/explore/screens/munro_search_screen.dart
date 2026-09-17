@@ -4,7 +4,7 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/explore/explore_tab.dart';
 import 'package:two_eight_two/screens/explore/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MunroSearchScreen extends StatelessWidget {
   const MunroSearchScreen({super.key});

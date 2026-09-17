@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/user_search/widgets/user_search_icon_cluster.dart';
 
