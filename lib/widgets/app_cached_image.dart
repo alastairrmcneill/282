@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -37,10 +37,10 @@ class AppCachedImage extends StatelessWidget {
       ),
       errorWidget: (context, url, error) {
         context.read<Logger>().logPossibleNetworkError(
-              'Failed to load photo',
-              error,
-              context: {'imageUrl': url},
-            );
+          'Failed to load photo',
+          error,
+          context: {'imageUrl': url},
+        );
         return Center(
           child: Icon(
             PhosphorIconsRegular.warning,

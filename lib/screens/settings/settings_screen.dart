@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/logging/logging.dart';
@@ -146,13 +146,17 @@ class SettingsScreen extends StatelessWidget {
                 title: const Text("Terms of Service"),
                 leading: Icon(PhosphorIconsRegular.fileText, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () { openTermsUrl(); },
+                onTap: () {
+                  openTermsUrl();
+                },
               ),
               ListTile(
                 title: const Text("Privacy Policy"),
                 leading: Icon(PhosphorIconsRegular.shield, color: context.colors.accent),
                 trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
-                onTap: () { openPrivacyPolicyUrl(); },
+                onTap: () {
+                  openPrivacyPolicyUrl();
+                },
               ),
             ],
           ),

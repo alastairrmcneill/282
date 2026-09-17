@@ -5,28 +5,30 @@ import DeclaredAgeRange
 #endif
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
-
-    if let controller = window?.rootViewController as? FlutterViewController {
-      let ageRangeChannel = FlutterMethodChannel(
-        name: "com.alastairrmcneill.TwoEightTwo/age_range",
-        binaryMessenger: controller.binaryMessenger
-      )
-      ageRangeChannel.setMethodCallHandler { [weak self] call, result in
-        guard call.method == "requestAgeRange" else {
-          result(FlutterMethodNotImplemented)
-          return
-        }
-        self?.requestDeclaredAgeRange(result: result)
-      }
-    }
-
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  // Plugin registration and channel setup now happen here (UIScene lifecycle) rather than
+  // in didFinishLaunchingWithOptions, since the FlutterViewController isn't available yet there.
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
+    let ageRangeChannel = FlutterMethodChannel(
+      name: "com.alastairrmcneill.TwoEightTwo/age_range",
+      binaryMessenger: engineBridge.applicationRegistrar.messenger()
+    )
+    ageRangeChannel.setMethodCallHandler { [weak self] call, result in
+      guard call.method == "requestAgeRange" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      self?.requestDeclaredAgeRange(result: result)
+    }
   }
 
   // Bridges to Apple's Declared Age Range API (iOS 26+) so Flutter can check

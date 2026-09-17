@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 
 class ChallengeImpactStats extends StatelessWidget {
@@ -16,9 +16,7 @@ class ChallengeImpactStats extends StatelessWidget {
   Widget build(BuildContext context) {
     final remaining = (goal - completedCount).clamp(0, 282);
     final monthsRemaining = (12 - DateTime.now().month).clamp(0, 12);
-    final requiredPerMonth = monthsRemaining > 0
-        ? (remaining / monthsRemaining).ceil()
-        : remaining;
+    final requiredPerMonth = monthsRemaining > 0 ? (remaining / monthsRemaining).ceil() : remaining;
     final goalAchieved = completedCount >= goal;
 
     return Container(
@@ -103,10 +101,7 @@ class _StatRow extends StatelessWidget {
               Text(title, style: Theme.of(context).textTheme.bodyMedium),
               Text(
                 subtitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: context.colors.textMuted),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
               ),
             ],
           ),

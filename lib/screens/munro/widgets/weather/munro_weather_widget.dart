@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -121,10 +121,7 @@ class _MunroWeatherWidgetState extends State<MunroWeatherWidget> {
                         const SizedBox(height: 5),
                         Text(
                           weather.date.day.toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall!
-                              .copyWith(color: context.colors.textMuted),
+                          style: Theme.of(context).textTheme.labelSmall!.copyWith(color: context.colors.textMuted),
                         ),
                         const SizedBox(height: 5),
                         SizedBox(

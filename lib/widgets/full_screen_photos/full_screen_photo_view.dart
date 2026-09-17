@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -105,11 +105,11 @@ class _FullScreenPhotoViewerState extends State<FullScreenPhotoViewer> {
                 maxScale: PhotoViewComputedScale.covered * 2,
                 errorBuilder: (context, error, stackTrace) {
                   context.read<Logger>().logPossibleNetworkError(
-                        'Failed to load photo',
-                        error,
-                        stackTrace: stackTrace,
-                        context: {'imageUrl': photos[index].imageUrl},
-                      );
+                    'Failed to load photo',
+                    error,
+                    stackTrace: stackTrace,
+                    context: {'imageUrl': photos[index].imageUrl},
+                  );
                   return const Center(
                     child: Icon(
                       PhosphorIconsRegular.warning,

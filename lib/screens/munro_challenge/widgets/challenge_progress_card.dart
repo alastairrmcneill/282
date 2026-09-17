@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 
 class ChallengeProgressCard extends StatelessWidget {
@@ -47,10 +47,7 @@ class ChallengeProgressCard extends StatelessWidget {
                   ),
                   Text(
                     '$completedCount munros completed so far',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: context.colors.textMuted),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
                   ),
                 ],
               ),

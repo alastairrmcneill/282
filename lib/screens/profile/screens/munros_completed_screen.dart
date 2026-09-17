@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -38,8 +38,7 @@ class MunrosCompletedScreen extends StatelessWidget {
     // otherwise throw for those ids.
     final completedMunroIdsWithCompletion =
         completedIds.where((id) => munroCompletions.any((mc) => mc.munroId == id)).toSet();
-    final completedMunros =
-        munroState.munroList.where((m) => completedMunroIdsWithCompletion.contains(m.id)).toList();
+    final completedMunros = munroState.munroList.where((m) => completedMunroIdsWithCompletion.contains(m.id)).toList();
 
     final totalCount = munroState.munroList.length;
 

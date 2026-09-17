@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 
 class NoResultsUserSearch extends StatelessWidget {
