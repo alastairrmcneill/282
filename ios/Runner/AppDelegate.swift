@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import FirebaseMessaging
 #if canImport(DeclaredAgeRange)
 import DeclaredAgeRange
 #endif
@@ -10,14 +11,30 @@ import DeclaredAgeRange
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Register plugins on FlutterAppDelegate's lazy launch engine now, before returning.
+    // Some plugins (e.g. firebase_messaging's cold-start push handling) attach an
+    // NSNotificationCenter observer for UIApplicationDidFinishLaunchingNotification during
+    // registration - a one-shot broadcast fired the instant this method returns. Registering
+    // later, in didInitializeImplicitFlutterEngine (only once the storyboard's
+    // FlutterViewController is created), misses that notification permanently.
+    // FlutterViewController picks up this same engine later via takeLaunchEngine.
+    GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  // Plugin registration and channel setup now happen here (UIScene lifecycle) rather than
-  // in didFinishLaunchingWithOptions, since the FlutterViewController isn't available yet there.
-  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
-    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+  // FirebaseAppDelegateProxyEnabled is false, so nothing swizzles this token onto Messaging
+  // automatically - forward it explicitly rather than relying on FCM's own delegate proxy.
+  override func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    Messaging.messaging().apnsToken = deviceToken
+    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+  }
 
+  // Plugins are already registered from didFinishLaunchingWithOptions (same engine, handed off
+  // via takeLaunchEngine) - only app-specific channel setup happens here.
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     let ageRangeChannel = FlutterMethodChannel(
       name: "com.alastairrmcneill.TwoEightTwo/age_range",
       binaryMessenger: engineBridge.applicationRegistrar.messenger()
