@@ -16,6 +16,7 @@ class AppFlagsRepository {
   static const _kOnboardingCompletedKey = 'onboarding_completed';
   static const _kMunroDetailOpenCount = 'munro_detail_open_count';
   static const _kLastReviewSentimentPromptDate = 'last_review_sentiment_prompt_date';
+  static const _kShowStravaConnect = 'show_strava_connect';
 
   bool get onboardingCompleted => _prefs.getBool(_kOnboardingCompletedKey) ?? false;
   Future<void> setOnboardingCompleted(bool v) async {
@@ -76,6 +77,12 @@ class AppFlagsRepository {
   Future<void> setShowInAppOnboarding(String userId, bool v) async {
     final ok = await _prefs.setBool("$_kShowInAppOnboarding-$userId", v);
     if (!ok) throw Exception('Failed to persist $_kShowInAppOnboarding');
+  }
+
+  bool get showStravaConnect => _prefs.getBool(_kShowStravaConnect) ?? true;
+  Future<void> setShowStravaConnect(bool v) async {
+    final ok = await _prefs.setBool(_kShowStravaConnect, v);
+    if (!ok) throw Exception('Failed to persist $_kShowStravaConnect');
   }
 
   bool hasShownAnnualChallengeDialog(String key) => _prefs.getBool('shownAnnualChallengeDialog-$key') ?? false;

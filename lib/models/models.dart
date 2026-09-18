@@ -28,3 +28,8 @@ export 'onboarding_totals_model.dart';
 export 'onboarding_feed_post_model.dart';
 export 'onboarding_achievements_model.dart';
 export 'munro_ratings_breakdown_model.dart';
+export 'strava_connection_model.dart';
+export 'munro_match_model.dart';
+export 'strava_activity_model.dart';
+export 'pending_activity_review_model.dart';
+export 'strava_matching_config_model.dart';

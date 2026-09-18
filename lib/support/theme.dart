@@ -283,6 +283,13 @@ class MyTheme {
           return Colors.white; // Off color
         }),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        modalBackgroundColor: AppColors.light.surface,
+      ),
     );
   }
 
@@ -548,6 +555,13 @@ class MyTheme {
           return AppColors.dark.surface;
         }),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        modalBackgroundColor: AppColors.dark.surface,
+      ),
     );
   }
 }
@@ -584,6 +598,10 @@ abstract class AppColors {
   Color get border;
   Color get divider;
   Color get starColor;
+  Color get stravaBackground;
+  Color get stravaOrange;
+  Color get warning;
+  Color get warningBackground;
   // LinearGradient get overlayGradient;
 }
 
@@ -610,6 +628,14 @@ class MyLightColors implements AppColors {
   Color get divider => const Color(0xFFE5E7EB); // gray-200
   @override
   Color get starColor => const Color(0xFFF59E0B); // amber-400
+  @override
+  Color get stravaBackground => const Color.fromRGBO(255, 237, 232, 1);
+  @override
+  Color get stravaOrange => const Color(0xFFFC5200);
+  @override
+  Color get warning => const Color(0xFFF87171); // red-400
+  @override
+  Color get warningBackground => const Color(0xFFFFEBEB); // red-100
   // @override
   // LinearGradient get overlayGradient => const LinearGradient(
   //       begin: Alignment.topCenter,
@@ -641,6 +667,14 @@ class MyDarkColors implements AppColors {
   Color get divider => const Color(0xFF364153); // gray-800
   @override
   Color get starColor => const Color(0xFFF59E0B); // amber-400
+  @override
+  Color get stravaBackground => const Color.fromARGB(61, 247, 73, 25);
+  @override
+  Color get stravaOrange => const Color(0xFFFC5200);
+  @override
+  Color get warning => const Color(0xFFF87171); // red-400
+  @override
+  Color get warningBackground => const Color.fromARGB(56, 232, 129, 33); // red-100
   // @override
   // LinearGradient get overlayGradient => const LinearGradient(
   //       begin: Alignment.topCenter,

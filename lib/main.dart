@@ -44,10 +44,22 @@ main() async {
     url: config.supabaseUrl,
     anonKey: config.supabaseAnonKey,
     accessToken: () async {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser == null) {
+        if (kDebugMode) {
+          debugPrint('Supabase accessToken: no Firebase currentUser, falling back to anon key');
+        }
+        return null;
+      }
       try {
-        return await withNetworkRetry(
-          () => FirebaseAuth.instance.currentUser?.getIdToken(false) ?? Future.value(null),
-        );
+        final token = await withNetworkRetry(() => firebaseUser.getIdToken(false));
+        if (kDebugMode) {
+          debugPrint(
+            'Supabase accessToken: uid=${firebaseUser.uid} isAnonymous=${firebaseUser.isAnonymous} '
+            'tokenPresent=${token != null}',
+          );
+        }
+        return token;
       } catch (error, stackTrace) {
         // Falls back to the anon key for this request rather than crashing the
         // Postgrest/Realtime call that triggered the token refresh — Supabase

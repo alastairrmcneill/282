@@ -7,6 +7,7 @@ import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/nav/state/overlay_intent_state.dart';
 import 'package:two_eight_two/screens/nav/state/remote_config_state.dart';
 import 'package:two_eight_two/screens/nav/state/startup_overlay_policies.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
 
 import 'startup_overlay_policies_test.mocks.dart';
 
@@ -15,12 +16,16 @@ import 'startup_overlay_policies_test.mocks.dart';
   OverlayIntentState,
   AppFlagsRepository,
   AppInfoRepository,
+  MunroMatchesRepository,
+  AuthState,
 ])
 void main() {
   late MockRemoteConfigState mockRemoteConfigState;
   late MockOverlayIntentState mockOverlayIntentState;
   late MockAppFlagsRepository mockAppFlagsRepository;
   late MockAppInfoRepository mockAppInfoRepository;
+  late MockMunroMatchesRepository mockMunroMatchesRepository;
+  late MockAuthState mockAuthState;
   late StartupOverlayPolicies policies;
 
   setUp(() {
@@ -28,12 +33,16 @@ void main() {
     mockOverlayIntentState = MockOverlayIntentState();
     mockAppFlagsRepository = MockAppFlagsRepository();
     mockAppInfoRepository = MockAppInfoRepository();
+    mockMunroMatchesRepository = MockMunroMatchesRepository();
+    mockAuthState = MockAuthState();
 
     policies = StartupOverlayPolicies(
       mockRemoteConfigState,
       mockOverlayIntentState,
       mockAppFlagsRepository,
       mockAppInfoRepository,
+      mockMunroMatchesRepository,
+      mockAuthState,
     );
 
     // Default remote config to something sensible for tests.
@@ -339,6 +348,59 @@ void main() {
             argThat(
               isA<FeedbackSurveyIntent>().having((i) => i.surveyNumber, 'surveyNumber', 6),
             ),
+          ),
+        ).called(1);
+      });
+    });
+
+    group('maybeEnqueueStravaActivity', () {
+      test('should not enqueue when there is no logged in user', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn(null);
+
+        // Act
+        await policies.maybeEnqueueStravaActivity();
+
+        // Assert
+        verifyNever(mockMunroMatchesRepository.getPendingUserMunroMatches(userId: anyNamed('userId')));
+        verifyNever(mockOverlayIntentState.enqueue(any));
+      });
+
+      test('should not enqueue when there are no pending matches', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn('user-123');
+        when(mockMunroMatchesRepository.getPendingUserMunroMatches(userId: 'user-123')).thenAnswer((_) async => []);
+
+        // Act
+        await policies.maybeEnqueueStravaActivity();
+
+        // Assert
+        verifyNever(mockOverlayIntentState.enqueue(any));
+      });
+
+      test('should enqueue StravaReviewActivityIntent when there are pending matches', () async {
+        // Arrange
+        when(mockAuthState.currentUserId).thenReturn('user-123');
+        when(mockMunroMatchesRepository.getPendingUserMunroMatches(userId: 'user-123')).thenAnswer(
+          (_) async => [
+            MunroMatch(
+              id: '1',
+              userId: 'user-123',
+              munroId: 1,
+              stravaActivityId: 1,
+              status: MunroMatchStatus.pending,
+              detectedAt: DateTime.now(),
+            ),
+          ],
+        );
+
+        // Act
+        await policies.maybeEnqueueStravaActivity();
+
+        // Assert
+        verify(
+          mockOverlayIntentState.enqueue(
+            argThat(isA<StravaReviewActivityIntent>()),
           ),
         ).called(1);
       });

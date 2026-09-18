@@ -6,4 +6,5 @@ if (!getApps().length) {
 
 exports.beforecreated = require("./authTriggers").beforecreated;
 exports.beforesignedin = require("./authTriggers").beforesignedin;
+exports.onanonymoususercreated = require("./authTriggers").onanonymoususercreated;
 exports.imageProxy = require("./imageProxy").imageProxy;

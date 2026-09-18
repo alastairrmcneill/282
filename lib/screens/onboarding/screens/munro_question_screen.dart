@@ -1,8 +1,15 @@
 import 'dart:ui';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/analytics/analytics.dart';
+import 'package:two_eight_two/extensions/extensions.dart';
+import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
+import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroQuestionScreen extends StatefulWidget {
   final VoidCallback onYes;
@@ -16,45 +23,6 @@ class MunroQuestionScreen extends StatefulWidget {
 }
 
 class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _iconAnimation;
-  late Animation<double> _titleAnimation;
-  late Animation<double> _button1Animation;
-  late Animation<double> _button2Animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-
-    _iconAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.45, curve: Curves.elasticOut)),
-    );
-
-    _titleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.2, 0.6, curve: Curves.easeOut)),
-    );
-
-    _button1Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.45, 0.75, curve: Curves.easeOut)),
-    );
-
-    _button2Animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.55, 0.85, curve: Curves.easeOut)),
-    );
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   int get _stepNumber => widget.source == AnalyticsSource.inAppOnboarding ? 1 : 4;
 
   void _handleYes() {
@@ -85,152 +53,206 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Background photo
-        Positioned.fill(
-          child: Image.network(
-            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080',
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(color: const Color(0xFF0f4c35)),
-          ),
-        ),
-        // Lighter teal-tinted overlay — distinct from dark screens
-        Positioned.fill(
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0x55065f46),
-                  Color(0x33065f46),
-                  Color(0xdd065f46),
-                ],
-                stops: [0.0, 0.4, 1.0],
+    return SafeArea(
+      top: false,
+      child: Stack(
+        children: [
+          Stack(
+            children: [
+              // Background photo
+              Image.network(
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(color: const Color(0xFF0f4c35)),
+                height: 400,
               ),
-            ),
-          ),
-        ),
-        // Content
-        SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 32, right: 32, bottom: 80),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                AnimatedBuilder(
-                  animation: _iconAnimation,
-                  builder: (context, child) => Transform.scale(
-                    scale: _iconAnimation.value.clamp(0.0, 1.5),
-                    child: Opacity(opacity: _iconAnimation.value.clamp(0.0, 1.0), child: child),
-                  ),
-                  child: ClipOval(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                      child: Container(
-                        width: 96,
-                        height: 96,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.15),
-                        ),
-                        child: const Center(
-                          child: Icon(LucideIcons.mountain, size: 48, color: Colors.white),
-                        ),
-                      ),
+              // Gradient to background
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        context.colors.background.withOpacity(0.1),
+                        context.colors.background,
+                      ],
+                      stops: [0.0, 0.4, 1.0],
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
-                AnimatedBuilder(
-                  animation: _titleAnimation,
-                  builder: (context, child) => Transform.translate(
-                    offset: Offset(0, 24 * (1 - _titleAnimation.value)),
-                    child: Opacity(opacity: _titleAnimation.value, child: child),
-                  ),
-                  child: const Column(
-                    children: [
-                      Text(
-                        'Already a bagger?',
-                        style: TextStyle(
-                          fontSize: 34,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 1.2,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        "Have you already conquered some of Scotland's 282 Munros?",
-                        style: TextStyle(fontSize: 17, color: Color(0xFFd1fae5), height: 1.55),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "How many have\nyou already done?",
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: context.colors.textPrimary,
+                      height: 1,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 48),
-                AnimatedBuilder(
-                  animation: _button1Animation,
-                  builder: (context, child) => Transform.translate(
-                    offset: Offset(0, 20 * (1 - _button1Animation.value)),
-                    child: Opacity(opacity: _button1Animation.value, child: child),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Log all your previous Munro summits in one go!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: context.colors.textSubtitle,
+                    ),
                   ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 58,
-                    child: FilledButton(
-                      onPressed: _handleYes,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF10b981),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 24),
+                Card(
+                  margin: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: BorderSide(
+                      color: context.colors.stravaOrange,
+                      width: 1,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(LucideIcons.check, size: 20),
-                          SizedBox(width: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: context.colors.stravaBackground,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/strava_solid.svg',
+                                    width: 12,
+                                    height: 14,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'FASTEST',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(color: context.colors.stravaOrange),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
                           Text(
-                            "Yes, I've bagged some!",
-                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                            'Find them from Strava',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'We read your activity history, work out which summits you crossed, and show you the list to confirm.',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+                          ),
+                          const SizedBox(height: 16),
+                          CtaButton(
+                            height: 52,
+                            backgroundColor: context.colors.stravaOrange,
+                            onPressed: () async {
+                              await OnboardingSignInBottomSheet.show(context);
+                              // final connectionStatus = await context
+                              //     .read<OnboardingState>()
+                              //     .connectWithStrava();
+
+                              // if (connectionStatus ==
+                              //     StravaConnectionStatus.connected) {
+                              //   if (context.mounted) {
+                              //     Navigator.of(context).pushReplacementNamed(
+                              //         OnboardingStravaConnectedScreen.route);
+                              //   }
+                              // } else {}
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/strava_solid_white.svg',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Connect with Strava',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 14),
-                AnimatedBuilder(
-                  animation: _button2Animation,
-                  builder: (context, child) => Transform.translate(
-                    offset: Offset(0, 20 * (1 - _button2Animation.value)),
-                    child: Opacity(opacity: _button2Animation.value, child: child),
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 58,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                        child: OutlinedButton(
-                          onPressed: _handleNo,
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
-                            backgroundColor: Colors.white.withOpacity(0.1),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          ),
-                          child: const Text(
-                            'No, not yet',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
+                const SizedBox(height: 16),
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Pick them on a map',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Add your summits manually on the map or list.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+                        ),
+                        const SizedBox(height: 16),
+                        CtaButton(
+                          height: 52,
+                          backgroundColor: context.colors.background,
+                          borderColor: context.colors.middleGrey.withOpacity(0.5),
+                          onPressed: () {},
+                          child: Text(
+                            'Choose manually',
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: context.colors.textSubtitle),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    onPressed: () async {
+                      await context.read<OnboardingState>().markOnboardingCompleted(branch: 'no');
+                    },
+                    child: Text(
+                      "I'm starting from zero",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.light.textMuted,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
@@ -238,8 +260,8 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTi
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

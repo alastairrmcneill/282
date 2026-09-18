@@ -63,24 +63,27 @@ class PostPrivacySelector extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 40, top: 20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: _postVisibilityOptions.map((String option) {
-                      return ListTile(
-                        title: Text(option.capitalize()),
-                        subtitle: Text(
-                          option == "public"
-                              ? PrivacyDescriptions.public
-                              : option == "friends"
-                                  ? PrivacyDescriptions.friends
-                                  : PrivacyDescriptions.private,
-                        ),
-                        trailing: createPostState.postPrivacy == option ? const Icon(Icons.check) : null,
-                        onTap: () {
-                          createPostState.setPostPrivacy = option;
-                          Navigator.of(context).pop();
-                        },
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      );
-                    }).toList(),
+                    children: [
+                      const SheetDragHandle(),
+                      ..._postVisibilityOptions.map((String option) {
+                        return ListTile(
+                          title: Text(option.capitalize()),
+                          subtitle: Text(
+                            option == "public"
+                                ? PrivacyDescriptions.public
+                                : option == "friends"
+                                    ? PrivacyDescriptions.friends
+                                    : PrivacyDescriptions.private,
+                          ),
+                          trailing: createPostState.postPrivacy == option ? const Icon(Icons.check) : null,
+                          onTap: () {
+                            createPostState.setPostPrivacy = option;
+                            Navigator.of(context).pop();
+                          },
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        );
+                      }),
+                    ],
                   ),
                 );
               },

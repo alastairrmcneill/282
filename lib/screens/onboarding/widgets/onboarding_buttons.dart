@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class OnboardingPrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -71,8 +72,8 @@ class OnboardingBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final light = backButtonLight ?? Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
-      width: 70,
-      height: 50,
+      width: 44,
+      height: 44,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(100),
         child: BackdropFilter(
@@ -82,15 +83,17 @@ class OnboardingBackButton extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               backgroundColor: Colors.transparent,
               side: BorderSide(
-                  color: light ? Colors.white.withAlpha(100) : Colors.black.withAlpha(100),
-                  width: 0.5), // Border color and width
+                color: light ? Colors.white.withAlpha(100) : Colors.black.withAlpha(100),
+                width: 0.5,
+              ), // Border color and width
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
+              padding: EdgeInsets.zero,
             ),
             child: Center(
               child: Icon(
-                LucideIcons.chevron_left,
+                PhosphorIconsRegular.caretLeft,
                 color: light ? Colors.white.withAlpha(200) : Colors.black.withAlpha(200),
                 size: 20,
               ),
@@ -124,10 +127,6 @@ class OnboardingNavigationButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (onBack != null) ...[
-          OnboardingBackButton(onPressed: onBack!, backButtonLight: backButtonLight),
-          const SizedBox(width: 12),
-        ],
         Expanded(
           child: OnboardingPrimaryButton(
             onPressed: onNext,
