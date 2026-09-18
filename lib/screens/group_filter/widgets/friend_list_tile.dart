@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
@@ -25,14 +25,10 @@ class FriendListTile extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected
-              ? context.colors.accent.withValues(alpha: 0.08)
-              : context.colors.surface,
+          color: isSelected ? context.colors.accent.withValues(alpha: 0.08) : context.colors.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected
-                ? context.colors.accent.withValues(alpha: 0.4)
-                : context.colors.border,
+            color: isSelected ? context.colors.accent.withValues(alpha: 0.4) : context.colors.border,
             width: isSelected ? 1.5 : 0.65,
           ),
         ),
@@ -76,9 +72,7 @@ class _SelectionIndicator extends StatelessWidget {
           width: 1.5,
         ),
       ),
-      child: isSelected
-          ? Icon(PhosphorIconsRegular.check, color: Colors.white, size: 14)
-          : null,
+      child: isSelected ? Icon(PhosphorIconsRegular.check, color: Colors.white, size: 14) : null,
     );
   }
 }

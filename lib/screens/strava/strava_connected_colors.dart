@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Fixed dark-mode-only palette for the Strava-connected celebration screen.
 /// Not theme colors — this screen ignores light/dark mode by design.

@@ -1,32 +1,51 @@
 import UIKit
 import Flutter
+import FirebaseMessaging
 #if canImport(DeclaredAgeRange)
 import DeclaredAgeRange
 #endif
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Register plugins on FlutterAppDelegate's lazy launch engine now, before returning.
+    // Some plugins (e.g. firebase_messaging's cold-start push handling) attach an
+    // NSNotificationCenter observer for UIApplicationDidFinishLaunchingNotification during
+    // registration - a one-shot broadcast fired the instant this method returns. Registering
+    // later, in didInitializeImplicitFlutterEngine (only once the storyboard's
+    // FlutterViewController is created), misses that notification permanently.
+    // FlutterViewController picks up this same engine later via takeLaunchEngine.
     GeneratedPluginRegistrant.register(with: self)
-
-    if let controller = window?.rootViewController as? FlutterViewController {
-      let ageRangeChannel = FlutterMethodChannel(
-        name: "com.alastairrmcneill.TwoEightTwo/age_range",
-        binaryMessenger: controller.binaryMessenger
-      )
-      ageRangeChannel.setMethodCallHandler { [weak self] call, result in
-        guard call.method == "requestAgeRange" else {
-          result(FlutterMethodNotImplemented)
-          return
-        }
-        self?.requestDeclaredAgeRange(result: result)
-      }
-    }
-
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  // FirebaseAppDelegateProxyEnabled is false, so nothing swizzles this token onto Messaging
+  // automatically - forward it explicitly rather than relying on FCM's own delegate proxy.
+  override func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    Messaging.messaging().apnsToken = deviceToken
+    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+  }
+
+  // Plugins are already registered from didFinishLaunchingWithOptions (same engine, handed off
+  // via takeLaunchEngine) - only app-specific channel setup happens here.
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    let ageRangeChannel = FlutterMethodChannel(
+      name: "com.alastairrmcneill.TwoEightTwo/age_range",
+      binaryMessenger: engineBridge.applicationRegistrar.messenger()
+    )
+    ageRangeChannel.setMethodCallHandler { [weak self] call, result in
+      guard call.method == "requestAgeRange" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      self?.requestDeclaredAgeRange(result: result)
+    }
   }
 
   // Bridges to Apple's Declared Age Range API (iOS 26+) so Flutter can check

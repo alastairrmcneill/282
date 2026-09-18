@@ -39,7 +39,6 @@ class PushNotificationState extends ChangeNotifier {
     _started = true;
 
     try {
-      // Handle cold start.
       final initial = await _repo.getInitialMessage();
       if (initial != null) {
         _trackPushOpened(initial, coldStart: true);

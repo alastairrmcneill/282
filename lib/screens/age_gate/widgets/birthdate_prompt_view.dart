@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -77,9 +77,7 @@ class _BirthdatePromptViewState extends State<BirthdatePromptView> {
           ),
           const SizedBox(height: 16),
           PrimaryButton(
-            onPressed: _birthdate == null
-                ? null
-                : () => context.read<AgeGateState>().submitBirthdate(_birthdate!),
+            onPressed: _birthdate == null ? null : () => context.read<AgeGateState>().submitBirthdate(_birthdate!),
             child: const Text('Continue'),
           ),
         ],

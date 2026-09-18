@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
   String format24Hour() {

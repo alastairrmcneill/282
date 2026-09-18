@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:two_eight_two/support/legal_urls.dart';
 
 class ConsentText extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:two_eight_two/models/models.dart';
 
 class FoundOnStravaSubtitle extends StatelessWidget {

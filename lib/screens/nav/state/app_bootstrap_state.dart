@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:two_eight_two/analytics/analytics.dart';
 import 'package:two_eight_two/config/app_config.dart';
 import 'package:two_eight_two/logging/logging.dart';
 import 'package:two_eight_two/push/push.dart';
@@ -17,6 +18,7 @@ class AppBootstrapState extends ChangeNotifier {
   final PushNotificationState _pushNotificationState;
   final StartupOverlayPolicies _startupOverlayPolicies;
   final FlavorState _flavorState;
+  final Analytics _analytics;
   final Logger _logger;
 
   AppBootstrapState(
@@ -31,6 +33,7 @@ class AppBootstrapState extends ChangeNotifier {
     this._pushNotificationState,
     this._startupOverlayPolicies,
     this._flavorState,
+    this._analytics,
     this._logger,
   );
 
@@ -63,6 +66,7 @@ class AppBootstrapState extends ChangeNotifier {
       final uid = _authState.currentUserId;
 
       if (uid != null) {
+        await _analytics.identify(uid);
         await _userState.readUser(uid: uid);
         await _munroCompletionState.loadUserMunroCompletions();
         await _savedListState.readUserSavedLists();
