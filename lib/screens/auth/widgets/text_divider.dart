@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // Divider with text in the middle
 class TextDivider extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
@@ -37,7 +37,10 @@ class ProfileChallengeCard extends StatelessWidget {
                     children: [
                       Text(
                         'Annual Challenge',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
                       ),
                       Text(
                         'Set a goal for this year',
@@ -85,7 +88,10 @@ class ProfileChallengeCard extends StatelessWidget {
                       children: [
                         Text(
                           '$year Challenge',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w500, color: context.colors.textPrimary),
                         ),
                         Text(
                           isCurrentUser ? 'Your annual goal' : 'Their annual goal',
@@ -94,8 +100,7 @@ class ProfileChallengeCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (isCurrentUser)
-                    Icon(Icons.chevron_right, color: context.colors.textMuted, size: 20),
+                  if (isCurrentUser) Icon(Icons.chevron_right, color: context.colors.textMuted, size: 20),
                 ],
               ),
               const SizedBox(height: 12),
@@ -129,9 +134,7 @@ class ProfileChallengeCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                remaining > 0
-                    ? '$remaining more to reach ${isCurrentUser ? 'your' : 'their'} goal'
-                    : 'Goal reached!',
+                remaining > 0 ? '$remaining more to reach ${isCurrentUser ? 'your' : 'their'} goal' : 'Goal reached!',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.colors.textMuted),
               ),
             ],

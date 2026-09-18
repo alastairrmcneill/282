@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/munro_challenge/screens/create_munro_challenge_screen.dart';
@@ -42,7 +42,7 @@ class MunroChallengeDetailScreen extends StatelessWidget {
     );
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     final achievementsState = context.watch<AchievementsState>();
     final munroCompletionState = context.watch<MunroCompletionState>();

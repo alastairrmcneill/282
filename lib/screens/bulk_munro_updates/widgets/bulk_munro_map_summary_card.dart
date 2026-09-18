@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
@@ -26,9 +26,7 @@ class BulkMunroMapSummaryCard extends StatelessWidget {
     if (munro.id == Munro.empty.id) return const SizedBox();
 
     // Already-summited: locked, read-only
-    final existingCompletion = munroCompletionState.munroCompletions
-        .where((c) => c.munroId == munroId)
-        .firstOrNull;
+    final existingCompletion = munroCompletionState.munroCompletions.where((c) => c.munroId == munroId).firstOrNull;
     final bool alreadySummited = existingCompletion != null;
 
     // Bulk selection — single completion per munro, matching list tile behaviour
@@ -38,10 +36,8 @@ class BulkMunroMapSummaryCard extends StatelessWidget {
         .toList();
     final bool summited = summitedDates.isNotEmpty;
     final DateTime firstSummitedDate = summitedDates.isNotEmpty ? summitedDates[0] : DateTime.now();
-    final bool isDefaultDate = summited &&
-        firstSummitedDate.hour == 0 &&
-        firstSummitedDate.minute == 0 &&
-        firstSummitedDate.second == 0;
+    final bool isDefaultDate =
+        summited && firstSummitedDate.hour == 0 && firstSummitedDate.minute == 0 && firstSummitedDate.second == 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -83,15 +79,11 @@ class BulkMunroMapSummaryCard extends StatelessWidget {
                     const Spacer(),
                     Row(
                       children: [
-                        Icon(PhosphorIconsRegular.calendarBlank,
-                            size: 14, color: context.colors.textMuted),
+                        Icon(PhosphorIconsRegular.calendarBlank, size: 14, color: context.colors.textMuted),
                         const SizedBox(width: 6),
                         Text(
                           DateFormat('dd/MM/yyyy').format(existingCompletion.dateTimeCompleted),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: context.colors.textMuted),
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.colors.textMuted),
                         ),
                       ],
                     ),
@@ -163,21 +155,14 @@ class BulkMunroMapSummaryCard extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(
-                          isDefaultDate
-                              ? PhosphorIconsRegular.plus
-                              : PhosphorIconsRegular.calendarBlank,
+                          isDefaultDate ? PhosphorIconsRegular.plus : PhosphorIconsRegular.calendarBlank,
                           size: 16,
                           color: context.colors.textMuted,
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          isDefaultDate
-                              ? 'Add date (optional)'
-                              : DateFormat('dd/MM/yyyy').format(firstSummitedDate),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: context.colors.textMuted),
+                          isDefaultDate ? 'Add date (optional)' : DateFormat('dd/MM/yyyy').format(firstSummitedDate),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: context.colors.textMuted),
                         ),
                       ],
                     ),

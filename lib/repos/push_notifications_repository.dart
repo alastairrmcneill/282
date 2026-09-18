@@ -53,7 +53,7 @@ class PushNotificationRepository {
   Future<bool> _ensureApnsToken() async {
     for (int i = 0; i < 20; i++) {
       try {
-        final apns = await _messaging.getAPNSToken();
+        final apns = await _messaging.getAPNSToken().timeout(const Duration(seconds: 2));
         if (apns != null) return true;
       } catch (_) {}
       await Future.delayed(const Duration(milliseconds: 500));
