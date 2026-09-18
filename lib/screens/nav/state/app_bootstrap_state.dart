@@ -55,22 +55,12 @@ class AppBootstrapState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TEMP diagnostic logging to find which bootstrap task hangs under the UIScene migration; remove once resolved.
-      Future<void> tap(String name, Future<void> f) =>
-          f.then((_) => _logger.info('bootstrap: $name done')).catchError((e, st) {
-            _logger.info('bootstrap: $name threw $e');
-            throw e;
-          });
-      _logger.info('bootstrap: starting parallel tasks');
       await Future.wait([
-        tap('remoteConfig', _remoteConfig.init()),
-        tap('settings', _settingsState.load()),
-        tap('munros', _munroState.loadMunros()),
-        tap(
-          'deepLink',
-          _deepLinkState.init(enableLogging: _flavorState.environment != AppEnvironment.prod),
-        ),
-        tap('push', _pushNotificationState.init()),
+        _remoteConfig.init(),
+        _settingsState.load(),
+        _munroState.loadMunros(),
+        _deepLinkState.init(enableLogging: _flavorState.environment != AppEnvironment.prod),
+        _pushNotificationState.init(),
       ]);
 
       final uid = _authState.currentUserId;

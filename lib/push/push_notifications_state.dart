@@ -39,10 +39,7 @@ class PushNotificationState extends ChangeNotifier {
     _started = true;
 
     try {
-      // TEMP diagnostic logging to find which push init step hangs under the UIScene migration; remove once resolved.
-      _logger.info('push: getInitialMessage start');
       final initial = await _repo.getInitialMessage();
-      _logger.info('push: getInitialMessage done');
       if (initial != null) {
         _trackPushOpened(initial, coldStart: true);
         _intents.enqueue(OpenNotificationsIntent());
@@ -60,9 +57,7 @@ class PushNotificationState extends ChangeNotifier {
       });
 
       // If push is enabled, try to sync token now (permission gated).
-      _logger.info('push: syncTokenIfNeeded start');
       await syncTokenIfNeeded();
-      _logger.info('push: syncTokenIfNeeded done');
     } catch (e, st) {
       _logger.error('Push init failed', error: e, stackTrace: st);
     }
@@ -127,14 +122,10 @@ class PushNotificationState extends ChangeNotifier {
     if (user == null || user.uid == null) return;
 
     try {
-      _logger.info('push: getNotificationSettings start');
       final perm = await _repo.getNotificationSettings();
-      _logger.info('push: getNotificationSettings done (${perm.authorizationStatus})');
       if (perm.authorizationStatus != AuthorizationStatus.authorized) return;
 
-      _logger.info('push: getToken start');
       final token = await _repo.getToken();
-      _logger.info('push: getToken done (${token != null})');
       if (token == null || token.isEmpty) return;
 
       // Get device info and app version
@@ -142,7 +133,6 @@ class PushNotificationState extends ChangeNotifier {
       final appVersion = _appInfo.version;
 
       // Upsert token to user_fcm_tokens table
-      _logger.info('push: upsertToken start');
       await _fcmTokenRepo.upsertToken(
         userId: user.uid!,
         deviceId: deviceInfo.deviceId,
@@ -152,7 +142,6 @@ class PushNotificationState extends ChangeNotifier {
         osVersion: deviceInfo.osVersion,
         deviceModel: deviceInfo.deviceModel,
       );
-      _logger.info('push: upsertToken done');
     } catch (e, st) {
       _logger.logPossibleNetworkError('Sync FCM token failed', e, stackTrace: st);
     }
