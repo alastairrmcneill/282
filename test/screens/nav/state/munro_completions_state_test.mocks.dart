@@ -8,7 +8,7 @@ import 'dart:async' as _i4;
 import 'dart:io' as _i7;
 import 'dart:ui' as _i8;
 
-import 'package:flutter/src/material/time.dart' as _i5;
+import 'package:material_ui/material_ui.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:two_eight_two/analytics/analytics_base.dart' as _i9;
 import 'package:two_eight_two/logging/logging.dart' as _i10;
