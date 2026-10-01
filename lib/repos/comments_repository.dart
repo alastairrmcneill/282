@@ -10,7 +10,12 @@ class CommentsRepository {
 
   Future<Comment> create({required Comment comment}) async {
     final response = await _table.insert(comment.toJSON()).select().single();
-    return Comment.fromJSON(response);
+    // The table row has no author columns (they come from the view)
+    return Comment.fromJSON({
+      ...response,
+      CommentFields.authorDisplayName: comment.authorDisplayName,
+      CommentFields.authorProfilePictureURL: comment.authorProfilePictureURL,
+    });
   }
 
   // Update Comment

@@ -86,7 +86,8 @@ class AchievementsState extends ChangeNotifier {
   // Set annual goal
   Future<void> setMunroChallenge() async {
     try {
-      Achievement achievement = _currentAchievement!;
+      final achievement = _currentAchievement;
+      if (achievement == null) return;
       achievement.annualTarget = _achievementFormCount;
 
       await _userAchievementsRepository.updateUserAchievement(achievement: achievement);
