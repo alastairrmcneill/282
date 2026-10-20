@@ -42,25 +42,25 @@ class OnboardingState extends ChangeNotifier {
   List<OnboardingAchievements> get achievements => _achievements;
 
   Future<void> init() async {
+    _analytics.track(
+      AnalyticsEvent.onboardingScreenViewed,
+      props: {
+        AnalyticsProp.stepNumber: 1,
+        AnalyticsProp.stepName: _stepNames[0],
+        AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
+      },
+    );
+
     try {
-      Future.wait([
+      final results = await Future.wait([
         _onboardingRepository.fetchFeedPosts(),
         _onboardingRepository.fetchTotals(),
         _onboardingRepository.fetchAchievements(),
-      ]).then((results) {
-        _feedPosts = results[0] as List<OnboardingFeedPost>;
-        _totals = results[1] as OnboardingTotals;
-        _achievements = results[2] as List<OnboardingAchievements>;
-        notifyListeners();
-      });
-      _analytics.track(
-        AnalyticsEvent.onboardingScreenViewed,
-        props: {
-          AnalyticsProp.stepNumber: 1,
-          AnalyticsProp.stepName: _stepNames[0],
-          AnalyticsProp.source: AnalyticsSource.firstRunOnboarding,
-        },
-      );
+      ]);
+      _feedPosts = results[0] as List<OnboardingFeedPost>;
+      _totals = results[1] as OnboardingTotals;
+      _achievements = results[2] as List<OnboardingAchievements>;
+      notifyListeners();
     } catch (error, stackTrace) {
       _logger.error(
         "Failed to load onboarding data",
