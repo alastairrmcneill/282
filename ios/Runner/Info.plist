@@ -32,6 +32,14 @@
 					<string>$(GOOGLE_SIGN_IN_ID)</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>twoeightwo</string>
+				</array>
+			</dict>
 		</array>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>This app does not use location services.</string>

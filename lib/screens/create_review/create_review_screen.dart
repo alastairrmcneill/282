@@ -22,6 +22,13 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
 
   void _goHome(BuildContext context) {
     context.read<MunroState>().clearFilterAndSorting();
+
+    // More Strava activities queued: return to the review list instead of home.
+    if (context.read<StravaActivityReviewState>().pendingReviews.isNotEmpty) {
+      Navigator.of(context).popUntil((route) => route.settings.name == FoundOnStravaScreen.route);
+      return;
+    }
+
     Navigator.pushNamedAndRemoveUntil(
       context,
       HomeScreen.route,

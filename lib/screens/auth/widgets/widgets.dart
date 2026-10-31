@@ -13,3 +13,4 @@ export 'google_sign_in_button.dart';
 export 'text_divider.dart';
 export 'bio_form_field.dart';
 export 'password_requirements_widget.dart';
+export 'consent_text.dart';
