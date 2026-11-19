@@ -9,6 +9,7 @@ import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
 import 'package:two_eight_two/support/theme.dart';
+import 'package:two_eight_two/screens/strava/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class MunroQuestionScreen extends StatefulWidget {
@@ -168,38 +169,11 @@ class _MunroQuestionScreenState extends State<MunroQuestionScreen> with SingleTi
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
                           ),
                           const SizedBox(height: 16),
-                          CtaButton(
-                            height: 52,
-                            backgroundColor: context.colors.stravaOrange,
-                            onPressed: () async {
-                              await OnboardingSignInBottomSheet.show(context);
-                              // final connectionStatus = await context
-                              //     .read<OnboardingState>()
-                              //     .connectWithStrava();
-
-                              // if (connectionStatus ==
-                              //     StravaConnectionStatus.connected) {
-                              //   if (context.mounted) {
-                              //     Navigator.of(context).pushReplacementNamed(
-                              //         OnboardingStravaConnectedScreen.route);
-                              //   }
-                              // } else {}
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/strava_solid_white.svg',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Connect with Strava',
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
-                                ),
-                              ],
+                          const StravaDataDisclosure(),
+                          const SizedBox(height: 8),
+                          Center(
+                            child: ConnectWithStravaButton(
+                              onPressed: () => OnboardingSignInBottomSheet.show(context),
                             ),
                           ),
                         ],

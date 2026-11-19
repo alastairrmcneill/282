@@ -3,6 +3,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
+import 'package:two_eight_two/screens/create_post/widgets/widgets.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -55,7 +56,7 @@ class PostPrivacySelector extends StatelessWidget {
           labelText: "Post Visibility",
           hintText: "Post Visibility Selector",
           onTap: () async {
-            // Show bottom sheet with 3 options
+            final selectorContext = context;
             await showModalBottomSheet(
               context: context,
               builder: (BuildContext context) {
@@ -76,9 +77,17 @@ class PostPrivacySelector extends StatelessWidget {
                                     : PrivacyDescriptions.private,
                           ),
                           trailing: createPostState.postPrivacy == option ? const Icon(Icons.check) : null,
-                          onTap: () {
-                            createPostState.setPostPrivacy = option;
+                          onTap: () async {
                             Navigator.of(context).pop();
+                            if (createPostState.prefilledFromStrava && option != Privacy.private) {
+                              if (!selectorContext.mounted) return;
+                              final consented = await StravaShareConsentDialog.show(
+                                selectorContext,
+                                audience: option == Privacy.public ? 'everyone' : 'your friends',
+                              );
+                              if (!consented) return;
+                            }
+                            createPostState.setPostPrivacy = option;
                           },
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         );

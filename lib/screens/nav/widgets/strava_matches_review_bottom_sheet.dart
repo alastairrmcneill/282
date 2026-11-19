@@ -52,17 +52,9 @@ class StravaMatchesReviewBottomSheet extends StatelessWidget {
       confirmedMatchIds: stravaActivityReviewState.selectedMatchIds,
     );
 
-    final createPostState = context.read<CreatePostState>();
-    createPostState.reset();
-    for (final munroId in confirmedMunroIds) {
-      createPostState.addMunro(munroId);
-    }
-
-    final startDate = review.activity.startDate;
-    createPostState.setCompletionDate = DateTime(startDate.year, startDate.month, startDate.day);
-    createPostState.setCompletionStartTime = TimeOfDay.fromDateTime(review.activity.startDate);
-    createPostState.setCompletionDuration =
-        review.activity.durationS != null ? Duration(seconds: review.activity.durationS!.toInt()) : null;
+    context.read<CreatePostState>()
+      ..reset()
+      ..prefillFromStravaActivity(munroIds: confirmedMunroIds, activity: review.activity);
 
     onSubmit();
     Navigator.of(context).pop();
@@ -85,6 +77,7 @@ class StravaMatchesReviewBottomSheet extends StatelessWidget {
     return AppBottomSheet(
       children: [
         StravaMatchesReviewBottomSheetHeader(activity: review.activity),
+        StravaAttributionRow(activity: review.activity),
         const SizedBox(height: 8),
         StravaMatchesReviewBottomSheetTitle(review: review),
         const SizedBox(height: 8),
@@ -143,6 +136,7 @@ class StravaMatchesReviewBottomSheet extends StatelessWidget {
             ),
           ],
         ),
+        const PoweredByStravaLogo(),
         const SizedBox(height: 16),
       ],
     );

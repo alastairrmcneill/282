@@ -43,7 +43,67 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
         <li>
           <a href="https://policies.google.com/privacy" rel="noopener">Google Play Services</a>
         </li>
+        <li>
+          <a href="https://www.strava.com/legal/privacy" rel="noopener">Strava</a> (only if you connect it)
+        </li>
       </ul>
+      <h2>Strava</h2>
+      <p>
+        You can choose to connect your Strava account so that 282 can find the Munros you've
+        climbed. This is optional, and nothing is read from Strava until you connect.
+      </p>
+      <h3>What we collect</h3>
+      <p>
+        With your permission (the <code>activity:read</code> scope), 282 reads your Strava athlete
+        ID and your activities: name, sport type, date and start time, elapsed time, distance,
+        elevation and the recording device. It also reads each activity's route, but only uses it
+        to check which Munros it passed. The route and start/end locations are never stored.
+        Activities you've set to "Only You" on Strava are not visible to 282. Your Strava access
+        tokens are stored encrypted.
+      </p>
+      <h3>How we collect it</h3>
+      <p>
+        Strava notifies 282 when you upload, change or delete an activity, and 282 then reads that
+        one activity. If you ask 282 to scan your history, it reads your activity list once; the
+        results are shown to you and are not stored.
+      </p>
+      <h3>How we use it and who can see it</h3>
+      <p>
+        Strava data is used only to suggest Munros for you to confirm. It is shown only to you. It
+        is never shared with other 282 users, sold, used for advertising, used for analytics, or
+        used to train or run any artificial intelligence. If you choose to share a post that was
+        filled in from a Strava activity, 282 asks you first, and only the details you choose to
+        post are shared.
+      </p>
+      <h3>How long we keep it</h3>
+      <p>
+        282 only keeps activities that passed a Munro, and only until you review them or for 7
+        days, whichever comes first. They are then deleted automatically. Munros you confirm become
+        part of your 282 log, like any Munro you log by hand.
+      </p>
+      <h3>Seeing your data, withdrawing consent and deletion</h3>
+      <p>
+        You can see everything 282 currently holds from Strava in Settings → Your Strava data. You
+        can withdraw consent at any time by tapping Disconnect from Strava in Settings, or by
+        revoking 282 in your
+        <a href="https://www.strava.com/settings/apps" rel="noopener">Strava settings</a>. Either
+        way, 282 permanently deletes all data it obtained from Strava for you, usually immediately
+        and always within 30 days, and confirms in the app when deletion is complete. You can also
+        email the address below to ask for a copy of your data or for it to be deleted.
+      </p>
+      <h3>Strava's role</h3>
+      <p>
+        Strava may collect and use data about 282's use of the Strava API ("Usage Data") for any
+        business purpose, including improving the Strava API, providing support and checking
+        compliance with its API Agreement. Strava's handling of your data is governed by the
+        <a href="https://www.strava.com/legal/privacy" rel="noopener">Strava Privacy Policy</a>,
+        which takes precedence over this policy where they conflict.
+      </p>
+      <h3>Where it's processed</h3>
+      <p>
+        Strava data is stored and processed by Supabase (database and server functions) on 282's
+        behalf. Sign-in is handled by Google Firebase.
+      </p>
       <h2>Log Data</h2>
       <p>
         I want to inform you that whenever you use my Service, in a case of an error in the app I

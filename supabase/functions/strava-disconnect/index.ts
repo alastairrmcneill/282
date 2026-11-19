@@ -1,48 +1,43 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireUser, UnauthorizedError } from "../_shared/firebase-auth.ts";
+import { json, serviceClient } from "../_shared/http.ts";
+import { deauthorizeAtStrava, getValidAccessToken } from "../_shared/strava-token.ts";
+import { deleteStravaDataForUser } from "../_shared/strava-deletion.ts";
 
+// Disconnecting revokes access on Strava's side and permanently deletes all
+// Strava Data we hold for the user, then returns a confirmation the app shows
+// to the user [API Policy 2.5, 7.4].
 Deno.serve(async (req) => {
-  console.log("🎯 ~ Deno.serve ~ req:", req);
+  if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
 
   let userId: string;
   try {
     userId = await requireUser(req);
-    console.log("🎯 ~ userId:", userId);
   } catch (e) {
-    if (e instanceof UnauthorizedError) {
-      return new Response("Unauthorized", { status: 401 });
-    }
+    if (e instanceof UnauthorizedError) return new Response("Unauthorized", { status: 401 });
     throw e;
   }
 
-  const service = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
-  const { data: conn } = await service.from("strava_connections").select("*")
-    .eq("user_id", userId).single();
-  console.log("🎯 ~ conn:", conn);
-  if (!conn) return new Response("Not connected", { status: 404 });
+  const supabase = serviceClient();
+  const { data: conn } = await supabase.from("strava_connections")
+    .select("user_id, strava_athlete_id, access_token, refresh_token, token_expires_at")
+    .eq("user_id", userId).maybeSingle();
 
-  await fetch("https://www.strava.com/oauth/revoke", {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${
-        btoa(
-          `${Deno.env.get("STRAVA_CLIENT_ID")}:${
-            Deno.env.get("STRAVA_CLIENT_SECRET")
-          }`,
-        )
-      }`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ token: conn.refresh_token }),
-  });
-  await service.from("strava_connections").update({
-    revoked_at: new Date().toISOString(),
-  }).eq("user_id", userId);
-  console.log("🎯 ~ strava_connections revoked for userId:", userId);
-  return new Response(JSON.stringify({ ok: true }), {
-    headers: { "Content-Type": "application/json" },
-  });
+  let stravaAccessRevoked = false;
+  if (conn) {
+    try {
+      const token = await getValidAccessToken(supabase, conn);
+      stravaAccessRevoked = await deauthorizeAtStrava(token);
+    } catch (e) {
+      // Already revoked on Strava's side; nothing to revoke, but we still delete.
+      console.error("Could not obtain token to deauthorize:", (e as Error).message);
+    }
+  }
+
+  try {
+    const result = await deleteStravaDataForUser(supabase, userId, "user_disconnect");
+    return json({ ...result, strava_access_revoked: stravaAccessRevoked });
+  } catch (e) {
+    console.error("Strava data deletion failed:", (e as Error).message);
+    return json({ error: "Deletion failed" }, 500);
+  }
 });

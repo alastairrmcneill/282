@@ -45,3 +45,8 @@ export 'app_cached_image.dart';
 export 'overlay_gradient.dart';
 export 'feature_highlight_card.dart';
 export 'pagination_loader.dart';
+export 'connect_with_strava_button.dart';
+export 'powered_by_strava_logo.dart';
+export 'view_on_strava_link.dart';
+export 'garmin_attribution.dart';
+export 'strava_attribution_row.dart';
