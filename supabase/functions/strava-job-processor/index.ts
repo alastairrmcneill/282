@@ -1,196 +1,133 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { getValidAccessToken } from "../_shared/strava-token.ts";
-import { toStravaActivityRow } from "../_shared/strava-activity.ts";
+import { json, safeEqual, serviceClient } from "../_shared/http.ts";
+import {
+  rateLimitBackoffUntil,
+  StravaNotFoundError,
+  StravaRateLimitError,
+  StravaUnauthorizedError,
+  stravaGet,
+} from "../_shared/strava-api.ts";
+import { StravaApiActivity, toStravaActivityRow } from "../_shared/strava-activity.ts";
+import { loadMatchingInputs, matchActivity } from "../_shared/strava-matching.ts";
+import { getValidAccessToken, StravaConnectionRevokedError } from "../_shared/strava-token.ts";
+import { deleteStravaDataForUser } from "../_shared/strava-deletion.ts";
 
-function decodePolyline(str: string) {
-  let index = 0, lat = 0, lng = 0;
-  const coords: [number, number][] = [];
-  while (index < str.length) {
-    let shift = 0, result = 0, byte;
-    do {
-      byte = str.charCodeAt(index++) - 63;
-      result |= (byte & 0x1f) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    lat += (result & 1) ? ~(result >> 1) : (result >> 1);
-    shift = 0;
-    result = 0;
-    do {
-      byte = str.charCodeAt(index++) - 63;
-      result |= (byte & 0x1f) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    lng += (result & 1) ? ~(result >> 1) : (result >> 1);
-    coords.push([lat / 1e5, lng / 1e5]);
+const JOB_BATCH_SIZE = 10;
+const MAX_ATTEMPTS = 5;
+
+Deno.serve(async (req) => {
+  const secret = Deno.env.get("STRAVA_JOB_PROCESSOR_SECRET");
+  const provided = req.headers.get("x-job-processor-secret") ?? "";
+  if (!secret || !safeEqual(provided, secret)) {
+    return new Response("Unauthorized", { status: 401 });
   }
-  return coords;
-}
 
-function haversineM(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371000, toRad = (d: number) => (d * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
+  const supabase = serviceClient();
 
-function matchActivity(activity: any, munros: any[], config: any) {
-  if (activity.manual) return [];
-  if (!config.candidate_types.includes(activity.type)) return [];
-  const [sLat, sLng] = activity.start_latlng ?? [];
-  const [eLat, eLng] = activity.end_latlng ?? [];
-  const box = config.bounding_box;
-  const inBox = (lat: number, lng: number) =>
-    lat >= box.sw_lat && lat <= box.ne_lat && lng >= box.sw_lng &&
-    lng <= box.ne_lng;
-  if (!(inBox(sLat, sLng) || inBox(eLat, eLng))) return [];
-  if ((activity.elev_high ?? 0) < config.elev_high_threshold_m) return [];
-  if (!activity.map?.polyline) return [];
-
-  const points = decodePolyline(activity.map.polyline);
-  const matches: { munroId: number; distanceM: number }[] = [];
-  for (const munro of munros) {
-    let closest = Infinity;
-    for (const [lat, lng] of points) {
-      const d = haversineM(lat, lng, munro.lat, munro.lng);
-      if (d < closest) closest = d;
-      if (closest < config.radius_m) break;
-    }
-    if (closest < config.radius_m) {
-      matches.push({ munroId: munro.id, distanceM: Math.round(closest) });
-    }
-  }
-  return matches;
-}
-
-Deno.serve(async () => {
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
-
-  const { data: config, error: configError } = await supabase.from(
-    "strava_matching_config",
-  ).select(
-    "*",
-  ).single();
-  if (configError) {
-    console.error("🎯 ~ configError:", configError);
-    return new Response("failed to load matching config", { status: 500 });
-  }
-  console.log("🎯 ~ config:", config);
-
-  const { data: munros, error: munrosError } = await supabase.from("munros")
-    .select(
-      "id, lat, lng, meters",
-    );
-  if (munrosError) {
-    console.error("🎯 ~ munrosError:", munrosError);
-    return new Response("failed to load munros", { status: 500 });
-  }
-  console.log("🎯 ~ munros:", munros);
+  const backoffUntil = await rateLimitBackoffUntil(supabase);
+  if (backoffUntil) return json({ deferred_until: backoffUntil.toISOString() });
 
   const { data: jobs, error: jobsError } = await supabase.from("jobs")
-    .select("*").eq("status", "queued").lte(
-      "run_after",
-      new Date().toISOString(),
-    ).limit(5);
+    .select("*")
+    .eq("status", "queued")
+    .eq("job_type", "strava_webhook_activity")
+    .lte("run_after", new Date().toISOString())
+    .order("run_after")
+    .limit(JOB_BATCH_SIZE);
   if (jobsError) {
-    console.error("🎯 ~ jobsError:", jobsError);
+    console.error("Failed to load jobs:", jobsError.message);
     return new Response("failed to load jobs", { status: 500 });
   }
-  console.log("🎯 ~ jobs:", jobs);
+  if (!jobs?.length) return json({ processed: 0 });
 
-  for (const job of jobs ?? []) {
-    const { error: runningError } = await supabase.from("jobs").update({
-      status: "running",
-    }).eq("id", job.id);
-    if (runningError) console.error("🎯 ~ runningError:", runningError);
+  const { config, munros } = await loadMatchingInputs(supabase);
+
+  const setJob = (id: string, fields: Record<string, unknown>) =>
+    supabase.from("jobs").update({ ...fields, updated_at: new Date().toISOString() }).eq("id", id);
+
+  let processed = 0;
+  for (const job of jobs) {
+    // Claim atomically so overlapping invocations never process the same job twice.
+    const { data: claimed } = await supabase.from("jobs")
+      .update({ status: "running", updated_at: new Date().toISOString() })
+      .eq("id", job.id).eq("status", "queued").select("id");
+    if (!claimed?.length) continue;
+
+    const event = job.payload;
     try {
-      if (job.job_type === "strava_webhook_activity") {
-        const event = job.payload;
-        console.log("🎯 ~ event:", event);
-        if (event.object_type !== "activity") {
-          const { error } = await supabase.from("jobs").update({
-            status: "done",
-          }).eq(
-            "id",
-            job.id,
-          );
-          if (error) console.error("🎯 ~ error:", error);
-          continue;
-        }
-
-        const { data: conn, error: connError } = await supabase.from(
-          "strava_connections",
-        )
-          .select("*").eq("strava_athlete_id", event.owner_id).is(
-            "revoked_at",
-            null,
-          ).single();
-        if (connError) console.error("🎯 ~ connError:", connError);
-        console.log("🎯 ~ conn:", conn);
-        if (!conn) {
-          const { error } = await supabase.from("jobs").update({
-            status: "failed",
-          }).eq(
-            "id",
-            job.id,
-          );
-          if (error) console.error("🎯 ~ error:", error);
-          continue;
-        }
-
-        const token = await getValidAccessToken(supabase, conn); // refresh if needed
-        const res = await fetch(
-          `https://www.strava.com/api/v3/activities/${event.object_id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        console.log("🎯 ~ res:", res);
-        const activity = await res.json();
-        console.log("🎯 ~ activity:", activity);
-        const matches = matchActivity(activity, munros!, config);
-        console.log("🎯 ~ matches:", matches);
-
-        const { error: activityError } = await supabase.from(
-          "strava_activities",
-        ).upsert(
-          toStravaActivityRow(
-            activity,
-            conn.user_id,
-            matches.length ? "matched" : "no_match",
-          ),
-        );
-        if (activityError) throw activityError;
-
-        for (const m of matches) {
-          const { error: matchError } = await supabase.from("munro_matches")
-            .upsert({
-              user_id: conn.user_id,
-              munro_id: m.munroId,
-              strava_activity_id: activity.id,
-              match_distance_m: m.distanceM,
-            }, { onConflict: "user_id,munro_id,strava_activity_id" });
-          if (matchError) throw matchError;
-        }
+      const { data: conn } = await supabase.from("strava_connections")
+        .select("user_id, strava_athlete_id, access_token, refresh_token, token_expires_at")
+        .eq("strava_athlete_id", event.owner_id).is("revoked_at", null).maybeSingle();
+      if (!conn) {
+        await setJob(job.id, { status: "done" });
+        continue;
       }
 
-      const { error: doneError } = await supabase.from("jobs").update({
-        status: "done",
-      }).eq("id", job.id);
-      if (doneError) throw doneError;
+      let activity: StravaApiActivity;
+      try {
+        const token = await getValidAccessToken(supabase, conn);
+        activity = await stravaGet<StravaApiActivity>(supabase, `/activities/${event.object_id}`, token);
+      } catch (e) {
+        if (e instanceof StravaNotFoundError) {
+          // Deleted, or private and outside our scope: make sure we hold nothing for it.
+          await supabase.from("strava_activities").delete().eq("id", event.object_id);
+          await setJob(job.id, { status: "done" });
+          continue;
+        }
+        if (e instanceof StravaConnectionRevokedError || e instanceof StravaUnauthorizedError) {
+          await deleteStravaDataForUser(supabase, conn.user_id, "strava_deauthorization");
+          await setJob(job.id, { status: "done" });
+          continue;
+        }
+        throw e;
+      }
+
+      const matches = matchActivity(activity, munros, config);
+
+      if (!matches.length) {
+        // Nothing to review, so nothing to keep [API Policy 6.4].
+        await supabase.from("strava_activities").delete().eq("id", activity.id);
+        await setJob(job.id, { status: "done" });
+        processed++;
+        continue;
+      }
+
+      const { error: activityError } = await supabase.from("strava_activities")
+        .upsert(toStravaActivityRow(activity, conn.user_id));
+      if (activityError) throw activityError;
+
+      const { error: matchError } = await supabase.from("munro_matches").upsert(
+        matches.map((m) => ({
+          user_id: conn.user_id,
+          munro_id: m.munroId,
+          strava_activity_id: activity.id,
+          match_distance_m: m.distanceM,
+        })),
+        { onConflict: "user_id,munro_id,strava_activity_id", ignoreDuplicates: true },
+      );
+      if (matchError) throw matchError;
+
+      // A type change can drop Munros that previously matched.
+      await supabase.from("munro_matches").delete()
+        .eq("strava_activity_id", activity.id)
+        .eq("status", "pending")
+        .not("munro_id", "in", `(${matches.map((m) => m.munroId).join(",")})`);
+
+      await setJob(job.id, { status: "done" });
+      processed++;
     } catch (e) {
-      console.error("🎯 ~ error:", e);
-      const { error: failError } = await supabase.from("jobs").update({
-        status: "failed",
-        attempts: job.attempts + 1,
-        run_after: new Date(Date.now() + 60_000).toISOString(),
-      }).eq("id", job.id);
-      if (failError) console.error("🎯 ~ failError:", failError);
+      if (e instanceof StravaRateLimitError) {
+        await setJob(job.id, { status: "queued", run_after: e.retryAt.toISOString() });
+        return json({ processed, deferred_until: e.retryAt.toISOString() });
+      }
+      console.error(`Job ${job.id} failed:`, (e as Error).message);
+      const attempts = job.attempts + 1;
+      await setJob(job.id, {
+        status: attempts >= MAX_ATTEMPTS ? "failed" : "queued",
+        attempts,
+        run_after: new Date(Date.now() + 60_000 * 2 ** attempts).toISOString(),
+      });
     }
   }
 
-  return new Response("ok");
+  return json({ processed });
 });

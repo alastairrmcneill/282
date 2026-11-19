@@ -368,3 +368,8 @@ entrypoint = "./functions/strava-scan-activities/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/strava-scan-activities/*.html" ]
+
+[functions.strava-oauth-start]
+enabled = true
+verify_jwt = false
+import_map = "./functions/strava-oauth-start/deno.json"
