@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
-import 'package:two_eight_two/screens/strava/helpers/match_strava_activity.dart';
+import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
 class StravaMatchMunroTile extends StatelessWidget {

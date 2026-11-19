@@ -423,6 +423,15 @@ class AppRouter {
           settings: settings,
         );
 
+      case StravaDataScreen.route:
+        return MaterialPageRoute(
+          builder: (context) {
+            context.read<StravaState>().loadStoredData(userId: context.read<UserState>().currentUser?.uid ?? '');
+            return const StravaDataScreen();
+          },
+          settings: settings,
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) => HomeScreen(startingIndex: 0),

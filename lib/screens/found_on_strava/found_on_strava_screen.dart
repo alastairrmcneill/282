@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/found_on_strava/widgets/widgets.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class FoundOnStravaScreen extends StatelessWidget {
   static const String route = '/found_on_strava';
@@ -51,6 +52,7 @@ class FoundOnStravaScreen extends StatelessWidget {
                       );
                     },
                   ),
+                  const PoweredByStravaLogo(),
                   const SizedBox(height: 20),
                 ],
               )

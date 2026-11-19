@@ -6,7 +6,6 @@ import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/onboarding/widgets/widgets.dart';
 import 'package:two_eight_two/screens/screens.dart';
-import 'package:two_eight_two/screens/strava/helpers/match_strava_activity.dart';
 import 'package:two_eight_two/screens/strava/widgets/widgets.dart';
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -18,7 +17,7 @@ class StravaScanningScreen extends StatelessWidget {
   Widget _scanningProgressState(BuildContext context, StravaState stravaState) {
     final munroCompletionState = context.read<MunroCompletionState>();
     final userState = context.read<UserState>();
-    final activitiesCount = stravaState.activities.length;
+    final activitiesCount = stravaState.activitiesTotal;
     final activitiesScannedCount = stravaState.activitiesScannedCount;
     final munroMatches = stravaState.matches;
 
@@ -79,11 +78,18 @@ class StravaScanningScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
               ),
               Text(
-                '${(activitiesScannedCount / activitiesCount * 100).toStringAsFixed(0)}%',
+                '${activitiesCount > 0 ? (activitiesScannedCount / activitiesCount * 100).toStringAsFixed(0) : 0}%',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
               ),
             ],
           ),
+          if (stravaState.scanningStatus == StravaScanningStatus.completed && !stravaState.scanComplete) ...[
+            const SizedBox(height: 8),
+            Text(
+              "Strava is busy, so we couldn't read all of your history this time. Try again tomorrow for the rest.",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colors.textMuted),
+            ),
+          ],
           const SizedBox(height: 32),
           Expanded(
             child: ListView(
@@ -136,7 +142,9 @@ class StravaScanningScreen extends StatelessWidget {
             },
             child: Text("Add ${stravaState.selectedMatches.length} to my map"),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
+          const PoweredByStravaLogo(),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -170,10 +178,10 @@ class StravaScanningScreen extends StatelessWidget {
                 return _scanningProgressState(context, stravaState);
 
               case StravaScanningStatus.error:
-                return const StravaScanningResultState(
+                return StravaScanningResultState(
                   isError: true,
                   title: 'Something went wrong',
-                  subtitle: "We couldn't finish scanning your Strava activities. Please try again.",
+                  subtitle: stravaState.error.message,
                 );
             }
           },

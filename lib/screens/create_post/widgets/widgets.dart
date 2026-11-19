@@ -7,3 +7,4 @@ export 'create_post_summit_time_picker.dart';
 export 'duration_picker_dialog.dart';
 export 'create_post_summit_duration_picker.dart';
 export 'create_post_no_image_dialog.dart';
+export 'strava_share_consent_dialog.dart';

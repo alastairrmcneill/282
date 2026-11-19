@@ -107,6 +107,7 @@ flutter:
     - assets/images/
     - assets/weather/
     - assets/icons/
+    - assets/strava/
     - assets/munro-icons-svg/
     - assets/badges/
     - assets/branch-config.json

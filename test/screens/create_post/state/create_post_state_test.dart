@@ -1125,5 +1125,49 @@ void main() {
         expect(notified, true);
       });
     });
+
+    group('prefillFromStravaActivity', () {
+      final activity = StravaActivity(
+        id: 42,
+        activityType: 'Hike',
+        name: 'Ben Nevis',
+        startDate: DateTime(2026, 6, 1, 8, 30),
+        durationS: 3600,
+      );
+
+      test('should prefill munros, date, time and duration and default to private', () {
+        createPostState.prefillFromStravaActivity(munroIds: [1, 2], activity: activity);
+
+        expect(createPostState.selectedMunroIds, {1, 2});
+        expect(createPostState.completionDate, DateTime(2026, 6, 1));
+        expect(createPostState.completionStartTime, const TimeOfDay(hour: 8, minute: 30));
+        expect(createPostState.completionDuration, const Duration(hours: 1));
+        expect(createPostState.postPrivacy, Privacy.private);
+        expect(createPostState.prefilledFromStrava, true);
+      });
+
+      test('reset should clear the Strava flag', () {
+        createPostState.prefillFromStravaActivity(munroIds: [1], activity: activity);
+        createPostState.reset();
+
+        expect(createPostState.prefilledFromStrava, false);
+        expect(createPostState.postPrivacy, isNull);
+      });
+
+      test('should not send Strava-derived values to analytics', () async {
+        when(mockPostsRepository.create(post: anyNamed('post'))).thenAnswer((_) async => 'post123');
+        createPostState.prefillFromStravaActivity(munroIds: [1], activity: activity);
+
+        await createPostState.createPost();
+
+        final props = verify(mockAnalytics.track(AnalyticsEvent.createPost, props: captureAnyNamed('props')))
+            .captured
+            .single as Map<String, dynamic>;
+        expect(props.containsKey(AnalyticsProp.completionDate), false);
+        expect(props.containsKey(AnalyticsProp.completionStartTime), false);
+        expect(props.containsKey(AnalyticsProp.completionDuration), false);
+        expect(props[AnalyticsProp.privacy], Privacy.private);
+      });
+    });
   });
 }

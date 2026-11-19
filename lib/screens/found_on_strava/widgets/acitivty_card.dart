@@ -7,6 +7,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/models/models.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class ActivityCard extends StatelessWidget {
   final PendingActivityReview review;
@@ -24,17 +25,9 @@ class ActivityCard extends StatelessWidget {
         .map((m) => m.munroId)
         .toList();
 
-    final createPostState = context.read<CreatePostState>();
-    createPostState.reset();
-    for (final munroId in confirmedMunroIds) {
-      createPostState.addMunro(munroId);
-    }
-
-    final startDate = review.activity.startDate;
-    createPostState.setCompletionDate = DateTime(startDate.year, startDate.month, startDate.day);
-    createPostState.setCompletionStartTime = TimeOfDay.fromDateTime(review.activity.startDate);
-    createPostState.setCompletionDuration =
-        review.activity.durationS != null ? Duration(seconds: review.activity.durationS!.toInt()) : null;
+    context.read<CreatePostState>()
+      ..reset()
+      ..prefillFromStravaActivity(munroIds: confirmedMunroIds, activity: review.activity);
 
     if (selectMore) {
       final mainMunro = munroList.firstWhere((m) => m.id == confirmedMunroIds.first);
@@ -131,6 +124,10 @@ class ActivityCard extends StatelessWidget {
                     );
                   }).toList(),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: StravaAttributionRow(activity: review.activity),
               ),
               SizedBox(height: 8),
               Container(

@@ -6,6 +6,7 @@ import 'package:two_eight_two/extensions/extensions.dart';
 import 'package:two_eight_two/repos/repos.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
 import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/strava/widgets/widgets.dart';
 
 import 'package:two_eight_two/widgets/widgets.dart';
 
@@ -121,25 +122,22 @@ class StravaConnectBottomSheet extends StatelessWidget {
           ),
         ),
         SizedBox(height: 24),
-        CtaButton(
-          height: 56,
-          backgroundColor: context.colors.stravaOrange,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset('assets/icons/strava_solid_white.svg', height: 24),
-              SizedBox(width: 12),
-              Text('Connect with Strava'),
-            ],
-          ),
-          onPressed: () async {
-            final connectionStatus = await context.read<StravaState>().connectWithStrava(userId: userId);
+        const StravaDataDisclosure(),
+        SizedBox(height: 16),
+        Center(
+          child: ConnectWithStravaButton(
+            onPressed: () async {
+              final stravaState = context.read<StravaState>();
+              final connectionStatus = await stravaState.connectWithStrava(userId: userId);
 
-            if (!context.mounted) return;
-            if (connectionStatus == StravaConnectionStatus.connected) {
-              Navigator.of(context).pushReplacementNamed(StravaConnectedScreen.route);
-            }
-          },
+              if (!context.mounted) return;
+              if (connectionStatus == StravaConnectionStatus.connected) {
+                Navigator.of(context).pushReplacementNamed(StravaConnectedScreen.route);
+              } else if (connectionStatus == StravaConnectionStatus.error) {
+                showSnackBar(context, stravaState.error.message);
+              }
+            },
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),

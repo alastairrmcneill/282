@@ -44,6 +44,7 @@ class CreatePostState extends ChangeNotifier {
   Set<int> _deletedMunroIds = {};
   String? _postPrivacy;
   Post? _editingPost;
+  bool _prefilledFromStrava = false;
 
   CreatePostStatus get status => _status;
   Error get error => _error;
@@ -64,6 +65,7 @@ class CreatePostState extends ChangeNotifier {
       _addedImages.values.any((element) => element.isNotEmpty) ||
       _existingImages.values.any((element) => element.isNotEmpty);
   Post? get editingPost => _editingPost;
+  bool get prefilledFromStrava => _prefilledFromStrava;
 
   Future<Post?> createPost() async {
     try {
@@ -151,10 +153,13 @@ class CreatePostState extends ChangeNotifier {
         props: {
           AnalyticsProp.postId: postId,
           AnalyticsProp.description: _description != null && _description!.isNotEmpty,
-          AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
-          AnalyticsProp.completionStartTime:
-              _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
-          AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
+          // Strava-derived values must never reach analytics (API Policy 5.4).
+          if (!_prefilledFromStrava) ...{
+            AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
+            AnalyticsProp.completionStartTime:
+                _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
+            AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
+          },
           AnalyticsProp.privacy: post.privacy,
           AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
           AnalyticsProp.imagesAdded:
@@ -325,10 +330,13 @@ class CreatePostState extends ChangeNotifier {
         AnalyticsEvent.editPost,
         props: {
           AnalyticsProp.postId: post.uid,
-          AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
-          AnalyticsProp.completionStartTime:
-              _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
-          AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
+          // Strava-derived values must never reach analytics (API Policy 5.4).
+          if (!_prefilledFromStrava) ...{
+            AnalyticsProp.completionDate: _completionDate?.toIso8601String(),
+            AnalyticsProp.completionStartTime:
+                _completionStartTime != null ? "${_completionStartTime!.hour}:${_completionStartTime!.minute}" : null,
+            AnalyticsProp.completionDuration: _completionDuration?.inSeconds,
+          },
           AnalyticsProp.privacy: post.privacy,
           AnalyticsProp.munroCompletionsAdded: selectedMunroIds.length,
           AnalyticsProp.imagesAdded:
@@ -461,6 +469,20 @@ class CreatePostState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Prefills a post from a confirmed Strava match. It starts as private so
+  /// nothing from Strava is shown to anyone else unless the user explicitly
+  /// chooses to share it (API Policy 2.3, 5.13).
+  void prefillFromStravaActivity({required List<int> munroIds, required StravaActivity activity}) {
+    final startDate = activity.startDate;
+    _addedMunroIds.addAll(munroIds);
+    _completionDate = DateTime(startDate.year, startDate.month, startDate.day);
+    _completionStartTime = TimeOfDay.fromDateTime(startDate);
+    _completionDuration = activity.durationS != null ? Duration(seconds: activity.durationS!.toInt()) : null;
+    _postPrivacy = Privacy.private;
+    _prefilledFromStrava = true;
+    notifyListeners();
+  }
+
   void addMunro(int munroId) {
     _addedMunroIds.add(munroId);
     notifyListeners();
@@ -526,6 +548,7 @@ class CreatePostState extends ChangeNotifier {
     _addedMunroIds = {};
     _deletedMunroIds = {};
     _postPrivacy = null;
+    _prefilledFromStrava = false;
     _error = Error();
     _status = CreatePostStatus.initial;
   }

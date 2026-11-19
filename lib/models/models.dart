@@ -32,4 +32,6 @@ export 'strava_connection_model.dart';
 export 'munro_match_model.dart';
 export 'strava_activity_model.dart';
 export 'pending_activity_review_model.dart';
-export 'strava_matching_config_model.dart';
+export 'strava_munro_match_model.dart';
+export 'strava_scan_result_model.dart';
+export 'strava_data_deletion_model.dart';

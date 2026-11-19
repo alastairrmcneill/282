@@ -1,51 +1,47 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:two_eight_two/screens/notifiers.dart';
+import 'package:two_eight_two/screens/screens.dart';
+import 'package:two_eight_two/screens/strava/widgets/widgets.dart';
+import 'package:two_eight_two/widgets/widgets.dart';
 
 class StravaConnectListItem extends StatelessWidget {
   final String userId;
   const StravaConnectListItem({super.key, required this.userId});
 
-  Future<void> disconnectStrava(BuildContext context) async {
-    final response = await Supabase.instance.client.functions.invoke('strava-disconnect');
-
-    if (response.status != 200) {
-      throw Exception('Failed to disconnect: ${response.data}');
-    }
-    context.read<StravaState>().getStravaConnectionStatus(userId: userId);
-    // refresh whatever local state reflects the Strava connection
-  }
-
-  Future<void> connectStrava(BuildContext context) async {
-    await context.read<StravaState>().connectWithStrava(userId: userId);
-  }
-
   @override
   Widget build(BuildContext context) {
     final stravaState = context.watch<StravaState>();
     final stravaStatus = stravaState.connectionStatus;
-    return ListTile(
-      onTap: () async {
-        if (stravaStatus == StravaConnectionStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Error with Strava connection. Please try again.')),
-          );
-          stravaState.getStravaConnectionStatus(userId: userId);
-          return;
-        }
 
-        if (stravaStatus == StravaConnectionStatus.connected) {
-          await disconnectStrava(context);
-        } else {
-          await connectStrava(context);
-        }
-      },
-      title: stravaStatus == StravaConnectionStatus.error
-          ? const Text("Error with Strava connection")
-          : stravaStatus == StravaConnectionStatus.connected
-              ? const Text("Disconnect from Strava")
-              : const Text("Connect to Strava"),
+    if (stravaStatus == StravaConnectionStatus.error) {
+      return ListTile(
+        title: const Text("Error with Strava connection"),
+        subtitle: const Text('Tap to try again'),
+        onTap: () => stravaState.getStravaConnectionStatus(userId: userId),
+      );
+    }
+
+    if (stravaStatus != StravaConnectionStatus.connected) {
+      return ListTile(
+        title: const Text("Connect to Strava"),
+        onTap: () => StravaConnectBottomSheet.show(context),
+      );
+    }
+
+    return Column(
+      children: [
+        ListTile(
+          title: const Text("Your Strava data"),
+          subtitle: const Text('See what 282 holds from Strava'),
+          onTap: () => Navigator.of(context).pushNamed(StravaDataScreen.route),
+        ),
+        ListTile(
+          title: const Text("Disconnect from Strava"),
+          subtitle: const Text('Deletes all your Strava data from 282'),
+          onTap: () => StravaDisconnectButton.confirmAndDisconnect(context),
+        ),
+      ],
     );
   }
 }
